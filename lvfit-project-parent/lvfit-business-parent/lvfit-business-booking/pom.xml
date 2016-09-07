@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.lvmama.lvfit</groupId>
+    <artifactId>lvfit-business-parent</artifactId>
+    <version>0.1.0</version>
+	<relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>lvfit-business-booking</artifactId>
+  <packaging>jar</packaging>
+  <name>lvmama-lvfit-business-booking</name>
+  <description>lvmama-lvfit-business-booking</description>
+  <dependencies>
+    <dependency>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-project-common</artifactId>
+		<version>0.1.0</version>
+		<type>jar</type>
+	</dependency>
+    <dependency>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-business-base</artifactId>
+		<version>0.1.0</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+			<groupId>com.lvmama.flight</groupId>
+			<artifactId>lvf-common-dto</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+	</dependency>
+	
+  </dependencies>
+</project>

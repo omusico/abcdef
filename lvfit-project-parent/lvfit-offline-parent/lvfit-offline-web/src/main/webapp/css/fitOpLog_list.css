@@ -1,0 +1,15 @@
+*{ margin: 0; padding: 0;}
+html,body{ font-family: " simsun", "microsoft yahei", "Arial"; font-size: 12px; /*min-width: 1024px;*/ color: #333;}
+ul,li{ list-style: none;}
+table,tr,th,td{ border-collapse: collapse;}
+th{ font-weight: normal;}
+.cl{ clear: both;}
+a{ text-decoration: none;}
+.content{ width: 98%; padding:0 1%; line-height: 30px;}
+.breadnav{ line-height: 34px; padding-left: 30px; background: url(../images/icon.png) no-repeat 10px 10px;}
+
+#myForm { font-size: 14px; }
+#myForm label{ margin-left: 20px; }
+#myForm button{ color:#fff; background-color: #009dda; text-align:center; line-height: left; height: 30px; width:100px; border:none;border-radius:3px;}
+#myForm button:hover{cursor:pointer; background-color: #036;}
+#myForm .click{ float: right; margin-right: 100px;}

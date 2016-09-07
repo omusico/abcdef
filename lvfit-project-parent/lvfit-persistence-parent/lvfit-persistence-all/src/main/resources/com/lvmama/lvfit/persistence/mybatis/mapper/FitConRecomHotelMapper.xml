@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitConRecomHotelMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.hotel.FitConRecomHotelDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="DISTRICT_CITY_ID" property="districtCityId" jdbcType="DECIMAL" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="HOTEL_NAME" property="hotelName" jdbcType="VARCHAR" />
+    <result column="IS_DEFAULT" property="isDefault" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  	<sql id="columns">
+		ID,
+		DISTRICT_CITY_ID,
+		CITY_NAME,
+		PRODUCT_ID,
+		HOTEL_NAME,
+		IS_DEFAULT,
+		CREATE_TIME,
+		UPDATE_TIME
+	</sql>
+	
+	
+	<select id="getById" resultMap="resultMap">
+		SELECT 
+		<include refid="columns" />
+		FROM T_FITCON_RECOM_HOTEL
+		WHERE ID = #{id}
+	</select>
+	
+	
+	
+	
+	
+	  <insert id="insert" >
+		  <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+				<choose>
+					<when test="id != null and id != ''">
+						SELECT #{id,jdbcType=DECIMAL} FROM DUAL	
+					</when>
+					<otherwise>
+						SELECT S_FITCON_RECOM_HOTEL.NEXTVAL FROM DUAL
+					</otherwise>
+				</choose>
+			</selectKey>
+			insert into T_FITCON_RECOM_HOTEL (ID, DISTRICT_CITY_ID, CITY_NAME, PRODUCT_ID, HOTEL_NAME,IS_DEFAULT, CREATE_TIME, UPDATE_TIME)
+			values (#{id,jdbcType=DECIMAL}, #{districtCityId,jdbcType=DECIMAL}, #{cityName,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{hotelName,jdbcType=VARCHAR},#{isDefault,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+				#{updateTime,jdbcType=TIMESTAMP})
+	  </insert>
+	   
+	<!-- 数据批量插入 -->
+	<insert id="insertBatch" parameterType="java.util.List"
+		statementType="PREPARED"> 
+			<![CDATA[ 
+		   insert into T_FITCON_RECOM_HOTEL (
+				ID,DISTRICT_CITY_ID,CITY_NAME,PRODUCT_ID,HOTEL_NAME,IS_DEFAULT,CREATE_TIME,UPDATE_TIME
+			)
+			SELECT S_FITCON_RECOM_HOTEL.NEXTVAL, 
+			A.* FROM ( 
+			]]>
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator="union all"> 
+	<![CDATA[ 
+		  SELECT 
+			#{item.id,jdbcType=DECIMAL},
+			#{item.districtCityId,jdbcType=DECIMAL},
+			#{item.cityName,jdbcType=VARCHAR}, 
+			#{item.productId,jdbcType=VARCHAR}, 
+			#{item.hotelName,jdbcType=VARCHAR},
+			#{item.isDefault,jdbcType=VARCHAR},
+			#{item.createTime,jdbcType=TIMESTAMP},
+			 #{item.updateTime,jdbcType=TIMESTAMP}
+					FROM DUAL ]]>
+			</foreach>
+			) A
+	</insert>
+	
+	<update id="updateById">
+		update T_FITCON_RECOM_HOTEL
+		<set>
+			<if test="i.districtCityId != null and i.districtCityId != '' ">
+				DISTRICT_CITY_ID = #{i.districtCityId,jdbcType=DECIMAL},
+			</if>
+		      <if test="i.cityName != null and i.cityName!=''" >
+		        CITY_NAME = #{i.cityName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.productId != null and i.productId!=''" >
+		        PRODUCT_ID = #{i.productId,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.hotelName != null and i.hotelName!=''" >
+		        HOTEL_NAME = #{i.hotelName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.isDefault != null and i.isDefault!=''" >
+		        HOTEL_NAME = #{i.isDefault,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.createTime != null and i.createTime!=''" >
+		        CREATE_TIME = #{i.createTime,jdbcType=TIMESTAMP},
+		      </if>
+		      <if test="i.updateTime != null and i.updateTime!=''" >
+		        UPDATE_TIME = #{i.updateTime,jdbcType=TIMESTAMP},
+		      </if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<delete id="deleteById">
+		delete from T_FITCON_RECOM_HOTEL WHERE ID = #{id}
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="query" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
+			SELECT <include refid="columns"/>
+				FROM T_FITCON_RECOM_HOTEL
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="condition != null">
+				  <include refid="querySal"></include>
+			</if>
+		</trim>
+		ORDER BY UPDATE_TIME DESC
+		<include refid="ORACLE.paginationEnd" />
+	</select>
+	 
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM T_FITCON_RECOM_HOTEL
+			<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="condition != null">
+				  <include refid="querySal"></include>
+			</if>
+		</trim>
+	</select>
+	
+	<sql id="querySal">
+		<if test="condition.id !=null and condition.id != ''">
+			AND	ID = #{condition.id,jdbcType=DECIMAL}
+		</if>
+		<if test="condition.districtCityId != null and condition.districtCityId != ''">
+			AND DISTRICT_CITY_ID =#{condition.districtCityId,jdbcType=DECIMAL}
+		</if>
+		
+		<if test="condition.cityName != null and condition.cityName != ''">
+			AND CITY_NAME =#{condition.cityName,jdbcType=VARCHAR}
+		</if>
+		<if test="condition.productId != null and condition.productId != ''">
+			AND	PRODUCT_ID = #{condition.productId,jdbcType=VARCHAR}
+		</if>
+		<if test="condition.hotelName != null and condition.hotelName != ''">
+			AND	HOTEL_NAME = #{condition.hotelName,jdbcType=VARCHAR}
+		</if>
+	</sql>  
+  
+  	<update id="setDefaultHotel" parameterType="hashmap">
+		update T_FITCON_RECOM_HOTEL
+		<set>
+			IS_DEFAULT = 'Y',
+			UPDATE_TIME = #{updateTime}
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<update id="setOtherNotDefault"  parameterType="hashmap">
+		update T_FITCON_RECOM_HOTEL
+		<set>
+			IS_DEFAULT = 'N',
+			UPDATE_TIME = #{updateTime}
+		</set>
+		WHERE ID != #{id}        
+		AND DISTRICT_CITY_ID = #{districtCityId} AND IS_DEFAULT='Y'
+	</update>
+	
+</mapper>

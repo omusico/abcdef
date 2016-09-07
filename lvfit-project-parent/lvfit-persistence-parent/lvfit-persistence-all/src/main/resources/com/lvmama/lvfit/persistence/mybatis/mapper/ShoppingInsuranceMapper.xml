@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.ShoppingInsuranceMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.shopping.ShoppingInsuranceDto">
+		<result column="ID" property="id" />
+	    <result column="UUID" property="uuid"/>
+	    <result column="SHOPPING_UUID" property="shoppingUuid"  />
+	    <result column="INSURANCE_ID" property="insuranceId"  />
+	    <result column="INSURANCE_NAME" property="insuranceName"  />
+	    <result column="INSURANCE_TYPE" property="insuranceType"  />
+	    <result column="INSURANCE_BRANCH_ID" property="insuranceBranchId"  />
+	    <result column="INSURANCE_BRANCH_NAME" property="insuranceBranchName"  />
+	    <result column="INSURANCE_GOODS_ID" property="insuranceSuppGoodsId" />
+	    <result column="INSURANCE_GOODS_NAME" property="insuranceSuppGoodsName"  />
+	    <result column="INSURANCE_COUNT" property="insuranceCount"  />
+	    <result column="INSURANCE_PRICE" property="insurancePrice"  />
+	    <result column="USE_DAYS" property="useDays" />
+	     <result column="VISIT_DATE" property="visitDate" />
+	       <result column="INSURANCE_DETAIL" property="insuranceDetail" />
+	    <result column="VERSION_NO" property="versionNo"  />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime"  />
+	</resultMap>
+	
+
+	
+	<sql id="columns">
+		ID, UUID, SHOPPING_UUID, INSURANCE_ID,INSURANCE_NAME,INSURANCE_TYPE,INSURANCE_BRANCH_ID,INSURANCE_BRANCH_NAME,
+		INSURANCE_GOODS_ID,INSURANCE_GOODS_NAME,INSURANCE_COUNT,INSURANCE_PRICE,USE_DAYS,VISIT_DATE,INSURANCE_DETAIL,VERSION_NO,CREATE_TIME,UPDATE_TIME
+	</sql>
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.shopping.ShoppingInsuranceDto">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select S_FITSHOP_INSURANCE.NEXTVAL from dual
+		</selectKey>
+		insert into
+		T_FITSHOP_INSURANCE
+		(<include refid="columns" />)
+		values
+		(
+		 #{id,jdbcType=DECIMAL},
+		 #{uuid,jdbcType=VARCHAR},
+		 #{shoppingUuid,jdbcType=VARCHAR},
+         #{insuranceId,jdbcType=VARCHAR},
+         #{insuranceName,jdbcType=VARCHAR},
+         #{insuranceType,jdbcType=VARCHAR},
+         #{insuranceBranchId,jdbcType=VARCHAR},
+         #{insuranceBranchName,jdbcType=VARCHAR},
+         #{insuranceSuppGoodsId,jdbcType=VARCHAR},
+         #{insuranceSuppGoodsName,jdbcType=VARCHAR},
+         #{insuranceCount,jdbcType=INTEGER},
+         #{insurancePrice,jdbcType=DECIMAL},
+         #{useDays,jdbcType=INTEGER},
+         #{visitDate,jdbcType=TIMESTAMP},
+          #{insuranceDetail,jdbcType=VARCHAR},
+         #{versionNo,jdbcType=DECIMAL},
+         #{createTime,jdbcType=TIMESTAMP},
+         #{updateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+     <!-- 根据shoppingId查询 -->
+	<select id="getListByCode" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_INSURANCE
+		WHERE SHOPPING_UUID = #{code} order by create_time desc
+	</select>
+	<!-- 根据shoppingId获取最后插入的保险信息-->
+	<select id="getLatestListByCode" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_INSURANCE
+		WHERE VERSION_NO = (select MAX(VERSION_NO) from T_FITSHOP_INSURANCE where SHOPPING_UUID = #{code}) order by create_time desc
+	</select>
+	
+	<!-- 根据code修改数据 -->
+	<update id="updateByCode">
+		update T_FITSHOP_INSURANCE i
+			<set>
+			  <if test="i.id != null" >
+		        ID = #{i.id,jdbcType=DECIMAL},
+		      </if>
+		      <if test="i.uuid != null" >
+		        UUID = #{i.uuid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.shoppingUuid != null" >
+		        SHOPPING_UUID = #{i.shoppingUuid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.insuranceId != null" >
+		        INSURANCE_ID = #{i.insuranceId,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.insuranceName != null" >
+		        INSURANCE_NAME = #{i.insuranceName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.insuranceType != null" >
+		        INSURANCE_TYPE = #{i.insuranceType,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.insuranceBranchId != null" >
+		        INSURANCE_BRANCH_ID = #{i.insuranceBranchId,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.insuranceBranchName!= null" >
+		        INSURANCE_BRANCH_NAME = #{i.insuranceBranchName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.insuranceSuppGoodsId != null" >
+		        INSURANCE_GOODS_ID = #{i.insuranceSuppGoodsId,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.insuranceSuppGoodsName != null" >
+		        INSURANCE_GOODS_NAME = #{i.insuranceSuppGoodsName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.versionNo != null" >
+		        VERSION_NO = #{i.versionNo,jdbcType=DECIMAL},
+		      </if>
+		      <if test="i.insuranceCount != null" >
+		        INSURANCE_COUNT = #{i.insuranceCount,jdbcType=INTEGER},
+		      </if>
+		      <if test="i.insurancePrice != null" >
+		        INSURANCE_PRICE = #{i.insurancePrice,jjdbcType=DECIMAL},
+		      </if>
+		      <if test="i.useDays!= null" >
+		        USE_DAYS = #{i.useDays,jdbcType=INTEGER},
+		      </if>
+		       <if test="i.visitDate != null" >
+		        VISIT_DATE = #{i.visitDate,jdbcType=TIMESTAMP},
+		      </if>
+		       UPDATE_TIME = SYSDATE
+		</set>
+		WHERE SHOPPING_UUID = #{code}
+	</update>
+	
+	<!-- 根据code删除数据 -->
+	<delete id="deleteByCode">
+		delete from T_FITSHOP_INSURANCE
+		WHERE SHOPPING_UUID = #{code}
+	</delete>
+</mapper>

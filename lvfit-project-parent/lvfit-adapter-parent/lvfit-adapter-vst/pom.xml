@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-adapter-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lvfit-adapter-vst</artifactId>
+	<packaging>jar</packaging>
+	<name>lvmama-lvfit-adapter-vst</name>
+	<description>lvmama-lvfit-adapter-vst</description>
+	<properties>
+		<lvmama_comm.version>1.0.0-SNAPSHOT</lvmama_comm.version>
+		<vst_comm.version>1.0.0-SNAPSHOT</vst_comm.version>
+		<tnt_interface.version>1.0.0-SNAPSHOT</tnt_interface.version>
+		<lvtu-bridge-api.version>0.0.1-SNAPSHOT</lvtu-bridge-api.version>
+		<cmt.interface.version>0.0.1-SNAPSHOT</cmt.interface.version>
+		<cmt.comm.version>0.0.1-SNAPSHOT</cmt.comm.version>
+		<jetty.port>8109</jetty.port>
+		<jetty.stopPort>9989</jetty.stopPort>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>tjws</artifactId>
+			<version>${tjws.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>${resteasy.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-adapter-base</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.lvmama.comm</groupId>
+			<artifactId>lvmama_comm</artifactId>
+			 <exclusions>
+              <exclusion>
+                  <artifactId>lvmama_soa</artifactId>
+                  <groupId>com.lvmama.comm</groupId>
+              </exclusion>
+            </exclusions>
+			<version>${lvmama_comm.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vst.comm</groupId>
+			<artifactId>vst_comm</artifactId>
+			 <exclusions>
+              <exclusion>
+                  <groupId>com.alibaba</groupId>
+                   <artifactId>dubbo</artifactId>
+              </exclusion>
+            </exclusions>
+			<version>${vst_comm.version}</version>
+			<type>jar</type>
+		</dependency>
+
+		  <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.5.3.lv1.4</version>
+            <exclusions>
+              <exclusion>
+                  <artifactId>spring</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+            </exclusions>
+        </dependency>
+
+
+		<dependency>
+			<groupId>com.tnt.interface</groupId>
+			<artifactId>tnt_interface</artifactId>
+			<version>${tnt_interface.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.cmt.interface</groupId>
+			<artifactId>cmt_interface</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.cmt.comm</groupId>
+			<artifactId>cmt_comm</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-project-common</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+		
+	</dependencies>
+	<build>
+	</build>
+</project>

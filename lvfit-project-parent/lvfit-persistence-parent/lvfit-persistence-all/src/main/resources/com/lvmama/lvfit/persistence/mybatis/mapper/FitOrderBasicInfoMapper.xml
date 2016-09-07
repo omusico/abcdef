@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderBasicInfoMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderBasicInfoDto" >
+       <result column="ID" property="id" jdbcType="DECIMAL" />
+       <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+       <result column="DEP_CITY_CODE" property="depCityCode" jdbcType="VARCHAR" />
+       <result column="ARR_CITY_CODE" property="arriCityCode" jdbcType="VARCHAR" />
+       <result column="CHECK_IN_CITY_CODE" property="checkInCityCode" jdbcType="VARCHAR" />
+       <result column="TO_TIME" property="toTime" jdbcType="TIMESTAMP" />
+       <result column="RETURN_TIME" property="returnTime" jdbcType="TIMESTAMP" />
+       <result column="CHECK_IN_TIME" property="checkInTime" jdbcType="TIMESTAMP" />
+       <result column="CHECK_OUT_TIME" property="checkOutTime" jdbcType="TIMESTAMP" />
+       <result column="ADULT_QUANTITY" property="adultQuantity" jdbcType="DECIMAL" />
+       <result column="CHILD_QUANTITY" property="childQuantity" jdbcType="DECIMAL" />
+       <result column="FIT_ORDER_MAIN_ID" property="fitOrderMainId" jdbcType="DECIMAL" />
+       <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+       <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT s_fitord_basic_info.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into t_fitord_basic_info 
+    ( 
+      ID, UUID,DEP_CITY_CODE,ARR_CITY_CODE,CHECK_IN_CITY_CODE,TO_TIME,RETURN_TIME,
+      CHECK_IN_TIME,CHECK_OUT_TIME,ADULT_QUANTITY,CHILD_QUANTITY,
+      FIT_ORDER_MAIN_ID,CREATE_TIME, UPDATE_TIME
+      )
+    values
+      (#{id,jdbcType=DECIMAL},
+      #{uuid,jdbcType=VARCHAR},
+      #{depCityCode,jdbcType=VARCHAR},
+      #{arriCityCode,jdbcType=VARCHAR},
+      #{checkInCityCode,jdbcType=VARCHAR},
+      #{toTime,jdbcType=TIMESTAMP},
+      #{returnTime,jdbcType=TIMESTAMP},
+      #{checkInTime,jdbcType=TIMESTAMP},
+      #{checkOutTime,jdbcType=TIMESTAMP},
+      #{adultQuantity,jdbcType=VARCHAR},
+      #{childQuantity,jdbcType=VARCHAR},
+      #{fitOrderMainId,jdbcType=DECIMAL},
+      #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+	<select id="getByOrderMainId" resultMap="resultMap">
+    	SELECT *
+    	FROM T_FITORD_BASIC_INFO 
+    	WHERE FIT_ORDER_MAIN_ID = #{id,jdbcType=DECIMAL}
+  	</select>
+</mapper>

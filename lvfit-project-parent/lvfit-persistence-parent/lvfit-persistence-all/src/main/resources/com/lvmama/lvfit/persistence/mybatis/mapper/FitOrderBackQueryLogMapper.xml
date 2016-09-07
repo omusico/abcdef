@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderBackQueryMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto">
+		<result column="BOOKING_SOURCE" jdbcType="VARCHAR" property="bookingSource"/>
+		<result column="MAIN_ID" jdbcType="DECIMAL" property="mainId"/>
+		<result column="VST_MAIN_ORDER_ID" jdbcType="DECIMAL" property="vstMainOrderId"/>
+		<result column="ID" jdbcType="DECIMAL" property="id"/>
+		<result column="MAIN_ORDER_NO" jdbcType="VARCHAR" property="mainOrderNo"/>
+		<result column="CONTACT_NAME" jdbcType="VARCHAR" property="contactName"/>
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo"/>
+		<result column="DEPARTURE_DATE" jdbcType="VARCHAR" property="departureDate"/>
+		<!-- <result column="ORDER_BOOKING_STATUS" jdbcType="VARCHAR" property="orderBookingStatus"/>
+		<result column="ORDER_AUDIT_STATUS" jdbcType="VARCHAR" property="orderAuditStatus"/>
+		<result column="ORDER_PAY_STATUS" jdbcType="VARCHAR" property="orderPayStatus"/>
+		<result column="ORDER_CANCEL_STATUS" jdbcType="VARCHAR" property="orderCancelStatus"/> -->
+	</resultMap>
+	
+	<sql id="columns">
+		SM.VST_MAIN_ORDER_ID,
+	 	A.BOOKING_SOURCE,
+	 	A.CREATE_TIME,
+	 	A.ID AS MAIN_ID,
+	 	A.ORDER_NO AS MAIN_ORDER_NO,
+	 	A.CONTACT_NAME,
+	 	<!-- B.ID, 
+	 	B.ORDER_NO, -->
+	 	C.DEPARTURE_DATE
+	</sql>
+	<!--查询 -->
+	<select id="query" resultMap="resultMap">
+	 <include refid="ORACLE.paginationStart" />
+		 SELECT
+		 <include refid="columns" />
+		 <include refid="queryConditions" /> 
+		 <include refid="ORACLE.paginationEnd" /> 
+	</select>
+	<!-- 统计 -->
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM (SELECT 1 
+		<include refid="queryConditions" />
+		)
+	</select>
+	<!-- 查询条件 -->
+	<sql id="queryConditions">
+	    FROM T_FITORD_ORDER_MAIN_NEW A 
+		JOIN T_FITORD_SUPP_MAIN_ORDER SM ON A.ID=SM.FIT_MAIN_ORDER_ID
+		LEFT JOIN (select * from (select t.*,row_number()over(partition by ORDER_MAIN_ID order by ID) row_number from T_FITORD_ORDER_NEW t) t1 where row_number=1 ) B ON A.id = B.ORDER_MAIN_ID
+		LEFT JOIN T_FITORD_FLIGHT C ON C.ID = B.ORDER_PRODUCT_ID
+		LEFT JOIN (select * from (select t.*,row_number()over(partition by ORDER_MAIN_ID order by ID desc) row_number from T_FITORD_ORDER_NEW t where PRODUCT = 'I_HOTEL') t1 where row_number=1 ) D ON A.id = D.ORDER_MAIN_ID
+		LEFT JOIN T_FITORD_HOTEL E ON E.ID = D.ORDER_PRODUCT_ID
+		WHERE 1=1
+		
+		<if test="condition.fitOrderQueryDto.orderNo != null and condition.fitOrderQueryDto.orderNo != ''">
+			AND A.ID IN (SELECT ORDER_MAIN_ID FROM T_FITORD_ORDER_NEW WHERE ORDER_NO LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryDto.orderNo},'%')) )
+		</if>
+		
+		<if test="condition.fitOrderQueryDto.orderMainNo != null and condition.fitOrderQueryDto.orderMainNo != ''">
+			AND A.ORDER_NO LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryDto.orderMainNo},'%'))
+		</if>
+		<if test="condition.fitOrderQueryDto.customerName != null and condition.fitOrderQueryDto.customerName != ''">
+			AND A.CUSTOMER_NAME LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryDto.customerName},'%'))
+		</if>
+		<if test="condition.fitOrderQueryDto.mainStartTime != null and condition.fitOrderQueryDto.mainStartTime != ''">
+			AND A.CREATE_TIME >= TO_DATE(#{condition.fitOrderQueryDto.mainStartTime},'yyyy-MM-dd hh24:mi:ss')
+		</if>
+		<if test="condition.fitOrderQueryDto.mainEndTime != null and condition.fitOrderQueryDto.mainEndTime != ''">
+			AND TO_DATE(#{condition.fitOrderQueryDto.mainEndTime},'yyyy-MM-dd hh24:mi:ss') >= A.CREATE_TIME
+		</if>
+		<if test="condition.fitOrderQueryDto.bookingSources != null and condition.fitOrderQueryDto.bookingSources != ''">
+			AND A.BOOKING_SOURCE IN (${condition.fitOrderQueryDto.bookingSources})
+		</if>
+				
+		<if test="condition.fitOrderQueryPeopleDto.contactName != null and condition.fitOrderQueryPeopleDto.contactName != ''">
+			AND A.CONTACT_NAME LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.contactName},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.contactCellphone != null and condition.fitOrderQueryPeopleDto.contactCellphone != ''">
+			AND A.CONTACT_MOBILE LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.contactCellphone},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.contactEmail != null and condition.fitOrderQueryPeopleDto.contactEmail != ''">
+			AND A.CONTACT_EMAIL LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.contactEmail},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.playerName != null and condition.fitOrderQueryPeopleDto.playerName != ''">
+			AND A.ID  IN (SELECT DISTINCT(ORDER_MAIN_ID) FROM T_FITORD_PASSENGER WHERE PASSENGER_NAME LIKE 	CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.playerName},'%'))	)
+		</if>
+		
+		
+		<if test="condition.fitOrderQueryPeopleDto.playerLiveStartTime != null and condition.fitOrderQueryPeopleDto.playerLiveStartTime != ''">
+			AND E.CHECKIN >= TO_DATE(#{condition.fitOrderQueryPeopleDto.playerLiveStartTime},'yyyy-MM-dd hh24:mi:ss')
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.playerLiveEndTime != null and condition.fitOrderQueryPeopleDto.playerLiveEndTime != ''">
+			AND TO_DATE(#{condition.fitOrderQueryPeopleDto.playerLiveEndTime},'yyyy-MM-dd hh24:mi:ss') >= E.CHECKIN
+		</if>
+		ORDER BY A.CREATE_TIME DESC
+	</sql>
+</mapper>

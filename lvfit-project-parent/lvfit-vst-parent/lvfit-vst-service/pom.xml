@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-vst-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lvfit-vst-service</artifactId>
+	<name>lvfit-vst-service</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<jetty.port>9792</jetty.port>
+		<jetty.stopPort>9992</jetty.stopPort>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-vst-base</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<packaging>war</packaging>
+</project>

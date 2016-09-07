@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-offline-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lvfit-offline-web</artifactId>
+	<packaging>war</packaging>
+	<name>lvfit-offline-web</name>
+	<description>lvfit-offline-web</description>
+	<properties>
+		<jetty.port>9092</jetty.port>
+		<jetty.stopPort>9980</jetty.stopPort>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-offline-base</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-offline-order</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+
+        <dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-offline-shopping</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-offline-report</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>lvfit-offline-config</groupId>
+			<artifactId>lvfit-offline-config</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		
+		 <dependency>
+			 <groupId>com.lvmama.lvfit</groupId>
+	         <artifactId>lvfit-online-web</artifactId>
+	         <type>war</type>
+			 <version>0.1.0</version>
+		 </dependency>
+  
+	  	<dependency>
+	  		<groupId>com.lvmama.lvfit</groupId>
+	  		<artifactId>lvfit-offline-sdpproduct</artifactId>
+	  		<version>0.1.0</version>
+	  	</dependency>
+	</dependencies>
+	<build>
+	</build>
+
+</project>

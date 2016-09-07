@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderHotelMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderHotelDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="HOTEL_ID" property="hotelId" jdbcType="VARCHAR" />
+    <result column="HOTEL_NAME" property="hotelName" jdbcType="VARCHAR" />
+    <result column="ROOM_ID" property="roomId" jdbcType="VARCHAR" />
+    <result column="ROOM_NAME" property="roomName" jdbcType="VARCHAR" />
+    <result column="PLAN_ID" property="planId" jdbcType="VARCHAR" />
+    <result column="PLAN_NAME" property="planName" jdbcType="VARCHAR" />
+    <result column="CHECKIN" property="checkin" jdbcType="TIMESTAMP" />
+    <result column="CHECKOUT" property="checkout" jdbcType="TIMESTAMP" />
+    <result column="SALES_PRICE" property="salesPrice" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="PRODUCT_RESOURCE" property="productResource" jdbcType="VARCHAR" />
+    <result column="ROOM_COUNT" property="roomCount" jdbcType="DECIMAL" />
+    <result column="BED_TYPE" property="bedType" jdbcType="VARCHAR" />
+    <result column="BROADBAND" property="broadband" jdbcType="VARCHAR" />
+    <result column="BREAKFAST" property="breakfast" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_HOTEL.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITORD_HOTEL (ID, UUID, HOTEL_ID, 
+      HOTEL_NAME, ROOM_ID, ROOM_NAME, 
+      PLAN_ID, PLAN_NAME, CHECKIN, 
+      CHECKOUT, SALES_PRICE, CREATE_TIME, 
+      UPDATE_TIME, PRODUCT_RESOURCE, ROOM_COUNT, BED_TYPE, BROADBAND, BREAKFAST)
+    values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{hotelId,jdbcType=VARCHAR},
+      #{hotelName,jdbcType=VARCHAR}, #{roomId,jdbcType=VARCHAR}, #{roomName,jdbcType=VARCHAR},
+      #{planId,jdbcType=VARCHAR}, #{planName,jdbcType=VARCHAR}, #{checkin,jdbcType=TIMESTAMP},
+      #{checkout,jdbcType=TIMESTAMP}, #{salesPrice,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{productResource,jdbcType=VARCHAR}, #{roomCount,jdbcType=DECIMAL},
+      #{bedType,jdbcType=VARCHAR},#{broadband,jdbcType=VARCHAR},#{breakfast,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="getById" resultMap="resultMap">
+    SELECT *
+    FROM T_FITORD_HOTEL
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  
+  <select id="getByPlanIdAndCheckIn" resultMap="resultMap">
+    SELECT *
+    FROM T_FITORD_HOTEL
+    WHERE PLAN_ID =#{planId,jdbcType=VARCHAR}   AND CHECKIN = #{checkin,jdbcType=TIMESTAMP}  
+  </select>
+
+</mapper>

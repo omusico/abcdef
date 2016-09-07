@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderFliInsuranceMapper" >
+    <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderFliInsuranceDto" >
+	    <result column="ID" property="id" jdbcType="DECIMAL" />
+	    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+	    <result column="ORDER_MAIN_ID" property="orderMainId" jdbcType="DECIMAL" />
+	    <result column="ORDER_PASSENGER_ID" property="orderPassengerId" jdbcType="DECIMAL" />
+	    <result column="INSURANCE_ID" property="insuranceId" jdbcType="VARCHAR" />
+	    <result column="INSURANCE_SUPP_NAME" property="insuranceSuppName" jdbcType="VARCHAR" />
+	    <result column="INSURANCE_NAME" property="insuranceName" jdbcType="VARCHAR" />
+	    <result column="INSURANCE_PRICE" property="insurancePrice" jdbcType="DECIMAL" />
+	    <result column="INSURANCE_COUNT" property="insuranceCount" jdbcType="DECIMAL" />
+	    <result column="INSURANCE_ORDER_NO" property="insuranceOrderNo" jdbcType="VARCHAR" />
+	    <result column="INSURANCE_DESC" property="insuranceDesc" jdbcType="VARCHAR" />
+	    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+	    <result column="FLIGHT_NO" property="flightNo" jdbcType="VARCHAR" />
+	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <sql id="columns">
+        ID,
+        UUID,
+        ORDER_MAIN_ID,
+        ORDER_PASSENGER_ID,
+        INSURANCE_ID,
+        INSURANCE_SUPP_NAME,
+        INSURANCE_NAME,
+        INSURANCE_PRICE,
+        INSURANCE_COUNT,
+        INSURANCE_ORDER_NO,
+        INSURANCE_DESC,
+        STATUS,
+        FLIGHT_NO,
+        CREATE_TIME,
+        UPDATE_TIME
+    </sql>
+
+    <insert id="insert">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+            <choose>
+                <when test="id != null and id != ''">
+                    SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+                </when>
+                <otherwise>
+                    SELECT S_FITORD_FLI_INSURANCE.NEXTVAL FROM DUAL
+                </otherwise>
+            </choose>
+        </selectKey>
+        INSERT INTO T_FITORD_FLI_INSURANCE (
+        <include refid="columns" />
+        ) VALUES (
+	        #{id, jdbcType=DECIMAL},
+	        #{uuid, jdbcType=VARCHAR},
+	        #{orderMainId, jdbcType=DECIMAL},
+	        #{orderPassengerId, jdbcType=DECIMAL},
+	        #{insuranceId, jdbcType=VARCHAR},
+	        #{insuranceSuppName, jdbcType=VARCHAR},
+	        #{insuranceName, jdbcType=VARCHAR},
+	        #{insurancePrice, jdbcType=DECIMAL},
+	        #{insuranceCount, jdbcType=DECIMAL},
+	        #{insuranceOrderNo, jdbcType=VARCHAR},
+	        #{insuranceDesc, jdbcType=VARCHAR},
+	        #{status, jdbcType=VARCHAR},
+	        #{flightNo, jdbcType=VARCHAR},
+	        #{createTime, jdbcType=TIMESTAMP},
+	        #{updateTime, jdbcType=TIMESTAMP}
+        )
+    </insert>
+	<select id="getByOrderMainId" resultMap="resultMap">
+    	SELECT *
+    	FROM T_FITORD_FLI_INSURANCE
+    	WHERE ORDER_MAIN_ID = #{id,jdbcType=DECIMAL}
+  	</select>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderHotelComboMapper" >
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderHotelComboDto" >
+	    <result column="ID" property="id" jdbcType="DECIMAL" />
+	    <result column="PRODUCT_ID" property="productId" jdbcType="DECIMAL" />
+	    <result column="CATEGORY_ID" property="categoryId" jdbcType="DECIMAL" />
+	    <result column="GOODS_ID" property="goodsId" jdbcType="DECIMAL" />
+	    <result column="BRANCH_ID" property="branchId" jdbcType="DECIMAL" />
+	    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+	    <result column="BRANCH_DESC" property="branchDesc" jdbcType="VARCHAR" />
+	    <result column="QUANTITY" property="quantity" jdbcType="DECIMAL" />
+	    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+	    <result column="CHECK_IN" property="checkIn" jdbcType="TIMESTAMP" />
+	    <result column="CHECK_OUT" property="checkOut" jdbcType="TIMESTAMP" />
+	    <result column="CHECK_IN_CITY" property="checkInCity" jdbcType="VARCHAR" />
+	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+         <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap> 
+
+
+	<insert id="insert">
+	  <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+	    <choose>
+	      <when test="id != null and id != ''">
+	        SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+	      </when>
+	      <otherwise>
+	        SELECT S_FITORD_HOTEL_COMBO.NEXTVAL FROM DUAL
+	      </otherwise>
+	    </choose>
+	  </selectKey>
+	  insert into T_FITORD_HOTEL_COMBO 
+	  ( 
+			  id,
+			  product_id,
+			  category_id,
+			  goods_id,
+			  branch_id,
+			  branch_name,
+			  branch_desc,
+			  quantity,
+			  price,
+			  check_in,
+			  check_out,
+			  check_in_city,
+			  create_time,
+			  update_time
+	  )
+	  values
+	 (
+		    #{id,jdbcType=DECIMAL},
+		    #{productId,jdbcType=DECIMAL},
+		    #{categoryId,jdbcType=DECIMAL},
+		    #{goodsId,jdbcType=DECIMAL},
+		    #{branchId,jdbcType=DECIMAL},
+		    #{branchName,jdbcType=VARCHAR},
+		    #{branchDesc,jdbcType=VARCHAR},
+		    #{quantity,jdbcType=DECIMAL},
+		    #{price,jdbcType=DECIMAL},
+		    #{checkIn,jdbcType=TIMESTAMP},
+		    #{checkOut,jdbcType=TIMESTAMP},
+		    #{checkInCity,jdbcType=VARCHAR},
+		    #{createTime,jdbcType=TIMESTAMP},
+		    #{updateTime,jdbcType=TIMESTAMP}
+	    )
+   </insert>
+   
+	<select id="getById" resultMap="resultMap">
+	    SELECT A.* FROM T_FITORD_HOTEL_COMBO A WHERE A.ID = #{id,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+	
+	
+</mapper>

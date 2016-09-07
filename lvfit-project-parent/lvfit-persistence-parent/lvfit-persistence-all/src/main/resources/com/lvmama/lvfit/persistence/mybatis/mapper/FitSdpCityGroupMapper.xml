@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpCityGroupMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto" >
+      <result column="ID" property="id" jdbcType="DECIMAL" />
+      <result column="PRODUCT_ID" property="productId" jdbcType="DECIMAL" />
+      <result column="DEPARTURE_CITY_DISTRICT_ID" property="departureCityDistrictId" jdbcType="DECIMAL" />
+      <result column="DEPARTURE_CITY_SHORT_PIN_YIN" property="departureCityShortPinYin" jdbcType="VARCHAR" />
+      <result column="DEPARTURE_CITY_CODE" property="departureCityCode" jdbcType="VARCHAR" />
+      <result column="DEPARTURE_CITY_NAME" property="departureCityName" jdbcType="VARCHAR" />
+      <result column="ARRIVAL_CITY_DISTRICT_ID" property="arrivalCityDistrictId" jdbcType="DECIMAL" />
+      <result column="ARRIVAL_CITY_SHORT_PIN_YIN" property="arrivalCityShortPinYin" jdbcType="VARCHAR" />
+      <result column="ARRIVAL_CITY_CODE" property="arrivalCityCode" jdbcType="VARCHAR" />
+      <result column="ARRIVAL_CITY_NAME" property="arrivalCityName" jdbcType="VARCHAR" />
+      <result column="IS_SELECTED_DEPARTURE" property="isSelectedDeparture" jdbcType="VARCHAR" />
+  </resultMap> 
+  
+  
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITSDP_CITY_GROUP.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITSDP_CITY_GROUP 
+    ( 
+    	<include refid="columns" />
+     )
+    values
+      (#{id,jdbcType=DECIMAL},
+      #{productId,jdbcType=DECIMAL},
+      #{departureCityDistrictId,jdbcType=DECIMAL},
+      #{departureCityShortPinYin,jdbcType=VARCHAR},
+      #{departureCityCode,jdbcType=VARCHAR},
+      #{departureCityName,jdbcType=VARCHAR},
+      #{arrivalCityDistrictId,jdbcType=DECIMAL},
+      #{arrivalCityShortPinYin,jdbcType=VARCHAR},
+      #{arrivalCityCode,jdbcType=VARCHAR},
+      #{arrivalCityName,jdbcType=VARCHAR},
+      #{isSelectedDeparture,jdbcType=VARCHAR})
+ 
+  </insert>
+  	<sql id="columns">
+    	ID,PRODUCT_ID,DEPARTURE_CITY_DISTRICT_ID,DEPARTURE_CITY_SHORT_PIN_YIN,DEPARTURE_CITY_CODE,DEPARTURE_CITY_NAME,
+      ARRIVAL_CITY_DISTRICT_ID,ARRIVAL_CITY_SHORT_PIN_YIN,ARRIVAL_CITY_CODE,ARRIVAL_CITY_NAME,IS_SELECTED_DEPARTURE
+  	</sql>
+  	<select id="getById" resultMap="resultMap">
+	    SELECT <include refid="columns" />
+	    FROM T_FITSDP_CITY_GROUP A WHERE A.ID = #{id,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+	<!-- 查询使用状态为Y 的城市组城市 -->
+	<select id="queryByFkId" resultMap="resultMap">
+	    SELECT A.* FROM T_FITSDP_CITY_GROUP A WHERE A.PRODUCT_ID = #{fkId,jdbcType=DECIMAL} AND A.IS_SELECTED_DEPARTURE = 'Y' 
+	    ORDER BY A.ID ASC
+	</select>
+	<!-- 查询城市组的所有城市 -->
+	<select id="queryAllCitysByFkId" resultMap="resultMap">
+	    SELECT A.* FROM T_FITSDP_CITY_GROUP A WHERE A.PRODUCT_ID = #{fkId,jdbcType=DECIMAL} 
+	    ORDER BY A.ID ASC
+	</select>
+	
+    <update id="updateById">
+		update T_FITSDP_CITY_GROUP A
+		<set>
+			<if test="i.productId!=null">
+				PRODUCT_ID = #{i.productId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.departureCityDistrictId!=null">
+				 DEPARTURE_CITY_DISTRICT_ID = #{i.departureCityDistrictId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.departureCityShortPinYin!=null">
+				DEPARTURE_CITY_SHORT_PIN_YIN = #{i.departureCityShortPinYin,jdbcType=VARCHAR},
+			</if>
+			<if test="i.departureCityCode!=null">
+				DEPARTURE_CITY_CODE = #{i.departureCityCode,jdbcType=VARCHAR},
+			</if>
+			<if test="i.departureCityName!=null">
+				DEPARTURE_CITY_NAME = #{i.departureCityName,jdbcType=VARCHAR},
+			</if>
+			<if test="i.arrivalCityDistrictId!=null">
+				 ARRIVAL_CITY_DISTRICT_ID = #{i.arrivalCityDistrictId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.arrivalCityShortPinYin!=null">
+				ARRIVAL_CITY_SHORT_PIN_YIN = #{i.arrivalCityShortPinYin,jdbcType=VARCHAR},
+			</if>
+			<if test="i.arrivalCityCode!=null">
+				ARRIVAL_CITY_CODE = #{i.arrivalCityCode,jdbcType=VARCHAR},
+			</if>
+			<if test="i.arrivalCityName!=null">
+				ARRIVAL_CITY_NAME = #{i.arrivalCityName,jdbcType=VARCHAR},
+			</if>
+			<if test="i.isSelectedDeparture!=null and i.isSelectedDeparture!=''">
+				IS_SELECTED_DEPARTURE = #{i.isSelectedDeparture,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=DECIMAL}
+	</update>
+	
+	<update id="updateUseFlag">
+		<!-- parameterType="java.util.List" <foreach collection="list" item="item" index="index" open="" close="" separator=";"> -->
+			update T_FITSDP_CITY_GROUP A
+			<set>
+				A.IS_SELECTED_DEPARTURE = #{isSelectedDeparture,jdbcType=VARCHAR}
+			</set>
+			where A.PRODUCT_ID = #{productId,jdbcType=DECIMAL}  
+			and  A.DEPARTURE_CITY_CODE = #{departureCityCode,jdbcType=VARCHAR}
+		<!-- </foreach>	 --> 
+	</update>
+
+    <delete id="deleteById">
+    	delete from T_FITSDP_CITY_GROUP A where A.ID = #{id,jdbcType=DECIMAL}
+    </delete>
+    <delete id="deleteByFkId">
+    	delete from T_FITSDP_CITY_GROUP A where A.PRODUCT_ID = #{fkId,jdbcType=DECIMAL}
+    </delete>
+    
+</mapper>

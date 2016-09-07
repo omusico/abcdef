@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderFlightMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderFlightDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="FLIGHT_NO" property="flightNo" jdbcType="VARCHAR" />
+    <result column="DEPARTURE_AIRPORT_CODE" property="departureAirportCode" jdbcType="VARCHAR" />
+    <result column="DEPARTURE_AIRPORT_NAME" property="departureAirportName" jdbcType="VARCHAR" />
+    <result column="DEPARTURE_CITY_CODE" property="departureCityCode" jdbcType="VARCHAR" />
+    <result column="DEPARTURE_CITY_NAME" property="departureCityName" jdbcType="VARCHAR" />
+    <result column="DEPARTURE_TERMAINAL_BUILDING" property="departureTermainalBuilding" jdbcType="VARCHAR" />
+    <result column="DEPARTURE_DATE" property="departureDate" jdbcType="VARCHAR" />
+    <result column="DEPARTURE_TIME" property="departureTime" jdbcType="VARCHAR" />
+    <result column="ARRIVAL_AIRPORT_CODE" property="arrivalAirportCode" jdbcType="VARCHAR" />
+    <result column="ARRIVAL_AIRPORT_NAME" property="arrivalAirportName" jdbcType="VARCHAR" />
+    <result column="ARRIVAL_CITY_CODE" property="arrivalCityCode" jdbcType="VARCHAR" />
+    <result column="ARRIVAL_CITY_NAME" property="arrivalCityName" jdbcType="VARCHAR" />
+    <result column="ARRIVAL_TERMINAL_BUILDING" property="arrivalTerminalBuilding" jdbcType="VARCHAR" />
+    <result column="ARRIVAL_DATE" property="arrivalDate" jdbcType="VARCHAR" />
+    <result column="ARRIVAL_TIME" property="arrivalTime" jdbcType="VARCHAR" />
+    <result column="PRICE_POLICY_ID" property="pricePolicyId" jdbcType="DECIMAL" />
+    <result column="SUPP_CODE" property="suppCode" jdbcType="VARCHAR" />
+    <result column="SUPP_POLICY_NO" property="suppPolicyNo" jdbcType="VARCHAR" />
+    <result column="FLY_TIME_MINS" property="flyTimeMins" jdbcType="VARCHAR" />
+    <result column="SEAT_CLASS_TYPE" property="seatClassType" jdbcType="VARCHAR" />
+    <result column="SEAT_CLASS_TYPE_NAME" property="seatClassTypeName" jdbcType="VARCHAR" />
+    <result column="SEAT_CLASS_CODE" property="seatClassCode" jdbcType="VARCHAR" />
+    <result column="SALES_PRICE" property="salesPrice" jdbcType="DECIMAL" />
+    <result column="PAR_PRICE" property="parPrice" jdbcType="DECIMAL" />
+    <result column="AIRPORT_FEE" property="airportFee" jdbcType="DECIMAL" />
+    <result column="FUELSUR_TAX" property="fuelsurTax" jdbcType="DECIMAL" />
+    <result column="ADULT_PRICE" property="adultPrice" jdbcType="DECIMAL" />
+    <result column="CHILD_PRICE" property="childPrice" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="TRIP_TYPE" property="tripType" jdbcType="VARCHAR" />
+    <result column="PRODUCT_RESOURCE" property="productResource" jdbcType="VARCHAR" />
+    <result column="STOP_COUNT" property="stopCount" jdbcType="DECIMAL" />
+    <result column="CARRIER_NAME" property="carrierName" jdbcType="VARCHAR" />
+    <result column="AIRPLANE_TYPE" property="airplane.airplaneType" jdbcType="VARCHAR" />
+    <result column="AIRPLANE_CODE" property="airplane.code" jdbcType="VARCHAR" />
+    <result column="AIRPLANE_NAME" property="airplane.name" jdbcType="VARCHAR" />
+    <result column="MAX_SEATS" property="airplane.maxSeats" jdbcType="DECIMAL" />
+    <result column="MIN_SEATS" property="airplane.minSeats" jdbcType="DECIMAL" />
+  </resultMap>
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_FLIGHT.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITORD_FLIGHT (ID, UUID, FLIGHT_NO,
+    DEPARTURE_AIRPORT_CODE, DEPARTURE_AIRPORT_NAME,
+    DEPARTURE_CITY_CODE, DEPARTURE_CITY_NAME, DEPARTURE_TERMAINAL_BUILDING,
+    DEPARTURE_DATE, DEPARTURE_TIME, ARRIVAL_AIRPORT_CODE,
+    ARRIVAL_AIRPORT_NAME, ARRIVAL_CITY_CODE, ARRIVAL_CITY_NAME,
+    ARRIVAL_TERMINAL_BUILDING, ARRIVAL_DATE, ARRIVAL_TIME,
+    PRICE_POLICY_ID, SUPP_CODE, SUPP_POLICY_NO,
+    FLY_TIME_MINS, SEAT_CLASS_TYPE, SEAT_CLASS_TYPE_NAME,
+    SEAT_CLASS_CODE, SALES_PRICE, PAR_PRICE,
+    AIRPORT_FEE, FUELSUR_TAX, ADULT_PRICE,
+    CHILD_PRICE, CREATE_TIME, UPDATE_TIME,
+    TRIP_TYPE, PRODUCT_RESOURCE, 
+    STOP_COUNT, CARRIER_NAME, AIRPLANE_TYPE, AIRPLANE_CODE, AIRPLANE_NAME, MAX_SEATS, MIN_SEATS
+    )
+    values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{flightNo,jdbcType=VARCHAR},
+    #{departureAirportCode,jdbcType=VARCHAR}, #{departureAirportName,jdbcType=VARCHAR},
+    #{departureCityCode,jdbcType=VARCHAR}, #{departureCityName,jdbcType=VARCHAR}, #{departureTermainalBuilding,jdbcType=VARCHAR},
+    #{departureDate,jdbcType=VARCHAR}, #{departureTime,jdbcType=VARCHAR}, #{arrivalAirportCode,jdbcType=VARCHAR},
+    #{arrivalAirportName,jdbcType=VARCHAR}, #{arrivalCityCode,jdbcType=VARCHAR}, #{arrivalCityName,jdbcType=VARCHAR},
+    #{arrivalTerminalBuilding,jdbcType=VARCHAR}, #{arrivalDate,jdbcType=VARCHAR}, #{arrivalTime,jdbcType=VARCHAR},
+    #{pricePolicyId,jdbcType=DECIMAL}, #{suppCode,jdbcType=VARCHAR}, #{suppPolicyNo,jdbcType=VARCHAR},
+    #{flyTimeMins,jdbcType=VARCHAR}, #{seatClassType,jdbcType=VARCHAR}, #{seatClassTypeName,jdbcType=VARCHAR},
+    #{seatClassCode,jdbcType=VARCHAR}, #{salesPrice,jdbcType=DECIMAL}, #{parPrice,jdbcType=DECIMAL},
+    #{airportFee,jdbcType=DECIMAL}, #{fuelsurTax,jdbcType=DECIMAL}, #{adultPrice,jdbcType=DECIMAL},
+    #{childPrice,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+    #{tripType,jdbcType=VARCHAR}, #{productResource,jdbcType=VARCHAR},
+    #{stopCount,jdbcType=DECIMAL}, #{carrierName,jdbcType=VARCHAR},
+    #{airplane.airplaneType,jdbcType=VARCHAR}, #{airplane.code,jdbcType=VARCHAR},#{airplane.name,jdbcType=VARCHAR},
+    #{airplane.maxSeats,jdbcType=DECIMAL}, #{airplane.minSeats,jdbcType=DECIMAL}
+    )
+  </insert>
+
+  <select id="getById" resultMap="resultMap">
+    SELECT *
+    FROM T_FITORD_FLIGHT
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+	<sql id="columns">
+		FLIGHT.*
+	</sql>
+    
+    <select id="loadByVstOrderMainNo" resultMap="resultMap">
+		SELECT 
+		<include refid="columns" />
+		FROM T_FITORD_FLIGHT FLIGHT
+		LEFT JOIN T_FITORD_ORDER ORD ON FLIGHT.ID = ORD.ORDER_PRODUCT_ID
+		LEFT JOIN T_FITORD_ORDER_MAIN ORDMAIN ON ORD.ORDER_MAIN_ID = ORDMAIN.ID
+		LEFT JOIN T_FITORD_SUPP_MAIN_ORDER SUPPMAINORD ON ORDMAIN.ID =
+		SUPPMAINORD.FIT_MAIN_ORDER_ID
+		WHERE ORD.PRODUCT = 'I_FLIGHT' AND SUPPMAINORD.VST_MAIN_ORDER_ID = #{vstOrderMainNo, jdbcType=VARCHAR}
+    </select>
+    
+</mapper>

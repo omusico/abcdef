@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductSearchIndexTrafficMapper">
+
+	<!-- 数据项 -->
+	<sql id="columns">
+	  ID,
+	  PRODUCT_ID,
+	  TO_TRAFFIC,
+	  BACK_TRAFFIC,
+	  CREATE_TIME,
+	  UPDATE_TIME,
+	  DEPATURE_TIME,
+	  SALES_VOLUME,
+	  IS_MULTI_DEPATURE
+	</sql>
+	
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic">
+
+		<selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+			<choose>
+				<when test="id != null and id != ''">
+					SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+				</when>
+				<otherwise>
+					SELECT S_FITSDP_INDEX_TRAFFIC.NEXTVAL FROM DUAL
+				</otherwise>
+			</choose>
+		</selectKey>
+		insert into
+		T_FITSDP_INDEX_TRAFFIC
+		(<include refid="columns" />)
+		SELECT
+		    #{id,jdbcType=DECIMAL},
+			#{productId,jdbcType=DECIMAL},
+			#{toTraffic,jdbcType=VARCHAR},
+			#{backTraffic,jdbcType=VARCHAR},
+			#{createTime,jdbcType=TIMESTAMP},
+			#{updateTime,jdbcType=TIMESTAMP},
+		    #{depatureTime,jdbcType=VARCHAR},
+		    #{salesVolume,jdbcType=VARCHAR},
+		    #{isMultiDepature,jdbcType=VARCHAR}
+		FROM DUAL WHERE NOT EXISTS (select product_id from t_fitsdp_index_traffic where product_id = #{productId})
+	</insert>
+
+	<!-- 根据自主打包产品Id删除索引  -->
+	<delete id="deleteByFkId">
+		delete from T_FITSDP_INDEX_TRAFFIC
+		WHERE product_id = #{fkId}
+	</delete>
+
+</mapper>

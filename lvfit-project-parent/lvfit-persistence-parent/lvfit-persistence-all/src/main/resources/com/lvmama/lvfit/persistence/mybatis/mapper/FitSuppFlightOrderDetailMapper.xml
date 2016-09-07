@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSuppFlightOrderDetailMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDetailDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="SUPP_FLI_ORDER_ID" property="suppFlightOrderId" jdbcType="DECIMAL" />
+    <result column="FIT_ORDER_PASSENGER_ID" property="fitOrderPassenger.id" jdbcType="DECIMAL" />
+    <result column="FLI_TICKET_NO" property="fitSuppOrderTicketInfoDto.ticketNo" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <insert id="insert" >
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_SUPP_FLI_ORDER_DETAIL.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+      insert into T_FITORD_SUPP_FLI_ORDER_DETAIL (ID, UUID, SUPP_FLI_ORDER_ID,
+      FIT_ORDER_PASSENGER_ID, FLI_TICKET_NO, CREATE_TIME,UPDATE_TIME)
+      values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{suppFlightOrderId,jdbcType=DECIMAL},
+      #{fitOrderPassenger.id,jdbcType=DECIMAL},#{fitSuppOrderTicketInfoDto.ticketNo,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+	<select id="queryByFkId" resultMap="resultMap">
+	    SELECT A.* FROM T_FITORD_SUPP_FLI_ORDER_DETAIL A WHERE A.SUPP_FLI_ORDER_ID = #{fkId,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+	
+	<update id="updateById">
+	
+		 UPDATE T_FITORD_SUPP_FLI_ORDER_DETAIL
+		<set>
+			  <if test="i.fitSuppOrderTicketInfoDto.ticketNo != null and i.fitSuppOrderTicketInfoDto.ticketNo != ''">
+				FLI_TICKET_NO  = #{i.fitSuppOrderTicketInfoDto.ticketNo,jdbcType=VARCHAR},
+			  </if>
+		        UPDATE_TIME = SYSDATE
+	       </set>
+		WHERE ID = #{id}
+		
+	</update>
+	
+</mapper>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderBackQueryMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto">
+		<result column="BOOKING_SOURCE" jdbcType="VARCHAR" property="bookingSource"/>
+		<result column="MAIN_ID" jdbcType="DECIMAL" property="mainId"/>
+		<result column="VST_MAIN_ORDER_NO" jdbcType="DECIMAL" property="vstMainOrderNo"/>
+		<result column="ID" jdbcType="DECIMAL" property="id"/>
+		<result column="MAIN_ORDER_NO" jdbcType="VARCHAR" property="mainOrderNo"/>
+		<result column="CONTACT_NAME" jdbcType="VARCHAR" property="contactName"/>
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo"/>
+		<result column="DEPARTURE_DATE" jdbcType="VARCHAR" property="departureDate"/>
+		<result column="ORDER_TOTAL_AMOUNT" jdbcType="DECIMAL" property="orderTotalAmount"/>
+		<result column="ADULT_QUANTITY" jdbcType="DECIMAL" property="adultQuantity"/>
+		<result column="CHILD_QUANTITY" jdbcType="DECIMAL" property="childQuantity"/>
+		<result column="PRODUCT_NAME" jdbcType="VARCHAR" property="productName"/>
+		<result column="AUDIT_STATUS" jdbcType="VARCHAR" property="fitSuppMainOrderStatusDto.auditStatus"/>
+		<result column="ORDER_STATUS" jdbcType="VARCHAR" property="fitSuppMainOrderStatusDto.orderStatus"/>
+		<result column="ORDER_VIEW_STATUS" jdbcType="VARCHAR" property="fitSuppMainOrderStatusDto.orderViewStatus"/>
+		<result column="PAYMENT_STATUS" jdbcType="VARCHAR" property="fitSuppMainOrderStatusDto.paymentStatus"/>
+		<result column="CATEGORY_ID" jdbcType="VARCHAR" property="categoryId"/>
+	</resultMap>
+	<!-- 机票 -->
+	<resultMap id="queryFlightMap" type="com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto">
+		<result column="MAIN_ORDER_NO" jdbcType="VARCHAR" property="mainOrderNo"/>
+		<result column="VST_MAIN_ORDER_NO" jdbcType="DECIMAL" property="vstMainOrderNo"/>
+		<result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo"/>
+		<result column="VST_ORDER_NO" jdbcType="DECIMAL" property="vstOrderNo"/>
+		<result column="ORDER_BOOKING_STATUS" jdbcType="VARCHAR" property="orderBookingStatus"/>
+		<result column="TRIP_TYPE" jdbcType="VARCHAR" property="tripType"/>
+		<result column="PASSENGER_TYPE" jdbcType="VARCHAR" property="passengerType"/>
+		<result column="CATEGORY_ID" jdbcType="VARCHAR" property="categoryId"/>
+	    <result column="DETAIL_COUNT" property="detailCount" jdbcType="DECIMAL" />
+	    <result column="BOOKING_SOURCE" jdbcType="VARCHAR" property="bookingSource"/>
+	    <result column="ORDER_TOTAL_AMOUNT" property="orderTotalAmount" jdbcType="DECIMAL" />
+		<result column="CONTACT_NAME" property="contactName" jdbcType="VARCHAR"/>
+		
+	    <result column="FLIGHT_NO" property="fitOrderFlightDto.flightNo" jdbcType="VARCHAR" />
+	    <result column="DEPARTURE_AIRPORT_CODE" property="fitOrderFlightDto.departureAirportCode" jdbcType="VARCHAR" />
+	    <result column="DEPARTURE_AIRPORT_NAME" property="fitOrderFlightDto.departureAirportName" jdbcType="VARCHAR" />
+	    <result column="ARRIVAL_AIRPORT_CODE" property="fitOrderFlightDto.arrivalAirportCode" jdbcType="VARCHAR" />
+	    <result column="ARRIVAL_AIRPORT_NAME" property="fitOrderFlightDto.arrivalAirportName" jdbcType="VARCHAR" />
+	    <result column="SEAT_CLASS_TYPE" property="fitOrderFlightDto.seatClassType" jdbcType="VARCHAR" />
+	    <result column="SEAT_CLASS_CODE" property="fitOrderFlightDto.seatClassCode" jdbcType="VARCHAR" />
+	    <result column="DEPARTURE_TIME" property="fitOrderFlightDto.departureTime" jdbcType="VARCHAR" />
+	    <result column="CREATE_TIME" property="fitOrderFlightDto.createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<!-- 酒店 -->
+	<resultMap id="queryHotelMap" type="com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto">
+		<result column="MAIN_ORDER_NO" jdbcType="VARCHAR" property="mainOrderNo"/>
+		<result column="VST_MAIN_ORDER_NO" jdbcType="DECIMAL" property="vstMainOrderNo"/>
+		<result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo"/>
+		<result column="VST_ORDER_NO" jdbcType="VARCHAR" property="vstOrderNo"/>
+		<result column="CATEGORY_ID" jdbcType="VARCHAR" property="categoryId"/>
+	    <result column="DETAIL_COUNT" property="detailCount" jdbcType="DECIMAL" />
+	    <result column="BOOKING_SOURCE" jdbcType="VARCHAR" property="bookingSource"/>
+	    <result column="ORDER_TOTAL_AMOUNT" property="orderTotalAmount" jdbcType="DECIMAL" />
+		<result column="CONTACT_NAME" property="contactName" jdbcType="VARCHAR"/>
+		
+		<result column="CHECKIN_CITY" jdbcType="VARCHAR" property="fitOrderHotelDto.checkInCity"/>
+		<result column="HOTEL_NAME" jdbcType="VARCHAR" property="fitOrderHotelDto.hotelName"/>
+		<result column="ROOM_COUNT" jdbcType="DECIMAL" property="fitOrderHotelDto.roomCount"/>
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="fitOrderHotelDto.createTime"/>
+		<result column="BED_TYPE" jdbcType="VARCHAR" property="fitOrderHotelDto.bedType"/>
+		<result column="BREAKFAST" jdbcType="VARCHAR" property="fitOrderHotelDto.breakfast"/>
+		<result column="BROADBAND" jdbcType="VARCHAR" property="fitOrderHotelDto.broadband"/>
+	</resultMap>
+	
+	<sql id="columns">
+		SM.VST_MAIN_ORDER_NO,
+	 	A.BOOKING_SOURCE,
+	 	A.ORDER_TOTAL_SALES_AMOUNT AS ORDER_TOTAL_AMOUNT ,
+	 	A.CREATE_TIME,
+	 	A.ID AS MAIN_ID,
+	 	A.PRODUCT_NAME,
+	 	A.ORDER_NO AS MAIN_ORDER_NO,
+	 	A.CONTACT_NAME,
+	 	A.CATEGORY_ID,
+	 	<!-- B.ID, 
+	 	B.ORDER_NO, -->
+	 	AB.TO_TIME AS DEPARTURE_DATE,
+	 	AB.ADULT_QUANTITY,AB.CHILD_QUANTITY
+	 	,SMS.AUDIT_STATUS,SMS.ORDER_STATUS,SMS.ORDER_VIEW_STATUS,SMS.PAYMENT_STATUS
+	</sql>
+	<!--查询 -->
+	<select id="query" resultMap="resultMap">
+	 <include refid="ORACLE.paginationStart" />
+		 SELECT
+		 <include refid="columns" />
+		 <include refid="queryConditions" /> 
+		 <include refid="ORACLE.paginationEnd" /> 
+	</select>
+	<!--查询 所有，同上，没有分页 -->
+	<select id="queryNoPage" resultMap="resultMap">
+		 SELECT A.ID AS MAIN_ID
+		 <include refid="queryConditions" /> 
+	</select>
+	<!-- 统计 -->
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM (SELECT 1 
+		<include refid="queryConditions" />
+		)
+	</select>
+	<!-- 查询条件 -->
+	<sql id="queryConditions">
+	    FROM T_FITORD_ORDER_MAIN_NEW A 
+		JOIN T_FITORD_SUPP_ORDER_MAIN SM ON A.ID=SM.FIT_MAIN_ORDER_ID
+		JOIN T_FITORD_BASIC_INFO AB ON A.ID = AB.FIT_ORDER_MAIN_ID
+		LEFT JOIN T_FITORD_SUPP_ORD_MAIN_STATUS SMS ON SMS.SUPP_MAIN_ORDER_ID = SM.ID
+		WHERE 1=1
+		<include refid="whereConditions" />
+		ORDER BY A.CREATE_TIME DESC
+	</sql>
+	<sql id="whereConditions">
+		<!-- <if test="condition.fitOrderQueryDto.orderNo != null and condition.fitOrderQueryDto.orderNo != ''">
+			AND A.ID IN (SELECT ORDER_MAIN_ID FROM T_FITORD_ORDER_NEW WHERE ORDER_NO LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryDto.orderNo},'%')) )
+		</if> -->
+		<!-- VST order no -->
+		<if test="condition.fitOrderQueryDto.VSTMainNo != null and condition.fitOrderQueryDto.VSTMainNo != ''">
+			AND SM.VST_MAIN_ORDER_NO LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryDto.VSTMainNo},'%'))
+		</if>
+		<if test="condition.fitOrderQueryDto.orderMainNo != null and condition.fitOrderQueryDto.orderMainNo != ''">
+			AND A.ORDER_NO LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryDto.orderMainNo},'%'))
+		</if>
+		<if test="condition.fitOrderQueryDto.customerName != null and condition.fitOrderQueryDto.customerName != ''">
+			AND A.CUSTOMER_NAME LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryDto.customerName},'%'))
+		</if>
+		<if test="condition.fitOrderQueryDto.mainStartTime != null and condition.fitOrderQueryDto.mainStartTime != ''">
+			AND A.CREATE_TIME >= TO_DATE(#{condition.fitOrderQueryDto.mainStartTime},'yyyy-MM-dd hh24:mi:ss')
+		</if>
+		<if test="condition.fitOrderQueryDto.mainEndTime != null and condition.fitOrderQueryDto.mainEndTime != ''">
+			AND TO_DATE(#{condition.fitOrderQueryDto.mainEndTime},'yyyy-MM-dd hh24:mi:ss') >= A.CREATE_TIME
+		</if>
+		<if test="condition.fitOrderQueryDto.bookingSources != null and condition.fitOrderQueryDto.bookingSources != ''">
+			AND A.BOOKING_SOURCE IN (${condition.fitOrderQueryDto.bookingSources})
+		</if>
+				
+		<if test="condition.fitOrderQueryPeopleDto.contactName != null and condition.fitOrderQueryPeopleDto.contactName != ''">
+			AND A.CONTACT_NAME LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.contactName},'%'))
+		</if>
+		<!-- <if test="condition.fitOrderQueryPeopleDto.contactCellphone != null and condition.fitOrderQueryPeopleDto.contactCellphone != ''">
+			AND A.CONTACT_MOBILE LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.contactCellphone},'%'))
+		</if> -->
+		<if test="condition.fitOrderQueryPeopleDto.contactEmail != null and condition.fitOrderQueryPeopleDto.contactEmail != ''">
+			AND A.CONTACT_EMAIL LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.contactEmail},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.playerName != null and condition.fitOrderQueryPeopleDto.playerName != ''">
+			AND A.ID  IN (SELECT DISTINCT(ORDER_MAIN_ID) FROM T_FITORD_PASSENGER WHERE PASSENGER_NAME LIKE 	CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.playerName},'%'))	)
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.playerIDNumber != null and condition.fitOrderQueryPeopleDto.playerIDNumber != ''">
+			AND A.ID  IN (SELECT DISTINCT(ORDER_MAIN_ID) FROM T_FITORD_PASSENGER WHERE PASSENGER_ID_CARD_NO LIKE 	CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.playerIDNumber},'%'))	)
+		</if>
+		
+		<!-- 产品信息  -->
+		<if test="condition.fitOrderQueryPeopleDto.productId != null and condition.fitOrderQueryPeopleDto.productId != ''">
+			AND A.PRODUCT_ID LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.productId},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.productName != null and condition.fitOrderQueryPeopleDto.productName != ''">
+			AND A.PRODUCT_NAME LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.productName},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.categoryId != null and condition.fitOrderQueryPeopleDto.categoryId != ''">
+			AND A.CATEGORY_ID LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.categoryId},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.departCity != null and condition.fitOrderQueryPeopleDto.departCity != ''">
+			AND AB.DEP_CITY_CODE LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.departCity},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.arriveCity != null and condition.fitOrderQueryPeopleDto.arriveCity != ''">
+			AND AB.ARR_CITY_CODE LIKE CONCAT('%',CONCAT(#{condition.fitOrderQueryPeopleDto.arriveCity},'%'))
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.playerFStartTime != null and condition.fitOrderQueryPeopleDto.playerFStartTime != ''">
+			AND AB.TO_TIME = TO_DATE(#{condition.fitOrderQueryPeopleDto.playerFStartTime},'yyyy-MM-dd')
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.playerFEndTime != null and condition.fitOrderQueryPeopleDto.playerFEndTime != ''">
+			AND AB.RETURN_TIME = TO_DATE(#{condition.fitOrderQueryPeopleDto.playerFEndTime},'yyyy-MM-dd')
+		</if>
+		
+		<if test="condition.fitOrderQueryPeopleDto.playerLiveStartTime != null and condition.fitOrderQueryPeopleDto.playerLiveStartTime != ''">
+			AND AB.CHECK_IN_TIME = TO_DATE(#{condition.fitOrderQueryPeopleDto.playerLiveStartTime},'yyyy-MM-dd hh24:mi:ss')
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.playerLiveEndTime != null and condition.fitOrderQueryPeopleDto.playerLiveEndTime != ''">
+			AND AB.CHECK_OUT_TIME = TO_DATE(#{condition.fitOrderQueryPeopleDto.playerLiveEndTime},'yyyy-MM-dd hh24:mi:ss')
+		</if>
+		<if test="condition.fitOrderQueryPeopleDto.checkInCity != null and condition.fitOrderQueryPeopleDto.checkInCity != ''">
+			AND AB.CHECK_IN_CITY_CODE = #{condition.fitOrderQueryPeopleDto.checkInCity}
+		</if>
+		
+		<if test="condition.suppMainStatus.orderStatus != null and condition.suppMainStatus.orderStatus != ''">
+			AND SMS.ORDER_STATUS  = #{condition.suppMainStatus.orderStatus}
+		</if>
+		<if test="condition.suppMainStatus.auditStatus != null and condition.suppMainStatus.auditStatus != ''">
+			AND SMS.AUDIT_STATUS = #{condition.suppMainStatus.auditStatus}
+		</if>
+		<if test="condition.suppMainStatus.paymentStatus != null and condition.suppMainStatus.paymentStatus != ''">
+			AND SMS.PAYMENT_STATUS = #{condition.suppMainStatus.paymentStatus}
+		</if>
+	</sql>
+	
+	<!--机酒导出 -->
+	<select id="queryOrderAllReport" resultMap="resultMap">
+		SELECT
+		A.ORDER_NO AS MAIN_ORDER_NO,SM.VST_MAIN_ORDER_NO ,A.PRODUCT_NAME,
+		A.CATEGORY_ID,AB.ADULT_QUANTITY,AB.CHILD_QUANTITY,
+		A.CREATE_TIME,SMS.ORDER_STATUS,SMS.AUDIT_STATUS,SMS.PAYMENT_STATUS,
+	 	A.BOOKING_SOURCE,A.ORDER_TOTAL_SALES_AMOUNT ORDER_TOTAL_AMOUNT
+		FROM T_FITORD_ORDER_MAIN_NEW A 
+		JOIN T_FITORD_SUPP_ORDER_MAIN SM ON A.ID=SM.FIT_MAIN_ORDER_ID
+		JOIN T_FITORD_BASIC_INFO AB ON A.ID = AB.FIT_ORDER_MAIN_ID
+		LEFT JOIN T_FITORD_SUPP_ORD_MAIN_STATUS SMS ON SMS.SUPP_MAIN_ORDER_ID = SM.ID
+		WHERE 1=1
+		<include refid="whereConditions" />
+		ORDER BY A.CREATE_TIME DESC 
+	</select>
+	<!-- 机票信息导出 -->
+	<select id="queryOrderFlightReport" resultMap="queryFlightMap">
+		SELECT 	C.ORDER_NO MAIN_ORDER_NO,E.VST_MAIN_ORDER_NO,B.ORDER_NO,D.VST_ORDER_NO,FI.TRIP_TYPE,FI.PASSENGER_TYPE,FI.BOOKING_STATUS AS ORDER_BOOKING_STATUS
+		,C.BOOKING_SOURCE,	A.FLIGHT_NO,	A.DEPARTURE_AIRPORT_CODE,
+		A.DEPARTURE_AIRPORT_NAME,A.ARRIVAL_AIRPORT_CODE,	A.ARRIVAL_AIRPORT_NAME,	A.DEPARTURE_TIME,	A.SEAT_CLASS_TYPE,A.SEAT_CLASS_CODE,
+		B.DETAIL_COUNT,	D.VST_ORDER_TOTAL_AMOUNT ORDER_TOTAL_AMOUNT,C.CONTACT_NAME,A.CREATE_TIME	
+		FROM T_FITORD_SUPP_FLI_ORDER FI
+		JOIN T_FITORD_SUPP_ORDER_NEW D ON FI.SUPP_ORDER_ID = D.ID
+		JOIN T_FITORD_ORDER_NEW B ON D.FIT_ORDER_ID = B.ID
+		JOIN T_FITORD_FLIGHT A ON A.ID = B.ORDER_PRODUCT_ID 
+		JOIN T_FITORD_SUPP_ORDER_MAIN E ON D.SUPP_MAIN_ORDER_ID = E.ID
+		JOIN T_FITORD_ORDER_MAIN_NEW C ON E.FIT_MAIN_ORDER_ID = C.ID
+		WHERE 1=1 
+		<if test="condition.mainIds != null and condition.mainIds != ''">
+			AND B.ORDER_MAIN_ID IN  (${condition.mainIds})
+		</if> 
+		ORDER BY A.CREATE_TIME DESC 
+	</select>
+	<!--酒店信息导出 -->
+	<select id="queryOrderHotelReport" resultMap="queryHotelMap">
+		SELECT 	C.ORDER_NO MAIN_ORDER_NO,D.VST_MAIN_ORDER_NO,B.ORDER_NO,
+		C.BOOKING_SOURCE,	B.DETAIL_COUNT,E.VST_ORDER_TOTAL_AMOUNT AS ORDER_TOTAL_AMOUNT,C.CONTACT_NAME,
+		CB.CHECK_IN_CITY_CODE CHECKIN_CITY,A.HOTEL_NAME,A.ROOM_COUNT,A.CREATE_TIME,A.BED_TYPE,A.BREAKFAST,A.BROADBAND,
+		E.VST_ORDER_NO
+		FROM T_FITORD_HOTEL A
+		JOIN T_FITORD_ORDER_NEW B ON A.ID = B.ORDER_PRODUCT_ID AND B.PRODUCT = 'I_HOTEL'
+		JOIN T_FITORD_ORDER_MAIN_NEW C ON B.ORDER_MAIN_ID = C.ID
+		JOIN T_FITORD_SUPP_ORDER_MAIN D ON D.FIT_MAIN_ORDER_ID = C.ID 
+		JOIN T_FITORD_SUPP_ORDER_NEW E ON E.FIT_ORDER_ID = B.ID
+		LEFT JOIN T_FITORD_BASIC_INFO CB ON CB.FIT_ORDER_MAIN_ID = C.ID
+		WHERE 1=1
+		<if test="condition.mainIds != null and condition.mainIds != ''">
+			AND B.ORDER_MAIN_ID IN  (${condition.mainIds})
+		</if> 
+		ORDER BY A.CREATE_TIME DESC
+	</select>
+</mapper>

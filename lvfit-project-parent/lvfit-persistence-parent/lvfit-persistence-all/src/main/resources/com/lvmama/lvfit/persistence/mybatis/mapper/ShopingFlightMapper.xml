@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.ShopingFlightMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.shopping.ShoppingFlightDto">
+		<result column="ID" property="id" />
+	    <result column="UUID" property="uuid"  />
+	    <result column="SHOPPING_UUID" property="shoppingUuid"  />
+	    <result column="FLIGHT_NO" property="flightNo"  />
+	    <result column="DEPARTURE_DATE" property="departureDate"  />
+	    <result column="DEPARTURE_TIME" property="departureTime"  />
+	    <result column="ARRIVAL_TIME" property="arrivalTime"  />
+	    <result column="DEPARTURE_AIRPORT_CODE" property="departureAirportCode"  />
+	    <result column="ARRIVAL_CITY_NAME" property="arrivalCityName"  />
+	     <result column="DEPARTURE_CITY_NAME" property="departureCityName"  />
+	    <result column="ARRIVAL_AIRPORT_CODE" property="arrivalAirportCode"  />
+	    <result column="FLY_TIME_MINS" property="flyTimeMins" />
+	    <!-- <result column="SEAT_CLASS_TYPE" property="seatClassType"/> -->
+	    <result column="SEAT_CLASS_CODE" property="seatClassCode"/>
+	    <!-- <result column="SEAT_CLASS_TYPE_NAME" property="seatClassTypeName"  /> -->
+	    <result column="SEAT_CLASS_NAME" property="seatClassName"  />
+	    <result column="BACKOR_TO" property="backOrto" />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime"  />
+	    <result column="VERSION_NO" property="versionNo"  />	   
+	</resultMap>
+	
+
+	<sql id="columns">
+		ID, UUID, SHOPPING_UUID, FLIGHT_NO,DEPARTURE_DATE,DEPARTURE_TIME,ARRIVAL_TIME,
+		DEPARTURE_AIRPORT_CODE,ARRIVAL_CITY_NAME,DEPARTURE_CITY_NAME,ARRIVAL_AIRPORT_CODE,FLY_TIME_MINS,
+		SEAT_CLASS_CODE,SEAT_CLASS_NAME,BACKOR_TO,CREATE_TIME,UPDATE_TIME,VERSION_NO
+	</sql>
+	
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.shopping.ShoppingFlightDto">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select S_FITSHOP_FLIGHT.NEXTVAL from dual
+		</selectKey>
+		insert into
+		T_FITSHOP_FLIGHT
+		(<include refid="columns" />)
+		values
+		(
+		 #{id,jdbcType=INTEGER}, 
+		 #{uuid,jdbcType=VARCHAR}, 
+		 #{shoppingUuid,jdbcType=VARCHAR}, 
+         #{flightNo,jdbcType=VARCHAR},
+         #{departureDate,jdbcType=VARCHAR},
+         #{departureTime,jdbcType=VARCHAR}, 
+         #{arrivalTime,jdbcType=VARCHAR},
+         #{departureAirportCode,jdbcType=VARCHAR},
+         #{arrivalCityName,jdbcType=VARCHAR},
+         #{departureCityName,jdbcType=VARCHAR}, 
+         #{arrivalAirportCode,jdbcType=VARCHAR}, 
+         #{flyTimeMins,jdbcType=VARCHAR},
+         #{seatClassCode,jdbcType=VARCHAR}, 
+         #{seatClassName,jdbcType=VARCHAR},
+         #{backOrto,jdbcType=VARCHAR},
+         #{createTime,jdbcType=TIMESTAMP},
+         #{updateTime,jdbcType=TIMESTAMP},
+         #{versionNo,jdbcType=DECIMAL}        
+		)
+	</insert>
+
+     <!-- 根据shoppingId查询 -->
+	<select id="getListByCode" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_FLIGHT
+		WHERE VERSION_NO = (select MAX(VERSION_NO) from T_FITSHOP_FLIGHT where SHOPPING_UUID = #{code}) order by create_time desc
+	</select>
+	<!-- 根据version_no查不到数据时，把所有的数据都查出来 -->
+	<select id="getAllByShoppinguuid" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_FLIGHT
+		WHERE SHOPPING_UUID = #{code} order by create_time desc
+	</select>
+	<!-- 根据code修改数据 -->
+	<update id="updateByCode">
+		update T_FITSHOP_FLIGHT i
+			<set>
+			  <if test="i.id != null" >
+		        ID = #{i.id,jdbcType=INTEGER},
+		      </if>
+		      <if test="i.uuid != null" >
+		        UUID = #{i.uuid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.shoppingUuid != null" >
+		        SHOPPING_UUID = #{i.shoppingUuid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.flightNo != null" >
+		        FLIGHT_NO = #{i.flightNo,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.departureDate != null" >
+		        DEPARTURE_DATE = #{i.departureDate,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.departureTime != null" >
+		        DEPARTURE_TIME = #{i.departureTime,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.arrivalTime != null" >
+		        ARRIVAL_TIME = #{i.arrivalTime,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.departureAirportCode != null" >
+		        DEPARTURE_AIRPORT_CODE = #{i.departureAirportCode,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.arrivalCityName != null" >
+		        ARRIVAL_CITY_NAME = #{i.arrivalCityName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.departureCityName != null" >
+		        DEPARTURE_CITY_NAME = #{i.departureCityName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.arrivalAirportCode != null" >
+		        ARRIVAL_AIRPORT_CODE = #{i.arrivalAirportCode,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.flyTimeMins != null" >
+		        FLY_TIME_MINS = #{i.flyTimeMins,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.seatClassType != null" >
+		        SEAT_CLASS_CODE = #{i.seatClassCode,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.seatClassName != null" >
+		        SEAT_CLASS_NAME = #{i.seatClassName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.backOrto != null" >
+		        BACKOR_TO = #{i.backOrto,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.createTime != null" >
+		        CREATE_TIME = #{i.createTime,jdbcType=TIMESTAMP},
+		      </if>
+		      <if test="i.updateTime != null" >
+		        UPDATE_TIME = #{i.updateTime,jdbcType=TIMESTAMP},
+		      </if>
+		      <if test="i.versionNo != null" >
+		        VERSION_NO = #{i.versionNo,jdbcType=DECIMAL},
+		      </if>
+		</set>
+		WHERE SHOPPING_UUID = #{code} and FLIGHT_NO = #{i.flightNo}
+	</update>
+	
+	<!-- 根据code删除数据 -->
+	<delete id="deleteByCode">
+		delete from T_FITSHOP_FLIGHT
+		WHERE SHOPPING_UUID = #{code} 
+	</delete>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSuppOrderForFlightCallBackMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="SUPP_ORDER_ID" property="suppOrderId" jdbcType="DECIMAL" />
+    <result column="VST_ORDER_MAIN_NO" property="vstOrderMainNo" jdbcType="VARCHAR" />
+    <result column="VST_ORDER_NO" property="vstOrderNo" jdbcType="VARCHAR" />
+     <result column="CALL_REQUEST_STR" property="callRequestStr" jdbcType="VARCHAR" />
+    <result column="TRIP_TYPE" property="tripType" jdbcType="VARCHAR" />
+    <result column="CALLBACK_TYPE" property="callbackType" jdbcType="VARCHAR" />
+    <result column="CALLBACK_TIME" property="callbackTime" jdbcType="TIMESTAMP" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  
+  <insert id="insert" >
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_SUPP_FLI_CALLBACK.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    
+      insert into t_fitord_supp_fli_callback (ID, UUID, SUPP_ORDER_ID,
+         VST_ORDER_MAIN_NO, VST_ORDER_NO, CALL_REQUEST_STR,
+	     TRIP_TYPE,CALLBACK_TYPE,CALLBACK_TIME,CREATE_TIME,UPDATE_TIME)
+      values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{suppOrderId,jdbcType=DECIMAL},
+      #{vstOrderMainNo,jdbcType=VARCHAR}, #{vstOrderNo,jdbcType=VARCHAR}, #{callRequestStr,jdbcType=VARCHAR},
+      #{tripType,jdbcType=VARCHAR}, #{callbackType,jdbcType=VARCHAR},#{callbackTime,jdbcType=TIMESTAMP},
+      #{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+	<select id="queryByFkId" resultMap="resultMap">
+	    SELECT A.* FROM t_fitord_supp_fli_callback A WHERE A.SUPP_ORDER_ID = #{fkId,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+	
+	<select id="loadByVstNos" resultMap="resultMap">
+	    SELECT A.* FROM t_fitord_supp_fli_callback A WHERE A.VST_ORDER_MAIN_NO = #{vstOrderMainNo,jdbcType=VARCHAR}
+	    AND A.VST_ORDER_NO = #{vstOrderNo,jdbcType=VARCHAR} AND A.CALLBACK_TYPE !='SUCCESS'
+	</select>
+	
+	<update id="updateById">
+	
+		 UPDATE t_fitord_supp_fli_callback
+		<set>
+			  <if test="i.callbackType != null and i.callbackType != ''">
+				CALLBACK_TYPE = #{i.callbackType,jdbcType=VARCHAR},
+			  </if>
+		      <if test="i.callbackTime != null and i.callbackTime !=''" >
+		        CALLBACK_TIME =  #{i.callbackTime,jdbcType=TIMESTAMP},
+		      </if>
+		       UPDATE_TIME = SYSDATE
+	       </set>
+		WHERE ID = #{id}
+		
+	</update>
+
+
+    <select id="loadCallRequestStrByVstNo" resultType="java.lang.String">
+        SELECT A.CALL_REQUEST_STR FROM t_fitord_supp_fli_callback A WHERE A.VST_ORDER_MAIN_NO = #{vstOrderMainNo,jdbcType=VARCHAR}
+        <if test="vstOrderNo != null and vstOrderNo != ''">
+            AND A.VST_ORDER_NO = #{vstOrderNo,jdbcType=VARCHAR}
+        </if>
+    </select>
+	
+
+</mapper>

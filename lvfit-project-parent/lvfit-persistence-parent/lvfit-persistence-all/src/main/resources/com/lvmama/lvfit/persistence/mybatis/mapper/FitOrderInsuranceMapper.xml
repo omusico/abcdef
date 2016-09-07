@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderInsuranceMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderInsuranceDto">
+		<result column="ID" property="id" />
+	    <result column="UUID" property="uuid"/>
+	    <result column="INSURANCE_ID" property="insuranceId"  />
+	    <result column="INSURANCE_NAME" property="insuranceName"  />
+	    <result column="INSURANCE_TYPE" property="insuranceType"  />
+	    <result column="INSURANCE_BRANCH_ID" property="insuranceBranchId"  />
+	    <result column="INSURANCE_BRANCH_NAME" property="insuranceBranchName"  />
+	    <result column="INSURANCE_GOODS_ID" property="insuranceSuppGoodsId" />
+	    <result column="INSURANCE_GOODS_NAME" property="insuranceSuppGoodsName"  />
+	    <result column="INSURANCE_COUNT" property="insuranceCount"  />
+	    <result column="INSURANCE_PRICE" property="insurancePrice"  />
+	    <result column="USE_DAYS" property="useDays" />
+	     <result column="VISIT_DATE" property="visitDate" />
+	    <result column="INSURANCE_DETAIL" property="insuranceDetail"  />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime"  />
+	</resultMap>
+	
+
+	
+	<sql id="columns">
+		ID, UUID, INSURANCE_ID,INSURANCE_NAME,INSURANCE_TYPE,INSURANCE_BRANCH_ID,INSURANCE_BRANCH_NAME,
+		INSURANCE_GOODS_ID,INSURANCE_GOODS_NAME,INSURANCE_COUNT,INSURANCE_PRICE,USE_DAYS,VISIT_DATE,INSURANCE_DETAIL,CREATE_TIME,UPDATE_TIME
+	</sql>
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.shopping.ShoppingInsuranceDto">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select S_FITORD_INSURANCE.NEXTVAL from dual
+		</selectKey>
+		insert into
+		T_FITORD_INSURANCE
+		(<include refid="columns" />)
+		values
+		(
+		 #{id,jdbcType=DECIMAL},
+		 #{uuid,jdbcType=VARCHAR},
+         #{insuranceId,jdbcType=VARCHAR},
+         #{insuranceName,jdbcType=VARCHAR},
+         #{insuranceType,jdbcType=VARCHAR},
+         #{insuranceBranchId,jdbcType=VARCHAR},
+         #{insuranceBranchName,jdbcType=VARCHAR},
+         #{insuranceSuppGoodsId,jdbcType=VARCHAR},
+         #{insuranceSuppGoodsName,jdbcType=VARCHAR},
+         #{insuranceCount,jdbcType=INTEGER},
+         #{insurancePrice,jdbcType=DECIMAL},
+         #{useDays,jdbcType=INTEGER},
+         #{visitDate,jdbcType=TIMESTAMP},
+         #{insuranceDetail,jdbcType=VARCHAR},
+         #{createTime,jdbcType=TIMESTAMP},
+         #{updateTime,jdbcType=TIMESTAMP}
+         
+		)
+	</insert>
+
+	 <select id="getById" resultMap="resultMap">
+    	SELECT *
+    	FROM T_FITORD_INSURANCE
+    	WHERE ID = #{id,jdbcType=DECIMAL}
+  	</select>
+	
+</mapper>

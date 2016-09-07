@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans default-autowire="byName">
+	<bean id ="traceInterceptor" class="com.lvmama.lvf.common.trace.TraceContextInterceptor4Resteasy"/>
+	<!-- 商品接口 -->
+	<!--  <bean id="vstGoodsService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${vst_pet.serviceUrl}/vstGoodsServiceRemote"/>
+		<property name="serviceInterface" value="com.lvmama.vst.api.hotel.prod.service.VstGoodsService"/>
+		<property name="chunkedPost" value="false"/>
+		<property name="overloadEnabled" value="true"/>
+	</bean> -->
+	<!-- 商品服务 -->
+	<!-- <bean id="suppGoodsUpdateClientService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${vst_back.serviceUrl}/suppGoodsUpdateClientService" />
+		<property name="serviceInterface" value="com.lvmama.vst.back.client.goods.service.SuppGoodsUpdateClientService" />
+		<property name="chunkedPost" value="false" />
+		<property name="overloadEnabled" value="true" />
+	</bean> -->
+	
+	<!-- 产品接口 -->
+	<!--  <bean id="vstProductService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${vst_pet.serviceUrl}/vstProductServiceRemote"/>
+		<property name="serviceInterface" value="com.lvmama.vst.api.hotel.prod.service.VstProductService"/>
+		<property name="chunkedPost" value="false"/>
+		<property name="overloadEnabled" value="true"/>
+	</bean>-->
+	<!-- 门票相关接口 -->
+	 <!-- <bean id="vstTicketGoodsService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${vst_pet.serviceUrl}/vstTicketGoodsServiceRemote"/>
+		<property name="serviceInterface" value="com.lvmama.vst.api.ticket.prod.service.VstTicketGoodsService"/>
+		<property name="chunkedPost" value="false"/>
+		<property name="overloadEnabled" value="true"/>
+	</bean> -->
+	<!-- 评论接口 -->
+	 <!--  <bean id="cmtFrontCommentService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${cmt_dist.serviceUrl}/cmtFrontCommentService"/>
+		<property name="serviceInterface" value="com.lvmama.cmt.api.service.CmtFrontCommentService"/>
+		<property name="chunkedPost" value="false"/>
+		<property name="overloadEnabled" value="true"/>
+	</bean>-->
+	
+	<!-- 评论图片接口 -->
+	 <!--  <bean id="cmtPictureService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${cmt_dist.serviceUrl}/cmtPictureService"/>
+		<property name="serviceInterface" value="com.lvmama.cmt.api.service.CmtPictureService"/>
+		<property name="chunkedPost" value="false"/>
+		<property name="overloadEnabled" value="true"/>
+	</bean>-->
+	
+	<!-- 评论回复接口 -->
+	 <!--  <bean id="cmtReplyService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${cmt_dist.serviceUrl}/cmtReplyService"/>
+		<property name="serviceInterface" value="com.lvmama.cmt.api.service.CmtReplyService"/>
+		<property name="chunkedPost" value="false"/>
+		<property name="overloadEnabled" value="true"/>
+	</bean>-->
+	
+		<!-- 会员相关 -->
+<!-- 	 <bean id="userProxyService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl" value="${vst_pet.serviceUrl}/userUserProxyService" />
+        <property name="serviceInterface" value="com.lvmama.vst.pet.adapter.UserUserProxyAdapter" />
+        <property name="chunkedPost" value="false" />
+        <property name="overloadEnabled" value="true" />
+    </bean> -->
+    
+    <!--常用联系人 -->
+	<!-- <bean id="userReceiverService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl" value="${superPublic.serviceUrl}/receiverUserService" />
+		<property name="serviceInterface" value="com.lvmama.comm.pet.service.user.IReceiverUserService" />
+		<property name="chunkedPost" value="false" />
+		<property name="overloadEnabled" value="true" />
+	</bean> -->
+</beans>

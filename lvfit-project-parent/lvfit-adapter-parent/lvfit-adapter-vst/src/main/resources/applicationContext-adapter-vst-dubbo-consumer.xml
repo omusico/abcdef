@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd        
+	http://code.alibabatech.com/schema/dubbo        
+	http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+<!-- 商品dubbo服务 -->
+ <dubbo:reference id="suppGoodsClientService" interface="com.lvmama.vst.back.client.goods.service.SuppGoodsClientService" />
+ <!-- 酒店详情dubbo服务 -->
+ <dubbo:reference id="prodProductClientService" interface="com.lvmama.vst.back.client.prod.service.ProdProductClientService" />
+ <!-- 酒店详情图片dubbo -->
+ <dubbo:reference id="comPhotoQueryClientRemote" interface="com.lvmama.vst.back.client.pub.service.ComPhotoQueryClientService" />
+ <!-- 订单服务dubbo -->
+ <dubbo:reference id="orderService" interface="com.lvmama.vst.back.client.ord.service.OrderService" />
+ <!-- 经纬度 服务。 注：项目暂用用详情里的，没有用到，后期可以删除  -->
+ <dubbo:reference id="comCoordinateClientService" interface="com.lvmama.vst.back.client.pub.service.ComCoordinateClientService"/>
+ <dubbo:reference id="hotelProductClientService" interface="com.lvmama.vst.back.client.prod.service.HotelProductClientService"/>
+ <dubbo:reference id="suppGoodsTimePriceClientService" interface="com.lvmama.vst.back.client.goods.service.SuppGoodsTimePriceClientService"/>
+ 
+   <!-- 头信息服务  -->
+  <dubbo:reference id="commHeaderService" interface="com.lvmama.vst.pet.adapter.ICommHeaderServiceAdapter" />
+ 
+ 	<!-- 调用vst_pet桥接的老系统的远程服务 -->
+	<dubbo:reference id="comIpsRemoteBean" interface="com.lvmama.vst.pet.adapter.ComIpsServiceAdapter" />
+	
+	<!--常用联系人服务 -->
+	<dubbo:reference id="userReceiverService" interface="com.lvmama.comm.pet.service.user.IReceiverUserService" />
+	
+	<!--门票时间价格表  -->
+	<dubbo:reference id="vstTicketGoodsService" interface="com.lvmama.vst.api.ticket.prod.service.VstTicketGoodsService" />
+	<!--机票锁仓回调接口 -->
+	<dubbo:reference id="fitFlightBookingCallBackService" interface="com.lvmama.lvf.openapi.vstclient.service.fit.FitFlightBookingCallBackService" />
+    <!-- 点评统计数据接口 -->
+	<dubbo:reference id="vstCmtTitleStatistisService" interface="com.lvmama.cmt.comment.service.VstCmtTitleStatistisService" />
+	<!-- 评论接口 -->
+	<dubbo:reference id="cmtFrontCommentService" interface="com.lvmama.cmt.api.service.CmtFrontCommentService" />
+	<!-- 评论图片接口 -->
+	<dubbo:reference id="cmtPictureService" interface="com.lvmama.cmt.api.service.CmtPictureService" />
+	<!-- 评论回复接口 -->
+	<dubbo:reference id="cmtReplyService" interface="com.lvmama.cmt.api.service.CmtReplyService" />
+	<!-- 商品接口 -->
+	<dubbo:reference id="vstGoodsService" interface="com.lvmama.vst.api.hotel.prod.service.VstGoodsService" />
+	<!-- 产品接口 -->
+	<dubbo:reference id="vstProductService" interface="com.lvmama.vst.api.hotel.prod.service.VstProductService" />
+    <!-- 查询线路产品出发地 -->
+    <dubbo:reference id="prodProductAdditionClientService" interface="com.lvmama.vst.back.client.prod.service.ProdProductAdditionClientService" />
+    <!-- 产品经理推荐信息 -->
+    <dubbo:reference id="permUserServiceAdapter" interface="com.lvmama.vst.pet.adapter.PermUserServiceAdapter" />
+    <!-- 产品头标签信息 -->
+    <dubbo:reference id="prodTagClientService" interface="com.lvmama.vst.back.client.biz.service.ProdTagClientService" />
+    <!-- 买赠信息 -->
+    <dubbo:reference id="buyPresentClientService" interface="com.lvmama.vst.back.client.prom.service.BuyPresentClientService" />
+    <!-- 促销信息 -->
+    <dubbo:reference id="promotionService" interface="com.lvmama.vst.back.client.prom.service.PromotionService" />
+    <!-- 分期付款信息 -->
+    <dubbo:reference id="instalmentGatewayConfigServiceAdapter" interface="com.lvmama.vst.pet.adapter.InstalmentGatewayConfigServiceAdapter" />
+    <!-- 商品信息 -->
+    <dubbo:reference id="VstRouteService" interface="com.lvmama.vst.api.route.prod.service.VstRouteService" />
+    <!-- 目前用于索引推送-->
+    <dubbo:reference id="lvmamaClientService" interface="com.lvmama.vst.newsearch.service.LvmamaClientService"/>
+    <!-- 优惠信息 -->
+    <dubbo:reference id="vstPromotionService" interface="com.lvmama.vst.api.prom.service.VstPromotionService" />
+    <!-- 频道页推荐信息 -->
+    <dubbo:reference id="recommendInfoServiceAdapter" interface="com.lvmama.vst.pet.adapter.RecommendInfoServiceAdapter" />
+    <!-- 产品校验 -->
+    <dubbo:reference id="prodProductPropClientService" interface="com.lvmama.vst.back.client.prod.service.ProdProductPropClientService" />
+</beans>

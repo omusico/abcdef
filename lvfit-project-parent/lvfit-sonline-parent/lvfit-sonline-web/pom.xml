@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.lvmama.lvfit</groupId>
+    <artifactId>lvfit-sonline-parent</artifactId>
+    <version>0.1.0</version>
+  </parent>
+  <artifactId>lvfit-sonline-web</artifactId>
+  <name>lvfit-sonline-web</name>
+  
+  
+    <properties>
+		<jetty.port>9691</jetty.port>
+		<jetty.stopPort>9891</jetty.stopPort>
+	</properties>
+	
+	
+	
+	<dependencies>
+  	   <dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	    <dependency>
+				<groupId>com.lvmama.lvfit</groupId>
+				<artifactId>lvfit-sonline-base</artifactId>
+				<version>0.1.0</version>
+		</dependency>
+		<dependency>
+				<groupId>com.lvmama.lvfit</groupId>
+				<artifactId>lvfit-sonline-booking</artifactId>
+				<version>0.1.0</version>
+		</dependency>
+		<dependency>
+				<groupId>com.lvmama.lvfit</groupId>
+				<artifactId>lvfit-sonline-order</artifactId>
+				<version>0.1.0</version>
+		</dependency>
+		<dependency>
+				<groupId>com.lvmama.lvfit</groupId>
+				<artifactId>lvfit-sonline-search</artifactId>
+				<version>0.1.0</version>
+		</dependency>
+		<dependency>
+				<groupId>com.lvmama.lvfit</groupId>
+				<artifactId>lvfit-sonline-shopping</artifactId>
+				<version>0.1.0</version>
+		</dependency>
+  </dependencies>
+	
+  
+	<packaging>war</packaging>
+</project>

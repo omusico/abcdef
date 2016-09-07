@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.lvmama.lvfit</groupId>
+    <artifactId>lvfit-project-parent</artifactId>
+    <relativePath>../pom.xml</relativePath>
+    <version>0.1.0</version>
+  </parent>
+  
+  <artifactId>lvfit-mq-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>lvfit-mq-parent</name>
+   <url>http://maven.apache.org</url>
+   
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+  	<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-spring</artifactId>
+			<version>${resteasy.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.resteasy</groupId>
+					<artifactId>resteasy-jettison-provider</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+  </dependencies>
+  
+  <modules>
+  	<module>lvfit-mq-base</module>
+  	<module>lvfit-mq-sdpproduct</module>
+  	<module>lvfit-mq-service</module>
+  </modules>
+  
+</project>

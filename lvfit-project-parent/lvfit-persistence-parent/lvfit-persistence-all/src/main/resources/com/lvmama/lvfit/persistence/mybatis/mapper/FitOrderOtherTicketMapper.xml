@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderOtherTicketMapper" >
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderOtherTicketDto" >
+	    <result column="ID" property="id" jdbcType="DECIMAL" />
+	    <result column="PRODUCT_ID" property="productId" jdbcType="DECIMAL" />
+	    <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+	    <result column="GOODS_ID" property="goodsId" jdbcType="DECIMAL" />
+	    <result column="GOODS_NAME" property="goodsName" jdbcType="DECIMAL" />
+	    <result column="BRANCH_DESC" property="branchDesc" jdbcType="VARCHAR" />
+	    <result column="SELECT_COUNT" property="selectCount" jdbcType="DECIMAL" />
+	    <result column="SELECT_DATE" property="selectDate" jdbcType="TIMESTAMP" />
+	    <result column="SELECT_PRICE" property="selectPrice" jdbcType="DECIMAL" />
+	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+         <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap> 
+
+	<insert id="insert">
+	  <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+	    <choose>
+	      <when test="id != null and id != ''">
+	        SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+	      </when>
+	      <otherwise>
+	        SELECT S_FITORD_OTHER_TICKET.NEXTVAL FROM DUAL
+	      </otherwise>
+	    </choose>
+	  </selectKey>
+	  insert into T_FITORD_OTHER_TICKET 
+	  ( 
+			  id,
+			  product_id,
+			  product_name,
+			  goods_id,
+			  goods_name,
+			  branch_desc,
+			  select_count,
+			  select_date,
+			  select_price,
+			  create_time,
+			  update_time
+	  )
+	  values
+	 (
+		    #{id,jdbcType=DECIMAL},
+		    #{productId,jdbcType=DECIMAL},
+		    #{productName,jdbcType=VARCHAR},
+		    #{goodsId,jdbcType=DECIMAL},
+		    #{goodsName,jdbcType=VARCHAR},
+		    #{branchDesc,jdbcType=VARCHAR},
+		    #{selectCount,jdbcType=DECIMAL},
+		    #{selectDate,jdbcType=TIMESTAMP},
+		    #{selectPrice,jdbcType=DECIMAL},
+		    #{createTime,jdbcType=TIMESTAMP},
+		    #{updateTime,jdbcType=TIMESTAMP}
+	    )
+   </insert>
+   
+	<select id="getById" resultMap="resultMap">
+	    SELECT A.* FROM T_FITORD_OTHER_TICKET A WHERE A.ID = #{id,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+	
+	
+</mapper>

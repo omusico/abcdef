@@ -1,0 +1,63 @@
+.complete-wrap {
+	background: #fff;
+	width: 158px;
+	border: #ddd solid 1px;
+	overflow: hidden;
+	box-shadow: 0px 2px 4px #ccc;
+	z-index: 99;
+	position: absolute;
+	display: none;
+	max-height: 300px;
+	margin-top: -1px;
+}
+
+.complete-wrap a:hover, .complete-wrap li.active a {
+	color: #FF6600;
+	cursor: pointer;
+	background-color: #F5F5F5;
+}
+
+.fh-input-group {
+	position: relative;
+}
+
+.fh-input-group .hotCity {
+	position: absolute;
+	right: -9px;
+	top: -20px;
+	width: 165px;
+}
+
+.fh-input-group .hotCity i {
+	padding: 9px 12px 9px 0;
+	margin-right: -5px;
+	color: #dd3377;
+	font-size: 12px;
+}
+
+.fh-input-group .hotCity i:hover {
+	cursor: pointer;
+}
+
+.errTips, .roundTrip, .liveDepart {
+	display: none;
+	position: absolute;
+	width: 158px;
+	height: 27px;
+	z-index: 10;
+	color: #E38;
+	font-size: 10px;
+	line-height: 27px;
+	text-align: center;
+	font-family: 微软雅黑;
+}
+
+.errTips {
+	top: 34px;
+	left: 0px;
+}
+
+.roundTrip, .liveDepart {
+	top: -25px;
+	right: 0px;
+}

@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.lvmama.lvfit</groupId>
+    <artifactId>lvfit-project-parent</artifactId>
+    <version>0.1.0</version>
+  </parent>
+  <artifactId>lvfit-sonline-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>lvfit-sonline-parent</name>
+  <modules>
+  	<module>lvfit-sonline-base</module>
+  	<module>lvfit-sonline-booking</module>
+  	<module>lvfit-sonline-order</module>
+  	<module>lvfit-sonline-search</module>
+  	<module>lvfit-sonline-shopping</module>
+  	<module>lvfit-sonline-web</module>
+  </modules>
+</project>

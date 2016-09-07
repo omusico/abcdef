@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderLocalTripProductMapper" >
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderLocalTripProductDto" >
+	    <result column="ID" property="id" jdbcType="DECIMAL" />
+	    <result column="PRODUCT_ID" property="productId" jdbcType="DECIMAL" />
+	    <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+	     <result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" />
+	    <result column="GOODS_ID" property="goodsId" jdbcType="DECIMAL" />
+	    <result column="TRAVEL_DAYS" property="travelDays" jdbcType="DECIMAL" />
+	    <result column="STAY_DAYS" property="stayDays" jdbcType="DECIMAL" />
+	    <result column="DAY_OF_DURATION" property="dayOfDuration" jdbcType="DECIMAL" />
+	    <result column="VISIT_DATE" property="visitDate" jdbcType="TIMESTAMP" />
+	    <result column="ROOM_DIFFPRICE" property="roomDiffPrice" jdbcType="TIMESTAMP" />
+	    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap> 
+
+	<insert id="insert">
+	  <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+	    <choose>
+	      <when test="id != null and id != ''">
+	        SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+	      </when>
+	      <otherwise>
+	        SELECT S_FITORD_LOCAL_TRIPPRODUCT.NEXTVAL FROM DUAL
+	      </otherwise>
+	    </choose>
+	  </selectKey>
+	  insert into T_FITORD_LOCAL_TRIPPRODUCT 
+	  ( 
+			  id,
+			  product_id,
+			  product_name,
+			  group_name,
+			  goods_id,
+			  travel_days,
+			  stay_days,
+			  day_of_duration,
+			  visit_date,
+			  room_diffprice,
+			  price,
+			  create_time,
+			  update_time
+	  )
+	  values
+	 (
+		    #{id,jdbcType=DECIMAL},
+		    #{productId,jdbcType=DECIMAL},
+		    #{productName,jdbcType=VARCHAR},
+		    #{groupName,jdbcType=VARCHAR},
+		    #{goodsId,jdbcType=DECIMAL},
+		    #{travelDays,jdbcType=DECIMAL},
+		    #{stayDays,jdbcType=DECIMAL},
+		    #{dayOfDuration,jdbcType=DECIMAL},
+		    #{visitDate,jdbcType=TIMESTAMP},
+		    #{roomDiffPrice,jdbcType=DECIMAL},
+		    #{price,jdbcType=DECIMAL},
+		    #{createTime,jdbcType=TIMESTAMP},
+		    #{updateTime,jdbcType=TIMESTAMP}
+	    )
+   </insert>
+   
+	<select id="getById" resultMap="resultMap">
+	    SELECT A.* FROM T_FITORD_LOCAL_TRIPPRODUCT A WHERE A.ID = #{id,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+	
+	
+</mapper>

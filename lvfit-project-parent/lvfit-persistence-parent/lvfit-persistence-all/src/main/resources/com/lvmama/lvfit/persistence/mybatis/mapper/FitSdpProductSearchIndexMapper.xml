@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductSearchIndexMapper">
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex" >
+	    <result column="PRODUCT_ID" property="productId"/>
+	    <result column="START_DISTRICT_ID" property="startDistrictId"/>
+	    <result column="START_DISTRICT" property="startDistrict" jdbcType="VARCHAR" />
+	    <result column="LOWEST_MARKET_PRICE" property="lowestMarketPrice" jdbcType="DECIMAL" />
+	    <result column="LOWEST_SALED_PRICE" property="lowestSaledPrice" jdbcType="DECIMAL" />
+	    <result column="APP_LOWESTMARKET_PRICE" property="appLowestMarketPrice" jdbcType="DECIMAL" />
+	    <result column="APP_LOWESTSALED_PRICE" property="appLowestSaledPrice" jdbcType="DECIMAL" />
+	    <result column="WAP_LOWESTMARKET_PRICE" property="wapLowestMarketPrice" jdbcType="DECIMAL" />
+	    <result column="WAP_LOWESTSALED_PRICE" property="wapLowestSaledPrice" jdbcType="DECIMAL" />
+	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<!-- 数据项 -->
+	<sql id="columns">
+	            product_id,
+		        start_district_id,
+		        lowest_market_price,
+		        lowest_saled_price,
+		        app_lowest_market_price,
+		        app_lowest_saled_price,
+		        wap_lowest_market_price,
+		        wap_lowest_saled_price,
+		        create_time,
+		        update_time
+	</sql>
+	
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex">
+		insert into
+		T_FITSDP_PRODUCT_SEARCH_INDEX
+		(<include refid="columns" />)
+		values
+		(
+	            #{productId,jdbcType=DECIMAL},
+		        #{startDistrictId,jdbcType=DECIMAL},
+		        #{lowestMarketPrice,jdbcType=DECIMAL},
+		        #{lowestSaledPrice,jdbcType=DECIMAL},
+				#{appLowestMarketPrice,jdbcType=DECIMAL},
+				#{appLowestSaledPrice,jdbcType=DECIMAL},
+				#{wapLowestMarketPrice,jdbcType=DECIMAL},
+				#{wapLowestSaledPrice,jdbcType=DECIMAL},
+		        #{createTime,jdbcType=TIMESTAMP},
+		        #{updateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	
+	<select id="countByProductId"  resultType="java.lang.Integer">
+	     select count(1) from T_FITSDP_PRODUCT_SEARCH_INDEX  where product_id = #{productId}
+	</select>
+  	
+  	<!-- 根据自主打包产品Id删除索引  -->
+  	<delete id="deleteByFkId">
+		delete from T_FITSDP_PRODUCT_SEARCH_INDEX
+		WHERE product_id = #{fkId} 
+	</delete>
+	
+	 	<!-- 删除所有索引  -->
+  	<delete id="deleteAll">
+		delete from T_FITSDP_PRODUCT_SEARCH_INDEX
+	</delete>
+	
+	
+	<!-- 数据批量插入 -->
+	<insert id="insertBatch" parameterType="java.util.List"
+		statementType="PREPARED"> 
+			<![CDATA[ 
+		     insert into T_FITSDP_PRODUCT_SEARCH_INDEX
+		       (
+			        product_id,
+			        start_district_id,
+			        lowest_market_price,
+			        lowest_saled_price,
+			        app_lowest_market_price,
+			        app_lowest_saled_price,
+			        wap_lowest_market_price,
+			        wap_lowest_saled_price,
+			        create_time,
+			        update_time
+		       )
+			SELECT
+			A.* FROM ( 
+			]]>
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator="union all"> 
+	<![CDATA[ 
+		 SELECT 
+	            #{item.productId,jdbcType=DECIMAL},
+		        #{item.startDistrictId,jdbcType=DECIMAL},
+		        #{item.lowestMarketPrice,jdbcType=DECIMAL},
+		        #{item.lowestSaledPrice,jdbcType=DECIMAL},
+		        #{item.appLowestMarketPrice,jdbcType=DECIMAL},
+		        #{item.appLowestSaledPrice,jdbcType=DECIMAL},
+		        #{item.wapLowestMarketPrice,jdbcType=DECIMAL},
+		        #{item.wapLowestSaledPrice,jdbcType=DECIMAL},
+		       	#{item.createTime,jdbcType=TIMESTAMP},
+			    #{item.updateTime,jdbcType=TIMESTAMP}
+			 FROM DUAL ]]>
+			</foreach>
+			) A
+	</insert>
+	
+	 <!-- 根据产品ID查询索引信息 -->
+    <select id="getInfoList" parameterType="java.util.List" resultMap="resultMap">  
+	    SELECT  
+	    	    s.product_id,
+		        start_district_id,
+		        lowest_market_price,
+		        lowest_saled_price,
+		        app_lowest_market_price,
+		        app_lowest_saled_price,
+		        wap_lowest_market_price,
+		        wap_lowest_saled_price,
+		        create_time,
+		        update_time,
+		        c.DEPARTURE_CITY_NAME AS start_district
+		FROM T_FITSDP_PRODUCT_SEARCH_INDEX s
+		LEFT JOIN T_FITSDP_CITY_GROUP c ON s.START_DISTRICT_ID=c.DEPARTURE_CITY_DISTRICT_ID
+		WHERE s.PRODUCT_ID=c.PRODUCT_ID
+		AND s.PRODUCT_ID=#{productId}
+    </select>
+  	
+</mapper>

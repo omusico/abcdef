@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="fitOrderNo.orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_MAIN_ID" property="orderMainId" jdbcType="DECIMAL" />
+    <result column="ORDER_PRODUCT_ID" property="orderProductId" jdbcType="DECIMAL" />
+    <result column="ORDER_TOTAL_AMOUNT" property="orderAmount.totalAmount" jdbcType="DECIMAL" />
+    <result column="ORDER_TOTAL_SALES_AMOUNT" property="orderAmount.totalSalesAmount" jdbcType="DECIMAL" />
+    <result column="ORDER_TOTAL_DISCOUNT_AMOUNT" property="orderAmount.totalDiscountAmount" jdbcType="DECIMAL" />
+    <result column="ORDER_PROFIT_AMOUNT" property="orderAmount.profitAmount" jdbcType="DECIMAL" />
+    <result column="ORDER_PREPAID_AMOUNT" property="orderAmount.prepaidAmount" jdbcType="DECIMAL" />
+    <result column="ORDER_PAYED_AMOUNT" property="orderAmount.payedAmount" jdbcType="DECIMAL" />
+    <result column="PRODUCT" property="product" jdbcType="VARCHAR" />
+    <result column="DETAIL_COUNT" property="detailCount" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="TRIP_TYPE" property="tripType" jdbcType="DECIMAL" />
+  </resultMap>
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_ORDER_NEW.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITORD_ORDER_NEW (ID, UUID, ORDER_NO,
+    ORDER_MAIN_ID, ORDER_PRODUCT_ID, ORDER_TOTAL_AMOUNT,
+    ORDER_TOTAL_SALES_AMOUNT, ORDER_TOTAL_DISCOUNT_AMOUNT,
+    ORDER_PROFIT_AMOUNT, ORDER_PREPAID_AMOUNT,
+    ORDER_PAYED_AMOUNT, PRODUCT, DETAIL_COUNT,
+    CREATE_TIME, UPDATE_TIME)
+    values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{fitOrderNo.orderNo,jdbcType=VARCHAR},
+    #{orderMainId,jdbcType=DECIMAL}, #{orderProductId,jdbcType=DECIMAL}, #{orderAmount.totalAmount,jdbcType=DECIMAL},
+    #{orderAmount.totalSalesAmount,jdbcType=DECIMAL}, #{orderAmount.totalDiscountAmount,jdbcType=DECIMAL},
+    #{orderAmount.profitAmount,jdbcType=DECIMAL}, #{orderAmount.prepaidAmount,jdbcType=DECIMAL},
+    #{orderAmount.payedAmount,jdbcType=DECIMAL}, #{product,jdbcType=VARCHAR}, #{detailCount,jdbcType=DECIMAL},
+    #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  	<update id="updateById">
+		<include refid="updateOrderInfo" />
+		WHERE ID = #{id}
+	</update>
+	
+  	<update id="updateByOrderNo">
+		<include refid="updateOrderInfo" />
+		WHERE ORDER_NO =  #{fitOrderNo.orderNo,jdbcType=VARCHAR}
+	</update>
+	
+	<sql id="updateOrderInfo">
+	   UPDATE T_FITORD_ORDER_NEW
+		<set>
+			<if test="orderAmount.totalAmount != null and orderAmount.totalAmount != ''">
+				ORDER_TOTAL_AMOUNT = #{orderAmount.totalAmount,jdbcType=DECIMAL},
+			</if>
+		      <if test="orderAmount.totalSalesAmount != null and orderAmount.totalSalesAmount!=''" >
+		        ORDER_TOTAL_SALES_AMOUNT =  #{orderAmount.totalSalesAmount,jdbcType=DECIMAL},
+		      </if>
+		      <if test="orderAmount.totalDiscountAmount != null and orderAmount.totalDiscountAmount!=''" >
+		        ORDER_TOTAL_DISCOUNT_AMOUNT = #{orderAmount.totalDiscountAmount,jdbcType=DECIMAL},
+		      </if>
+		      <if test="orderAmount.profitAmount != null and orderAmount.profitAmount!=''" >
+		        ORDER_PROFIT_AMOUNT =  #{orderAmount.profitAmount,jdbcType=DECIMAL}, 
+		      </if>
+		      <if test="orderAmount.prepaidAmount != null and orderAmount.prepaidAmount!=''" >
+		        ORDER_PREPAID_AMOUNT = #{orderAmount.prepaidAmount,jdbcType=DECIMAL},
+		      </if>
+		      <if test="orderAmount.payedAmount != null and orderAmount.payedAmount!=''" >
+		          ORDER_PAYED_AMOUNT =  #{orderAmount.payedAmount,jdbcType=DECIMAL},
+		      </if>
+		        UPDATE_TIME = SYSDATE
+		</set>
+	</sql>
+	
+  <select id="getById" resultMap="resultMap">
+    SELECT *  FROM T_FITORD_ORDER_NEW
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  
+  <select id="queryByFkId" resultMap="resultMap">
+    SELECT t.*
+    FROM T_FITORD_ORDER_NEW t
+    WHERE ORDER_MAIN_ID = #{fkId,jdbcType=DECIMAL}
+    ORDER BY ID
+  </select>
+  
+  <select id="getFlightByOrderMainId" resultMap="resultMap">
+    SELECT ORD.*, FLIGHT.TRIP_TYPE
+    FROM T_FITORD_ORDER ORD
+    LEFT JOIN T_FITORD_FLIGHT FLIGHT
+    ON ORD.ORDER_PRODUCT_ID = FLIGHT.ID
+    WHERE ORD.ORDER_MAIN_ID = #{orderMainId, jdbcType=VARCHAR} AND ORD.PRODUCT = 'I_FLIGHT'
+  </select>
+  
+  <select id="getHotelByOrderMainId" resultMap="resultMap">
+    SELECT ORD.*
+    FROM T_FITORD_ORDER ORD
+    WHERE ORD.ORDER_MAIN_ID = #{orderMainId, jdbcType=VARCHAR} AND ORD.PRODUCT = 'I_HOTEL'
+  </select>
+
+</mapper>

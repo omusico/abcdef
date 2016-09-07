@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd">
+
+     <!--vst自主打包产品队列目的地 -->
+     <!-- 写法一 -->
+     <!-- <amq:queue name="PRODUCT_TOPIC" physicalName="ActiveMQ.PRODUCT.${jms_node}" /> -->
+     
+     <!-- 写法二 -->
+	<bean id="sdpProductDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg>
+			<value>ActiveMQ.PRODUCT_VST.${jms_node}</value>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="sdpProductMessageProcesser" class="com.lvmama.lvfit.mq.sdpproduct.FitSdpProductMessageRrocesser"/>
+	
+		<!-- 消息接收 -->
+	<bean id="sdpProductMessageConsumer" class="com.lvmama.comm.jms.MessageConsumer">
+		<property name="destName"><value>ActiveMQ.PRODUCT_VST.${jms_node}</value></property>
+		<property name="processers">
+			<list>
+				<ref bean="sdpProductMessageProcesser" />
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- 消息监听器 -->
+	<bean id="sdpProductMessageListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<constructor-arg ref="sdpProductMessageConsumer" />
+		<property name="defaultListenerMethod" value="receive" />
+	</bean>
+	
+	<!-- 消息监听容器 -->
+	<bean id="sdpProductContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="sdpProductDestination" />
+		<property name="messageListener" ref="sdpProductMessageListener" />
+	</bean>
+
+</beans>

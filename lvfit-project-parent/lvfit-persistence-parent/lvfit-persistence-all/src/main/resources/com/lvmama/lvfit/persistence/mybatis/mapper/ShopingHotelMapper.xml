@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.ShopingHotelMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.shopping.ShoppingHotelDto">
+		<result column="ID" property="id" />
+	    <result column="UUID" property="uuid"/>
+	    <result column="SHOPPING_UUID" property="shoppingUuid"  />
+	    <result column="HOTEL_ID" property="hotelId"  />
+	    <result column="HOTEL_NAME" property="hotelName"  />
+	     <result column="ROOM_ID" property="roomId"  />
+	    <result column="ROOM_NAME" property="roomName"  />
+	    <result column="PLAN_ID" property="planId" />
+	    <result column="PLAN_NAME" property="planName"  />
+	    <result column="ROOM_COUNT" property="roomCount" />
+	    <result column="CHECKIN_TIME" property="checkinTime"  />
+	    <result column="CHECKOUT_TIME" property="checkoutTime"  />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime"  />	
+	    <result column="VERSION_NO" property="versionNo"  />	     
+	</resultMap>
+	
+
+	<sql id="columns">
+		ID, UUID, SHOPPING_UUID, HOTEL_ID,HOTEL_NAME,ROOM_ID,ROOM_NAME,PLAN_ID,PLAN_NAME,
+		ROOM_COUNT,CHECKIN_TIME,CHECKOUT_TIME,CREATE_TIME,UPDATE_TIME,VERSION_NO
+	</sql>
+	
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.shopping.ShoppingHotelDto">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select S_FITSHOP_HOTEL.NEXTVAL from dual
+		</selectKey>
+		insert into
+		T_FITSHOP_HOTEL
+		(<include refid="columns" />)
+		values
+		(
+		 #{id,jdbcType=INTEGER},
+		 #{uuid,jdbcType=VARCHAR}, 
+		 #{shoppingUuid,jdbcType=VARCHAR}, 
+         #{hotelId,jdbcType=INTEGER},
+         #{hotelName,jdbcType=VARCHAR},
+         #{roomId,jdbcType=VARCHAR}, 
+         #{roomName,jdbcType=VARCHAR}, 
+         #{planId,jdbcType=INTEGER}, 
+         #{planName,jdbcType=VARCHAR},
+         #{roomCount,jdbcType=INTEGER}, 
+         #{checkinTime,jdbcType=VARCHAR},
+         #{checkoutTime,jdbcType=VARCHAR}, 
+         #{createTime,jdbcType=TIMESTAMP}, 
+         #{updateTime,jdbcType=TIMESTAMP},
+         #{versionNo,jdbcType=DECIMAL}           
+		)
+	</insert>
+
+     <!-- 根据shoppingId查询 -->
+	<select id="getListByCode" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_HOTEL
+		WHERE VERSION_NO = (select MAX(VERSION_NO) from T_FITSHOP_HOTEL where SHOPPING_UUID = #{code}) order by create_time desc
+	</select>
+	
+	<!-- 根据version_no查不到数据时，把所有的数据都查出来 -->
+	<select id="getAllByShoppinguuid" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_HOTEL
+		WHERE SHOPPING_UUID = #{code} order by create_time desc
+	</select>
+	
+	<!-- 根据code修改数据 -->
+	<update id="updateByCode">
+		update T_FITSHOP_HOTEL i
+			<set>
+			  <if test="i.id != null" >
+		        ID = #{i.id,jdbcType=INTEGER},
+		      </if>
+		      <if test="i.uuid != null" >
+		        UUID = #{i.uuid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.shoppingUuid != null" >
+		        SHOPPING_UUID = #{i.shoppingUuid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.hotelId != null" >
+		        HOTEL_ID = #{i.hotelId,jdbcType=INTEGER},
+		      </if>
+		      <if test="i.hotelName != null" >
+		        HOTEL_NAME = #{i.hotelName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.roomId != null" >
+		        ROOM_ID = #{i.roomId,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.roomName != null" >
+		        ROOM_NAME = #{i.roomName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.planId != null" >
+		        PLAN_ID = #{i.planId,jdbcType=INTEGER},
+		      </if>
+		      <if test="i.planName != null" >
+		        PLAN_NAME = #{i.planName,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.roomCount != null" >
+		        ROOM_COUNT = #{i.roomCount,jdbcType=INTEGER},
+		      </if>
+		      <if test="i.checkinTime != null" >
+		        CHECKIN_TIME = #{i.checkinTime,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.checkoutTime != null" >
+		        CHECKOUT_TIME = #{i.checkoutTime,jdbcType=VARCHAR},
+		      </if>
+		      <if test="i.createTime != null" >
+		        CREATE_TIME = #{i.createTime,jdbcType=TIMESTAMP},
+		      </if>
+		      <if test="i.updateTime != null" >
+		        UPDATE_TIME = #{i.updateTime,jdbcType=TIMESTAMP},
+		      </if>
+		      <if test="i.versionNo != null" >
+		        VERSION_NO = #{i.versionNo,jdbcType=DECIMAL},
+		      </if>
+		</set>
+		WHERE SHOPPING_UUID = #{code}
+	</update>
+	
+	<!-- 根据code删除数据 -->
+	<delete id="deleteByCode">
+		delete from T_FITSHOP_HOTEL
+		WHERE SHOPPING_UUID = #{code}
+	</delete>
+</mapper>

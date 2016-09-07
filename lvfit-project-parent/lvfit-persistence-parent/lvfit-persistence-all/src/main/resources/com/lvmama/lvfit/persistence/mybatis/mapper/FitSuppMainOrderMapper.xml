@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSuppMainOrderMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="FIT_MAIN_ORDER_ID" property="fitMainOrderId" jdbcType="DECIMAL" />
+    <result column="FIT_MAIN_ORDER_NO" property="fitMainOrderNo" jdbcType="VARCHAR" />
+     <result column="VST_MAIN_ORDER_NO" property="vstMainOrderNo" jdbcType="DECIMAL" />
+     <result column="VISIT_TIME" property="visitTime" jdbcType="TIMESTAMP" />
+     <result column="BINDING_STATUS" property="bindingStatus" jdbcType="VARCHAR" />
+     <result column="PAYMENT_TARGET" property="paymentTarget" jdbcType="VARCHAR" />
+     <result column="VST_ORDER_TOTAL_AMOUNT" property="orderAmount.totalAmount" jdbcType="DECIMAL" />
+     <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  
+  <insert id="insert" >
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_SUPP_ORDER_MAIN.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITORD_SUPP_ORDER_MAIN (
+      ID, UUID, FIT_MAIN_ORDER_ID,FIT_MAIN_ORDER_NO, VST_MAIN_ORDER_NO, VISIT_TIME,
+      BINDING_STATUS,PAYMENT_TARGET,VST_ORDER_TOTAL_AMOUNT,CREATE_TIME, UPDATE_TIME)
+    values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{fitMainOrderId,jdbcType=DECIMAL},
+       #{fitMainOrderNo,jdbcType=VARCHAR}, #{vstMainOrderNo,jdbcType=DECIMAL},  
+      #{visitTime,jdbcType=TIMESTAMP},#{bindingStatus,jdbcType=VARCHAR},#{paymentTarget,jdbcType=VARCHAR},
+      #{orderAmount.totalAmount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <select id="queryByFkId" resultMap="resultMap">
+    SELECT A.* FROM T_FITORD_SUPP_ORDER_MAIN A 
+    WHERE A.FIT_MAIN_ORDER_ID = #{fkId,jdbcType=DECIMAL}
+  </select>
+  
+    
+    <select id="getAllOldOrderMainDto" resultMap="resultMap">
+	   SELECT * FROM T_FITORD_SUPP_MAIN_ORDER WHERE BINDING_STATUS = 'BINDING';
+    </select>
+
+	<update id="updateBindingStatus">
+		UPDATE T_FITORD_SUPP_MAIN_ORDER
+		<set>
+			BINDING_STATUS = 'UNBINDING'
+		</set>
+		WHERE VST_MAIN_ORDER_ID = #{vstOrderMainNo}
+	</update>
+</mapper>

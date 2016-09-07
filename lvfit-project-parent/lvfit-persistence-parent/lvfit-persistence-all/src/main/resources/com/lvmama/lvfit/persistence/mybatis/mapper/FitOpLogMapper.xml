@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOpLogMapper">
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.FitOpLog">
+		<result column="ID" jdbcType="DECIMAL" property="id"/>
+		<result column="UUID" jdbcType="VARCHAR" property="uuid"/>
+		<result column="TRACE_ID" jdbcType="VARCHAR" property="traceId"/>
+		<result column="FIT_BUSINESS_TYPE" jdbcType="VARCHAR" property="fitBusinessExceptionType"/>
+		<result column="FIT_EXP_TYPE" jdbcType="VARCHAR" property="fitExpType"/>
+		<result column="DETAIL" jdbcType="VARCHAR" property="detail"/>
+		<result column="REMARK" jdbcType="VARCHAR" property="remark"/>
+		<result column="OPERTYPE" jdbcType="VARCHAR" property="operType"/>
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="REQUEST_STR" jdbcType="VARCHAR" property="requestStr" />
+		<result column="REQUEST_STR1" jdbcType="VARCHAR" property="requestStr1" />
+		<result column="REQUEST_STR2" jdbcType="VARCHAR" property="requestStr2" />
+	</resultMap>
+	
+	<sql id="columns">
+    ID, UUID, TRACE_ID, FIT_BUSINESS_TYPE, FIT_EXP_TYPE, DETAIL, REMARK, OPERTYPE, CREATE_TIME, UPDATE_TIME,REQUEST_STR,REQUEST_STR1,REQUEST_STR2
+  </sql>
+	
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.FitOpLog">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select S_FIT_OP_LOG.nextval from dual
+		</selectKey>
+    insert into T_FIT_OP_LOG (<include refid="columns" />)
+    values
+    (
+      #{id, jdbcType=DECIMAL},
+      #{uuid, jdbcType=VARCHAR},
+      #{traceId, jdbcType=VARCHAR},
+      #{fitBusinessExceptionType, jdbcType=VARCHAR}, 
+      #{fitExpType, jdbcType=VARCHAR},
+      #{detail, jdbcType=VARCHAR},
+      #{remark, jdbcType=VARCHAR}, 
+      #{operType, jdbcType=VARCHAR},
+      #{createTime, jdbcType=TIMESTAMP},
+      #{updateTime, jdbcType=TIMESTAMP},
+      #{requestStr, jdbcType=VARCHAR},
+      #{requestStr1, jdbcType=VARCHAR},
+      #{requestStr2, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- 查询 -->
+	<select id="query" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
+		SELECT
+		<include refid="columns" />
+		FROM T_FIT_OP_LOG
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="condition != null and condition != '' ">
+				<include refid="whereCondition"></include>
+				
+			</if>
+		</trim>
+		ORDER BY T_FIT_OP_LOG.CREATE_TIME DESC
+		<include refid="ORACLE.paginationEnd" />
+	</select>
+  
+  <!-- 统计  -->
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM T_FIT_OP_LOG
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="condition != null">
+					<include refid="whereCondition"></include>
+			</if>
+		</trim>
+	</select>
+	
+	<sql id="whereCondition">
+		<if test="condition.traceId != null and condition.traceId != '' ">
+			AND TRACE_ID = #{condition.traceId, jdbcType=VARCHAR}
+		</if>
+		<if test="condition.fitBusinessExceptionType != null ">
+			AND FIT_BUSINESS_TYPE = #{condition.fitBusinessExceptionType, jdbcType=VARCHAR}
+		</if>
+		<if test="condition.selectTimeStart != null">
+			<![CDATA[ AND CREATE_TIME >= #{condition.selectTimeStart, jdbcType=TIMESTAMP} ]]>
+		</if>
+		<if test="condition.selectTimeEnd != null">
+			<![CDATA[ AND CREATE_TIME <= #{condition.selectTimeEnd, jdbcType=TIMESTAMP} ]]>
+		</if>
+	</sql>
+</mapper>

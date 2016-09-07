@@ -1,0 +1,87 @@
+.fh-no-result {
+  width: 1198px;
+  border: 1px solid #DDD;
+  background: #fff;
+  margin: 10px 0 20px;
+  padding: 43px 0 43px;
+}
+.fh-no-result i {
+  display: block;
+  float: left;
+  width: 34px;
+  height: 34px;
+  background: url(http://pic.lvmama.com/img/v6/flighthotel/flighthotel.png) -146px 0;
+  margin-left: 407px;
+}
+.fh-no-result .fh-nr-text {
+  float: left;
+  margin-left: 13px;
+}
+.fh-no-result .fh-nr-text .sorry {
+  font-family: "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 18px;
+  color: #333;
+}
+.fh-no-result .fh-nr-text .suggestion {
+  font-family: "Simsun", sans-serif;
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+.fh-no-result .fh-nr-text .suggestion a {
+  color: #0099CC;
+}
+.fh-no-result .fh-nr-text .suggestion a:hover {
+  color: #f60;
+  text-decoration: underline;
+}
+.fh-overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 4000;
+  background-color: #000;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  display: none;
+}
+.fh-dialog-loading {
+  position: fixed;
+  _position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -48px 0 0 -170px;
+  z-index: 5000;
+  border: 0;
+  width: 330px;
+  color: #4d4d4d;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.4);
+  filter: progid:DXImageTransform.Microsoft.Gradient(startColorstr=#66000000, endColorstr=#66000000);
+  display: none;
+}
+.fh-dialog-inner {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+}
+.fh-dialog-body {
+  padding: 20px;
+}
+.fh-dialog-body p {
+  padding-left: 66px;
+  height: 46px;
+  line-height: 46px;
+  font-family: "Simsun", sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  background: url(http://pic.lvmama.com/img/new_v/ui_scrollLoading/loadingGIF46px.gif) no-repeat;
+}

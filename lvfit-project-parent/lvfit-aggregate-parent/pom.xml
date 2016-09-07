@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-project-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lvfit-aggregate-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>lvmama lvfit aggregate parent</name>
+	<description>lvmama lvfit aggregate parent</description>
+	<url>http://www.lvmama.com</url>
+
+	<modules>
+		<module>lvfit-aggregate-base</module>
+		<module>lvfit-aggregate-order</module>
+		<module>lvfit-aggregate-core</module>
+		<module>lvfit-aggregate-service</module>
+		
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-persistence-all</artifactId>
+			<version>${lvfit-persistence.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-project-common</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-spring</artifactId>
+			<version>${resteasy.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.resteasy</groupId>
+					<artifactId>resteasy-jettison-provider</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-httpclient</groupId>
+					<artifactId>commons-httpclient</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>${resteasy.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>tjws</artifactId>
+			<version>${tjws.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

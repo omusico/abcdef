@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.vst.persistence.mybatis.mapper.VstComPushMapper" >
+
+	<sql id="columns">
+			id,object_id,create_time,object_type,push_flag,push_count,push_content,data_type,operate_type
+		</sql>
+
+	<insert id="insert">
+		<selectKey keyProperty="id" resultType="Long" order="BEFORE">
+			<choose>
+				<when test="id != null and id != ''">
+					SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+				</when>
+				<otherwise>
+					SELECT lvmama_ver.SEQ_COM_PUSH_ID.NEXTVAL FROM DUAL
+				</otherwise>
+			</choose>
+		</selectKey>
+		insert into lvmama_ver.com_push
+		(
+		<include refid="columns" />
+		)
+		values
+		(
+		#{id,jdbcType=DECIMAL},
+		#{objectId,jdbcType=DECIMAL},
+		#{createTime,jdbcType=VARCHAR},
+		#{objectType,jdbcType=DECIMAL},
+		#{pushFlag,jdbcType=VARCHAR},
+		#{pushCount,jdbcType=VARCHAR},
+		#{pushContent,jdbcType=DECIMAL},
+		#{dataType,jdbcType=DECIMAL},
+		#{operateType,jdbcType=VARCHAR}
+		)
+	</insert>
+
+</mapper>

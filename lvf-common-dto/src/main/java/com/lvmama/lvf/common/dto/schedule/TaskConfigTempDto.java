@@ -1,0 +1,111 @@
+package com.lvmama.lvf.common.dto.schedule;
+
+import java.io.Serializable;
+
+import com.lvmama.lvf.common.dto.Entity;
+import com.lvmama.lvf.common.dto.status.ResultStatus;
+
+public class TaskConfigTempDto  extends Entity implements Serializable {
+
+	/**
+	 * 
+	 */
+   private static final long serialVersionUID = -6131572233462672614L;
+
+   private String userId;
+	
+	/**出发到达城市code*/  
+	private String depCityCode;
+	
+	private String arrCityCode;
+	
+	/**天数范围    	T+N*/  
+	private Integer startDay;
+	
+	private Integer endDay;
+	
+	/**执行时间范围*/  
+	private Integer startHour;
+	
+	private Integer endHour;
+	
+	/**执行频率*/  
+	private Integer rate;
+	
+	/**执行状态 */
+	private ResultStatus resultStatus;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getDepCityCode() {
+		return depCityCode;
+	}
+
+	public void setDepCityCode(String depCityCode) {
+		this.depCityCode = depCityCode;
+	}
+
+	public String getArrCityCode() {
+		return arrCityCode;
+	}
+
+	public void setArrCityCode(String arrCityCode) {
+		this.arrCityCode = arrCityCode;
+	}
+
+	public Integer getStartDay() {
+		return startDay;
+	}
+
+	public void setStartDay(Integer startDay) {
+		this.startDay = startDay;
+	}
+
+	public Integer getEndDay() {
+		return endDay;
+	}
+
+	public void setEndDay(Integer endDay) {
+		this.endDay = endDay;
+	}
+
+	public Integer getStartHour() {
+		return startHour;
+	}
+
+	public void setStartHour(Integer startHour) {
+		this.startHour = startHour;
+	}
+
+	public Integer getEndHour() {
+		return endHour;
+	}
+
+	public void setEndHour(Integer endHour) {
+		this.endHour = endHour;
+	}
+
+	public Integer getRate() {
+		return rate;
+	}
+
+	public void setRate(Integer rate) {
+		this.rate = rate;
+	}
+
+	public ResultStatus getResultStatus() {
+		return resultStatus;
+	}
+
+	public void setResultStatus(ResultStatus resultStatus) {
+		this.resultStatus = resultStatus;
+	}
+	
+	
+}

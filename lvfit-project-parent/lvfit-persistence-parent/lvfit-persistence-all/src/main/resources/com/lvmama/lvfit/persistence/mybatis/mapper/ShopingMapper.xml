@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.ShopingMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.shopping.ShoppingDetailDto">
+		<result column="ID" property="id"  jdbcType="DECIMAL" />
+	    <result column="UUID" property="uuid"  jdbcType="VARCHAR" />
+	    <result column="SHOPPING_UUID" property="shoppingUuid"  jdbcType="VARCHAR" />
+	    <result column="CUSTOMER_ID" property="customerId" jdbcType="DECIMAL" />
+	    <result column="CUSTOME_NO" property="customeNo"  jdbcType="VARCHAR" />
+	    <result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR" />
+	    <result column="OPER_IP" property="operIp" jdbcType="VARCHAR" />
+	    <result column="OPER_ID" property="operId" jdbcType="DECIMAL" />
+	    <result column="OPER_NAME" property="operName" jdbcType="VARCHAR" />
+	    <result column="SHOPPING_TYPE" property="shoppingType" jdbcType="VARCHAR" />
+	    <result column="CONTACTER_NAME" property="contacterName" jdbcType="VARCHAR" />
+	    <result column="CONTACTER_MOBILE" property="contacterMobile" jdbcType="VARCHAR" />
+	    <result column="CONTACTER_EMAIL" property="contacterEmail" jdbcType="VARCHAR" />
+	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+	    <result column="SEARCH_CONDITION" property="searchCondition" jdbcType="VARCHAR" />
+	    <result column="VST_ORDER_STATUS" property="vstOrderStatus" jdbcType="VARCHAR" />	   
+	    <result column="VST_ORDER_MSG" property="vstOrderMsg" jdbcType="VARCHAR" />	   
+	    <result column="DEP_FLI_ORDER_STATUS" property="depFliOrderStatus" jdbcType="VARCHAR" />	   
+	    <result column="DEP_FLI_ORDER_MSG" property="depFliOrderMsg" jdbcType="VARCHAR" />	   
+	    <result column="ARV_FLI_ORDER_STATUS" property="arvFliOrderStatus" jdbcType="VARCHAR" />	   
+	    <result column="ARV_FLI_ORDER_MSG" property="arvFliOrderMsg" jdbcType="VARCHAR" />
+	    	   
+	</resultMap>
+	
+
+	<sql id="columns">
+		ID, UUID, SHOPPING_UUID, CUSTOMER_ID,CUSTOME_NO,CUSTOMER_NAME,OPER_IP,OPER_ID,OPER_NAME,SHOPPING_TYPE,CONTACTER_NAME,
+		CONTACTER_MOBILE,CONTACTER_EMAIL,CREATE_TIME,UPDATE_TIME,SEARCH_CONDITION,VST_ORDER_STATUS,VST_ORDER_MSG,DEP_FLI_ORDER_STATUS,
+		DEP_FLI_ORDER_MSG,ARV_FLI_ORDER_STATUS,ARV_FLI_ORDER_MSG
+	</sql>
+	
+	<sql id="commonsql">
+	   <if test="condition != null">
+	   			ID IN(SELECT MAX_ID FROM(SELECT SHOPPING_UUID,MAX(ID) AS MAX_ID FROM T_FITSHOP_SHOPPING  GROUP BY SHOPPING_UUID))
+				<if test="condition.queryBegTime != null and condition.queryBegTime!=''">
+						<![CDATA[
+					 		 AND CREATE_TIME >= TO_DATE(#{condition.queryBegTime,jdbcType=VARCHAR}, 'yyyy-mm-dd')
+					 	]]>
+				</if>
+				<if test="condition.queryEndTime != null and condition.queryEndTime!=''">
+						<![CDATA[
+					 		 AND CREATE_TIME < TO_DATE(#{condition.queryEndTime,jdbcType=VARCHAR}, 'yyyy-mm-dd') + 1
+					 	]]>
+				</if>
+				<if test="condition.shoppingUUId != null and condition.shoppingUUId!=''">
+					AND shopping_uuid = #{condition.shoppingUUId,jdbcType=VARCHAR}
+				</if>
+				<if test="condition.contacterName != null and condition.contacterName!=''">
+					AND CONTACTER_NAME = #{condition.contacterName,jdbcType=VARCHAR}
+				</if>
+				<if test="condition.contacterMobile != null and condition.contacterMobile!=''">
+					AND CONTACTER_MOBILE = #{condition.contacterMobile,jdbcType=VARCHAR}
+				</if>
+			</if>
+	</sql>
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.shopping.ShoppingDetailDto">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select S_FITSHOP_SHOPPING.NEXTVAL from dual
+		</selectKey>
+		insert into
+		T_FITSHOP_SHOPPING
+		(<include refid="columns" />)
+		values
+		(
+			#{id,jdbcType=INTEGER}, 
+			#{uuid,jdbcType=VARCHAR},
+			#{shoppingUuid,jdbcType=VARCHAR}, 
+			#{customeNo,jdbcType=DECIMAL}, 
+			#{customerId,jdbcType=VARCHAR},
+			#{customerName,jdbcType=VARCHAR},
+			#{operIp,jdbcType=VARCHAR}, 
+			#{operId,jdbcType=INTEGER},
+			#{operName,jdbcType=VARCHAR}, 
+			#{shoppingType,jdbcType=VARCHAR}, 
+			#{contacterName,jdbcType=VARCHAR}, 
+			#{contacterMobile,jdbcType=VARCHAR},
+			#{contacterEmail,jdbcType=VARCHAR}, 
+			#{createTime,jdbcType=TIMESTAMP}, 
+			#{updateTime,jdbcType=TIMESTAMP},
+			#{searchCondition,jdbcType=VARCHAR},
+			#{vstOrderStatus, jdbcType=VARCHAR},
+			#{vstOrderMsg, jdbcType=VARCHAR},
+			#{depFliOrderStatus, jdbcType=VARCHAR},
+			#{depFliOrderMsg, jdbcType=VARCHAR},
+			#{arvFliOrderStatus, jdbcType=VARCHAR},
+			#{arvFliOrderMsg, jdbcType=VARCHAR}
+		)
+	</insert>
+
+     <!-- 根据shoppingId查询 -->
+	<select id="getListByCode" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_SHOPPING
+		WHERE ID = (select MAX(ID) from T_FITSHOP_SHOPPING where SHOPPING_UUID = #{code}) order by create_time desc
+	</select>
+	
+	<!-- 根据code修改数据 -->
+	<update id="updateByCode">
+		update T_FITSHOP_SHOPPING 
+		<set>
+	      <if test="i.customerId != null" >
+	        CUSTOMER_ID = #{i.customerId,jdbcType=INTEGER},
+	      </if>
+	      <if test="i.customeNo != null" >
+	        CUSTOME_NO = #{i.customeNo,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.customerName != null" >
+	        CUSTOMER_NAME = #{i.customerName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.operIp != null" >
+	        OPER_IP = #{i.operIp,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.operId != null" >
+	        OPER_ID = #{i.operId,jdbcType=INTEGER},
+	      </if>
+	      <if test="i.operName != null" >
+	        OPER_NAME = #{i.operName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.shoppingType != null" >
+	        SHOPPING_TYPE = #{i.shoppingType,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.contacterName != null" >
+	        CONTACTER_NAME = #{i.contacterName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.contacterMobile != null" >
+	        CONTACTER_MOBILE = #{i.contacterMobile,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.contacterEmail != null" >
+	        CONTACTER_EMAIL = #{i.contacterEmail,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.updateTime != null" >
+	        UPDATE_TIME = #{i.updateTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="i.searchCondition != null" >
+	        SEARCH_CONDITION = #{i.searchCondition,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.vstOrderStatus != null" >
+	        VST_ORDER_STATUS = #{i.vstOrderStatus,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.vstOrderMsg != null" >
+	        VST_ORDER_MSG = #{i.vstOrderMsg,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.depFliOrderStatus != null" >
+	        DEP_FLI_ORDER_STATUS = #{i.depFliOrderStatus,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.depFliOrderMsg != null" >
+	        DEP_FLI_ORDER_MSG = #{i.depFliOrderMsg,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.arvFliOrderStatus != null" >
+	        ARV_FLI_ORDER_STATUS = #{i.arvFliOrderStatus,jdbcType=VARCHAR},
+	      </if>
+	      <if test="i.arvFliOrderMsg != null" >
+	        ARV_FLI_ORDER_MSG = #{i.arvFliOrderMsg,jdbcType=VARCHAR},
+	      </if>
+		</set>
+		WHERE ID = #{i.id}
+	</update>
+	
+	<!-- 根据code删除数据 -->
+	<delete id="deleteByCode">
+		delete from T_FITSHOP_SHOPPING
+		WHERE SHOPPING_UUID = #{code}
+	</delete>
+	
+	
+	<select id="query" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSHOP_SHOPPING		
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<include refid="commonsql"/>
+		</trim>
+		order by create_time desc
+		<include refid="ORACLE.paginationEnd" />
+	</select>
+	
+	
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM T_FITSHOP_SHOPPING
+			<trim prefix="WHERE" prefixOverrides="AND">
+			  <include refid="commonsql"/>
+		   </trim>
+	</select>
+</mapper>

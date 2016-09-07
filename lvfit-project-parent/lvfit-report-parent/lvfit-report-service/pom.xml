@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-report-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lvfit-report-service</artifactId>
+	<packaging>war</packaging>
+	<name>lvmama-lvfit-report-service</name>
+	<description>lvmama-lvfit-report-service</description>
+	<properties>
+		<jetty.port>9191</jetty.port>
+		<jetty.stopPort>9989</jetty.stopPort>
+	</properties>	
+	<dependencies>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-report-base</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-report-core</artifactId>
+			<version>0.1.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.179</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>tjws</artifactId>
+			<version>2.1.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>3.0.5.Final</version>
+		</dependency>
+		
+	</dependencies>
+
+</project>

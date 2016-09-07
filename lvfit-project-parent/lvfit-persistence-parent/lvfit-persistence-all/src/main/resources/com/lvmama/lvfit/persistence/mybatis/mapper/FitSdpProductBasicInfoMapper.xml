@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductBasicInfoMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto" >
+      <result column="ID" property="id" jdbcType="DECIMAL" />
+      <result column="PRODUCT_ID" property="productId" jdbcType="DECIMAL" />
+      <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+      <result column="BIZ_CATEGORY_ID" property="bizCategoryId" jdbcType="DECIMAL" />
+      <result column="BIZ_CATEGORY_NAME" property="bizCategoryName" jdbcType="VARCHAR" />
+      <result column="MUILT_DPARTURE_FLAG" property="muiltDpartureFlag" jdbcType="VARCHAR" />
+      <result column="PACKAGED_PRODUCT_ID" property="packagedProductId" jdbcType="DECIMAL" />
+      <result column="MANAGER_ID" property="managerId" jdbcType="DECIMAL" />
+      <result column="MANAGER_NAME" property="managerName" jdbcType="VARCHAR" />
+      
+      <result column="ATTRIBUTION_ID" property="attributionId" jdbcType="DECIMAL" />
+      <result column="ADULT_QUANTITY" property="adultQuantity" jdbcType="DECIMAL" />
+      <result column="CHILD_QUANTITY" property="childQuantity" jdbcType="DECIMAL" />
+      
+      <result column="PRODUCT_PRICE" property="productPrice" jdbcType="DECIMAL" />
+      <result column="PRICE_UNIT" property="priceUnit" jdbcType="VARCHAR" />
+      <result column="PHOTO_URLS" property="photoUrls" jdbcType="VARCHAR" />
+      <result column="HOME_COMBO_FLAG" property="homeComboFlag" jdbcType="VARCHAR" />
+      <result column="ROUTE_NUM" property="routeNum" jdbcType="DECIMAL" />
+      <result column="STAY_NUM" property="stayNum" jdbcType="DECIMAL" />
+      
+      <result column="AUDIT_TYPE" property="auditType" jdbcType="VARCHAR" />
+      <result column="CANCEL_FLAG" property="cancelFlag" jdbcType="VARCHAR" />
+      <result column="SALE_FLAG" property="saleFlag" jdbcType="VARCHAR" />
+      <result column="PACKAGE_TRAFFIC_FLAG" property="packageTrafficFlag" jdbcType="VARCHAR" />
+      <result column="ROUTE_DETAIL_USE_FLAG" property="routeDetailUseFlag" jdbcType="VARCHAR" />
+      <result column="FEE_EXPLAIN_USE_FLAG" property="feeExplainUseFlag" jdbcType="VARCHAR" />
+      <result column="CATEGORY_CODE" property="categoryCode" jdbcType="VARCHAR" />
+      <result column="CHILD_PRICE_DESC" property="childPriceDesc" jdbcType="VARCHAR" />
+	  <result column="CUR_SYNC_FLAG" property="curSyncFlag" jdbcType="VARCHAR" />
+	  <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
+	  <result column="UPDATE_TIME" property="updateTime" jdbcType="VARCHAR" />
+	  <result column="PACKAGED_CATEGORY_ID" property="packagedCategoryId" jdbcType="DECIMAL" />
+
+  </resultMap> 
+
+	<sql id="columns">
+    	ID,PRODUCT_ID,PRODUCT_NAME,BIZ_CATEGORY_ID,BIZ_CATEGORY_NAME,MUILT_DPARTURE_FLAG,PACKAGED_PRODUCT_ID,MANAGER_ID,MANAGER_NAME,
+  		ATTRIBUTION_ID,ADULT_QUANTITY,CHILD_QUANTITY,PRODUCT_PRICE,PRICE_UNIT,PHOTO_URLS,HOME_COMBO_FLAG,
+  		ROUTE_NUM,STAY_NUM,AUDIT_TYPE,CANCEL_FLAG,SALE_FLAG,PACKAGE_TRAFFIC_FLAG,ROUTE_DETAIL_USE_FLAG,FEE_EXPLAIN_USE_FLAG,CATEGORY_CODE,CHILD_PRICE_DESC,CUR_SYNC_FLAG
+  		,CREATE_TIME,UPDATE_TIME,PACKAGED_CATEGORY_ID
+  	</sql>
+  	
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITSDP_PRODUCT_BASIC_INFO.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITSDP_PRODUCT_BASIC_INFO 
+    (
+    	<include refid="columns" />
+      )
+    values
+      (#{id,jdbcType=DECIMAL},
+      #{productId,jdbcType=DECIMAL},
+      #{productName,jdbcType=VARCHAR},
+      #{bizCategoryId,jdbcType=DECIMAL},
+      #{bizCategoryName,jdbcType=VARCHAR},
+      #{muiltDpartureFlag,jdbcType=VARCHAR},
+      #{packagedProductId,jdbcType=DECIMAL},
+      #{managerId,jdbcType=DECIMAL},
+      #{managerName,jdbcType=VARCHAR},
+      #{attributionId,jdbcType=DECIMAL},
+      #{adultQuantity,jdbcType=DECIMAL},
+      #{childQuantity,jdbcType=DECIMAL},
+      #{productPrice,jdbcType=DECIMAL},
+      #{priceUnit,jdbcType=VARCHAR},
+      #{photoUrls,jdbcType=VARCHAR},
+      #{homeComboFlag,jdbcType=VARCHAR},
+      #{routeNum,jdbcType=DECIMAL},
+      #{stayNum,jdbcType=DECIMAL},
+      #{auditType,jdbcType=VARCHAR},
+      #{cancelFlag,jdbcType=VARCHAR},
+      #{saleFlag,jdbcType=VARCHAR},
+      #{packageTrafficFlag,jdbcType=VARCHAR},
+      #{routeDetailUseFlag,jdbcType=VARCHAR},
+      #{feeExplainUseFlag,jdbcType=VARCHAR},
+      #{categoryCode,jdbcType=VARCHAR},
+      #{childPriceDesc,jdbcType=VARCHAR},
+      #{curSyncFlag,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP},
+      #{packagedCategoryId,jdbcType=DECIMAL})
+  </insert>
+	
+	<select id="getById" resultMap="resultMap">
+	    SELECT A.* FROM T_FITSDP_PRODUCT_BASIC_INFO A WHERE A.ID = #{id,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+	<select id="getByProductId" resultMap="resultMap">
+	    SELECT A.* FROM T_FITSDP_PRODUCT_BASIC_INFO A WHERE A.PRODUCT_ID = #{productId,jdbcType=DECIMAL}
+	    ORDER BY A.ID ASC
+	</select>
+  <!-- 查询 -->
+	<select id="queryByCondition" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSDP_PRODUCT_BASIC_INFO
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="condition != null and condition != '' ">
+				<include refid="whereCondition"></include>
+			</if>
+		</trim>
+		ORDER BY ID DESC
+		<include refid="ORACLE.paginationEnd" />
+	</select>
+	<!-- 查询Sdp产品导出信息-->
+	<select id="querySdpProductReport" resultMap="resultMap">
+		SELECT
+		<include refid="columns" />
+		FROM T_FITSDP_PRODUCT_BASIC_INFO
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="condition != null and condition != '' ">
+				<include refid="whereCondition"></include>
+			</if>
+		</trim>
+		ORDER BY ID DESC
+	</select>
+	
+  <!-- 统计  -->
+	<select id="countByCondition" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM T_FITSDP_PRODUCT_BASIC_INFO
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="condition != null">
+					<include refid="whereCondition"></include>
+			</if>
+		</trim>
+	</select>
+	
+	<sql id="whereCondition">
+		<if test="condition.id != null">
+			AND ID = #{condition.id, jdbcType=DECIMAL}
+		</if>
+		<if test="condition.productId != null">
+			AND PRODUCT_ID = #{condition.productId, jdbcType=DECIMAL}
+		</if>
+		<if test="condition.productName != null and condition.productName != ''">
+			AND PRODUCT_NAME LIKE CONCAT('%',CONCAT(#{condition.productName, jdbcType=VARCHAR},'%'))
+		</if>
+		<if test="condition.bizCategoryId != null">
+			AND  BIZ_CATEGORY_ID = #{condition.bizCategoryId, jdbcType=DECIMAL}
+		</if>
+		<if test="condition.bizCategoryName != null and condition.bizCategoryName != ''">
+			AND BIZ_CATEGORY_NAME LIKE CONCAT('%',CONCAT(#{condition.bizCategoryName, jdbcType=VARCHAR},'%'))
+		</if>
+		<if test="condition.muiltDpartureFlag != null and condition.muiltDpartureFlag != ''">
+			AND MUILT_DPARTURE_FLAG = #{condition.muiltDpartureFlag, jdbcType=VARCHAR}
+		</if>
+		<if test="condition.packagedProductId != null">
+			AND PACKAGED_PRODUCT_ID = #{condition.packagedProductId, jdbcType=DECIMAL}
+		</if>
+		<if test="condition.managerName != null  and condition.managerName != ''">
+			AND MANAGER_NAME LIKE CONCAT('%',CONCAT(#{condition.managerName,jdbcType=VARCHAR},'%'))
+		</if>
+		<if test="condition.cancelFlag != null  and condition.cancelFlag != ''">
+			AND CANCEL_FLAG=#{condition.cancelFlag,jdbcType=VARCHAR}
+		</if>
+		<if test="condition.saleFlag != null  and condition.saleFlag != ''">
+			AND SALE_FLAG=#{condition.saleFlag,jdbcType=VARCHAR}
+		</if>
+		<if test="condition.createTimeStart != null and condition.createTimeStart != ''">
+			AND CREATE_TIME <![CDATA[>=]]> TO_DATE(#{condition.createTimeStart},'yyyy-MM-dd hh24:mi:ss')
+		</if>
+		<if test="condition.createTimeEnd != null and condition.createTimeEnd != ''">
+			AND CREATE_TIME <![CDATA[<=]]> TO_DATE(#{condition.createTimeEnd},'yyyy-MM-dd hh24:mi:ss')
+		</if>
+	</sql>
+	
+	<update id="updateById">
+		<include refid="updateProductBaseInfo"></include>
+		where ID = #{id,jdbcType=DECIMAL}
+	</update>
+	
+	<update id="updateCurSyncFlag">
+		update T_FITSDP_PRODUCT_BASIC_INFO A  set CUR_SYNC_FLAG = #{curSyncFlag,jdbcType=VARCHAR} where PRODUCT_ID = #{id,jdbcType=DECIMAL}
+	</update>
+	
+	<update id="updateMuiltDpartureFlag">
+		update T_FITSDP_PRODUCT_BASIC_INFO A  set MUILT_DPARTURE_FLAG = #{muiltDpartureFlag,jdbcType=VARCHAR} where PRODUCT_ID = #{id,jdbcType=DECIMAL}
+	</update>
+	
+	<sql id="updateProductBaseInfo">
+		update T_FITSDP_PRODUCT_BASIC_INFO A
+		<set>
+			<if test="i.productId!=null">
+				PRODUCT_ID = #{i.productId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.productName!=null and i.productName!=''">
+				PRODUCT_NAME = #{i.productName,jdbcType=VARCHAR},
+			</if>
+			<if test="i.bizCategoryId!=null">
+				BIZ_CATEGORY_ID = #{i.bizCategoryId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.bizCategoryName!=null and i.bizCategoryName!=''">
+				BIZ_CATEGORY_NAME = #{i.bizCategoryName,jdbcType=VARCHAR},
+			</if>
+			<if test="i.muiltDpartureFlag!=null and i.muiltDpartureFlag!=''">
+				MUILT_DPARTURE_FLAG = #{i.muiltDpartureFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="i.packagedProductId!=null">
+				PACKAGED_PRODUCT_ID = #{i.packagedProductId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.managerId!=null">
+				MANAGER_ID = #{i.managerId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.managerName!=null and i.managerName!=''">
+				MANAGER_NAME = #{i.managerName,jdbcType=VARCHAR},
+			</if>
+			<if test="i.attributionId!=null">
+				ATTRIBUTION_ID = #{i.attributionId,jdbcType=DECIMAL},
+			</if>
+			<if test="i.adultQuantity!=null">
+				ADULT_QUANTITY = #{i.adultQuantity,jdbcType=DECIMAL},
+			</if>
+			<if test="i.childQuantity!=null">
+				CHILD_QUANTITY = #{i.childQuantity,jdbcType=DECIMAL},
+			</if>
+			<if test="i.productPrice!=null">
+				PRODUCT_PRICE = #{i.productPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="i.priceUnit!=null and i.priceUnit!=''">
+				PRICE_UNIT = #{i.priceUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="i.photoUrls!=null and i.photoUrls!=''">
+				PHOTO_URLS = #{i.photoUrls,jdbcType=VARCHAR},
+			</if>
+			<if test="i.homeComboFlag!=null and i.homeComboFlag!=''">
+				HOME_COMBO_FLAG = #{i.homeComboFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="i.routeNum!=null">
+				ROUTE_NUM = #{i.routeNum,jdbcType=DECIMAL},
+			</if>
+			<if test="i.stayNum!=null">
+				STAY_NUM = #{i.stayNum,jdbcType=DECIMAL},
+			</if>
+			<if test="i.auditType!=null and i.auditType!=''">
+				AUDIT_TYPE = #{i.auditType,jdbcType=VARCHAR},
+			</if>
+			<if test="i.cancelFlag!=null and i.cancelFlag!=''">
+				CANCEL_FLAG = #{i.cancelFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="i.saleFlag!=null and i.saleFlag!=''">
+				SALE_FLAG = #{i.saleFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="i.packageTrafficFlag!=null and i.packageTrafficFlag!=''">
+				 PACKAGE_TRAFFIC_FLAG = #{i.packageTrafficFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="i.routeDetailUseFlag!=null and i.routeDetailUseFlag!=''">
+				ROUTE_DETAIL_USE_FLAG = #{i.routeDetailUseFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="i.feeExplainUseFlag != null">
+			    FEE_EXPLAIN_USE_FLAG = #{i.feeExplainUseFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="i.categoryCode!=null and i.categoryCode!=''">
+				CATEGORY_CODE = #{i.categoryCode,jdbcType=VARCHAR},
+			</if>
+			<if test="i.childPriceDesc!=null and i.childPriceDesc!=''">
+				CHILD_PRICE_DESC = #{i.childPriceDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="i.curSyncFlag!=null and i.curSyncFlag!=''">
+				CUR_SYNC_FLAG = #{i.curSyncFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="i.updateTime!=null and i.updateTime!=''">
+				UPDATE_TIME = #{i.updateTime,jdbcType=VARCHAR},
+			</if>
+			<if test="i.packagedCategoryId != null">
+				PACKAGED_CATEGORY_ID = #{i.packagedCategoryId,jdbcType=DECIMAL},
+			</if>
+		</set>
+	</sql>
+	
+    <delete id="deleteById">
+    	delete from T_FITSDP_PRODUCT_BASIC_INFO A where A.ID = #{id,jdbcType=DECIMAL}
+    </delete>
+    
+    <delete id="deleteByFkId">
+    	delete from T_FITSDP_PRODUCT_BASIC_INFO A where A.PRODUCT_ID = #{fkId,jdbcType=DECIMAL}
+    </delete>
+    
+    <!-- 获取可以被构建索引的基本信息 -->
+
+	<!-- 查询 -->
+	<select id="getCanSyncProductsByModValue" resultType="java.lang.Long">
+		<include refid="ORACLE.paginationStart" />
+		SELECT A.PRODUCT_ID
+		FROM T_FITSDP_PRODUCT_BASIC_INFO A
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<include refid="canSyncProductsCondition"></include>
+		</trim>
+		ORDER BY ID DESC
+		<include refid="ORACLE.paginationEnd" />
+	</select>
+
+	<!-- 统计  -->
+	<select id="getCanSyncProductCountsByModValue" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM T_FITSDP_PRODUCT_BASIC_INFO A
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<include refid="canSyncProductsCondition"></include>
+		</trim>
+	</select>
+
+	<sql id="canSyncProductsCondition">
+		AND A.PACKAGE_TRAFFIC_FLAG = 'Y' AND A.CANCEL_FLAG='Y'
+		AND A.SALE_FLAG='Y' AND A.AUDIT_TYPE='AUDITTYPE_PASS'
+		AND mod(A.PRODUCT_ID,#{syncMachineCount}) = #{modValue}
+	</sql>
+    
+    <select id="queryDataBefore5Am">
+		<![CDATA[
+		SELECT A.PRODUCT_ID
+		FROM T_FITSDP_PRODUCT_BASIC_INFO A
+		WHERE update_time > to_date(to_char(trunc(sysdate-1),'yyyy-mm-dd')||'05:00:00','yyyy-mm-dd hh24:mi:ss')
+		]]>
+	</select>
+    
+</mapper>

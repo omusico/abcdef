@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderSpotTicketMapper">
+
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderSpotTicketDto">
+		<result column="ID" property="id" />
+	    <result column="UUID" property="uuid"/>
+	    <result column="SPOT_ID" property="spotId"  />
+	    <result column="SPOT_NAME" property="spotName"  />
+	    <result column="TICKET_ID" property="ticketId"  />
+	    <result column="TICKET_NAME" property="ticketName"  />
+	    <result column="TICKETSPEC" property="ticketSpec" />
+	    <result column="TICKET_COUNT" property="ticketCount"  />
+	    <result column="VISIT_DATE" property="visitDate" />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime"  />
+	    <result column="TICKET_DETAIL" property="ticketDetail"  />
+	    <result column="TICKET_PRICE" property="ticketPrice" jdbcType="DECIMAL" />
+	</resultMap>
+	
+	<sql id="columns">
+		ID, UUID, SPOT_ID,SPOT_NAME,TICKET_ID,TICKET_NAME,TICKETSPEC,TICKET_COUNT,
+		VISIT_DATE,CREATE_TIME,UPDATE_TIME,TICKET_DETAIL,TICKET_PRICE
+	</sql>
+	<!-- 数据插入 -->
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.order.FitOrderSpotTicketDto">
+		<selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      	<choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_SPOT_TICKET.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+		insert into
+		T_FITORD_SPOT_TICKET
+		(<include refid="columns" />)
+		values
+		(
+		 #{id,jdbcType=DECIMAL},
+		 #{uuid,jdbcType=VARCHAR},
+         #{spotId,jdbcType=VARCHAR},
+         #{spotName,jdbcType=VARCHAR},
+         #{ticketId,jdbcType=VARCHAR},
+         #{ticketName,jdbcType=VARCHAR},
+         #{ticketSpec,jdbcType=VARCHAR},
+         #{ticketCount,jdbcType=INTEGER},
+         #{visitDate,jdbcType=TIMESTAMP},
+         #{createTime,jdbcType=TIMESTAMP},
+         #{updateTime,jdbcType=TIMESTAMP},
+         #{ticketDetail,jdbcType=VARCHAR},
+         #{ticketPrice,jdbcType=DECIMAL}
+		)
+	</insert>
+	 <select id="getById" resultMap="resultMap">
+    	SELECT *
+    	FROM T_FITORD_SPOT_TICKET
+    	WHERE ID = #{id,jdbcType=DECIMAL}
+  	</select>
+  	
+</mapper>

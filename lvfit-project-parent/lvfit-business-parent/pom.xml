@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-project-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lvfit-business-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>lvmama lvfit business parent</name>
+	<description>lvmama lvfit business parent</description>
+	<url>http://www.lvmama.com</url>
+	<modules>
+		<module>lvfit-business-base</module>
+		<module>lvfit-business-shopping</module>
+		<module>lvfit-business-order</module>
+		<module>lvfit-business-booking</module>
+		<module>lvfit-business-service</module>
+    	<module>lvfit-business-config</module>
+    	<module>lvfit-business-sdpproduct</module>
+	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>com.lvmama.lvfit</groupId>
+			<artifactId>lvfit-persistence-all</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-spring</artifactId>
+			<version>3.0.5.Final</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.resteasy</groupId>
+					<artifactId>resteasy-jettison-provider</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+</project>

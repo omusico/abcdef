@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lvmama.lvfit</groupId>
+		<artifactId>lvfit-project-parent</artifactId>
+		<version>0.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lvfit-report-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>lvmama lvfit report parent</name>
+	<description>lvmama lvfit report parent</description>
+	<url>http://www.lvmama.com</url>
+
+	<modules>
+		<module>lvfit-report-base</module>
+		<module>lvfit-report-core</module>
+		<module>lvfit-report-service</module>
+	</modules>
+</project>

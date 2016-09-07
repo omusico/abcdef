@@ -1,0 +1,375 @@
+
+.banWrap {
+  background: url(http://pic.lvmama.com/img/v6/flighthotel/flighthotel-bg.jpg) center bottom no-repeat;
+  padding-top: 60px;
+  height: 540px;
+}
+input{
+  cursor: pointer;
+}
+.fhMain {
+  width: 1200px;
+  margin: 0 auto;
+  height: 270px;
+}
+.fhMain .fh-search {
+  background: #FFF;
+  float: left;
+  padding: 0 0 39px 40px;
+  width: 860px;
+  height: 231px;
+}
+.fhMain .fh-logo {
+  width: 300px;
+  height: 270px;
+  float: left;
+  background: url(http://pic.lvmama.com/img/v6/flighthotel/flighthotel-logo.png) center 0 no-repeat;
+}
+.fh-search-part {
+  margin-top: 18px;
+}
+.fh-search-part .icon {
+  display: block;
+  float: left;
+  width: 37px;
+  height: 37px;
+  margin: 22px 14px 0 0;
+  background: url(http://pic.lvmama.com/img/v6/flighthotel/flighthotel.png);
+}
+.fh-search-part .icon-flight {
+  background-position: 0 0;
+}
+.fh-search-part .icon-hotel {
+  background-position: -37px 0;
+}
+.fh-search-part .icon-people {
+  background-position: -74px 0;
+}
+.fh-search-part .icon-calendar {
+  float: left;
+  width: 19px;
+  height: 18px;
+  margin: 0 0 0 6px;
+  background-position: -115px 0;
+}
+.fh-input-group {
+  float: left;
+}
+.fh-input-group span {
+  font-family: "Simsun", sans-serif;
+  font-size: 12px;
+  color: #666;
+  line-height: 18px;
+  display: block;
+  margin-bottom: 5px;
+}
+.fh-input-group input {
+  font-family: "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  color: #333;
+  padding: 7px 10px 8px;
+  border: 1px solid #DDD;
+  outline: none;
+}
+.fh-input-group .select-people-list {
+  position: absolute;
+  left: 0;
+  top: 58px;
+  width: 158px;
+  background: #fff;
+  border: 1px solid #DDD;
+  display: none;
+}
+.fh-input-group .select-people-list li {
+  font-family: "Simsun", sans-serif;
+  font-size: 12px;
+  color: #333;
+  padding-left: 9px;
+  height: 24px;
+}
+.fh-input-group .select-people-list li:hover {
+  cursor: pointer;
+  color: #f60;
+  text-decoration: underline;
+  background: #F5F5F5;
+}
+.fh-input-group .placeholder {
+  color: #BBB;
+}
+.fh-input-group .input-dest {
+  width: 138px;
+}
+.fh-input-group .input-calendar {
+  width: 178px;
+}
+.fh-input-group .input-hotel {
+  width: 308px;
+}
+.fh-input-group .select-div {
+  position: relative;
+  padding: 10px 10px 10px 8px;
+  width: 140px;
+  border: 1px solid #DDD;
+  height: 14px;
+  cursor: pointer;
+}
+.fh-input-group .select-div span {
+  font-family: "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+.fh-input-group .select-div .tip {
+  color: #BBB;
+}
+.fh-input-group .select-div i {
+  position: absolute;
+  right: 10px;
+  top: 14px;
+  display: block;
+  width: 9px;
+  height: 5px;
+  background: url(http://pic.lvmama.com/img/v6/flighthotel/flighthotel.png) -135px 0;
+}
+.fh-input-group .select-hotel {
+  width: 310px;
+}
+.fh-input-group .fh-calendar-info {
+  top: 32px;
+  right: 8px;
+}
+.fh-input-group .fh-calendar-info i {
+  float: left;
+  font-family: "Simsun", sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  color: #999;
+  vertical-align: 3px;
+}
+.fh-input-group .fh-city-error {
+  border-color: #EE3388;
+  background: #FEF2F9;
+}
+.fh-input-group .fh-city-error .tip {
+  color: #333;
+}
+.fh-search-btn {
+  display: block;
+  float: left;
+  width: 148px;
+  height: 36px;
+  font-family: "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 36px;
+  text-align: center;
+  color: #fff;
+  background: #EE3388;
+  border-radius: 3px;
+  margin: 19px 0 0 272px;
+}
+.fh-search-btn:hover {
+  color: #fff;
+  background: #DD3377;
+  text-decoration: none;
+}
+.des_error_tips {
+  background: #fff;
+  border: 1px solid #ddd;
+  width: 210px;
+  height: 22px;
+  overflow: hidden;
+  position: absolute;
+  font-family: "Simsun", sans-serif;
+  font-size: 12px;
+  color: #999;
+  padding: 5px;
+  z-index: 200;
+}
+.des_error_tips .word {
+  font-weight: bold;
+  color: #EE3388;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.des_error_tips span {
+  float: left;
+}
+.des_error_tips i {
+  color: #999;
+  float: right;
+  font-size: 18px;
+  cursor: pointer;
+}
+/*鐩殑鍦帮紝鎺ㄨ崘妗�*/
+.city_mdd {
+  background: #fff;
+  width: 390px;
+  padding: 10px;
+  border: #ddd solid 1px;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px #ccc;
+  z-index: 99;
+  position: absolute;
+  display: none;
+}
+.city_mdd1 {
+  background: #fff;
+  width: 138px;
+  padding: 10px;
+  border: #ddd solid 1px;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px #ccc;
+  z-index: 99;
+  position: absolute;
+  display: none;
+  max-height: 125px;
+  overflow-y: auto;
+}
+.city_mdd1 p:hover{color: #dd3377;cursor:pointer;}
+.city_mdd p {
+  color: #999;
+}
+.city_mdd .ico {
+  background: url(http://pic.lvmama.com/img/v6/flighthotel/flighthotel.png);
+}
+.city_mdd .mdd_tab {
+  height: 31px;
+  line-height: 30px;
+  overflow: hidden;
+  color: #333;
+  position: relative;
+  z-index: 3;
+}
+.city_mdd .mdd_tab li {
+  float: left;
+  width: 55px;
+  font-weight: bold;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+}
+.city_mdd .mdd_tab li.active,
+.mdd_tab li:hover {
+  color: #ED3387;
+}
+.city_mdd .mdd_tab li.active {
+  border-bottom: #ED3387 solid 1px;
+}
+.city_mdd .mdd_tab li .city_icon {
+  width: 11px;
+  height: 6px;
+  background-position: -135px -5px;
+  position: absolute;
+  left: 50%;
+  margin-left: -5px;
+  bottom: -2px;
+  display: none;
+}
+.city_mdd .mdd_tab li.active .city_icon {
+  display: block;
+}
+.city_mdd .mdd_list {
+  margin-top: -1px;
+  border-top: #E5E5E5 solid 1px;
+}
+.city_mdd .mdd_list li {
+  display: none;
+  padding: 5px 0;
+}
+.city_mdd .mdd_list li a {
+  color: #333;
+  margin-right: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.city_mdd .mdd_list li a:hover {
+  color: #f60;
+}
+/*鐩殑鍦拌ˉ鍏ㄦ枃鏈鍙婅ˉ鍏ㄥ垪琛�*/
+.complete-wrap {
+  width: 420px;
+  border: 1px solid #ccc;
+  position: absolute;
+  z-index: 500;
+  background: #fff;
+}
+.complete-wrap.keyword {
+  width: 360px;
+}
+.complete-wrap li {
+  width: 100%;
+}
+.complete-wrap .place-name {
+  font-family: "寰蒋闆呴粦";
+  font-size: 14px;
+  width: 250px;
+  height: inherit;
+  float: left;
+  overflow: hidden;
+}
+.complete-wrap .hotel-name {
+  font-family: "寰蒋闆呴粦";
+  font-size: 14px;
+  width: 235px;
+  height: inherit;
+  float: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.complete-wrap .place-name b,
+.complete-wrap .hotel-name b {
+  color: #999;
+  font-weight: normal;
+}
+.complete-wrap .hotel-count,
+.complete-wrap .hotel-place-type {
+  font-family: "瀹嬩綋";
+  font-size: 12px;
+  display: inline-block;
+}
+.complete-wrap .hotel-count {
+  color: #999;
+  width: 80px;
+  text-align: right;
+}
+.complete-wrap .hotel-place-type {
+  color: #999;
+  margin-left: 20px;
+}
+.complete-wrap .hotel-place-lcat {
+  color: #fff;
+  margin-right: 10px;
+  float: right;
+}
+.complete-wrap a {
+  background: #fff;
+  display: block;
+  width: 400px;
+  color: #333;
+  height: 22px;
+  line-height: 22px;
+  padding: 4px 10px;
+}
+.complete-wrap a:hover,
+.complete-wrap li.active a {
+  color: #fff;
+  background: #f90;
+  text-decoration: none;
+}
+.complete-wrap a:hover .place-name b,
+.complete-wrap a:hover .hotel-place-type,
+.complete-wrap a:hover .hotel-count,
+.complete-wrap a:hover .hotel-name b {
+  color: #fff !important;
+}
+.complete-wrap li.active .place-name b,
+.complete-wrap li.active .hotel-place-type,
+.complete-wrap li.active .hotel-count,
+.complete-wrap li.active .hotel-name b {
+  color: #fff !important;
+}
+.complete-wrap li.divide-line {
+  border-top: 1px dashed #ccc;
+}

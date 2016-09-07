@@ -1,0 +1,544 @@
+{
+    "productId": 398474,
+    "attributionId": 27,
+    "productName": "yangyan自由行自助打包",
+    "cancelFlag": "Y",
+    "saleFlag": "Y",
+    "recommendLevel": 2,
+    "bizCategoryId": 18,
+    "subCategoryId": 183,
+    "bizDistrictId": 44825,
+    "senisitiveFlag": "N",
+    "prodEcontract": {
+        "econtractId": 4158,
+        "productId": 398474,
+        "groupType": "SELF_TOUR"
+    },
+    "managerId": 2777,
+    "urlId": "398474",
+    "filiale": "SH_FILIALE",
+    "bu": "OUTBOUND_BU",
+    "source": "BACK",
+    "packageType": "LVMAMA",
+    "packageFlag": "N",
+    "productType": "FOREIGNLINE",
+    "prodLineRouteList": [
+        {
+            "lineRouteId": 10942,
+            "productId": 398474,
+            "routeNum": 7,
+            "stayNum": 5,
+            "trafficNum": 0,
+            "routeName": "A行程",
+            "cancleFlag": "Y",
+            "createTime": 1442905902000,
+            "lineRouteDateList": [
+            ],
+            "prodLineRouteDetailList": [
+                {
+                    "detailId": 20636,
+                    "routeId": 10942,
+                    "nDay": 1,
+                    "title": "飞往目的地",
+                    "content": "飞往目的地",
+                    "lunchFlag": "Y",
+                    "dinnerFlag": "Y",
+                    "trafficType": "PLANE"
+                },
+                {
+                    "detailId": 20637,
+                    "routeId": 10942,
+                    "nDay": 2,
+                    "title": "第二天游玩",
+                    "content": "第二天游玩",
+                    "stayType": "360",
+                    "breakfastFlag": "Y",
+                    "lunchFlag": "Y",
+                    "dinnerFlag": "Y",
+                    "trafficType": "BARS"
+                },
+                {
+                    "detailId": 20638,
+                    "routeId": 10942,
+                    "nDay": 3,
+                    "title": "第三天游玩",
+                    "content": "第三天游玩",
+                    "stayType": "360",
+                    "breakfastFlag": "Y",
+                    "lunchFlag": "Y",
+                    "dinnerFlag": "Y",
+                    "trafficType": "BOAT"
+                },
+                {
+                    "detailId": 20639,
+                    "routeId": 10942,
+                    "nDay": 4,
+                    "title": "第四天游玩",
+                    "content": "第四天游玩",
+                    "stayType": "360",
+                    "breakfastFlag": "Y",
+                    "lunchFlag": "Y",
+                    "dinnerFlag": "Y",
+                    "trafficType": "TRAIN"
+                },
+                {
+                    "detailId": 20640,
+                    "routeId": 10942,
+                    "nDay": 5,
+                    "title": "第五天游玩",
+                    "content": "第五天游玩",
+                    "stayType": "360",
+                    "breakfastFlag": "Y",
+                    "lunchFlag": "Y",
+                    "trafficType": "BOAT"
+                },
+                {
+                    "detailId": 20641,
+                    "routeId": 10942,
+                    "nDay": 6,
+                    "title": "第六天游玩",
+                    "content": "第六天游玩",
+                    "stayType": "360",
+                    "breakfastFlag": "Y",
+                    "lunchFlag": "Y",
+                    "dinnerFlag": "Y",
+                    "trafficType": "BOAT"
+                },
+                {
+                    "detailId": 20642,
+                    "routeId": 10942,
+                    "nDay": 7,
+                    "title": "第七天游玩",
+                    "content": "第七天游玩",
+                    "stayType": "360",
+                    "breakfastFlag": "Y",
+                    "lunchFlag": "Y",
+                    "trafficType": "CRUISE"
+                }
+            ],
+            "warningFlag": "N",
+            "newStructureFlag": "N",
+            "travelDays": "7天5晚"
+        }
+    ],
+    "comPhotoList": [
+    ],
+    "createTime": 1442851200000,
+    "createUser": "admin",
+    "updateTime": 1463027619000,
+    "auditStatus": "AUDITTYPE_PASS",
+    "prodProductSaleReList": [
+    ],
+    "abandonFlag": "N",
+    "muiltDpartureFlag": "Y",
+    "managerIdPerm": ",2777,",
+    "suppProductName": "yangyan自由行自助打包",
+    "hotelCombFlag": "N",
+    "baseAdultQuantity": 1,
+    "baseChildQuantity": 0,
+    "prodGroupList": [
+    ],
+    "propValue": {
+        "child_price_desc": "全票*50%",
+        "combo_contained": [
+            {
+                "id": 320,
+                "name": "小交通"
+            },
+            {
+                "id": 321,
+                "name": "酒店"
+            },
+            {
+                "id": 322,
+                "name": "门票"
+            },
+            {
+                "id": 323,
+                "name": "签证"
+            },
+            {
+                "id": 324,
+                "name": "接送机"
+            }
+        ],
+        "traffic_flag": "Y"
+    },
+    "bizCategory": {
+        "categoryId": 18,
+        "parentId": 14,
+        "categoryName": "自由行",
+        "cancelFlag": "Y",
+        "categoryCode": "category_route_freedom",
+        "processKey": "route",
+        "promTarget": "PRODUCT"
+    },
+    "prodProductPropList": [
+        {
+            "prodPropId": 9336982,
+            "productId": 398474,
+            "propId": 600,
+            "propValue": "Y",
+            "bizCategoryProp": {
+                "propId": 600,
+                "categoryId": 18,
+                "groupId": 23,
+                "propName": "是否有大交通",
+                "propCode": "traffic_flag",
+                "inputType": "INPUT_TYPE_YESNO",
+                "maxLength": 0,
+                "nullFlag": "Y",
+                "cancelFlag": "Y",
+                "bizCatePropGroup": {
+                    "groupId": 23,
+                    "categoryId": 18,
+                    "groupName": "基础信息",
+                    "seq": 1
+                },
+                "seq": 1,
+                "editFlag": "N",
+                "categoryBusiFlag": false,
+                "formatted": false,
+                "inputTypeName": "是/否"
+            }
+        },
+        {
+            "prodPropId": 9336983,
+            "productId": 398474,
+            "propId": 601,
+            "propValue": "320,321,322,323,324",
+            "bizCategoryProp": {
+                "propId": 601,
+                "categoryId": 18,
+                "groupId": 23,
+                "propName": "套餐包含",
+                "propCode": "combo_contained",
+                "inputType": "INPUT_TYPE_CHECKBOX",
+                "dataFrom": "511",
+                "dataFromName": "套餐包含",
+                "maxLength": 0,
+                "nullFlag": "Y",
+                "cancelFlag": "Y",
+                "bizCatePropGroup": {
+                    "groupId": 23,
+                    "categoryId": 18,
+                    "groupName": "基础信息",
+                    "seq": 1
+                },
+                "bizDictList": [
+                    {
+                        "dictId": 320,
+                        "dictDefId": 511,
+                        "dictName": "小交通",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 321,
+                        "dictDefId": 511,
+                        "dictName": "酒店",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 322,
+                        "dictDefId": 511,
+                        "dictName": "门票",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 323,
+                        "dictDefId": 511,
+                        "dictName": "签证",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 324,
+                        "dictDefId": 511,
+                        "dictName": "接送机",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 325,
+                        "dictDefId": 511,
+                        "dictName": "其他",
+                        "cancelFlag": "Y",
+                        "addFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 326,
+                        "dictDefId": 511,
+                        "dictName": "飞机",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 327,
+                        "dictDefId": 511,
+                        "dictName": "火车",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 328,
+                        "dictDefId": 511,
+                        "dictName": "汽车",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    },
+                    {
+                        "dictId": 329,
+                        "dictDefId": 511,
+                        "dictName": "轮船",
+                        "cancelFlag": "Y",
+                        "dictPropList": [
+                        ],
+                        "prodProductAttrList": [
+                        ],
+                        "comLogType": "DICT_BUSINESS_OTHER"
+                    }
+                ],
+                "seq": 2,
+                "editFlag": "N",
+                "categoryBusiFlag": false,
+                "formatted": false,
+                "inputTypeName": "多选"
+            }
+        },
+        {
+            "prodPropId": 9336984,
+            "productId": 398474,
+            "propId": 462,
+            "propValue": "全票*50%",
+            "bizCategoryProp": {
+                "propId": 462,
+                "categoryId": 18,
+                "groupId": 23,
+                "propName": "儿童价标准描述",
+                "propCode": "child_price_desc",
+                "inputType": "INPUT_TYPE_TEXTAREA",
+                "maxLength": 200,
+                "cancelFlag": "Y",
+                "bizCatePropGroup": {
+                    "groupId": 23,
+                    "categoryId": 18,
+                    "groupName": "基础信息",
+                    "seq": 1
+                },
+                "seq": 3,
+                "suggestionCode": "child_price_desc",
+                "categoryBusiFlag": false,
+                "formatted": false,
+                "inputTypeName": "多行文本"
+            }
+        }
+    ],
+    "bizDistrict": {
+        "districtId": 44825,
+        "parentId": 2011,
+        "districtType": "TOWN",
+        "districtName": "上海路街道",
+        "pinyin": "shanghailujiedao",
+        "cancelFlag": "Y",
+        "parentDistrict": {
+            "districtId": 2011,
+            "parentId": 226,
+            "districtType": "COUNTY",
+            "districtName": "汇川区",
+            "pinyin": "huichuanqu",
+            "cancelFlag": "Y",
+            "parentDistrict": {
+                "districtId": 226,
+                "parentId": 27,
+                "districtType": "CITY",
+                "districtName": "遵义",
+                "pinyin": "zunyi",
+                "cancelFlag": "Y",
+                "parentDistrict": {
+                    "districtId": 27,
+                    "parentId": 8,
+                    "districtType": "PROVINCE",
+                    "districtName": "贵州",
+                    "pinyin": "guizhou",
+                    "cancelFlag": "Y",
+                    "parentDistrict": {
+                        "districtId": 8,
+                        "parentId": 1,
+                        "districtType": "COUNTRY",
+                        "districtName": "中国",
+                        "pinyin": "zhongguo",
+                        "cancelFlag": "Y",
+                        "parentDistrict": {
+                            "districtId": 1,
+                            "districtType": "CONTINENT",
+                            "districtName": "亚洲",
+                            "pinyin": "yazhou",
+                            "cancelFlag": "Y",
+                            "shortPinyin": "yz",
+                            "foreighFlag": "N",
+                            "urlPinyin": "yazhou",
+                            "districtTypeCnName": "洲",
+                            "isOrNotProvince": false
+                        },
+                        "shortPinyin": "zg",
+                        "foreighFlag": "N",
+                        "urlPinyin": "zhongguo",
+                        "districtTypeCnName": "国家",
+                        "isOrNotProvince": false
+                    },
+                    "shortPinyin": "gz",
+                    "foreighFlag": "N",
+                    "urlPinyin": "guizhousheng",
+                    "provinceName": "贵州省",
+                    "provincePinyin": "guizhousheng",
+                    "hotelNum": 73,
+                    "districtTypeCnName": "省",
+                    "isOrNotProvince": true
+                },
+                "shortPinyin": "zy",
+                "foreighFlag": "N",
+                "urlPinyin": "zunyishi",
+                "provinceName": "贵州省",
+                "provincePinyin": "guizhousheng",
+                "cityName": "遵义市",
+                "cityPinyin": "zunyishi",
+                "hotelNum": 149,
+                "districtTypeCnName": "市",
+                "isOrNotProvince": false
+            },
+            "shortPinyin": "hcq",
+            "foreighFlag": "N",
+            "urlPinyin": "huichuanqu",
+            "provinceName": "贵州省",
+            "provincePinyin": "guizhousheng",
+            "cityName": "遵义市",
+            "cityPinyin": "zunyishi",
+            "districtTypeCnName": "区/县",
+            "isOrNotProvince": false
+        },
+        "shortPinyin": "shljd",
+        "foreighFlag": "N",
+        "urlPinyin": "shanghailujiedao3",
+        "districtTypeCnName": "乡镇/街道",
+        "isOrNotProvince": false
+    },
+    "bizDistricts": [
+        {
+            "districtId": 9,
+            "districtName": "上海",
+            "shortPinyin": "sh",
+            "isOrNotProvince": false
+        },
+        {
+            "districtId": 257,
+            "districtName": "三亚",
+            "shortPinyin": "sy",
+            "isOrNotProvince": false
+        }
+    ],
+    "prodProductBranchList": [
+        {
+            "productBranchId": 1473567,
+            "branchId": 14,
+            "productId": 398474,
+            "branchName": "成人/儿童/房差",
+            "cancelFlag": "Y",
+            "saleFlag": "N",
+            "recommendLevel": 3,
+            "maxVisitor": 10,
+            "propValue": {
+            },
+            "bizBranch": {
+                "branchId": 14,
+                "categoryId": 18,
+                "branchName": "成人儿童房差",
+                "attachFlag": "Y",
+                "cancelFlag": "Y",
+                "branchCode": "adult_child_diff"
+            },
+            "productBranchPropList": [
+            ],
+            "dailyLowestPriceYuan": "0.00",
+            "singleItemCategoryId": ""
+        }
+    ],
+    "prodDestReList": [
+        {
+            "reId": 334242,
+            "productId": 398474,
+            "destId": 3543,
+            "destName": "日本",
+            "destTypeCnName": "国家",
+            "destTypeCode": "COUNTRY",
+            "destrictId": 4026,
+            "pinyin": "riben",
+            "cancelFlag": "Y"
+        }
+    ],
+    "distDistributorProds": [
+        {
+            "distProdId": 37300,
+            "productId": 398474,
+            "distributorId": 2,
+            "cancelFlag": "Y"
+        },
+        {
+            "distProdId": 37301,
+            "productId": 398474,
+            "distributorId": 3,
+            "cancelFlag": "Y"
+        },
+        {
+            "distProdId": 37302,
+            "productId": 398474,
+            "distributorId": 4,
+            "cancelFlag": "Y"
+        }
+    ],
+    "hasAuditCategory": true,
+    "saleCopies": false,
+    "salePeople": true,
+    "prodProductAdditionSaleType": "COPIES_COMB_HOTEL",
+    "multiDparture": true,
+    "auditProduct": true
+}

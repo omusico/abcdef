@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.RevenueReportMapper">
+	<!-- 营收查询列表 -->
+	<resultMap id="resultMap"
+		type="com.lvmama.lvfit.common.dto.report.FitRevenueReportDto">
+		<result column="FIT_MAIN_ORDER_NO" property="fitMainOrderNo" />
+		<result column="VST_MAIN_ORDER_ID" property="vstMainOrderId" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="ORDER_TOTAL_AMOUNT" property="orderTotalAmount" />
+		<result column="BOOKING_SOURCE" property="bookingSource" />
+	</resultMap>
+	<sql id="columns">
+	 A.ID,
+	 A.FIT_MAIN_ORDER_NO,
+	 A.VST_MAIN_ORDER_ID,
+	 A.CREATE_TIME,
+	 B.ORDER_TOTAL_AMOUNT,
+	 B.BOOKING_SOURCE
+	</sql>
+	<!--查询 -->
+	<select id="query" resultMap="resultMap">
+	 <include refid="ORACLE.paginationStart" />
+		 SELECT
+		 <include refid="columns" />
+		 <include refid="queryConditions" /> 
+		 ORDER BY A.CREATE_TIME DESC
+		 <include refid="ORACLE.paginationEnd" /> 
+	</select>
+	<!-- 统计 -->
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM (SELECT 1 
+		<include refid="queryConditions" />
+		)
+	</select>
+	<!-- 查询条件 -->
+	<sql id="queryConditions">
+	     FROM 
+		 T_FITORD_SUPP_MAIN_ORDER A
+		 LEFT JOIN T_FITORD_ORDER_MAIN_NEW B
+		 ON A.FIT_MAIN_ORDER_NO=B.ORDER_NO
+		 WHERE 1=1
+		<if test="condition != null">
+		 	<if test="condition.bookingBeginTime != null and condition.bookingBeginTime != ''">
+		 			<![CDATA[
+		 			AND A.CREATE_TIME >= TO_DATE(#{condition.bookingBeginTime,jdbcType=VARCHAR}, 'yyyy-mm-dd')
+		 			]]>
+		 	</if>
+		 	<if test="condition.bookingEndTime != null and condition.bookingEndTime != ''">
+		 			<![CDATA[
+		 			AND A.CREATE_TIME < TO_DATE(#{condition.bookingEndTime,jdbcType=VARCHAR}, 'yyyy-mm-dd') + 1
+		 			]]>
+		 	</if>
+			<if test="condition.bookingSource != null and condition.bookingSource != '' ">
+				AND B.BOOKING_SOURCE = #{condition.bookingSource}
+			</if>
+		</if>
+	</sql>
+	
+</mapper>

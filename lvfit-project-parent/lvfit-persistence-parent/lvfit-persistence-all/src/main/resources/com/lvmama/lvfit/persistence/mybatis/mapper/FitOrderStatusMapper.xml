@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderStatusMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderStatusDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="ORDER_ID" property="orderId" jdbcType="DECIMAL" />
+    <result column="ORDER_BOOKING_STATUS" property="orderBookingStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_AUDIT_STATUS" property="orderAuditStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_PAY_STATUS" property="orderPayStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_CANCEL_STATUS" property="orderCancelStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_BACK_STATUS" property="orderBackStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_FRONT_STATUS" property="orderFrontStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_LOCK_STATUS" property="orderLockStatus" jdbcType="VARCHAR" />
+    <result column="VISIBLE_STATUS" property="visible" jdbcType="VARCHAR" />
+    <result column="ORDER_SETTLEMENT_STATUS" property="orderSettlementStatus" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="ORDER_FLAG" property="orderFlag" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert"  >
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_ORDER_OP_LOG.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITORD_ORDER_STATUS (ID, UUID, ORDER_ID, 
+      ORDER_BOOKING_STATUS, ORDER_AUDIT_STATUS, ORDER_PAY_STATUS, 
+      ORDER_CANCEL_STATUS, ORDER_BACK_STATUS, ORDER_FRONT_STATUS, 
+      ORDER_LOCK_STATUS, VISIBLE_STATUS, ORDER_SETTLEMENT_STATUS, 
+      CREATE_TIME, UPDATE_TIME, ORDER_FLAG
+      )
+    values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{orderId,jdbcType=DECIMAL}, 
+      #{orderBookingStatus,jdbcType=VARCHAR}, #{orderAuditStatus,jdbcType=VARCHAR}, #{orderPayStatus,jdbcType=VARCHAR}, 
+      #{orderCancelStatus,jdbcType=VARCHAR}, #{orderBackStatus,jdbcType=VARCHAR}, #{orderFrontStatus,jdbcType=VARCHAR}, 
+      #{orderLockStatus,jdbcType=VARCHAR}, #{visible,jdbcType=VARCHAR}, #{orderSettlementStatus,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{orderFlag,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById">
+    UPDATE T_FITORD_ORDER_STATUS
+    <set>
+      <if test="i.orderBookingStatus != null and i.orderBookingStatus != @com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus@NULL ">
+        ORDER_BOOKING_STATUS = #{i.orderBookingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderAuditStatus != null and i.orderAuditStatus != @com.lvmama.lvfit.common.dto.status.order.OrderAuditStatus@NULL ">
+        ORDER_AUDIT_STATUS = #{i.orderAuditStatus, jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderPayStatus != null and i.orderPayStatus != @com.lvmama.lvfit.common.dto.status.order.OrderPayStatus@NULL ">
+        ORDER_PAY_STATUS = #{i.orderPayStatus, jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderCancelStatus != null and i.orderCancelStatus != @com.lvmama.lvfit.common.dto.status.order.OrderCancelStatus@NULL ">
+        ORDER_CANCEL_STATUS = #{i.orderCancelStatus, jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderBackStatus != null and i.orderBackStatus != @com.lvmama.lvfit.common.dto.status.order.OrderBackStatus@NULL ">
+        ORDER_BACK_STATUS = #{i.orderBackStatus, jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderFrontStatus != null and i.orderFrontStatus != @com.lvmama.lvfit.common.dto.status.order.OrderFrontStatus@NULL ">
+        ORDER_FRONT_STATUS = #{i.orderFrontStatus, jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderLockStatus != null and i.orderLockStatus != ''">
+        ORDER_LOCK_STATUS = #{i.orderLockStatus, jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderSettlementStatus != null and i.orderSettlementStatus != @com.lvmama.lvfit.common.dto.status.order.OrderSettlementStatus@NULL ">
+        ORDER_SETTLEMENT_STATUS = #{i.orderSettlementStatus, jdbcType=VARCHAR},
+      </if>
+      <if test="i.visible != null and i.visible != ''">
+        VISIBLE_STATUS = #{i.visible, jdbcType=VARCHAR},
+      </if>
+      <if test="i.orderFlag != null and i.orderFlag != ''">
+        ORDER_FLAG = #{i.orderFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="i.updateTime != null and i.updateTime != ''">
+        UPDATE_TIME = #{i.updateTime, jdbcType=TIMESTAMP}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <select id="queryByFkId" resultMap="resultMap">
+    SELECT *
+    FROM T_FITORD_ORDER_STATUS
+    WHERE ORDER_ID = #{fkId,jdbcType=DECIMAL}
+  </select>
+
+</mapper>

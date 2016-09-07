@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitOrderOpLogMapper" >
+  <resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.order.FitOrderOpLogDto" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="ORDER_MAIN_ID" property="orderMainId" jdbcType="DECIMAL" />
+    <result column="ORDER_ID" property="orderId" jdbcType="DECIMAL" />
+    <result column="OPER" property="oper" jdbcType="VARCHAR" />
+    <result column="OPER_ID" property="operId" jdbcType="VARCHAR" />
+    <result column="OPER_TYPE" property="operType" jdbcType="VARCHAR" />
+    <result column="BUSINESS_ID" property="businessId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_NO" property="businessNo" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="FLOG_DESC" property="desc" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="RESULT" property="result" jdbcType="VARCHAR" />
+    <result column="TRACE_NO" property="traceNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+      <choose>
+        <when test="id != null and id != ''">
+          SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+        </when>
+        <otherwise>
+          SELECT S_FITORD_ORDER_OP_LOG.NEXTVAL FROM DUAL
+        </otherwise>
+      </choose>
+    </selectKey>
+    insert into T_FITORD_ORDER_OP_LOG (ID, UUID, ORDER_MAIN_ID,
+    ORDER_ID, OPER, OPER_ID,
+    OPER_TYPE, BUSINESS_ID, BUSINESS_NO,
+    BUSINESS_TYPE, REMARK, FLOG_DESC,
+    CREATE_TIME, UPDATE_TIME, RESULT,
+    TRACE_NO)
+    values (#{id,jdbcType=DECIMAL}, #{uuid,jdbcType=VARCHAR}, #{orderMainId,jdbcType=DECIMAL},
+    #{orderId,jdbcType=DECIMAL}, #{oper,jdbcType=VARCHAR}, #{operId,jdbcType=VARCHAR},
+    #{operType,jdbcType=VARCHAR}, #{businessId,jdbcType=VARCHAR}, #{businessNo,jdbcType=VARCHAR},
+    #{businessType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR},
+    #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{result,jdbcType=VARCHAR},
+    #{traceNo,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 日志列表查询 start -->
+	<!--查询 -->
+	<select id="query" resultMap="resultMap">
+	 <include refid="ORACLE.paginationStart" />
+		 SELECT * 
+		 <include refid="queryConditions" /> 
+		 <include refid="ORACLE.paginationEnd" /> 
+	</select>
+	<!-- 统计 -->
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM (SELECT 1 
+		<include refid="queryConditions" />
+		)
+	</select>
+	<!-- 查询条件 -->
+	<sql id="queryConditions">
+		FROM T_FITORD_ORDER_OP_LOG WHERE 1=1
+		<if test="condition.fitOrderQueryDto.orderMainId != null and condition.fitOrderQueryDto.orderMainId != ''">
+			AND ORDER_MAIN_ID = #{condition.fitOrderQueryDto.orderMainId}
+		</if>
+		<if test="condition.fitOrderQueryDto.operType != null and condition.fitOrderQueryDto.operType != ''">
+			AND OPER_TYPE = #{condition.fitOrderQueryDto.operType}
+		</if>
+	</sql>
+  <!-- 日志列表查询 end   -->
+</mapper>
