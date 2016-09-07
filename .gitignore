@@ -12,6 +12,7 @@ src/spring.cfg.xml
 *.doc
 bin/
 .metadata/
+*.log
 *.chm
 .classpath
 .svn/
