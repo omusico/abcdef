@@ -16,6 +16,7 @@ bin/
 *.chm
 .classpath
 .svn/
+*target/
 .project
 *.txt
 log/ecology
