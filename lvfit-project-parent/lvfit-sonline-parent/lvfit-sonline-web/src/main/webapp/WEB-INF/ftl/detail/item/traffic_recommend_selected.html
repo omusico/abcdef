@@ -6,8 +6,7 @@
         <span>交通</span>
     </div>
     <#list charterFlightInfos as arvFlightInfo>  
-    <div class="right-container clearfix" go-flightno="${arvFlightInfo.flightNo}" back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}"
-          <#if arvFlightInfo_index != 0> style="display:none"</#if> tag='charsetflight'>
+    <div class="right-container clearfix">
         <div class="type gray">
                     <div class="clearfix">
                             <p id="toback" class="shadow">往返</p>
@@ -43,7 +42,7 @@
         <div class="detail">
                  <ul class="ldt_tci_center">
                             <!--不含中转 开始--> 
-                                <li class="ldt_tcic_info ldt_tcic_info_first clearfix">
+								<li class="ldt_tcic_info ldt_tcic_info_first clearfix">
 
                                 <div class="ldt_tcici_icon">
                                     <span class="ldt_tcici_icon_go">去</span>
@@ -69,11 +68,11 @@
                                 </div>
                                      </li></ul>
                        <ul class="ldt_tci_center">
-                                <li class="ldt_tcic_info ldt_tcic_info_first clearfix">
-                                <div class="ldt_tcici_icon">
-                                <span class="ldt_tcici_icon_go">返</span>
-                                </div>
-                                <div class="ldt_tcici_clock">
+								<li class="ldt_tcic_info ldt_tcic_info_first clearfix">
+								<div class="ldt_tcici_icon">
+								<span class="ldt_tcici_icon_go">返</span>
+								</div>
+								<div class="ldt_tcici_clock">
                                     <b>${arvFlightInfo.returnFlightInfoDto[0].departureTime?substring(11, 16)}</b>
                                     <b>${arvFlightInfo.returnFlightInfoDto[0].arrivalTime?substring(11, 16)}</b>
                                 </div>
@@ -92,8 +91,8 @@
                                 <div class="ldt_tcici_type">   
                                         ${arvFlightInfo.returnFlightInfoDto[0].seats[0].seatClassTypeName}  
                                 </div>
-                            </li>
-                      </ul>
+							</li>
+					  </ul>
                           
                         <!-- TODO add end -->
                         <div class="default">
@@ -116,9 +115,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="replace">
-                        <button class="replace-button flight-replace-button">更换其他交通</button>
-                    </div> 
+					<div class="replace">
+						<button class="replace-button flight-replace-button">更换其他交通</button>
+					</div> 
     </div>
     </#list>
 </div>

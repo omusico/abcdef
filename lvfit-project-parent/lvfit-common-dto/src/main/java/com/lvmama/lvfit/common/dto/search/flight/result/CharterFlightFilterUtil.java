@@ -231,6 +231,9 @@ public class CharterFlightFilterUtil {
 		    		Map<String, Map<String, List<FlightSearchSeatDto>>> newReturnFlightMap = new HashMap<String, Map<String, List<FlightSearchSeatDto>>>();
 		    		newReturnFlightMap.put(backFlight.getFlightNo(), policyToSeatMap);
 		    		List<FlightSearchFlightInfoDto> newReturnFlight = new ArrayList<FlightSearchFlightInfoDto>();
+		    		if(policyToSeatMap==null){
+		    			continue;
+		    		}
 		    		List<FlightSearchSeatDto> seats = policyToSeatMap.entrySet().iterator().next().getValue();
 		    		
 		    		List<FlightSearchSeatDto> goSeats = new ArrayList<FlightSearchSeatDto>();

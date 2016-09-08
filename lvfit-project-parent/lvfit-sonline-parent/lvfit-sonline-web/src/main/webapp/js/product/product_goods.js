@@ -340,7 +340,7 @@ $(function(){
         };
 
         // 如果选择为去程航班
-        chgFlightAjaxSubmit($(this).data("flightno"), "CHARTER"); 
+        chgFlightAjaxSubmit($(this).attr("go-flightno"), "CHARTER",$(this).attr("back-flightno")); 
         $(".dialog-close").trigger("click");
     });
 
@@ -544,7 +544,20 @@ function getkeyStr(data) {
     return key;
 }
 // 提交更换航班ajax请求
-function chgFlightAjaxSubmit(flightNo, tripType) {
+function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
+    //包机
+    if (tripType === "CHARTER") { 
+        $("[tag=charsetflight]").each(function() {
+            var no1 = $(this).attr("go-flightno");
+            var no2 = $(this).attr("back-flightno"); 
+            if (no1 === flightNo && no2 === backFlightNo) {
+                $(this).show();
+                $(this).siblings("[tag=charsetflight]").hide();
+                return;
+            }
+        });
+        $("#selectDepFlightNo").val(flightNo);
+    }
     if (tripType === "DEPARTURE") {
         $(".depFlightBox").each(function() {
             var no = $(this).data("flightno");

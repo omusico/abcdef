@@ -349,14 +349,14 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    
 	    model.addAttribute("charterFlightInfos", respForm.getCharterFlightInfos()); 
 	    //酒店
-//	    model.addAttribute("hotelGroups", respForm.getHotelGroups()); 
-//	    model.addAttribute("hotelCombos", respForm.getHotelCombo());
-//	    model.addAttribute("localTrip", respForm.getLocalTrip());
-//	    model.addAttribute("additional", respForm.getAdditional());
-//	    model.addAttribute("otherTicketMap", respForm.getOtherTicketMaps());
-//	    model.addAttribute("insProducts", goodsInfo.getInsProducts());
-//	    model.addAttribute("roomDiff", respForm.getAdditional().getRoomDiff());
-//
+	    model.addAttribute("hotelGroups", respForm.getHotelGroups()); 
+	    model.addAttribute("hotelCombos", respForm.getHotelCombo());
+	    model.addAttribute("localTrip", respForm.getLocalTrip());
+	    model.addAttribute("additional", respForm.getAdditional());
+	    model.addAttribute("otherTicketMap", respForm.getOtherTicketMaps());
+	    model.addAttribute("insProducts", goodsInfo.getInsProducts());
+	    model.addAttribute("roomDiff", respForm.getAdditional().getRoomDiff());
+
 	    model.addAttribute("depFlightInfos", respForm.getDepFlightInfos());
 	    model.addAttribute("arvFlightInfos", respForm.getArvFlightInfos());
 	    

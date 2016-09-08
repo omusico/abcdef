@@ -115,8 +115,7 @@
 <script> 
   //点击开始预订 弹出日历框
  $("#preorder-booking-button").bind("click", function(event){
-     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-
+     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); 
      if ($("#preorder-booking-button").hasClass("btn-stop")) {
          return;
      }
@@ -150,7 +149,7 @@ function initPriceInBaseInfo(){
           success: function(obj) {
               $("#preorder-booking-button").removeClass("btn-stop");
               $("#preorder-booking-button").addClass("cbtn-orange1");
-        	  $("#total-price-value").html(obj.result.totalAmount);
+        	    $("#total-price-value").html(obj.result.totalAmount);
               var $facha = $("#total-price-value").siblings(".fangcha");
               $facha.html("(含房差<dfn>￥</dfn>" + obj.result.roomDiffAmount +")");
               if (obj.result.roomDiffAmount > 0) {
