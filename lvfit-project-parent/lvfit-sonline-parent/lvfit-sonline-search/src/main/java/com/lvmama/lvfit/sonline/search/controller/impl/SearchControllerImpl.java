@@ -1,9 +1,5 @@
 package com.lvmama.lvfit.sonline.search.controller.impl;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -67,6 +63,7 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpBookingNoticeReque
 import com.lvmama.lvfit.common.dto.search.flight.FlightFacetType;
 import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.vst.VstSeoFriendLinkDto;
 import com.lvmama.lvfit.common.dto.vst.VstSeoInnerLinkDto;
 import com.lvmama.lvfit.sonline.base.BaseController;
@@ -312,28 +309,6 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		respForm.setSumDepFlightInfos(deps);
 		return respForm;
 	}
-		
-	public static void writeFile(String fileName, String contant) {  
-        PrintWriter out;  
-        try {  
-            out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));  
-            out.print(contant);  
-            out.close();  
-        } catch (IOException e) {  
-            System.out.println("读写文件出现异常！");  
-        } catch (Exception e) {  
-            System.out.println("出现异常");  
-        }  
-    }  
-	
-	 private String getJsonStr(Object obj){
-	    	try {
-				return JSONMapper.getInstance().writeValueAsString(obj);
-			} catch (Exception e) {
-				logger.error(e.getMessage(),e);
-			}
-	    	return null;
-	    } 
 	 
 	@Override
 	@RequestMapping(value = "loadsGoods", method = { RequestMethod.POST ,RequestMethod.GET})
@@ -342,7 +317,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		req.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		req.setDistributorId(3L);
 	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req);
-	    writeFile("e:\\"+System.currentTimeMillis()+".txt",getJsonStr(goodsInfo));
+	    MockUtil.writeJsonToFile("e:\\"+System.currentTimeMillis()+".txt", goodsInfo);
 	    SearchGoodsResponseForm respForm = new SearchGoodsResponseForm(goodsInfo);
 	    //设置最低价航班.根据参数是否非对接优先，决定当前选择的航班是包机还是全部价格最低.找到默认选择的航班.
 	    respForm = setSumFlights(respForm,req);
@@ -355,7 +330,9 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    model.addAttribute("additional", respForm.getAdditional());
 	    model.addAttribute("otherTicketMap", respForm.getOtherTicketMaps());
 	    model.addAttribute("insProducts", goodsInfo.getInsProducts());
-	    model.addAttribute("roomDiff", respForm.getAdditional().getRoomDiff());
+	    if(respForm.getAdditional()!=null){
+	    	model.addAttribute("roomDiff", respForm.getAdditional().getRoomDiff());
+	    }
 
 	    model.addAttribute("depFlightInfos", respForm.getDepFlightInfos());
 	    model.addAttribute("arvFlightInfos", respForm.getArvFlightInfos());

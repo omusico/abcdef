@@ -435,8 +435,8 @@ public class CharterFlightFilterUtil {
 	    if(childSameAsAdult){
 	    	depChildPrice = depAdultPrice;
 	    }
-	    BigDecimal goSumPrice = depAdultPrice.multiply(BigDecimal.valueOf(adultCount)).add(depChildPrice.multiply(BigDecimal.valueOf(adultCount)));
-	    BigDecimal backSumPrice = arvAdultPrice.multiply(BigDecimal.valueOf(adultCount)).add(arvChildPrice.multiply(BigDecimal.valueOf(adultCount))); 
+	    BigDecimal goSumPrice = depAdultPrice.multiply(BigDecimal.valueOf(adultCount)).add(depChildPrice.multiply(BigDecimal.valueOf(childCount)));
+	    BigDecimal backSumPrice = arvAdultPrice.multiply(BigDecimal.valueOf(adultCount)).add(arvChildPrice.multiply(BigDecimal.valueOf(childCount))); 
 	    return goSumPrice.add(backSumPrice);
     } 
     

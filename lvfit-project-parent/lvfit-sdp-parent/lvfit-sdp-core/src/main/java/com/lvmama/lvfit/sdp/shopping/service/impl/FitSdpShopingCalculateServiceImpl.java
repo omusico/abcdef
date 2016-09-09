@@ -1,5 +1,10 @@
 package com.lvmama.lvfit.sdp.shopping.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +46,7 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpSelectOtherTicketDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
 import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.shopping.FitFlightAmountDto;
 import com.lvmama.lvfit.common.dto.trace.FitOpLogTraceContext;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShopingCalculateService;
@@ -60,15 +66,17 @@ public class FitSdpShopingCalculateServiceImpl implements FitSdpShopingCalculate
 	@Autowired
 	private FitBusinessClient fitBusinessClient;
 	
+	 
 	@Override
 	public BaseSingleResultDto<FitSdpShoppingAmountDto> calculateAmount(FitSdpCalculateAmountRequest request) {
 		
 		try{
 			FitSdpCalculateAmountDetailRequest calculateAmountDetailRequest = new FitSdpCalculateAmountDetailRequest();
 
-			String shoppingUuid = request.getShoppingUUID();
-			FitSdpShoppingDto fitSdpShoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(shoppingUuid);
-
+//			String shoppingUuid = request.getShoppingUUID();
+//			FitSdpShoppingDto fitSdpShoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(shoppingUuid);
+			FitSdpShoppingDto fitSdpShoppingDto = MockUtil.morkShoppingDto();
+			
 			if(fitSdpShoppingDto==null||CollectionUtils.isEmpty(fitSdpShoppingDto.getSelectedFlightInfos())||fitSdpShoppingDto.getSelectedFlightInfos().size()!=2){
 				throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
 			}

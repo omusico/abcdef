@@ -13,6 +13,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvfit.common.dto.calculator.AmountCalculatorRequest;
 import com.lvmama.lvfit.common.dto.calculator.BookingDetailDto;
@@ -107,13 +108,15 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 		for (FlightSearchFlightInfoDto selectSearchFlightInfoDto : selectSearchFlightInfoDtos) {
 			for (BookingDetailDto passengerDetailDto : passengerDetailDtos) {
 				BookingDetailDto amountDetailDto = new BookingDetailDto();
-				FlightSimpleInfoDto flightSimpleInfoDto = new FlightSimpleInfoDto();
+				FlightSimpleInfoDto flightSimpleInfoDto = new FlightSimpleInfoDto();  
 				flightSimpleInfoDto.setDepartureDate(DateUtils.parseDate(selectSearchFlightInfoDto.getDepartureDate(), DateUtils.YYYY_MM_DD));
 				flightSimpleInfoDto.setFlightNo(selectSearchFlightInfoDto.getFlightNo());
 				FlightSearchSeatDto selectSearchSeatDto = selectSearchFlightInfoDto.getSeats().get(0);
-				flightSimpleInfoDto.setPolicyId(selectSearchSeatDto.getPolicyId());
+				flightSimpleInfoDto.setPolicyId(selectSearchSeatDto.getPolicyId());  
 				//flightSimpleInfoDto.setPricePolicyId(selectSearchSeatDto.getPricePolicyId());
 				flightSimpleInfoDto.setPricePolicyId(null);
+				//传入销售类型，如果是包机切位，后面计算要使用该字段计算.
+				flightSimpleInfoDto.setSaleType(selectSearchFlightInfoDto.getSaleType());
 				flightSimpleInfoDto.setSeatClassCode(selectSearchSeatDto.getSeatClassCode());
 				flightSimpleInfoDto.setDepartureAirportCode(selectSearchFlightInfoDto.getDepartureAirportCode());
 				flightSimpleInfoDto.setArrivalAirportCode(selectSearchFlightInfoDto.getArrivalAirportCode());
@@ -133,6 +136,10 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				amountDetailDto.setFlightSimpleInfo(flightSimpleInfoDto);
 				amountDetailDto.setPassengerType(passengerDetailDto.getPassengerType());
 				amountDetailDtos.add(amountDetailDto);
+			}
+			//如果是包机切位，只计算一个航程的价格.
+			if(SuppSaleType.DomesticProduct.name().equals(selectSearchFlightInfoDto.getSaleType())){
+				break;
 			}
 		}
 		if(CollectionUtils.isNotEmpty(amountDetailDtos)){

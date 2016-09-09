@@ -1,5 +1,6 @@
 package com.lvmama.lvfit.sonline.shopping.controller.impl;
 
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,9 @@ import com.lvmama.lvfit.common.client.FitSdpClient;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.sdp.calculator.FitSdpShoppingAmountDto;
 import com.lvmama.lvfit.common.dto.sdp.calculator.request.FitSdpCalculateAmountRequest;
+import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
+import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.sonline.shopping.FitSdpShoppingCalucatorController;
 import com.lvmama.lvfit.sonline.shopping.form.FitSdpCalucateAmountRequestForm;
 
@@ -29,6 +33,8 @@ public class FitSdpShoppingCalucatorControllerImpl implements FitSdpShoppingCalu
 	    FitSdpCalculateAmountRequest amountRequest = new FitSdpCalculateAmountRequest();
 	    amountRequest.setShoppingUUID(form.getShoppingUUID());
 		amountRequest.setBookingSource(BookingSource.FIT_SDP_FRONT);
+//		return MockUtil.createFromJsonFile("d:\\calcmount.txt", new TypeReference<BaseSingleResultDto<FitSdpShoppingAmountDto>>() {
+//		});
 		return fitSdpClient.calculateAmount(amountRequest);
 	}
 }

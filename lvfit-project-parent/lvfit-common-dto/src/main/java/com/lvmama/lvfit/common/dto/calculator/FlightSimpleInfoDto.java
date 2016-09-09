@@ -11,9 +11,22 @@ import com.lvmama.lvfit.common.dto.request.FlightTicketRequest;
 public class FlightSimpleInfoDto {
 
 	public FlightTicketRequest flightTicketRequest = new FlightTicketRequest();
+	/**
+	 * 销售类型.标示是否包机航班
+	 */
+	private String saleType;
+	
 	
 	public FlightTicketRequest getFlightTicketRequest() {
 		return flightTicketRequest;
+	}
+
+	public String getSaleType() {
+		return saleType;
+	}
+
+	public void setSaleType(String saleType) {
+		this.saleType = saleType;
 	}
 
 	public void setFlightTicketRequest(FlightTicketRequest flightTicketRequest) {

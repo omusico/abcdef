@@ -855,11 +855,13 @@ function submitBooking(){
       },
       error:function(obj)
       {
-        $(".fh-overlay, .fh-dialog-loading").hide();
+        console.log("to-booking.ftl......858");
+         $(".fh-overlay, .fh-dialog-loading").hide();
+        /*$(".fh-overlay, .fh-dialog-loading").hide();
         $('.returnAlert').stop(true,true).fadeIn();
         $('.resortOver').stop(true,true).fadeIn();
         
-        $("#errorMsg").html("抱歉，订单提交失败，请稍候重试");
+		$("#errorMsg").html("抱歉，订单提交失败，请稍候重试");*/
       }
   });
 }

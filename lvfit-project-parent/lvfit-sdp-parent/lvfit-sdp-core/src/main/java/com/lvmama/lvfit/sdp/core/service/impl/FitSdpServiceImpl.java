@@ -86,6 +86,7 @@ import com.lvmama.lvfit.common.dto.search.flight.SearchResultUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.sdp.core.service.FitSdpService;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShoppingService;
 
@@ -206,249 +207,176 @@ public class FitSdpServiceImpl implements FitSdpService {
 			logger.error("产品ID: " + calendarRequest.getProductId() + "获取分期价规则失败！", e);
 		}
 		return result;
-	}
-
-	private static String readFile(String fileName){
-		 InputStream in;
-			try {
-				in = new FileInputStream(fileName);
-				return IOUtils.toString(in,"GBK");
-				  
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-	 }
-	 public static void writeFile(String fileName, String contant) {  
-	        PrintWriter out;  
-	        try {  
-	            out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));  
-	            out.print(contant);  
-	            out.close();  
-	        } catch (IOException e) {  
-	            System.out.println("读写文件出现异常！");  
-	        } catch (Exception e) {  
-	            System.out.println("出现异常");  
-	        }  
-	    }  
-	
-	 private static String getJsonStr(Object obj){
-	    	try {
-				return JSONMapper.getInstance().writeValueAsString(obj);
-			} catch (Exception e) {
-				logger.error(e.getMessage(),e);
-			}
-	    	return null;
-	    } 
-	  
-	 
-	 public static void main(String[] aegs) throws JsonParseException, JsonMappingException, IOException{
-		String sqlFlie = readFile("d:\\老的查询往返程机票的东西.txt");
-		ObjectMapper objectMapper = JSONMapper.getInstance();
-		FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = objectMapper
-				.readValue(
-						sqlFlie,
-						new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
-						});
-		List<FlightSearchFlightInfoDto>  result = flightSearchResult.getResults();
-		for(FlightSearchFlightInfoDto d:result){
-			writeFile("d:\\"+System.currentTimeMillis()+".txt", getJsonStr(d)+"\n\n\n" );  
-		}
-	 }
-	 
-	 private FlightSearchResult<FlightSearchFlightInfoDto> moke() 
-	    { 
-	    	try
-	    	{
-	    		 String sqlFlie = readFile("d:\\new_flight.txt"); 
-	    		String result = sqlFlie;//restClient.post(url, String.class, request); 
-	    		//System.out.println("common-dto 107 getSearchFlightInfoNoCache()="+result);
-	    		if(StringUtils.isNotBlank(result))
-	    		{
-	    			ObjectMapper objectMapper = JSONMapper.getInstance();
-	    			FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = objectMapper.readValue(result, 
-	    				new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
-	    			return flightSearchResult;		
-	    		}
-	    		return null;
-	    	}
-	    	catch(Exception  ew)
-	    	{
-	    		ew.printStackTrace();
-	    		return null;
-	    	}
-	    }
-	  
-	@Override
-	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_GOODS_E)
-	public FitSdpGoodsDto searchGoodsInfo(FitSdpGoodsRequest goodsRequest) {
-
-		Object[] vars = new Object[] { goodsRequest.getProductId(),
-				goodsRequest.getBizCategoryId(),
-				DateUtils.formatDate(goodsRequest.getDepartDate()),
-				goodsRequest.getDepCityCode(), goodsRequest.getArvCityCode() };
-		List<FitSdpProductTrafficRulesDto> trafficRules = fitBusinessClient
-				.getProductTrafficRulesByProductId(goodsRequest.getProductId());
-		Map<String, FitSdpProductTrafficRulesDto> trafficRuleMap = new HashMap<String, FitSdpProductTrafficRulesDto>();
-		if (CollectionUtils.isNotEmpty(trafficRules)) {
-			for (FitSdpProductTrafficRulesDto trafficRulesDto : trafficRules) {
-				trafficRuleMap.put(
-						trafficRulesDto.getTrafficTripeType().name(),
-						trafficRulesDto);
-			}
-		}else{
-			logger.info("异常：没有找到交通规则..."+goodsRequest.getProductId());
-		}
-
-		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = moke();
-		List<FlightSearchFlightInfoDto> charterFlightInfos = this
-				.handleCharterFlightResult(goFlightSearchResult2,
-						trafficRuleMap.get(TrafficTripeType.GO_WAY.name()),
-						trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),
-						goodsRequest);
-
-		FlightSearchResult<FlightSearchFlightInfoDto> r = moke();
-		FlightSearchResult<FlightSearchFlightInfoDto> r2 =moke();
-		List<FlightSearchFlightInfoDto> goFlightInfo = this.handleFlightSearchResult(r, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
-
-		List<FlightSearchFlightInfoDto> backFlightInfo = this.handleFlightSearchResult(r2, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
-		
-		FitSdpGoodsDto goods = null;
-		goods = new FitSdpGoodsDto();
-		//设置查询航班的规则map
-		goods.setTrafficRuleMap(trafficRuleMap);
-		// 设置包机信息.
-		goods.setCharterFlightInfos(charterFlightInfos);
-		
-		goods.setDepFlightInfos(goFlightInfo);
-		goods.setDepfacetMap(r.getFacetMap());
-
-		goods.setArvFlightInfos(backFlightInfo);
-		goods.setArvfacetMap(r2.getFacetMap()); 
-		
-		// 将商品信息放入缓存，用于算价，更换航班，更换酒店套餐
-		this.putInfoToCache4CalculatePrice(goodsRequest, goods);
-		return goods;
-	}
-	 
+	}  
+	   
 //	@Override
 //	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_GOODS_E)
 //	public FitSdpGoodsDto searchGoodsInfo(FitSdpGoodsRequest goodsRequest) {
 //
-//		Object[] vars = new Object[]{goodsRequest.getProductId(),goodsRequest.getBizCategoryId(),
-//				DateUtils.formatDate(goodsRequest.getDepartDate()),goodsRequest.getDepCityCode(),goodsRequest.getArvCityCode()};
-//		List<FitSdpProductTrafficRulesDto> trafficRules = fitBusinessClient.getProductTrafficRulesByProductId(goodsRequest.getProductId());
-//		Map<String,FitSdpProductTrafficRulesDto> trafficRuleMap = new HashMap<String, FitSdpProductTrafficRulesDto>();
-//		if(CollectionUtils.isNotEmpty(trafficRules)){
+//		Object[] vars = new Object[] { goodsRequest.getProductId(),
+//				goodsRequest.getBizCategoryId(),
+//				DateUtils.formatDate(goodsRequest.getDepartDate()),
+//				goodsRequest.getDepCityCode(), goodsRequest.getArvCityCode() };
+//		List<FitSdpProductTrafficRulesDto> trafficRules = fitBusinessClient
+//				.getProductTrafficRulesByProductId(goodsRequest.getProductId());
+//		Map<String, FitSdpProductTrafficRulesDto> trafficRuleMap = new HashMap<String, FitSdpProductTrafficRulesDto>();
+//		if (CollectionUtils.isNotEmpty(trafficRules)) {
 //			for (FitSdpProductTrafficRulesDto trafficRulesDto : trafficRules) {
-//				trafficRuleMap.put(trafficRulesDto.getTrafficTripeType().name(), trafficRulesDto);
+//				trafficRuleMap.put(
+//						trafficRulesDto.getTrafficTripeType().name(),
+//						trafficRulesDto);
 //			}
+//		}else{
+//			logger.info("异常：没有找到交通规则..."+goodsRequest.getProductId());
 //		}
-//		// 机票查询请求和VST商品的请求信息
-//		Map<String, Object> reqMap = getQueryRequestMap(goodsRequest, trafficRules);
-//		final String mainTraceId = TraceContext.getTraceId();
-//	    TaskMainGroup<Boolean> mainGroup = new TaskMainGroup<Boolean>();
-//	    final TaskContext context = new TaskContext();
 //
-//		for (Map.Entry<String, Object> entry : reqMap.entrySet()) {
-//			final String key = entry.getKey();
-//			final Object request = entry.getValue();
-//			mainGroup.addTask(new Task<Boolean>() {
-//				@Override
-//				public Boolean execute(TaskContext taskContext) {
-//					TraceContext.setTraceId(mainTraceId);
-//					try {
-//						// 机票查询
-//						if (request instanceof FlightQueryRequest) {
-//							context.put(key, fitAggregateClient.searchFlightInfo((FlightQueryRequest) request));
-//						}
-//						// 商品查询
-//						if (request instanceof FitSdpGoodsRequest) {
-//							context.put(key, fitAggregateClient.searchProductGoodsInfo((FitSdpGoodsRequest) request));
-//						}
-//					}catch (Exception e){
-//						context.put(FitBusinessType.valueOf(key).getBusinessExceptionType().name(), e);
-//					}
-//					return true;
-//				}
-//			});
-//		}
-//	    mainGroup.putContext(context).getResult(reqMap.keySet().size());
-//		Set<String> allContextKeys = context.keySet();
-//		for (String key : allContextKeys) {
-//			if (key.endsWith(FitBusinessExceptionType._E.name())) {
-//				Exception curException = (Exception)context.get(FitBusinessExceptionType.valueOf(key).name());
-//				throw new RuntimeException(curException);
-//			}
-//		}
-//		List<FlightSearchFlightInfoDto> goFlightInfo = null;
-//		List<FlightSearchFlightInfoDto> backFlightInfo = null;
-//		 
-//		
-//		BaseSingleResultDto<FitSdpGoodsDto> goodsResult = null;
+//		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = MockUtil.createFromJsonFile("d:\\new_flight.txt", new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
+//		List<FlightSearchFlightInfoDto> charterFlightInfos = this
+//				.handleCharterFlightResult(goFlightSearchResult2,
+//						trafficRuleMap.get(TrafficTripeType.GO_WAY.name()),
+//						trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),
+//						goodsRequest);
 //
-//		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
-//		goFlightInfo = this.handleFlightSearchResult(goFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
+//		FlightSearchResult<FlightSearchFlightInfoDto> r = MockUtil.createFromJsonFile("d:\\new_flight.txt", new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
+//		FlightSearchResult<FlightSearchFlightInfoDto> r2 = MockUtil.createFromJsonFile("d:\\new_flight.txt", new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
+//		List<FlightSearchFlightInfoDto> goFlightInfo = this.handleFlightSearchResult(r, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
 //
-//		FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
-//		backFlightInfo = this.handleFlightSearchResult(backFlightSearchResult, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
-//		
-//		//包机信息.
-//		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
-//		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goFlightSearchResult2, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
-//				, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),goodsRequest); 
+//		List<FlightSearchFlightInfoDto> backFlightInfo = this.handleFlightSearchResult(r2, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
 //		
 //		FitSdpGoodsDto goods = null;
-//		Object goodsInfoObject = context.get(FitBusinessType.FIT_SDP_SEARCH_GOODS.name());
-//		if (goodsInfoObject != null) {
-//			goodsResult = (BaseSingleResultDto<FitSdpGoodsDto>) goodsInfoObject;
-//		}
-//		goods = goodsResult.getResult(); 
-//
-//		if(null==goods){
-//			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_GOODS,goodsRequest.getProductId());
-//		}
-//
-//		/*if(goodsRequest.getBizCategoryId()== BizEnum.BIZ_CATEGORY_TYPE.category_route_group.getCategoryId() &&null==goods.getLocalTrip()){
-//			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_LOCAL_TRIP,vars);
-//		}
-//
-//		if(goodsRequest.getBizCategoryId()==BizEnum.BIZ_CATEGORY_TYPE.category_route_freedom.getCategoryId()&&CollectionUtils.isEmpty(goods.getHotelCombo())){
-//			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_HOTEL_COMBO, vars);
-//		}*/
-//
-//		//如果没有包机信息，又没有普通的去程或者返程，就抛错.
-//		if(CollectionUtils.isEmpty(charterFlightInfos)){
-//			if(CollectionUtils.isEmpty(goFlightInfo)){
-//				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_DEP_FLIGHT, vars);
-//			}
-//	
-//			if(CollectionUtils.isEmpty(backFlightInfo)){
-//				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_ARR_FLIGHT, vars);
-//			}
-//		}
-//
+//		goods = new FitSdpGoodsDto();
+//		//设置查询航班的规则map
+//		goods.setTrafficRuleMap(trafficRuleMap);
+//		// 设置包机信息.
+//		goods.setCharterFlightInfos(charterFlightInfos);
+//		
 //		goods.setDepFlightInfos(goFlightInfo);
-//		goods.setDepfacetMap(goFlightSearchResult.getFacetMap());
+//		goods.setDepfacetMap(r.getFacetMap());
 //
 //		goods.setArvFlightInfos(backFlightInfo);
-//		goods.setArvfacetMap(backFlightSearchResult.getFacetMap());
-//
-//		//设置包机信息.
-//		goods.setCharterFlightInfos(charterFlightInfos);
-//        // 处理保险数据，按推荐级别排序，默认选中国内游意外险
-//        goods.setInsProducts(genSortedInsurance(goods));
-//        
-//        //设置查询航班的规则map
-//        goods.setTrafficRuleMap(trafficRuleMap);
-//        // 将商品信息放入缓存，用于算价，更换航班，更换酒店套餐
-//        this.putInfoToCache4CalculatePrice(goodsRequest, goods);
-//  		return goods;
+//		goods.setArvfacetMap(r2.getFacetMap()); 
+//		
+//		// 将商品信息放入缓存，用于算价，更换航班，更换酒店套餐
+//		this.putInfoToCache4CalculatePrice(goodsRequest, goods);
+//		return goods;
 //	}
+	 
+	@Override
+	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_GOODS_E)
+	public FitSdpGoodsDto searchGoodsInfo(FitSdpGoodsRequest goodsRequest) {
+
+		Object[] vars = new Object[]{goodsRequest.getProductId(),goodsRequest.getBizCategoryId(),
+				DateUtils.formatDate(goodsRequest.getDepartDate()),goodsRequest.getDepCityCode(),goodsRequest.getArvCityCode()};
+		List<FitSdpProductTrafficRulesDto> trafficRules = fitBusinessClient.getProductTrafficRulesByProductId(goodsRequest.getProductId());
+		Map<String,FitSdpProductTrafficRulesDto> trafficRuleMap = new HashMap<String, FitSdpProductTrafficRulesDto>();
+		if(CollectionUtils.isNotEmpty(trafficRules)){
+			for (FitSdpProductTrafficRulesDto trafficRulesDto : trafficRules) {
+				trafficRuleMap.put(trafficRulesDto.getTrafficTripeType().name(), trafficRulesDto);
+			}
+		}
+		// 机票查询请求和VST商品的请求信息
+		Map<String, Object> reqMap = getQueryRequestMap(goodsRequest, trafficRules);
+		System.out.println("查询返程："+MockUtil.toJsonStr(reqMap.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name())));
+		System.out.println("查询去程："+MockUtil.toJsonStr(reqMap.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name())));
+		final String mainTraceId = TraceContext.getTraceId();
+	    TaskMainGroup<Boolean> mainGroup = new TaskMainGroup<Boolean>();
+	    final TaskContext context = new TaskContext();
+
+		for (Map.Entry<String, Object> entry : reqMap.entrySet()) {
+			final String key = entry.getKey();
+			final Object request = entry.getValue();
+			mainGroup.addTask(new Task<Boolean>() {
+				@Override
+				public Boolean execute(TaskContext taskContext) {
+					TraceContext.setTraceId(mainTraceId);
+					try {
+						// 机票查询
+						if (request instanceof FlightQueryRequest) {
+							context.put(key, fitAggregateClient.searchFlightInfo((FlightQueryRequest) request));
+						}
+						// 商品查询
+						if (request instanceof FitSdpGoodsRequest) {
+							context.put(key, fitAggregateClient.searchProductGoodsInfo((FitSdpGoodsRequest) request));
+						}
+					}catch (Exception e){
+						context.put(FitBusinessType.valueOf(key).getBusinessExceptionType().name(), e);
+					}
+					return true;
+				}
+			});
+		}
+	    mainGroup.putContext(context).getResult(reqMap.keySet().size());
+		Set<String> allContextKeys = context.keySet();
+		for (String key : allContextKeys) {
+			if (key.endsWith(FitBusinessExceptionType._E.name())) {
+				Exception curException = (Exception)context.get(FitBusinessExceptionType.valueOf(key).name());
+				throw new RuntimeException(curException);
+			}
+		}
+		List<FlightSearchFlightInfoDto> goFlightInfo = null;
+		List<FlightSearchFlightInfoDto> backFlightInfo = null;
+		 
+		
+		BaseSingleResultDto<FitSdpGoodsDto> goodsResult = null;
+
+		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
+		goFlightInfo = this.handleFlightSearchResult(goFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
+
+		FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
+		backFlightInfo = this.handleFlightSearchResult(backFlightSearchResult, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
+		
+		//包机信息.
+		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
+		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goFlightSearchResult2, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
+				, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),goodsRequest); 
+		
+		FitSdpGoodsDto goods = null;
+		Object goodsInfoObject = context.get(FitBusinessType.FIT_SDP_SEARCH_GOODS.name());
+		if (goodsInfoObject != null) {
+			goodsResult = (BaseSingleResultDto<FitSdpGoodsDto>) goodsInfoObject;
+		}
+		goods = goodsResult.getResult(); 
+
+		if(null==goods){
+			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_GOODS,goodsRequest.getProductId());
+		}
+
+		/*if(goodsRequest.getBizCategoryId()== BizEnum.BIZ_CATEGORY_TYPE.category_route_group.getCategoryId() &&null==goods.getLocalTrip()){
+			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_LOCAL_TRIP,vars);
+		}
+
+		if(goodsRequest.getBizCategoryId()==BizEnum.BIZ_CATEGORY_TYPE.category_route_freedom.getCategoryId()&&CollectionUtils.isEmpty(goods.getHotelCombo())){
+			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_HOTEL_COMBO, vars);
+		}*/
+
+		//如果没有包机信息，又没有普通的去程或者返程，就抛错.
+		if(CollectionUtils.isEmpty(charterFlightInfos)){
+			if(CollectionUtils.isEmpty(goFlightInfo)){
+				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_DEP_FLIGHT, vars);
+			}
+	
+			if(CollectionUtils.isEmpty(backFlightInfo)){
+				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_ARR_FLIGHT, vars);
+			}
+		}
+
+		goods.setDepFlightInfos(goFlightInfo);
+		goods.setDepfacetMap(goFlightSearchResult.getFacetMap());
+
+		goods.setArvFlightInfos(backFlightInfo);
+		goods.setArvfacetMap(backFlightSearchResult.getFacetMap());
+
+		//设置包机信息.
+		goods.setCharterFlightInfos(charterFlightInfos);
+        // 处理保险数据，按推荐级别排序，默认选中国内游意外险
+        goods.setInsProducts(genSortedInsurance(goods));
+        
+        //设置查询航班的规则map
+        goods.setTrafficRuleMap(trafficRuleMap);
+        // 将商品信息放入缓存，用于算价，更换航班，更换酒店套餐
+        this.putInfoToCache4CalculatePrice(goodsRequest, goods);
+  		return goods;
+	}
 
 	private List<FlightSearchFlightInfoDto> handleFlightSearchResult(FlightSearchResult<FlightSearchFlightInfoDto> flightResult,
 		FitSdpProductTrafficRulesDto trafficRule, FitSdpGoodsRequest goodsRequest) {
@@ -843,26 +771,8 @@ public class FitSdpServiceImpl implements FitSdpService {
 //        }
 //        fitSdpShoppingService.putShoppingCache(goodsRequest.getShoppingUuid(), shoppingDto);
         
-        mokeCache(shoppingDto); 
-    }
-	
-	public static void mokeCache(FitSdpShoppingDto shoppingDto) {
-		ObjectOutputStream oo;
-		try {
-			oo = new ObjectOutputStream(new FileOutputStream(
-					new File("d:\\cache\\123123123.txt")));
-			oo.writeObject(shoppingDto);
-			System.out.println("Person对象序列化成功！");
-			oo.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+        MockUtil.morkCacheShoopingDto(shoppingDto);
+    } 
  
 	/**
 	 * 如果有儿童过滤掉没有儿童舱位的航班以及舱位

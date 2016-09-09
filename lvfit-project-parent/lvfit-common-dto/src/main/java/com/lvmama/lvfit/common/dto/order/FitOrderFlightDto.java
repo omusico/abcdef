@@ -52,6 +52,9 @@ public class FitOrderFlightDto extends Entity {
 
     private String arrivalDate;
 
+    //销售类型.包机切位.
+    private String saleType;
+    
     /** 到达时间 */
     private String arrivalTime;
 
@@ -181,7 +184,16 @@ public class FitOrderFlightDto extends Entity {
         return arrivalAirportCode;
     }
 
-    public void setArrivalAirportCode(String arrivalAirportCode) {
+    
+    public String getSaleType() {
+		return saleType;
+	}
+
+	public void setSaleType(String saleType) {
+		this.saleType = saleType;
+	}
+
+	public void setArrivalAirportCode(String arrivalAirportCode) {
         this.arrivalAirportCode = arrivalAirportCode;
     }
 

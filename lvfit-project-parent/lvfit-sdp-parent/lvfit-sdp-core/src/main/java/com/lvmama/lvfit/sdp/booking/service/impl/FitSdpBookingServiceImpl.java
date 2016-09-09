@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
+import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.utils.DateUtils;
@@ -50,6 +51,7 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
 import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.shopping.FitFlightAmountDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 import com.lvmama.lvfit.common.dto.trace.FitOpLogTraceContext;
@@ -84,7 +86,9 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 		
 		BaseSingleResultDto<FitOrderMainDto> resultDto = new BaseSingleResultDto<FitOrderMainDto>();
 		try {
+			//组装订单的请求参数信息
 			this.completeBookingRequest(bookingRequest);
+			//计算订单销售价
 	        this.setOrderSalesAmount(bookingRequest);
 	        logger.info("下单请求报文22：bookingRequest="+JSONMapper.getInstance().writeValueAsString(bookingRequest));
 	        FitOrderMainDto orderMainDto  = fitBusinessClient.booking(bookingRequest);
@@ -122,7 +126,8 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 
 	private void completeBookingRequest(FitOrderBookingRequest bookingRequest) {
 
-        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(bookingRequest.getShoppingUuid());
+//        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(bookingRequest.getShoppingUuid());
+		FitSdpShoppingDto shoppingDto = MockUtil.morkShoppingDto();
         if (null == shoppingDto) {
             throw new ExceptionWrapper(ExceptionCode.UNDEF_ERROR);
         }
@@ -200,7 +205,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 	}
 	
 	/**
-	 * 构建订单航班信息
+	 * 构建订单航班信息.准备放到机酒里面的快照库里面，和vst订单是一一对应的。
 	 * @param bookingRequest
 	 * @param shoppingDto
 	 */
@@ -212,20 +217,49 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         BigDecimal fligtFeeAmount = new BigDecimal(0);
         fligtFeeAmount = this.getProductFeeRulesByProductId(fitSdpShoppingRequest.getProductId(),fligtFeeAmount);
         bookingRequest.setFlightFeeAmount(fligtFeeAmount);
-        
+         
         for (FlightSearchFlightInfoDto searchFlight : shoppingDto.getSelectedFlightInfos()) {
 	    	 FlightSearchSeatDto searchSeat = searchFlight.getSeats().get(0);
 	    	 FitOrderFlightDto fitOrderFlightDto = new FitOrderFlightDto();
+	    	 //设置销售类型，标明是否是包机切位航班.
+	    	 fitOrderFlightDto.setSaleType(searchFlight.getSaleType());
 	         FitOrderFlight fitOrderFlight = new FitOrderFlight(fitOrderFlightDto); 
 	         fitOrderFlightDto = fitOrderFlight.buildFitOrderFlightDto(searchFlight, searchSeat);
-	         FitSdpCalculateAmountRequest calculateAmountRequest = new FitSdpCalculateAmountRequest();
+	         FitSdpCalculateAmountRequest calculateAmountRequest = new FitSdpCalculateAmountRequest(); 
 	         List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
-	         selectSearchFlightInfoDtos.add(searchFlight);
-			 fitSdpShoppingRequest.setBookingSource(bookingRequest.getBookingSource());
+	         fitSdpShoppingRequest.setBookingSource(bookingRequest.getBookingSource());
+	         //如果是包机切位,只计算第一个单程的价格，也就是只计算包机切位的去程的价格.
+	         if(SuppSaleType.DomesticProduct.name().equals(searchFlight.getSaleType())){
+	        	 selectSearchFlightInfoDtos.add(shoppingDto.getSelectedFlightInfos().get(0));
+	         }
+	         //以前默认的处理方式，处理往返程.
+	         else{
+	        	 selectSearchFlightInfoDtos.add(searchFlight); 
+	         }
+			 
+	         //根据航段+乘客类型，构造查询航班价格请求对象. 
 	         AmountCalculatorRequest calculatorRequest = calculateAmountRequest.getFlightPriceRequest(selectSearchFlightInfoDtos, fitSdpShoppingRequest);
+	         //查询价格.
 	         FitFlightAmountDto flightAmountDto =  fitSdpShopingCalculateService.calculateFlightAmount(calculatorRequest);
-	         fitOrderFlightDto.setSalesPrice(flightAmountDto.getTotalSalesAmount());
-	         fitOrderFlightDtos.add(fitOrderFlightDto);
+	         
+	         //如果是包机切位
+	         if(SuppSaleType.DomesticProduct.name().equals(searchFlight.getSaleType())){
+		        int childCount = bookingRequest.getChildQuantity();
+         		int adultCount = bookingRequest.getAdultQuantity();
+         		BigDecimal salesPrice = flightAmountDto.getTotalSalesAmount();
+         		salesPrice = salesPrice.divide(new BigDecimal(2));
+	        	//如果是包机切位，总价格/2,每一程的价格
+	        	fitOrderFlightDto.setSalesPrice(salesPrice);
+	        	BigDecimal singlePrice = salesPrice.divide(new BigDecimal(childCount+adultCount));
+	        	//如果是包机切位，成人价，儿童价都是一样的，每个价格一样。所以单价就是总价/总人数.
+	        	fitOrderFlightDto.setAdultPrice(singlePrice);
+	        	fitOrderFlightDto.setAdultPrice(singlePrice);
+	         }
+	         //默认的航班
+	         else{  
+	        	 fitOrderFlightDto.setSalesPrice(flightAmountDto.getTotalSalesAmount());	        	
+	         } 
+	         fitOrderFlightDtos.add(fitOrderFlightDto); 
        }
 	}
 	
@@ -338,6 +372,10 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 
         //计算：机票成人单价、机票儿童单价
         for (FitOrderFlightDto f : bookingRequest.getFitOrderFlightDtos()) {
+        	//如果当前是包机切位的航班，就不计算单价了。因为已经在completeBookingRequest()中计算了.
+        	if(SuppSaleType.DomesticProduct.name().equals(f.getSaleType())){
+				break;
+			}
         	
         	FitOrderFlightDto curFitOrderFlightDto = new FitOrderFlightDto();
         	try {

@@ -58,6 +58,7 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.sdp.core.service.FitSdpService;
 import com.lvmama.lvfit.sdp.core.service.impl.FitSdpServiceImpl;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShoppingService;
@@ -274,27 +275,7 @@ public class FitSdpCoreResource {
 	    return Response.ok(shoppingDto.getHotelGroups()).build();
     }
 	
-	 
-	private static FitSdpShoppingDto deserializePerson()   {
-		ObjectInputStream ois;
-		try {
-			ois = new ObjectInputStream(new FileInputStream(
-					new File("d:\\cache\\123123123.txt")));
-			FitSdpShoppingDto person = (FitSdpShoppingDto) ois.readObject();
-			System.out.println("Person对象反序列化成功！");
-			return person;
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+	  
 	
 	/**
 	 * 清除缓冲中已经选中的往返程航班信息.
@@ -334,7 +315,7 @@ public class FitSdpCoreResource {
     @Path(SdpClientPath.Path.CHANGE_FLIGHT)
     public Response changeFlight(FitChangeFlightRequest req) {
 //        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(req.getShoppingUuid());
-        FitSdpShoppingDto shoppingDto = deserializePerson();
+        FitSdpShoppingDto shoppingDto = MockUtil.morkShoppingDto();
         List<FlightSearchFlightInfoDto> selectedFlightInfos = shoppingDto.getSelectedFlightInfos();
         
         FitSdpShoppingRequest shoppingRequest = shoppingDto.getFitSdpShoppingRequest();
@@ -423,7 +404,7 @@ public class FitSdpCoreResource {
             shoppingDto.setSelectedFlightInfos(selectedFlightInfos);
         }
 //        fitSdpShoppingService.putShoppingCache(req.getShoppingUuid(), shoppingDto);
-        FitSdpServiceImpl.mokeCache(shoppingDto);
+        MockUtil.morkCacheShoopingDto(shoppingDto);
         return Response.ok(flightInfos).build();
     }
 	
