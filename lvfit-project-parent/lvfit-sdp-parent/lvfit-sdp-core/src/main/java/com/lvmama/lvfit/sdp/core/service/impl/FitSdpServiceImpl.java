@@ -318,15 +318,25 @@ public class FitSdpServiceImpl implements FitSdpService {
 		 
 		
 		BaseSingleResultDto<FitSdpGoodsDto> goodsResult = null;
-
-		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
+		FlightSearchResult<FlightSearchFlightInfoDto> allGoFlights = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
+		
+		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult = new FlightSearchResult<FlightSearchFlightInfoDto>();
+		List<FlightSearchFlightInfoDto> allGoList = new ArrayList<FlightSearchFlightInfoDto>();
+		allGoList.addAll(allGoFlights.getResults());
+		goFlightSearchResult.setResults(allGoList);
+		goFlightSearchResult.setFacetMap(allGoFlights.getFacetMap());
+		
 		goFlightInfo = this.handleFlightSearchResult(goFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
 
 		FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
 		backFlightInfo = this.handleFlightSearchResult(backFlightSearchResult, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
 		
 		//包机信息.
-		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
+		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = new FlightSearchResult<FlightSearchFlightInfoDto>();
+		List<FlightSearchFlightInfoDto> allCharsetList = new ArrayList<FlightSearchFlightInfoDto>();
+		allCharsetList.addAll(allGoFlights.getResults());
+		goFlightSearchResult2.setResults(allCharsetList);
+		goFlightSearchResult2.setFacetMap(allGoFlights.getFacetMap()); 
 		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goFlightSearchResult2, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
 				, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),goodsRequest); 
 		
@@ -914,6 +924,9 @@ public class FitSdpServiceImpl implements FitSdpService {
 		if (trafficRule.getTrafficTripeType().equals(TrafficTripeType.BACK_WAY)) { 
 			flightReq.setDepartureAirportCode(goodsRequest.getArvCityCode());
 			flightReq.setArrivalAirportCode(goodsRequest.getDepCityCode());
+			SuppSaleType[] saleTypes= new SuppSaleType[1];
+			saleTypes[0] = SuppSaleType.NORMAL;
+			flightReq.setSaleType(saleTypes); 
 		}
         return flightReq;
     }

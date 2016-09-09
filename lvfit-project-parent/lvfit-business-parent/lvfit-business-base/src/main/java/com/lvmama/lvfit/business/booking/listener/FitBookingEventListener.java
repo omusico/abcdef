@@ -57,6 +57,7 @@ public class FitBookingEventListener implements EventListener {
 
 		switch (event) {
 			case ORDER_BOOKING:
+				//到vst下单，酒店在vst下单。关于机票订单的下单，最多只有两个子单号，一个去程一个返程.
 				fitVstBookingService.vstBooking((FitOrderMainDto) context);
 				break;
 			case SUPPORDER_BOOKING:

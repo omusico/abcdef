@@ -126,7 +126,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 
 	private void completeBookingRequest(FitOrderBookingRequest bookingRequest) {
 
-//        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(bookingRequest.getShoppingUuid());
+//      FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(bookingRequest.getShoppingUuid());
 		FitSdpShoppingDto shoppingDto = MockUtil.morkShoppingDto();
         if (null == shoppingDto) {
             throw new ExceptionWrapper(ExceptionCode.UNDEF_ERROR);

@@ -76,7 +76,7 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 			} catch (Exception e1) {
 				logger.error(ExceptionUtils.getFullStackTrace(e1));
 			} 
-            List<FitOrderFlightDto> fitOrderFlightDtos = request.getFitOrderFlightDtoList();
+            List<FitOrderFlightDto> fitOrderFlightDtos = request.getFitOrderFlightDtoList(); 
             for (int i = 0; i < fitOrderFlightDtos.size(); i++) {
             	   try {
                        tripTypeFlag = fitOrderFlightDtos.get(i).getTripType().name();

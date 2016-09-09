@@ -20,8 +20,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
+import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
-import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpGoodsDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 
@@ -32,6 +32,7 @@ import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
  * 
  */
 public class MockUtil {
+	 
 	public static FitSdpShoppingDto morkShoppingDto(){
 		return MockUtil.deserializeObject("d:\\cache\\123123123.txt",FitSdpShoppingDto.class);
 	}
@@ -239,11 +240,14 @@ public class MockUtil {
 
 	public static void main(String[] aegs) throws JsonParseException,
 			JsonMappingException, IOException {
-		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = MockUtil
-				.createFromJsonFile(
-						"d:\\new_flight.txt",
-						new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
-						});
+		Long a = 1475078400000L; 
+		System.out.println(DateUtils.parseDate(a, "yyyy-MM-dd"));
+		
+//		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = MockUtil
+//				.createFromJsonFile(
+//						"d:\\new_flight.txt",
+//						new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
+//						});
 
 		// String sqlFlie = readFile("d:\\老的查询往返程机票的东西.txt");
 		// ObjectMapper objectMapper = JSONMapper.getInstance();

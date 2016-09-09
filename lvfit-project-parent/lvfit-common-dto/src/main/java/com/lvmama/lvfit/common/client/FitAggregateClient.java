@@ -75,6 +75,7 @@ public class FitAggregateClient {
     	url = command.url(lvfitaggregateBaseurl);
     	try
     	{
+    		MockUtil.writeFile("d:\\log_test\\"+System.currentTimeMillis(), MockUtil.toJsonStr(request));
     		String result = restClient.post(url, String.class, request);
     		if(StringUtils.isNotBlank(result))
     		{
