@@ -284,31 +284,30 @@ public class FitSdpClient {
 	 * @return
 	 * @throws Exception
 	 */
-	public FitSdpShoppingDto getShoppingByUUID(String shoppingUUID){
-		return MockUtil.morkShoppingDto();
-//		SdpClientPath command = SdpClientPath.GET_SHOPPING_BY_UUID;
-//		String url = StringUtils.EMPTY;
-//		url = command.url(baseUrl);
-//		try {
-//			String result = restClient.post(url, String.class, shoppingUUID); 
-//			if (StringUtils.isNotBlank(result)) {
-//				ObjectMapper objectMapper = JSONMapper.getInstance();
-//				FitSdpShoppingDto dto = objectMapper.readValue(result, new TypeReference<FitSdpShoppingDto>() {
-//				});
-//				return dto;
-//			}else{
-//				throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
-//			}
-//		} catch (ExceptionWrapper ew) {
-//			throw ew;
-//		}catch (Exception e) {
-//            ExceptionWrapper ew = new ExceptionWrapper();
-//            ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
-//            ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url)
-//                    + ExceptionUtils.getFullStackTrace(e));
-//            logger.error(ew.getErrMessage(), ew);
-//            throw ew;
-//        }
+	public FitSdpShoppingDto getShoppingByUUID(String shoppingUUID){ 
+		SdpClientPath command = SdpClientPath.GET_SHOPPING_BY_UUID;
+		String url = StringUtils.EMPTY;
+		url = command.url(baseUrl);
+		try {
+			String result = restClient.post(url, String.class, shoppingUUID); 
+			if (StringUtils.isNotBlank(result)) {
+				ObjectMapper objectMapper = JSONMapper.getInstance();
+				FitSdpShoppingDto dto = objectMapper.readValue(result, new TypeReference<FitSdpShoppingDto>() {
+				});
+				return dto;
+			}else{
+				throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
+			}
+		} catch (ExceptionWrapper ew) {
+			throw ew;
+		}catch (Exception e) {
+            ExceptionWrapper ew = new ExceptionWrapper();
+            ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+            ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url)
+                    + ExceptionUtils.getFullStackTrace(e));
+            logger.error(ew.getErrMessage(), ew);
+            throw ew;
+        }
 	}
 	
 	/**

@@ -3,6 +3,7 @@
 			     <p class="canderBox-load"><span class="canderBox-loadpic"></span><br>请稍后，日历正在加载中...</p>
 		  </div>
       <input type="hidden" name="selectDate" id="selectDate">
+
 <script>
 var weekDay  = new Array("周日","周一","周二","周三","周四","周五","周六");
 

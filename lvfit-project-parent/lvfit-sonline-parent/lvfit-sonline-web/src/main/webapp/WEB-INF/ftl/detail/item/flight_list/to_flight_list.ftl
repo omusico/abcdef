@@ -5,7 +5,7 @@
         <p class="suggestion">您可以：<a class="nr-close-all" href="javascript:;">清空筛选条件</a></p>
     </div>
     <#list depFlightInfos as depFlightInfo>
-    <div class="traffic_list <#if depFlightInfo_index==0>active</#if>" data-filterkey="${depFlightInfo.filterKey}" data-flightno="${depFlightInfo.flightNo}">
+    <div class="traffic_list <#if saleType!='DomesticProduct'><#if depFlightInfo_index==0>active</#if></#if>" data-filterkey="${depFlightInfo.filterKey}" data-flightno="${depFlightInfo.flightNo}">
         <!-- 去程航班 -->
         <ul class="info_ul">
             <li class="info_li1"></li>

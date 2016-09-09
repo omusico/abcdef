@@ -51,6 +51,7 @@ import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.utils.FitLoggerHandler;
 
 @Component
@@ -184,6 +185,7 @@ public class FitFlightClient {
 		FlightClientPath command = FlightClientPath.AMOUNT_CALCULATE;
 		String url = command.url(businessBaseUrl);
 		try {
+			MockUtil.writeFile("D:\\log_test\\amount"+System.currentTimeMillis()+".txt", MockUtil.toJsonStr(request));
 			String resultString = restClient.post(url,String.class,request);
 			if (null == resultString && "".equals(resultString)) {
 				return null;

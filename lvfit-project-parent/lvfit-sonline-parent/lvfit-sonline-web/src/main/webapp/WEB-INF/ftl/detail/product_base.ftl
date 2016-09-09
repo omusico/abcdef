@@ -9,6 +9,7 @@
             <input type="hidden" id="depCityCode" name="depCityCode" value="${basicInfo.defDeparture.departureCityCode}">
             <input type="hidden" id="arvCityCode" name="arvCityCode" value="${basicInfo.defDeparture.arrivalCityCode}">
             <input type="hidden" id="routeNum" name="routeNum" value="${basicInfo.routeNum}">
+			<input type="hidden" name="packCharterFlightFlag" id="packCharterFlightFlag" value="${basicInfo.packCharterFlightFlag}">
             <input type="hidden" id="noGoodsFlag" name="noGoodsFlag">
             <div class="product-type">
                 <div class="free-tour-icon" id="tour-type"></div>

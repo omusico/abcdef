@@ -7,13 +7,9 @@
 <input type="hidden" id="toSortRuleType" name="toSortRuleType" value="${toSortRule.sortRuleType?string}"/>
 <input type="hidden" id="backSortRuleType" name="backSortRuleType" value="${backSortRule.sortRuleType?string}"/>
 
-<#if sumDepFlightInfos[0].saleType=='DomesticProduct'>
-    <!-- 包机切位的已选择航班 -->
-    <#include "detail/item/traffic_recommend_selected.ftl">
-<#else>
     <!-- 对接往返程的已选择航班 -->
     <#include "detail/item/traffic_free_selected.ftl">
-</#if>
+
  
 </div>
 <!-- 交通模板结束 -->

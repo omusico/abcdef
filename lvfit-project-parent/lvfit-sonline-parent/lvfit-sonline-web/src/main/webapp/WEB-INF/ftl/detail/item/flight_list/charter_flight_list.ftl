@@ -5,7 +5,7 @@
     </div>
 </#if>
 <#list charterFlightInfos as arvFlightInfo> 
-        <div class="traffic_list">
+        <div class="traffic_list <#if saleType=='DomesticProduct'><#if arvFlightInfo_index==0>active</#if></#if>">
             <!-- 去程航班 -->
             <ul class="info_ul">
                 <li class="info_li1"><i class="line_icon_qu">去</i></li>

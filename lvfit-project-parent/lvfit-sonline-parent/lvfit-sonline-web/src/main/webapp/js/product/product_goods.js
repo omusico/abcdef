@@ -126,6 +126,9 @@ function genRequestParam() {
     obj.adultQuantity = $("#adultQuantity").val();
     obj.childQuantity = $("#childQuantity").val();
     obj.departDate = $("#selectDate").val();
+    if($("#packCharterFlightFlag").val()=='Y')
+        $("#packCharterFlightFlag").val('TRUE');
+    obj.isCharterFlightFirst = $("#packCharterFlightFlag").val();
     obj.depCityCode = $("#depCityCode").val();
     obj.arvCityCode = $("#arvCityCode").val();
     if ($("#preorder-quantity").val() === undefined) {
@@ -547,18 +550,22 @@ function getkeyStr(data) {
 function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
     //包机
     if (tripType === "CHARTER") { 
+        $(".arvFlightBox").hide();
+        $(".depFlightBox").hide();
         $("[tag=charsetflight]").each(function() {
             var no1 = $(this).attr("go-flightno");
             var no2 = $(this).attr("back-flightno"); 
+            console.log(flightNo+",,"+backFlightNo+"-------no1="+no1+",,no2="+no2);
             if (no1 === flightNo && no2 === backFlightNo) {
                 $(this).show();
                 $(this).siblings("[tag=charsetflight]").hide();
                 return;
             }
-        });
+        }); 
         $("#selectDepFlightNo").val(flightNo);
     }
-    if (tripType === "DEPARTURE") {
+    if (tripType === "DEPARTURE") { 
+        $("[tag=charsetflight]").hide();
         $(".depFlightBox").each(function() {
             var no = $(this).data("flightno");
             if (no === flightNo) {
@@ -570,6 +577,7 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
         $("#selectDepFlightNo").val(flightNo);
     }
     if (tripType === "RETURN") {
+        $("[tag=charsetflight]").hide();
         $(".arvFlightBox").each(function() {
             var no = $(this).data("flightno");
             if (no === flightNo) {

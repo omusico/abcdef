@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lvmama.lvf.common.client.RestClient;
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
+import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
@@ -635,16 +636,23 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	public String sequenceFlight(Model model, FitSequenceFlightRequest req){
 		try {  
 			FitSdpShoppingDto SdpShoppingDto = sdpClient.getShoppingByUUID(req.getShoppingUuid());
-			
+			//得到选择的航班. 
+			List<FlightSearchFlightInfoDto>  selectedFlight = SdpShoppingDto.getSelectedFlightInfos();
+			//判断当前是否选择的包机切位航班
+			String saleType =  selectedFlight.get(0).getSaleType() ;
 			if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
 				List<FlightSearchFlightInfoDto> depFlightInfos = SdpShoppingDto.getDepFlightInfos();
 				depFlightInfos = sortFlight(depFlightInfos,req);
-	            model.addAttribute("depFlightInfos", depFlightInfos);
+				model.addAttribute("depFlightInfos", depFlightInfos);
+				model.addAttribute("depFlightNo", selectedFlight.get(0).getFlightNo()); 
+		        model.addAttribute("saleType", saleType);
 	            return "detail/item/flight_list/to_flight_list";
 	        } else if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
 	        	List<FlightSearchFlightInfoDto> arvFlightInfos = SdpShoppingDto.getArvFlightInfos();
 	        	arvFlightInfos = sortFlight(arvFlightInfos,req);
 	            model.addAttribute("arvFlightInfos", arvFlightInfos);
+	            model.addAttribute("arvFlightNo", selectedFlight.get(1).getFlightNo()); 
+	            model.addAttribute("saleType", saleType);
 	            return "detail/item/flight_list/back_flight_list";
 	        }
 			//包机
@@ -652,6 +660,9 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	        	List<FlightSearchFlightInfoDto> charterFlightInfos = SdpShoppingDto.getCharterFlightInfos();
 	        	charterFlightInfos = sortFlight(charterFlightInfos,req);
 	            model.addAttribute("charterFlightInfos", charterFlightInfos);
+	            model.addAttribute("depFlightNo", selectedFlight.get(0).getFlightNo()); 
+	            model.addAttribute("arvFlightNo", selectedFlight.get(1).getFlightNo()); 
+	            model.addAttribute("saleType", saleType);
 	            return "detail/item/flight_list/charter_flight_list";
 	        }
 		} catch (Exception e) {

@@ -73,9 +73,8 @@ public class FitSdpShopingCalculateServiceImpl implements FitSdpShopingCalculate
 		try{
 			FitSdpCalculateAmountDetailRequest calculateAmountDetailRequest = new FitSdpCalculateAmountDetailRequest();
 
-//			String shoppingUuid = request.getShoppingUUID();
-//			FitSdpShoppingDto fitSdpShoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(shoppingUuid);
-			FitSdpShoppingDto fitSdpShoppingDto = MockUtil.morkShoppingDto();
+			String shoppingUuid = request.getShoppingUUID();
+			FitSdpShoppingDto fitSdpShoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(shoppingUuid); 
 			
 			if(fitSdpShoppingDto==null||CollectionUtils.isEmpty(fitSdpShoppingDto.getSelectedFlightInfos())||fitSdpShoppingDto.getSelectedFlightInfos().size()!=2){
 				throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
