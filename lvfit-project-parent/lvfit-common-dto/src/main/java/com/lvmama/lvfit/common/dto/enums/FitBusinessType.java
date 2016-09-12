@@ -30,6 +30,7 @@ public enum FitBusinessType {
     FIT_SDP_CALCULATE_FLI_PRICE("sdp-计算机票价格",FitBusinessExceptionType.FIT_SDP_CALCULATE_FLI_PRICE_E),
     FIT_SDP_BOOKING("sdp-预订",FitBusinessExceptionType.FIT_SDP_BOOKING_E),
     FIT_SDP_GO_FLIGHT_QUERY("交通+地接-去程机票查询", FitBusinessExceptionType.FIT_SDP_GO_FLIGHT_QUERY_E),
+    FIT_SDP_GO_AND_BACK_FLIGHT_QUERY("交通+地接-往返程机票查询", FitBusinessExceptionType.FIT_SDP_GO_FLIGHT_QUERY_E),
     FIT_SDP_BACK_FLIGHT_QUERY("交通+地接-返程机票查询", FitBusinessExceptionType.FIT_SDP_BACK_FLIGHT_QUERY_E),
     FIT_SDP_SEARCH_GOODS("交通+地接-VST商品查询", FitBusinessExceptionType.FIT_SDP_SEARCH_GOODS_E);
 

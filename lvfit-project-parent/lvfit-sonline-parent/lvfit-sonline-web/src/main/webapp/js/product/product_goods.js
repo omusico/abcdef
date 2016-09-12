@@ -130,6 +130,7 @@ function genRequestParam() {
         $("#packCharterFlightFlag").val('TRUE');
     obj.isCharterFlightFirst = $("#packCharterFlightFlag").val();
     obj.depCityCode = $("#depCityCode").val();
+    console.log("product_goods.js------"+$("#arvCityCode").val());
     obj.arvCityCode = $("#arvCityCode").val();
     if ($("#preorder-quantity").val() === undefined) {
         obj.quantity = 1;

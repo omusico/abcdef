@@ -1,16 +1,9 @@
 package com.lvmama.lvfit.common.client;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
@@ -38,7 +31,6 @@ import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.trace.profile.Profile;
 import com.lvmama.lvf.common.trace.profile.ProfilePoint;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
-import com.lvmama.lvf.common.utils.FileUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
 import com.lvmama.lvfit.common.aspect.suppinterface.SuppInterfacePoint;
@@ -82,30 +74,7 @@ public class FitFlightClient {
 	
 	@Autowired
 	private FitLoggerHandler fitLoggerHandler;
-	
-
-	 private String getJsonStr(Object obj){
-	    	try {
-				return JSONMapper.getInstance().writeValueAsString(obj);
-			} catch (Exception e) {
-				logger.error(e.getMessage(),e);
-			}
-	    	return null;
-	    }	 
-	 
-	 public static void writeFile(String fileName, String contant) {  
-	        PrintWriter out;  
-	        try {  
-	            out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));  
-	            out.print(contant);  
-	            out.close();  
-	        } catch (IOException e) {  
-	            System.out.println("读写文件出现异常！");  
-	        } catch (Exception e) {  
-	            System.out.println("出现异常");  
-	        }  
-	    }  
-	 
+ 
 	/**
      * 查询航班及舱位或客票信息
      * @param request
@@ -123,10 +92,11 @@ public class FitFlightClient {
     	url = command.url(lvfaggregateBaseurl);
     	try
     	{
+    		MockUtil.writeJsonToFile("d:\\log_test\\最终查询航班"+System.currentTimeMillis()+".txt",request);
     		String result = restClient.post(url, String.class, request);
     		if(StringUtils.isNotBlank(result))
     		{
-    			writeFile("e:\\hangban"+File.separator+System.currentTimeMillis()+".txt",result);
+    			MockUtil.writeFile("e:\\hangban"+File.separator+System.currentTimeMillis()+".txt",result);
     			ObjectMapper objectMapper = JSONMapper.getInstance();
     			FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = objectMapper.readValue(result, 
     				new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
@@ -275,6 +245,7 @@ public class FitFlightClient {
 		FlightClientPath command = FlightClientPath.BOOKING_REBUILD_NEW;
 		String url = command.url(businessBaseUrl);
 		try {
+			MockUtil.writeJsonToFile("d:\\flightrequest\\航班请求"+System.currentTimeMillis()+".txt", flightOrderBookingRequest);
 			return restClient.post(url, SuppResponse.class,flightOrderBookingRequest);
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);

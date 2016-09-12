@@ -124,10 +124,8 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 		return resultDto;
 	}
 
-	private void completeBookingRequest(FitOrderBookingRequest bookingRequest) {
-
-//      FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(bookingRequest.getShoppingUuid());
-		FitSdpShoppingDto shoppingDto = MockUtil.morkShoppingDto();
+	private void completeBookingRequest(FitOrderBookingRequest bookingRequest) { 
+		FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(bookingRequest.getShoppingUuid()); 
         if (null == shoppingDto) {
             throw new ExceptionWrapper(ExceptionCode.UNDEF_ERROR);
         }

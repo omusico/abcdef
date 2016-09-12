@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
+import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.task.Task;
@@ -124,8 +125,8 @@ public class FitSdpShopingCalculateServiceImpl implements FitSdpShopingCalculate
 				List<FitSdpSelectInsuranceDto> selectInsurances = fitSdpShoppingDto.getSelectInsurances();
 				calculateAmountDetailRequest.setSelectInsurances(selectInsurances);
 			}
-			logger.info("calculateAmountDetailRequest="+JSONMapper.getInstance().writeValueAsString(calculateAmountDetailRequest));
-
+			logger.info("calculateAmountDetailRequest="+JSONMapper.getInstance().writeValueAsString(calculateAmountDetailRequest)); 
+			 
 			return this.calculateAmountByDetail(calculateAmountDetailRequest);
 			
 		}catch (Exception e) {
@@ -140,8 +141,7 @@ public class FitSdpShopingCalculateServiceImpl implements FitSdpShopingCalculate
 	}
 
 
-	public BaseSingleResultDto<FitSdpShoppingAmountDto> calculateAmountByDetail(FitSdpCalculateAmountDetailRequest request) {
-
+	public BaseSingleResultDto<FitSdpShoppingAmountDto> calculateAmountByDetail(FitSdpCalculateAmountDetailRequest request) { 
 		BaseSingleResultDto<FitSdpShoppingAmountDto> result = new BaseSingleResultDto<FitSdpShoppingAmountDto>();
 		try{
 			final Map<String, Object> requestMap = request.getFlightRequestMap();

@@ -19,13 +19,13 @@ import com.lvmama.lvfit.common.dto.calculator.AmountCalculatorRequest;
 import com.lvmama.lvfit.common.dto.calculator.BookingDetailDto;
 import com.lvmama.lvfit.common.dto.calculator.FlightSimpleInfoDto;
 import com.lvmama.lvfit.common.dto.calculator.FlightTicketPriceDto;
+import com.lvmama.lvfit.common.dto.calculator.InsuranceCalculatRequest;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessType;
 import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.price.FitFlightTicketPriceDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
-import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
 
@@ -72,7 +72,17 @@ public class FitSdpCalculateAmountRequest implements Serializable{
     	FitSdpShoppingRequest fitSdpShoppingRequest = selectShoppingDto.getFitSdpShoppingRequest();
 		fitSdpShoppingRequest.setBookingSource(bookingSource);
 		AmountCalculatorRequest flightPriceRequest = this.getFlightPriceRequest(selectSearchFlightInfoDtos,fitSdpShoppingRequest);
-		if(flightPriceRequest!=null){
+		if(flightPriceRequest!=null){ 
+			//如果当前是包机航班，就修改里面的乘客的航意险的数量为原有的两倍.
+			if(SuppSaleType.DomesticProduct.name().equals(selectSearchFlightInfoDtos.get(0).getSaleType())){
+				 List<BookingDetailDto>  bookingDetails = flightPriceRequest.getPassengerDetailDtos();
+				 for(BookingDetailDto bkdetail:bookingDetails){
+					 List<InsuranceCalculatRequest> insRequests =  bkdetail.getInsuranceCalculatRequests();
+					 for(InsuranceCalculatRequest req:insRequests){
+						 req.setInsuranceCount(2*req.getInsuranceCount());
+					 }
+				 } 
+			}		
 			requestMap.put(FitBusinessType.FIT_SDP_CALCULATE_FLI_PRICE.name(),flightPriceRequest);
 		}
 		
@@ -122,9 +132,16 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				flightSimpleInfoDto.setArrivalAirportCode(selectSearchFlightInfoDto.getArrivalAirportCode());
 				FlightTicketPriceDto flightTicketPriceDto = new FlightTicketPriceDto();
 				FitFlightTicketPriceDto fitFlightTicketPriceDto = new FitFlightTicketPriceDto(); 
-				if(passengerDetailDto.getPassengerType()==PassengerType.CHILDREN){
-					fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassType()).getFlightTicketPriceDto();
-				}else{
+				//如果不是包机切位，就考虑儿童舱的问题
+				if(!SuppSaleType.DomesticProduct.name().equals(selectSearchFlightInfoDto.getSaleType())){
+					if(passengerDetailDto.getPassengerType()==PassengerType.CHILDREN){
+						fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassType()).getFlightTicketPriceDto();
+					}else{
+						fitFlightTicketPriceDto = selectSearchSeatDto.getFlightTicketPriceDto();
+					}
+				}
+				//包机切位没有儿童舱的问题
+				else{
 					fitFlightTicketPriceDto = selectSearchSeatDto.getFlightTicketPriceDto();
 				}
 				try {

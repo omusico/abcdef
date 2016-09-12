@@ -160,7 +160,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		}
 		model.addAttribute("productId", productIdL);
 		FitSdpProductBasicInfoDto basicInfo = this.searchBasicProductInfo(productIdL,isNotPreview);
-
+	 
 		if (basicInfo.getPackageTrafficFlag() == JudgeType.Y
 			&& basicInfo.getCancelFlag() == JudgeType.Y && basicInfo.getSaleFlag() == JudgeType.Y
 			&& basicInfo.getAuditType() == ProductAuditType.AUDITTYPE_PASS) {
@@ -175,7 +175,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		}
  
 		SearchResponseForm respForm = new SearchResponseForm(basicInfo);
-
+		basicInfo.getDefDeparture().getArrivalCityCode();
 		if (CollectionUtils.isNotEmpty(basicInfo.getCityGroups())) {
 			if (basicInfo.getCityGroups().size() > 1) {
 
@@ -313,8 +313,9 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	 
 	@Override
 	@RequestMapping(value = "loadsGoods", method = { RequestMethod.POST ,RequestMethod.GET})
-	public String searchGoodsInfo(Model model, FitSdpGoodsRequest req) {
-
+	public String searchGoodsInfo(Model model, FitSdpGoodsRequest req) { 
+		req.setArvCityCode("CAN");//到达：成都
+		req.setDepCityCode("SHA");//出发：天津
 		req.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		req.setDistributorId(3L);
 	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req);

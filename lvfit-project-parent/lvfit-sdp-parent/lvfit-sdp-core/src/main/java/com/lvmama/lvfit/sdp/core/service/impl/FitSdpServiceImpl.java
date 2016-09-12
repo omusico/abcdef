@@ -1,15 +1,5 @@
 package com.lvmama.lvfit.sdp.core.service.impl;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,14 +15,9 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +31,7 @@ import com.lvmama.lvf.common.task.Task;
 import com.lvmama.lvf.common.task.TaskContext;
 import com.lvmama.lvf.common.task.TaskMainGroup;
 import com.lvmama.lvf.common.trace.TraceContext;
+import com.lvmama.lvf.common.utils.BeanUtils;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
@@ -67,6 +53,8 @@ import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpHotelGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpHotelRoomtypeDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceProductDto;
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpOtherTicketDto;
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpRoomDiff;
 import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpInstalmentDto;
@@ -75,6 +63,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductCalendarDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductCalendarRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.result.FitSdpGroupCalendarSearchResult;
+import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpSelectInsuranceDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
 import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
@@ -86,7 +75,6 @@ import com.lvmama.lvfit.common.dto.search.flight.SearchResultUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.sdp.core.service.FitSdpService;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShoppingService;
 
@@ -275,9 +263,7 @@ public class FitSdpServiceImpl implements FitSdpService {
 			}
 		}
 		// 机票查询请求和VST商品的请求信息
-		Map<String, Object> reqMap = getQueryRequestMap(goodsRequest, trafficRules);
-		System.out.println("查询返程："+MockUtil.toJsonStr(reqMap.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name())));
-		System.out.println("查询去程："+MockUtil.toJsonStr(reqMap.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name())));
+		Map<String, Object> reqMap = getQueryRequestMap(goodsRequest, trafficRules); 
 		final String mainTraceId = TraceContext.getTraceId();
 	    TaskMainGroup<Boolean> mainGroup = new TaskMainGroup<Boolean>();
 	    final TaskContext context = new TaskContext();
@@ -314,30 +300,19 @@ public class FitSdpServiceImpl implements FitSdpService {
 			}
 		}
 		List<FlightSearchFlightInfoDto> goFlightInfo = null;
-		List<FlightSearchFlightInfoDto> backFlightInfo = null;
-		 
-		
-		BaseSingleResultDto<FitSdpGoodsDto> goodsResult = null;
-		FlightSearchResult<FlightSearchFlightInfoDto> allGoFlights = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
-		
-		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult = new FlightSearchResult<FlightSearchFlightInfoDto>();
-		List<FlightSearchFlightInfoDto> allGoList = new ArrayList<FlightSearchFlightInfoDto>();
-		allGoList.addAll(allGoFlights.getResults());
-		goFlightSearchResult.setResults(allGoList);
-		goFlightSearchResult.setFacetMap(allGoFlights.getFacetMap());
-		
+		List<FlightSearchFlightInfoDto> backFlightInfo = null; 
+		BaseSingleResultDto<FitSdpGoodsDto> goodsResult = null;  
+		//	去程
+		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
 		goFlightInfo = this.handleFlightSearchResult(goFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
 
+		//返程
 		FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
 		backFlightInfo = this.handleFlightSearchResult(backFlightSearchResult, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
 		
 		//包机信息.
-		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = new FlightSearchResult<FlightSearchFlightInfoDto>();
-		List<FlightSearchFlightInfoDto> allCharsetList = new ArrayList<FlightSearchFlightInfoDto>();
-		allCharsetList.addAll(allGoFlights.getResults());
-		goFlightSearchResult2.setResults(allCharsetList);
-		goFlightSearchResult2.setFacetMap(allGoFlights.getFacetMap()); 
-		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goFlightSearchResult2, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
+		FlightSearchResult<FlightSearchFlightInfoDto> goAndBackFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name());
+		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goAndBackFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
 				, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),goodsRequest); 
 		
 		FitSdpGoodsDto goods = null;
@@ -426,18 +401,34 @@ public class FitSdpServiceImpl implements FitSdpService {
 	private void setBackDate(Map<String, Object> reqMap){
 		//如果map里面有数据.
 		if(reqMap.size()>1){
-			FlightQueryRequest goReq = (FlightQueryRequest)reqMap.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
+			FlightQueryRequest goAndBackReq = (FlightQueryRequest)reqMap.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name());
 			FlightQueryRequest backReq = (FlightQueryRequest)reqMap.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
-			goReq.setBackDate(backReq.getDepartureDate());
+			goAndBackReq.setBackDate(backReq.getDepartureDate());
 		}
 	}
 	
+	private FlightQueryRequest cloneFlightQueryRequest(FlightQueryRequest req){
+		try {
+			FlightQueryRequest queryReq2 = (FlightQueryRequest)BeanUtils.cloneBean(req);
+			return queryReq2;
+		} catch (Exception e) { 
+			e.printStackTrace();
+			return req;
+		}
+	}
 	private Map<String, Object> getQueryRequestMap(FitSdpGoodsRequest goodsRequest, List<FitSdpProductTrafficRulesDto> trafficRules) {
 		Map<String, Object> reqMap = new HashMap<String, Object>();
 		for (FitSdpProductTrafficRulesDto trafficRule : trafficRules) {
 			FlightQueryRequest queryReq = this.getFlightQueryRequest(goodsRequest, trafficRule);
 			if (trafficRule.getTrafficTripeType().equals(TrafficTripeType.GO_WAY)) {
+				//单程
 				reqMap.put(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name(),  queryReq);
+				
+				//往返程
+				FlightQueryRequest queryReq2 = cloneFlightQueryRequest(queryReq);
+				//只查询包机政策的往返程.
+				queryReq2.setSaleType(new SuppSaleType[]{SuppSaleType.DomesticProduct});  
+				reqMap.put(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name(),  queryReq2);
 			}
 			if (trafficRule.getTrafficTripeType().equals(TrafficTripeType.BACK_WAY)) {
 				reqMap.put(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name(),  queryReq);
@@ -692,38 +683,38 @@ public class FitSdpServiceImpl implements FitSdpService {
         } 
         shoppingDto.setSelectedFlightInfos(CharterFlightFilterUtil.setSumFlights(searchGoodsInfo,goodsRequest));  
         
-//        // --酒店信息--
-//        if (CollectionUtils.isNotEmpty(searchGoodsInfo.getHotelInfos())) {
-//        	//第一次设置默认的最低价的基准是0.之后如果修改了基准价格，这里就会变化。
-//        	setSelectedRoomtypes(shoppingDto,searchGoodsInfo.getHotelInfos()); 
-//        	
-//            shoppingDto.setHotelGroups(searchGoodsInfo.getHotelInfos()); 
-//            
-//        }
-//        
-//        // --酒店套餐信息--
-//        if (CollectionUtils.isNotEmpty(searchGoodsInfo.getHotelCombo())) {
-//            shoppingDto.setSelectedHotelComboGoods(searchGoodsInfo.getHotelCombo().get(0));
-//            for (int i = 0; i < searchGoodsInfo.getHotelCombo().size(); i++) {
-//                if (i == 0) {
-//                    searchGoodsInfo.getHotelCombo().get(i).setIsBeSelected("Y");
-//                } else {
-//                    searchGoodsInfo.getHotelCombo().get(i).setIsBeSelected("N");
-//                }
-//            }
-//            shoppingDto.setHotelCombos(searchGoodsInfo.getHotelCombo());
-//        }
-//        // --当地游及房差信息--
-//        if (searchGoodsInfo.getLocalTrip() != null) {
-//            shoppingDto.setSelectLocalTripPrduct(searchGoodsInfo.getLocalTrip());
-//            FitSdpRoomDiff roomDiff = searchGoodsInfo.getAdditional().getRoomDiff();
-//            if (goodsRequest.getAdultQuantity() % 2 == 0) {
-//                roomDiff.setCount(0);
-//            } else {
-//                roomDiff.setCount(1);
-//            }
-//            shoppingDto.setSelectRoomDiffs(roomDiff);
-//        }
+        // --酒店信息--
+        if (CollectionUtils.isNotEmpty(searchGoodsInfo.getHotelInfos())) {
+        	//第一次设置默认的最低价的基准是0.之后如果修改了基准价格，这里就会变化。
+        	setSelectedRoomtypes(shoppingDto,searchGoodsInfo.getHotelInfos()); 
+        	
+            shoppingDto.setHotelGroups(searchGoodsInfo.getHotelInfos()); 
+            
+        }
+        
+        // --酒店套餐信息--
+        if (CollectionUtils.isNotEmpty(searchGoodsInfo.getHotelCombo())) {
+            shoppingDto.setSelectedHotelComboGoods(searchGoodsInfo.getHotelCombo().get(0));
+            for (int i = 0; i < searchGoodsInfo.getHotelCombo().size(); i++) {
+                if (i == 0) {
+                    searchGoodsInfo.getHotelCombo().get(i).setIsBeSelected("Y");
+                } else {
+                    searchGoodsInfo.getHotelCombo().get(i).setIsBeSelected("N");
+                }
+            }
+            shoppingDto.setHotelCombos(searchGoodsInfo.getHotelCombo());
+        }
+        // --当地游及房差信息--
+        if (searchGoodsInfo.getLocalTrip() != null) {
+            shoppingDto.setSelectLocalTripPrduct(searchGoodsInfo.getLocalTrip());
+            FitSdpRoomDiff roomDiff = searchGoodsInfo.getAdditional().getRoomDiff();
+            if (goodsRequest.getAdultQuantity() % 2 == 0) {
+                roomDiff.setCount(0);
+            } else {
+                roomDiff.setCount(1);
+            }
+            shoppingDto.setSelectRoomDiffs(roomDiff);
+        }
         // 成人数和儿童数
         FitSdpProductBasicInfoDto  basicInfoDto =  fitAggregateClient.searchProductBasicInfo(goodsRequest.getProductId());
         if(null!=basicInfoDto){
@@ -747,38 +738,38 @@ public class FitSdpServiceImpl implements FitSdpService {
             shoppingDto.setFitSdpShoppingRequest(shoppingReq);
         }
 
-//        // 其他票
-//        List<FitSdpOtherTicketDto> otherTickets = new ArrayList<FitSdpOtherTicketDto>();
-//		if(null!=searchGoodsInfo.getAdditional().getOtherTicketDto()){
-//			otherTickets.addAll(searchGoodsInfo.getAdditional().getOtherTicketDto());
-//		}
-//        shoppingDto.setOtherTickets(otherTickets);
-//        // 保险
-//        List<FitSdpInsuranceDto> insurances = new ArrayList<FitSdpInsuranceDto>();
-//		if(null!=searchGoodsInfo.getAdditional().getInsuranceDto()){
-//			insurances.addAll(searchGoodsInfo.getAdditional().getInsuranceDto());
-//		}
-//        shoppingDto.setInsurances(insurances);
-//        // 默认选择第一个保险，将其保存到购物车
-//        List<FitSdpInsuranceProductDto> insProducts = searchGoodsInfo.getInsProducts();
-//        if (CollectionUtils.isNotEmpty(insurances)) {
-//            FitSdpInsuranceProductDto insProductDto = insProducts.get(0);
-//            FitSdpInsuranceDto insurance = insProductDto.getInsBranches().get(0);
-//            List<FitSdpSelectInsuranceDto> selectInsurances = new ArrayList<FitSdpSelectInsuranceDto>();
-//            FitSdpSelectInsuranceDto selectInsurance = new FitSdpSelectInsuranceDto();
-//            selectInsurance.setProductName(insurance.getProductName());
-//            selectInsurance.setSuppGoodsId(insurance.getSuppGoodsId());
-//            selectInsurance.setBranchName(insurance.getBranchName());
-//            selectInsurance.setGoodsName(insurance.getGoodsName());
-//            selectInsurance.setBranchDesc(insurance.getBranchDesc());
-//
-//            Long quantity = goodsRequest.getQuantity() == null ? 1L : goodsRequest.getQuantity();
-//            Long count = (goodsRequest.getAdultQuantity() + goodsRequest.getChildQuantity()) * quantity;
-//            selectInsurance.setSelectCount(count);
-//            selectInsurance.setPrice(insurance.getPrice());
-//            selectInsurances.add(selectInsurance);
-//            shoppingDto.setSelectInsurances(selectInsurances);
-//        }
+        // 其他票
+        List<FitSdpOtherTicketDto> otherTickets = new ArrayList<FitSdpOtherTicketDto>();
+		if(null!=searchGoodsInfo.getAdditional().getOtherTicketDto()){
+			otherTickets.addAll(searchGoodsInfo.getAdditional().getOtherTicketDto());
+		}
+        shoppingDto.setOtherTickets(otherTickets);
+        // 保险
+        List<FitSdpInsuranceDto> insurances = new ArrayList<FitSdpInsuranceDto>();
+		if(null!=searchGoodsInfo.getAdditional().getInsuranceDto()){
+			insurances.addAll(searchGoodsInfo.getAdditional().getInsuranceDto());
+		}
+        shoppingDto.setInsurances(insurances);
+        // 默认选择第一个保险，将其保存到购物车
+        List<FitSdpInsuranceProductDto> insProducts = searchGoodsInfo.getInsProducts();
+        if (CollectionUtils.isNotEmpty(insurances)) {
+            FitSdpInsuranceProductDto insProductDto = insProducts.get(0);
+            FitSdpInsuranceDto insurance = insProductDto.getInsBranches().get(0);
+            List<FitSdpSelectInsuranceDto> selectInsurances = new ArrayList<FitSdpSelectInsuranceDto>();
+            FitSdpSelectInsuranceDto selectInsurance = new FitSdpSelectInsuranceDto();
+            selectInsurance.setProductName(insurance.getProductName());
+            selectInsurance.setSuppGoodsId(insurance.getSuppGoodsId());
+            selectInsurance.setBranchName(insurance.getBranchName());
+            selectInsurance.setGoodsName(insurance.getGoodsName());
+            selectInsurance.setBranchDesc(insurance.getBranchDesc());
+
+            Long quantity = goodsRequest.getQuantity() == null ? 1L : goodsRequest.getQuantity();
+            Long count = (goodsRequest.getAdultQuantity() + goodsRequest.getChildQuantity()) * quantity;
+            selectInsurance.setSelectCount(count);
+            selectInsurance.setPrice(insurance.getPrice());
+            selectInsurances.add(selectInsurance);
+            shoppingDto.setSelectInsurances(selectInsurances);
+        }
         fitSdpShoppingService.putShoppingCache(goodsRequest.getShoppingUuid(), shoppingDto); 
     } 
  
@@ -889,16 +880,7 @@ public class FitSdpServiceImpl implements FitSdpService {
             }
         }
     }
- 
-    //查询机票的类型.
-    private SuppSaleType[] buildSuppSaleType(){
-    	SuppSaleType[] saleTypes= new SuppSaleType[2];
-		saleTypes[0] = SuppSaleType.NORMAL;
-		saleTypes[1] = SuppSaleType.DomesticProduct;
-		//saleTypes[2] = SuppSaleType.GWPolicy;
-		return saleTypes;
-    }
-    
+   
 	/**
 	 * 构造机票查询请求参数
 	 * @param goodsRequest
@@ -917,14 +899,13 @@ public class FitSdpServiceImpl implements FitSdpService {
 		if (trafficRule.getTrafficTripeType().equals(TrafficTripeType.GO_WAY)) {
 			flightReq.setDepartureAirportCode(goodsRequest.getDepCityCode()); 
 			flightReq.setArrivalAirportCode(goodsRequest.getArvCityCode()); 
-			flightReq.setSaleType(buildSuppSaleType()); 
+			//对于单程：就使用normal政策,官网:SuppSaleType.GWPolicy现在暂时不考虑
+			flightReq.setSaleType(new SuppSaleType[]{SuppSaleType.NORMAL}); 
 		}
 		if (trafficRule.getTrafficTripeType().equals(TrafficTripeType.BACK_WAY)) { 
 			flightReq.setDepartureAirportCode(goodsRequest.getArvCityCode());
-			flightReq.setArrivalAirportCode(goodsRequest.getDepCityCode());
-			SuppSaleType[] saleTypes= new SuppSaleType[1];
-			saleTypes[0] = SuppSaleType.NORMAL;
-			flightReq.setSaleType(saleTypes); 
+			flightReq.setArrivalAirportCode(goodsRequest.getDepCityCode()); 
+			flightReq.setSaleType(new SuppSaleType[]{SuppSaleType.NORMAL}); 
 		}
         return flightReq;
     }

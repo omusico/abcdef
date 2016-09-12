@@ -240,7 +240,7 @@ public class MockUtil {
 
 	public static void main(String[] aegs) throws JsonParseException,
 			JsonMappingException, IOException {
-		Long a = 1475078400000L; 
+		Long a = 1476288000000L; 
 		System.out.println(DateUtils.parseDate(a, "yyyy-MM-dd"));
 		
 //		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = MockUtil
