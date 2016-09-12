@@ -309,6 +309,7 @@ public class FitSdpShopingCalculateServiceImpl implements FitSdpShopingCalculate
 	public FitFlightAmountDto calculateFlightAmount(AmountCalculatorRequest request) {
 		FitFlightAmountDto flightAmountDto = null;
 		try {
+			MockUtil.writeJsonToFile("d:\\log_test\\计算单价"+System.currentTimeMillis()+".txt", request);
 			AmountCalculatorDto amountCalculatorDto = fitFlightClient.amountCalculate(request);
 			BigDecimal flightPrice = BigDecimal.ZERO;
 			BigDecimal flightPromotion = BigDecimal.ZERO;
