@@ -74,8 +74,8 @@
             <div class="info_li8 fh_chajia">+<span class="fh_price"><dfn>¥</dfn>${arvFlightInfo.seats[0].differentPrice}</span></div>
             <!-- 选择按钮 -->
             <div class="info_li9 fh_btn">
-                <span class="btn btn-small btn-orange js_fh_select" go-flightno="${arvFlightInfo.flightNo}" back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择</span>
-                <span class="btn btn-small btn-dis">已选</span>
+                <span class="btn btn-small btn-orange js_fh_select" go-flightno="${arvFlightInfo.flightNo}" <#if saleType=='DomesticProduct'><#if arvFlightInfo_index==0>style="display:none"</#if></#if> back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择</span>
+                <span class="btn btn-small btn-dis" <#if saleType=='DomesticProduct'><#if arvFlightInfo_index==0>style="display:inline-block"</#if></#if> >已选</span>
             </div>
             <!-- 已选打钩icon -->
             <span class="fh_btn_gou"></span>

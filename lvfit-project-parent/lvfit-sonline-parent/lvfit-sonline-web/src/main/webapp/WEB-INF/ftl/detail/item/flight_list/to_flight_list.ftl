@@ -64,8 +64,8 @@
             <li class="info_li9 fh_btn">
                 <div class="fh_xuan_box fh_cx_box">
                     <p class="fh_xuan_list">
-                        <span class="btn btn-small btn-orange dep_fh_select" <#if depFlightInfo_index==0>style="display:none"</#if> data-flightno="${depFlightInfo.flightNo}" >选择</span>
-                        <span class="btn btn-small btn-dis dep_fh_select" <#if depFlightInfo_index==0>style="display:inline-block"</#if> data-flightno="${depFlightInfo.flightNo}">已选</span>
+                        <span class="btn btn-small btn-orange dep_fh_select" <#if saleType!='DomesticProduct'><#if depFlightInfo_index==0>style="display:none"</#if></#if> data-flightno="${depFlightInfo.flightNo}" >选择</span>
+                        <span class="btn btn-small btn-dis dep_fh_select" <#if saleType!='DomesticProduct'><#if depFlightInfo_index==0>style="display:inline-block"</#if></#if> data-flightno="${depFlightInfo.flightNo}" >已选</span>
                     </p>
                 </div>
             </li>

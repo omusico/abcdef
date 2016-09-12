@@ -314,8 +314,7 @@ public class FitSdpCoreResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path(SdpClientPath.Path.CHANGE_FLIGHT)
     public Response changeFlight(FitChangeFlightRequest req) {
-//        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(req.getShoppingUuid());
-        FitSdpShoppingDto shoppingDto = MockUtil.morkShoppingDto();
+        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(req.getShoppingUuid()); 
         List<FlightSearchFlightInfoDto> selectedFlightInfos = shoppingDto.getSelectedFlightInfos();
         
         FitSdpShoppingRequest shoppingRequest = shoppingDto.getFitSdpShoppingRequest();
@@ -336,7 +335,8 @@ public class FitSdpCoreResource {
             flightInfos = shoppingDto.getCharterFlightInfos();
         }
         if (CollectionUtils.isNotEmpty(flightInfos)) {
-        	//如果是往返程，就按照以前的逻辑
+        	List<FlightSearchFlightInfoDto> tempFlightInfos = new ArrayList<FlightSearchFlightInfoDto>();
+    		//如果是往返程，就按照以前的逻辑
         	if (!req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
         		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
 	                if (flightInfo.getFlightNo().equals(req.getFlightNo())) {
@@ -367,6 +367,7 @@ public class FitSdpCoreResource {
         	}
         	//包机的逻辑        	
         	else{
+        		int tempindex = 0;
         		//循环全部的包机的航班
         		for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
         			//去程航班号匹配
@@ -385,11 +386,30 @@ public class FitSdpCoreResource {
 		                    
 		                    selectedFlightInfos.set(0, flightInfo); 
 		                    selectedFlightInfos.set(1, backFlight);
+		                    
+		                    //将当前的选择的包机航班放在新的列表中的第一个位置.
+		                    tempFlightInfos.add(flightInfo);
+		                    //在老的列表中去除当前选择的航班
+		                    flightInfos.remove(tempindex);
 		                    break;
              			}
 	                }
+        			tempindex++;
 	            }
         		
+        		tempFlightInfos.addAll(flightInfos);
+        		//重新计算包机的价格差
+        		for (FlightSearchFlightInfoDto flightInfo : tempFlightInfos) {
+        			 //去程价格
+        			 BigDecimal goAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
+        			 FlightSearchFlightInfoDto backFlight = flightInfo.getReturnFlightInfoDto().get(0);
+        			 //返程价格
+	                 BigDecimal backAdultPrice = backFlight.getSeats().get(0).getSalesPrice();
+	                 BigDecimal allAdultPrice = goAdultPrice.add(backAdultPrice);
+	                 //当前选择包机的价格
+	                 BigDecimal thisBasePrice = allAdultPrice.multiply(adultQuantity).add(allAdultPrice.multiply(childQuantity)); 
+	                 flightInfo.getSeats().get(0).setDifferentPrice((thisBasePrice.subtract(basePrice)).multiply(BigDecimal.valueOf(quantity))); 
+	            }
         		clearSelectFlight(shoppingDto,false);
         	}
             if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
@@ -399,12 +419,11 @@ public class FitSdpCoreResource {
                 shoppingDto.setArvFlightInfos(flightInfos);
             }
             if (req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
-                shoppingDto.setCharterFlightInfos(flightInfos);
+                shoppingDto.setCharterFlightInfos(tempFlightInfos);
             }
             shoppingDto.setSelectedFlightInfos(selectedFlightInfos);
         }
-//        fitSdpShoppingService.putShoppingCache(req.getShoppingUuid(), shoppingDto);
-        MockUtil.morkCacheShoopingDto(shoppingDto);
+        fitSdpShoppingService.putShoppingCache(req.getShoppingUuid(), shoppingDto); 
         return Response.ok(flightInfos).build();
     }
 	

@@ -276,7 +276,42 @@ $(function(){
             title: "更换其他机票",
             content: $content,
             width:1120,
-            height: 660
+            height: 660,
+            beforeunload:function(){//关闭对话框回调  
+                var that = this; 
+                if($("#selectDepFlightNo").val()==''){
+                    $.confirmNew("您尚未选择去程航班，是否继续选去程？", function () {
+                        // 确认操作的事件(默认可不写，为关闭操作)
+                        $('.traffic_tab li').eq(1).click();
+                    }, function () {
+                        // 取消操作的事件(默认可不写，为关闭操作)
+                        delete that.config.beforeunload;
+                        that.close();
+                    },
+                        "继续选择去程", // 确定按钮文本
+                        "关闭", // 取消按钮文本
+                        "dialog_btn_ok",
+                        "dialog_btn_cancel"
+                    );
+                    return false;
+                }
+                else if($("#selectArvFlightNo").val()==''){
+                    $.confirmNew("您尚未选择返程航班，是否继续选返程？", function () {
+                        // 确认操作的事件(默认可不写，为关闭操作)
+                        $('.traffic_tab li').eq(1).click();
+                    }, function () {
+                        // 取消操作的事件(默认可不写，为关闭操作)
+                        delete that.config.beforeunload;
+                        that.close();
+                    },
+                        "继续选择返程", // 确定按钮文本
+                        "关闭", // 取消按钮文本
+                        "dialog_btn_ok",
+                        "dialog_btn_cancel"
+                    );
+                    return false;
+                } 
+            } 
         });
     });
 
@@ -554,8 +589,7 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
         $(".depFlightBox").hide();
         $("[tag=charsetflight]").each(function() {
             var no1 = $(this).attr("go-flightno");
-            var no2 = $(this).attr("back-flightno"); 
-            console.log(flightNo+",,"+backFlightNo+"-------no1="+no1+",,no2="+no2);
+            var no2 = $(this).attr("back-flightno");  
             if (no1 === flightNo && no2 === backFlightNo) {
                 $(this).show();
                 $(this).siblings("[tag=charsetflight]").hide();
@@ -563,6 +597,8 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
             }
         }); 
         $("#selectDepFlightNo").val(flightNo);
+        $("#selectArvFlightNo").val(backFlightNo);  
+        $("#selectSaleType").val('DomesticProduct');
     }
     if (tripType === "DEPARTURE") { 
         $("[tag=charsetflight]").hide();
@@ -574,7 +610,11 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                 return;
             }
         });
-        $("#selectDepFlightNo").val(flightNo);
+        $("#selectDepFlightNo").val(flightNo); 
+        if($("#selectSaleType").val()=='DomesticProduct'){
+            $("#selectArvFlightNo").val('');  
+        }
+        $("#selectSaleType").val('common');
     }
     if (tripType === "RETURN") {
         $("[tag=charsetflight]").hide();
@@ -587,6 +627,10 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
             }
         });
         $("#selectArvFlightNo").val(flightNo);
+        if($("#selectSaleType").val()=='DomesticProduct'){
+            $("#selectDepFlightNo").val('');  
+        }
+        $("#selectSaleType").val('common');
     }
     
     $.ajax({
@@ -595,6 +639,7 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
         data: {
             shoppingUuid : $("#shoppingUuid").val(),
             flightNo : flightNo,
+            charsetBackflightNo : backFlightNo,
             flightTripType : tripType
         },
         success: function(data) { 
@@ -618,6 +663,9 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                         $("#arv_traffic_list").prepend( $(this) );
                     }
                 });
+            }
+            if (tripType === "CHARTER") {
+                
             }
             initPriceInBaseInfo();
         }
