@@ -245,7 +245,7 @@ public class FitFlightClient {
 		FlightClientPath command = FlightClientPath.BOOKING_REBUILD_NEW;
 		String url = command.url(businessBaseUrl);
 		try {
-			MockUtil.writeJsonToFile("d:\\flightrequest\\航班请求"+System.currentTimeMillis()+".txt", flightOrderBookingRequest);
+			MockUtil.writeJsonToFile("d:\\flightrequest\\航班下单请求"+System.currentTimeMillis()+".txt", flightOrderBookingRequest);
 			return restClient.post(url, SuppResponse.class,flightOrderBookingRequest);
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);

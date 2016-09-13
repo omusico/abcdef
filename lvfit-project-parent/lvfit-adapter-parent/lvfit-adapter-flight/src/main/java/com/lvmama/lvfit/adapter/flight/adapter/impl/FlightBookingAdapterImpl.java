@@ -151,6 +151,8 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 	       		            }
 	       			}
 	            }
+            }else{
+            	
             }
         try {
 			logger.error("请求机票单品下单后fitSuppMainOrderDto:"+JSONMapper.getInstance().writeValueAsString(fitSuppMainOrderDto));

@@ -373,7 +373,13 @@ $(function(){
         var event = e || window.event;
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         chgFlightAjaxSubmit($(this).data("flightno"), "RETURN");
-         $(".dialog-close").trigger("click");
+         
+        $(".dialog-close").off('click').bind('click',function(e){
+                        $('.overlay').hide();
+                        $('.hotel-dialog').hide();
+        });
+
+        $(".dialog-close").trigger("click");
     });
 
     // 筛选条件点击

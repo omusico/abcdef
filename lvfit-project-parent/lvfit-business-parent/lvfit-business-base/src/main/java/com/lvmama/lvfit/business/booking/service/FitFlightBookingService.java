@@ -31,6 +31,7 @@ public interface FitFlightBookingService {
     
     /**
      * VST测回调机票下单实际异步方法
+     * 根据主单号，子单号到数据库t_fitord_supp_fli_callback查询当时的下单请求字符串，重新下单.
      * @param callBackRequests
      */
     void fitFlightBookingAsync(List<FitFliBookingCallBackRequest> callBackRequests);
