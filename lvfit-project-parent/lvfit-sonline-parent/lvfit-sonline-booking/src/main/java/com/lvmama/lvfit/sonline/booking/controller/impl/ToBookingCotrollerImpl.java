@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.lvmama.lvfit.common.dto.order.*;
-import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpHotelRoomtypeDto;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,24 +22,37 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lvmama.lvf.common.client.RestClient;
 import com.lvmama.lvf.common.dto.BaseResponseDto;
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
+import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.form.Form;
 import com.lvmama.lvf.common.utils.DateUtils;
+import com.lvmama.lvfit.common.client.FitAggregateClient;
 import com.lvmama.lvfit.common.client.FitSdpClient;
 import com.lvmama.lvfit.common.client.FitVstClient;
 import com.lvmama.lvfit.common.dto.enums.BizEnum;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.member.FitMemUserDto;
 import com.lvmama.lvfit.common.dto.member.FitUserContacterDto;
+import com.lvmama.lvfit.common.dto.order.FitOrderFlightDto;
+import com.lvmama.lvfit.common.dto.order.FitOrderHotelComboDto;
+import com.lvmama.lvfit.common.dto.order.FitOrderHotelDto;
+import com.lvmama.lvfit.common.dto.order.FitOrderInsuranceDto;
+import com.lvmama.lvfit.common.dto.order.FitOrderLocalTripProductDto;
+import com.lvmama.lvfit.common.dto.order.FitOrderOtherTicketDto;
 import com.lvmama.lvfit.common.dto.request.FitOrderBookingRequest;
 import com.lvmama.lvfit.common.dto.request.MemUserRequest;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpHotelComboGoodsDto;
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpHotelRoomtypeDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpLocalTripProductDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpSelectInsuranceDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpSelectOtherTicketDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
+import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
+import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
+import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
 import com.lvmama.lvfit.sonline.booking.ToBookingController;
 import com.lvmama.lvfit.sonline.booking.controller.form.FitSdpShoppingResponseForm;
 import com.lvmama.lvfit.sonline.utils.ServletUtil;
@@ -54,6 +65,9 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 	
 	@Autowired
 	private FitSdpClient fitSdpClient;
+	
+	@Autowired
+	private FitAggregateClient fitAggregateClient;
 	
 	@Autowired
 	private RestClient restClient;
@@ -77,7 +91,7 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 		// 从缓存中获取数据
 		FitSdpShoppingDto fitSdpShoppingDto = null;
 		try {
-			fitSdpShoppingDto = fitSdpClient.getShoppingByUUID(shoppingUUID);
+			fitSdpShoppingDto = fitSdpClient.getShoppingByUUID(shoppingUUID); 
 			if (null == fitSdpShoppingDto){
 				throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
 			}
@@ -90,7 +104,17 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 			}
 			 return "redirect:/"+redirectPath;
 		}
+		 
 		FitSdpShoppingResponseForm resultForm = new FitSdpShoppingResponseForm(fitSdpShoppingDto);
+		FlightSearchFlightInfoDto firstFlight = fitSdpShoppingDto.getSelectedFlightInfos().get(0);
+		// 如果是包机航班，查询库存，判断舱位是否足够.
+		if (SuppSaleType.DomesticProduct.name().equals(firstFlight.getSaleType())) {
+			if (!chargeCharsetFlight(BookingSource.FIT_FRONT,resultForm.getFitSdpShoppingRequest().getFitPassengerRequest(), firstFlight)) {
+				logger.error("下单之前进行包机航班复查时舱位不足，提示舱位不够.");
+				throw new ExceptionWrapper(ExceptionCode.GET_FLIGHT_PRICE_FAIL);
+			}
+		}
+	        
 		//1.航班信息
 		model.addAttribute("flightInfos", resultForm.getSelectedFlightInfos());
 		//2.酒店套餐信息
@@ -315,4 +339,53 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 			booingRequest.setFitOrderFlightDtos(flightList);
 		}
 	}
+	
+	/**
+	 * 下单的时候查询库存，价格是否变化，变化了就提示不可以下单.
+	 * @param bookingRequest
+	 * @param firstFlight
+	 * @return
+	 */
+	private boolean chargeCharsetFlight(BookingSource source,FitPassengerRequest passengerRequest,FlightSearchFlightInfoDto firstFlight){
+		FlightSearchFlightInfoDto go = firstFlight;
+		FlightSearchFlightInfoDto back = firstFlight.getReturnFlightInfoDto().get(0);
+		FlightQueryRequest flightReq = new FlightQueryRequest();
+		flightReq.setDepartureDate(DateUtils.parseDate(go.getDepartureDate(), "yyyy-MM-dd"));
+		flightReq.setDepartureAirportCode(go.getDepartureAirportCode());
+		flightReq.setArrivalAirportCode(go.getArrivalAirportCode());
+		flightReq.setDepartureCityCode(go.getDepartureCityCode());
+		flightReq.setArrivalCityCode(go.getArrivalCityCode());
+		flightReq.setFacet(true);
+		flightReq.setGroup(false);
+		flightReq.setSortByDepartureTimeDate("ASC");
+		flightReq.setInstantaneity(true);
+		flightReq.setBookingSource(source);
+		flightReq.setSaleType(new SuppSaleType[]{SuppSaleType.DomesticProduct});
+		flightReq.setBackDate(DateUtils.parseDate(back.getDepartureDate(), "yyyy-MM-dd"));
+		int allCount = passengerRequest.getAdultCount()+passengerRequest.getChildCount();
+		//查询最新的全部的包机航班
+		FlightSearchResult<FlightSearchFlightInfoDto> result = fitAggregateClient.searchFlightInfo(flightReq);
+		List<FlightSearchFlightInfoDto> allFlights = result.getResults();
+		if(CollectionUtils.isNotEmpty(allFlights)){
+			for(FlightSearchFlightInfoDto flight:allFlights){
+				if(flight.getFlightNo().equals(go.getFlightNo())){
+					//得到对应的政策-舱位对应关系					
+					Map<String, List<FlightSearchSeatDto>> policySeatsMap = flight.getReturnFlightMap().get(back.getFlightNo());
+					Entry<String, List<FlightSearchSeatDto>> firstObj = policySeatsMap.entrySet().iterator().next();
+					List<FlightSearchSeatDto> goAndbackSeat = firstObj.getValue();
+					FlightSearchSeatDto goSeat = goAndbackSeat.get(0);
+					FlightSearchSeatDto backSeat = goAndbackSeat.get(1);
+					//新的去程库存，返程
+					int newGoSeatCount = goSeat.getInventoryCount();
+					int newBackSeatCount = backSeat.getInventoryCount();
+					//如果往返程舱位数都满足，就返回true
+					if(allCount<=newGoSeatCount&&allCount<=newBackSeatCount){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 }

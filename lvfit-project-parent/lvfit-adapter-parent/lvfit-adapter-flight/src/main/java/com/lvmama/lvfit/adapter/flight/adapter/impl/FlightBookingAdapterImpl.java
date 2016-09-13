@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.lvmama.lvf.common.dto.adapter.response.SuppResponse;
 import com.lvmama.lvf.common.dto.enums.BindingStatus;
-import com.lvmama.lvf.common.dto.enums.BookingSource;
 import com.lvmama.lvf.common.dto.enums.FlightTripType;
 import com.lvmama.lvf.common.dto.enums.Gender;
 import com.lvmama.lvf.common.dto.enums.IDCardType;
@@ -152,7 +151,19 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 	       			}
 	            }
             }else{
-            	
+            	FitSuppOrderDto fitSuppOrderDto = fitSuppMainOrderDto.getByFlightTripType(fitOrderFlightDtos.get(i).getTripType());
+                FlightOrderBookingRequest flightOrderBookingRequest =this.buildCharterFlightOrderBookingRequest(request, fitOrderFlightDtos, fitSuppMainOrderDto.getVstMainOrderNo(), fitSuppOrderDto.getVstOrderNo());
+                if(request.getFitFlightBookingType()==FitFlightBookingType.BOOKING_AFTER_VST_AUDIT){
+             	       //如果是后置下单，则先不予以调用机票侧下单，待vst回调下单即可
+                 	   FitSuppOrderForFlightCallBackDto flightCallBackDto = new FitSuppOrderForFlightCallBackDto();
+                 	   flightCallBackDto.setVstOrderMainNo(String.valueOf(fitSuppMainOrderDto.getVstMainOrderNo()));
+                 	   flightCallBackDto.setVstOrderNo(String.valueOf(fitSuppOrderDto.getVstOrderNo()));
+                 	   flightCallBackDto.setCallRequestStr(JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
+                 	   flightCallBackDto.setTripType(fitOrderFlightDtos.get(i).getTripType());
+                 	   flightCallBackDto.setCallbackType(CallbackType.DEFAULT);
+                 	   fitSuppOrderDto.setFlightCallBackDto(flightCallBackDto);
+                 	   continue;
+                }
             }
         try {
 			logger.error("请求机票单品下单后fitSuppMainOrderDto:"+JSONMapper.getInstance().writeValueAsString(fitSuppMainOrderDto));
@@ -172,10 +183,8 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
     	fitOrderAmount.setTotalDiscountAmount(flightOrderAmount.getOrderDiscountTotalAmount());
     	fitOrderAmount.setTotalSalesAmount(flightOrderAmount.getOrderTotalSalesAmount());
 		return fitOrderAmount;
-	}
+	} 
     
-   
-
 	private FlightOrderBookingRequest buildFlightOrderBookingRequest(FlightBookingRequest request, FitOrderFlightDto fitFlight, Long vstMainOrderId, Long vstFlightOrderId) {
         FlightOrderBookingRequest flightOrderBookingRequest = new FlightOrderBookingRequest();
 
@@ -272,7 +281,7 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
         flightOrderBookingRequest.setRelationRequest(relationRequest);
 
         //9.订单来源
-        flightOrderBookingRequest.setBookingSource(request.getBookingSource().getParentSource());
+        flightOrderBookingRequest.setBookingSource(request.getBookingSource().getParentSource()); 
         return flightOrderBookingRequest;
     }
 
@@ -305,4 +314,114 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
           return passengerStr.toString();
 	}
 	
+	/**
+	 * 构造包机的请求航班字符串.
+	1、添加属性：  realRT   是否是真往返
+	2、flightOrderBookingDetailRequests ：添加包机的去程+返程
+	3、里面的FlightOrderSalesOrderRelationRequest里面的FlightOrderSalesOrderRelationDto添加：lockSeatOrderId  将两个子单用逗号连接 
+	 * @param request
+	 * @param fitFlight
+	 * @param vstMainOrderId
+	 * @param vstFlightOrderId
+	 * @return
+	 */
+	private FlightOrderBookingRequest buildCharterFlightOrderBookingRequest(FlightBookingRequest request, List<FitOrderFlightDto> fitFlights, Long vstMainOrderId, Long vstFlightOrderId) {
+        FlightOrderBookingRequest flightOrderBookingRequest = new FlightOrderBookingRequest();
+
+        //1.航程类型
+        flightOrderBookingRequest.setRouteType(RouteType.OW);
+
+        //2.构造订单客户信息
+        FitOrderCustomerDto fitCustomer = request.getFitOrderCustomerDto();
+        FlightOrderCustomerDto flightCustomer = new FlightOrderCustomerDto();
+        flightCustomer.setCustomerId("" + fitCustomer.getCustomerId());
+        flightCustomer.setCustomerCode(fitCustomer.getCustomerCode());
+        flightCustomer.setCustomerName(fitCustomer.getCustomerName());
+        flightOrderBookingRequest.setFlightOrderCustomer(flightCustomer);
+
+        //3.构造订单联系人信息
+        FitOrderContacterDto fitContacter = request.getFitOrderContacterDto();
+        FlightOrderContacterDto flightContacter = new FlightOrderContacterDto();
+        flightContacter.setName(fitContacter.getName());
+        flightContacter.setCellphone(fitContacter.getMobile());
+        flightContacter.setEmail(fitContacter.getEmail());
+        flightOrderBookingRequest.setFlightOrderContacter(flightContacter);
+
+        //4.构造订单乘机人信息
+        List<FitOrderPassengerDto> fitPassengerList = request.getFitOrderPassengerDtoList();
+        List<FlightOrderPassengerDto> flightPassengerList = new ArrayList<FlightOrderPassengerDto>();
+        BigDecimal insTotalPrice = BigDecimal.valueOf(0);
+        for (FitOrderPassengerDto fitPassenger : fitPassengerList) {
+            FlightOrderPassengerDto flightPassenger = new FlightOrderPassengerDto();
+            String passengerIDCardNo = fitPassenger.getPassengerIDCardNo();
+            
+            flightPassenger.setGender(this.getGenderByIDCardNo(passengerIDCardNo));
+            flightPassenger.setCellphone(fitPassenger.getMobile());
+            flightPassenger.setPassengerName(fitPassenger.getPassengerName());
+            flightPassenger.setPassengerBirthday(DateUtils.parseDate(fitPassenger.getPassengerBirthday()));
+            flightPassenger.setPassengerIDCardNo(fitPassenger.getPassengerIDCardNo());
+            flightPassenger.setPassengerIDCardType(IDCardType.getIDCardTypeByName(fitPassenger.getPassengerIDCardType().name()));
+            flightPassenger.setPassengerType(PassengerType.getPassengerTypeByName(fitPassenger.getPassengerType().name()));
+            
+            List<FlightOrderInsuranceDto> flightOrderInsurances = new ArrayList<FlightOrderInsuranceDto>();
+            List<FlightInsuranceDto> flightInsuranceDtos = fitPassenger.getFlightInsuranceDto();
+            if (CollectionUtils.isNotEmpty(flightInsuranceDtos)) {
+                FlightOrderInsuranceDto flightOrderInsurance = new FlightOrderInsuranceDto();
+                flightOrderInsurance.setInsuranceInfoId(flightInsuranceDtos.get(0).getInsuranceId());
+                flightOrderInsurance.setFlightNo(fitFlight.getFlightNo());
+                flightOrderInsurances.add(flightOrderInsurance);
+ 
+                flightPassenger.setFlightOrderInsurances(flightOrderInsurances);
+                // 下单过程，因为去程和往返单独下单，所以机票保险价格只和乘客数有关
+                insTotalPrice = insTotalPrice.add(flightInsuranceDtos.get(0).getInsurancePrice());
+            }
+            flightPassengerList.add(flightPassenger);
+        }
+        flightOrderBookingRequest.setFlightOrderPassengers(flightPassengerList);
+
+        //5.构造订单备注信息
+        List<FitOrderRemarkDto> fitRemarkList = request.getFitOrderRemarkDtoList();
+        List<FlightOrderRemarkDto> flightRemarkList = new ArrayList<FlightOrderRemarkDto>();
+        for (FitOrderRemarkDto fitRemark : fitRemarkList) {
+            FlightOrderRemarkDto flightRemark = new FlightOrderRemarkDto();
+            flightRemark.setOper(fitRemark.getOper());
+            flightRemark.setOperId(fitRemark.getOperId());
+            flightRemark.setOperType(fitRemark.getOperType());
+            flightRemark.setRemark(fitRemark.getRemark());
+            flightRemark.setRemarkType(RemarkType.getRemarkTypeByName(fitRemark.getRemarkType().name()));
+            flightRemarkList.add(flightRemark);
+        }
+        flightOrderBookingRequest.setFlightOrderRemarks(flightRemarkList);
+
+        //6.构造预订请求明细对象参数
+        List<FlightOrderBookingDetailRequest> flightList = new ArrayList<FlightOrderBookingDetailRequest>();
+        FlightOrderBookingDetailRequest bookingDetail = new FlightOrderBookingDetailRequest();
+        bookingDetail.setFlightTripType(FlightTripType.getFlightTripTypeByName(fitFlight.getTripType().name()));
+        bookingDetail.setFlightNo(fitFlight.getFlightNo());
+        bookingDetail.setDepartureDate(fitFlight.getDepartureDate());
+        bookingDetail.setDepartureAirportCode(fitFlight.getDepartureAirportCode());
+        bookingDetail.setArrivalAirportCode(fitFlight.getArrivalAirportCode());
+        bookingDetail.setSeatClassCode(fitFlight.getSeatClassCode());
+        bookingDetail.setPricePolicyId(fitFlight.getPricePolicyId());
+        flightList.add(bookingDetail);
+        flightOrderBookingRequest.setFlightOrderBookingDetailRequests(flightList);
+
+        //7.机票总金额
+        BigDecimal flightTotalPrice = insTotalPrice.add(fitFlight.getSalesPrice());
+        
+        flightOrderBookingRequest.setOrderTotalSalesAmount(flightTotalPrice);
+
+        //8.绑定关系
+        FlightOrderSalesOrderRelationRequest relationRequest = new FlightOrderSalesOrderRelationRequest();
+        relationRequest.setBindingStatus(BindingStatus.BINDING);
+        //外部机票子订单ID：VST主单ID
+        relationRequest.setSalesMainOrderId(vstMainOrderId);
+        //外部主订单ID：VST机票订单ID
+        relationRequest.setSalesOrderId(vstFlightOrderId);
+        flightOrderBookingRequest.setRelationRequest(relationRequest);
+
+        //9.订单来源
+        flightOrderBookingRequest.setBookingSource(request.getBookingSource().getParentSource()); 
+        return flightOrderBookingRequest;
+    }
 }

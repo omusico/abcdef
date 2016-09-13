@@ -3,9 +3,8 @@ package com.lvmama.lvfit.sdp.booking.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
-import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -20,13 +19,15 @@ import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
+import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
+import com.lvmama.lvfit.common.client.FitAggregateClient;
 import com.lvmama.lvfit.common.client.FitBusinessClient;
 import com.lvmama.lvfit.common.dto.calculator.AmountCalculatorRequest;
 import com.lvmama.lvfit.common.dto.calculator.BookingDetailDto;
 import com.lvmama.lvfit.common.dto.calculator.CalculateRuleDto;
 import com.lvmama.lvfit.common.dto.calculator.FlightSimpleInfoDto;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
-import com.lvmama.lvfit.common.dto.enums.FlightTripType;
+import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.enums.ProductResource;
 import com.lvmama.lvfit.common.dto.order.FitOrderAmountDto;
@@ -49,14 +50,13 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpSelectOtherTicketDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
 import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
+import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
+import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.shopping.FitFlightAmountDto;
-import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
-import com.lvmama.lvfit.common.dto.trace.FitOpLogTraceContext;
-import com.lvmama.lvfit.sdp.booking.domain.FitOrderHotel;
 import com.lvmama.lvfit.sdp.booking.domain.FitOrderFlight;
+import com.lvmama.lvfit.sdp.booking.domain.FitOrderHotel;
 import com.lvmama.lvfit.sdp.booking.domain.FitOrderHotelCombo;
 import com.lvmama.lvfit.sdp.booking.domain.FitOrderInsurance;
 import com.lvmama.lvfit.sdp.booking.domain.FitOrderLocalTripProduct;
@@ -72,8 +72,8 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 	private static final Logger logger = LoggerFactory.getLogger(FitSdpBookingServiceImpl.class);
 	
 	@Autowired
-	private FitSdpShoppingService fitSdpShoppingService;
-
+	private FitSdpShoppingService fitSdpShoppingService; 
+	
 	@Autowired
 	private FitSdpShopingCalculateService fitSdpShopingCalculateService;
 	
@@ -200,7 +200,8 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 	    fitOrderBasicInfoDto.setCheckInTime(DateUtils.parseDate(shoppingRequest.getVisitDate()));
 	    fitOrderBasicInfoDto.setCheckOutTime(DateUtils.getDateAfterDateDays(fitOrderBasicInfoDto.getCheckInTime(), shoppingRequest.getStayNum()));
 	    bookingRequest.setFitOrderBasicInfoDto(fitOrderBasicInfoDto);		
-	}
+	} 
+	
 	
 	/**
 	 * 构建订单航班信息.准备放到机酒里面的快照库里面，和vst订单是一一对应的。
@@ -214,8 +215,8 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         //获取航班加价规则，下单时放入到总价中,现都加入到去程总价中
         BigDecimal fligtFeeAmount = new BigDecimal(0);
         fligtFeeAmount = this.getProductFeeRulesByProductId(fitSdpShoppingRequest.getProductId(),fligtFeeAmount);
-        bookingRequest.setFlightFeeAmount(fligtFeeAmount);
-         
+        bookingRequest.setFlightFeeAmount(fligtFeeAmount); 
+        
         for (FlightSearchFlightInfoDto searchFlight : shoppingDto.getSelectedFlightInfos()) {
 	    	 FlightSearchSeatDto searchSeat = searchFlight.getSeats().get(0);
 	    	 FitOrderFlightDto fitOrderFlightDto = new FitOrderFlightDto();

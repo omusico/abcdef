@@ -60,6 +60,11 @@ public class FlightOrderSalesOrderRelationDto extends Entity implements Serializ
 	 * 订单来源类型
 	 */
 	private BookingSourceType bookingSourceType;
+	
+	/**
+	 * 外部机票子订单号集合
+	 */
+	private String lockSeatOrderId;
 
 	public Long getSalesOrderId() {
 		return salesOrderId;
@@ -131,6 +136,14 @@ public class FlightOrderSalesOrderRelationDto extends Entity implements Serializ
 
 	public void setBookingSourceType(BookingSourceType bookingSourceType) {
 		this.bookingSourceType = bookingSourceType;
+	}
+
+	public String getLockSeatOrderId() {
+		return lockSeatOrderId;
+	}
+
+	public void setLockSeatOrderId(String lockSeatOrderId) {
+		this.lockSeatOrderId = lockSeatOrderId;
 	}
 
 }

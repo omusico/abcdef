@@ -1,14 +1,9 @@
 package com.lvmama.lvfit.common.client;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -52,7 +47,6 @@ import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductCalendarRequ
 import com.lvmama.lvfit.common.dto.sdp.product.result.FitSdpGroupCalendarSearchResult;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 
 //import com.lvmama.lvfit.common.dto.request.FitRecordSearchRequest;
 
@@ -563,5 +557,5 @@ public class FitSdpClient {
     @CachePoint(value = CacheBoxConvert.String, cacheExpireTimeKey = "lvfit.product.cacheTime", isCacheEnable = false)
     public String getBottomInfoAndUpdCache(@CacheKey Long productId, Long bizCategoryId) {
         return this.getBottomInfo(productId, bizCategoryId);
-    }
+    } 
 }
