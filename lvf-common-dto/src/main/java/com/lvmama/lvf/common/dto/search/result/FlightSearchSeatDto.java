@@ -65,6 +65,9 @@ public class FlightSearchSeatDto {
 	
 	/**政策类型*/
 	private String saleType; //用于标识该条报价是来自普通政策还是包机政策
+	
+	/**政策来源*/
+	private String policySource; //用于包机切位政策
 
 	
 	
@@ -333,6 +336,14 @@ public class FlightSearchSeatDto {
 
 	public void setSaleType(String saleType) {
 		this.saleType = saleType;
+	}
+
+	public String getPolicySource() {
+		return policySource;
+	}
+
+	public void setPolicySource(String policySource) {
+		this.policySource = policySource;
 	}
 
 	

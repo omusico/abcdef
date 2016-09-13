@@ -38,6 +38,8 @@ public class FlightTicketRequest implements Serializable {
 	
 	private String saleType; //政策类型，用于标识该条报价是来自普通政策还是包机政策
 	
+	private String suppPolicyNo; //供应商政策id,目前用于包机切位
+	
 	public String getFlightNo() {
 		return flightNo;
 	}
@@ -238,6 +240,14 @@ public class FlightTicketRequest implements Serializable {
 
 	public void setSaleType(String saleType) {
 		this.saleType = saleType;
+	}
+
+	public String getSuppPolicyNo() {
+		return suppPolicyNo;
+	}
+
+	public void setSuppPolicyNo(String suppPolicyNo) {
+		this.suppPolicyNo = suppPolicyNo;
 	}
 
 	

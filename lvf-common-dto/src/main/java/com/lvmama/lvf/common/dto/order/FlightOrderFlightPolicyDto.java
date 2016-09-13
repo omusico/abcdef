@@ -81,6 +81,9 @@ public class FlightOrderFlightPolicyDto extends Entity implements Serializable
     /** 航班运价政策信息 */
 	@FkId
     private FlightPricePolicyDto flightPricePolicy;
+	
+	/** 政策来源  */
+	private String policySource; //用于包机切位政策
     
 	public FlightPolicyDto getFlightPolicy() {
 		return flightPolicy;
@@ -216,6 +219,14 @@ public class FlightOrderFlightPolicyDto extends Entity implements Serializable
 	@JsonIgnore
 	public String getSequence() {
 		return "S_FORD_FLIGHT_POLICY";
+	}
+
+	public String getPolicySource() {
+		return policySource;
+	}
+
+	public void setPolicySource(String policySource) {
+		this.policySource = policySource;
 	}
 
 }

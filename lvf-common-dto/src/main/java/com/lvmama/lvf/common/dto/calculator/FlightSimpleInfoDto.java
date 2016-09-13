@@ -327,4 +327,11 @@ public class FlightSimpleInfoDto {
 		flightTicketRequest.setSaleType(saleType);
 	}
 	
+	public String getSuppPolicyNo() {
+		return flightTicketRequest.getSuppPolicyNo();
+	}
+
+	public void setSuppPolicyNo(String suppPolicyNo) {
+		flightTicketRequest.setSuppPolicyNo(suppPolicyNo);
+	}
 }

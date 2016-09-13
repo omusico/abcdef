@@ -38,6 +38,7 @@ public class ExceptionCode implements Serializable{
     public final static ExceptionCode UNDEF_REMOTE_INVOKE= new ExceptionCode("0012", "接口调用异常，接口地址【%s】！%s");
     public final static ExceptionCode NO_SUCH_POLICY_PUSH= new ExceptionCode("0014","调用517Na政策推送接口【%s】！返回为空-%s");
     public final static ExceptionCode NOT_MATCH_INVENTORY = new ExceptionCode("0015", "很抱歉，舱位售尽，请重新查询预订！");
+    public final static ExceptionCode NO_AVAILABLE_COUPON = new ExceptionCode("0016","您的优惠券信息失效或不符合要求，-%s-请您重新确认！"); 
     
     public final static ExceptionCode SUBMIT_SUPP_RTVT_APPLY_FAIL= new ExceptionCode("1001", "提交供应商退废票申请失败，【%s】！");
     public final static ExceptionCode ORDER_BY_ID_ISSUE_APPLY_FAIL= new ExceptionCode("1002","订单ID为%s的订单出票申请失败");

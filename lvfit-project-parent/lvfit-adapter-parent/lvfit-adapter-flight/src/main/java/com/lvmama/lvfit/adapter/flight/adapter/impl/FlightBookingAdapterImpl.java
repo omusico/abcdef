@@ -21,6 +21,7 @@ import com.lvmama.lvf.common.dto.enums.IDCardType;
 import com.lvmama.lvf.common.dto.enums.PassengerType;
 import com.lvmama.lvf.common.dto.enums.RemarkType;
 import com.lvmama.lvf.common.dto.enums.RouteType;
+import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.dto.order.FlightOrderAmountDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderContacterDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderCustomerDto;
@@ -77,76 +78,79 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 				logger.error(ExceptionUtils.getFullStackTrace(e1));
 			} 
             List<FitOrderFlightDto> fitOrderFlightDtos = request.getFitOrderFlightDtoList(); 
-            for (int i = 0; i < fitOrderFlightDtos.size(); i++) {
-            	   try {
-                       tripTypeFlag = fitOrderFlightDtos.get(i).getTripType().name();
-                       FitSuppOrderDto fitSuppOrderDto = fitSuppMainOrderDto.getByFlightTripType(fitOrderFlightDtos.get(i).getTripType());
-                       FlightOrderBookingRequest flightOrderBookingRequest =this.buildFlightOrderBookingRequest(request, fitOrderFlightDtos.get(i), fitSuppMainOrderDto.getVstMainOrderNo(), fitSuppOrderDto.getVstOrderNo());
-                       if(request.getFitFlightBookingType()==FitFlightBookingType.BOOKING_AFTER_VST_AUDIT){
-                    	       //如果是后置下单，则先不予以调用机票侧下单，待vst回调下单即可
-	                    	   FitSuppOrderForFlightCallBackDto flightCallBackDto = new FitSuppOrderForFlightCallBackDto();
-	                    	   flightCallBackDto.setVstOrderMainNo(String.valueOf(fitSuppMainOrderDto.getVstMainOrderNo()));
-	                    	   flightCallBackDto.setVstOrderNo(String.valueOf(fitSuppOrderDto.getVstOrderNo()));
-	                    	   flightCallBackDto.setCallRequestStr(JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
-	                    	   flightCallBackDto.setTripType(fitOrderFlightDtos.get(i).getTripType());
-	                    	   flightCallBackDto.setCallbackType(CallbackType.DEFAULT);
-	                    	   fitSuppOrderDto.setFlightCallBackDto(flightCallBackDto);
-	                    	   continue;
-                       }
-                       SuppResponse suppResponse = fitFlightClient.bookingRebuild(flightOrderBookingRequest);
-                       //logger.error("[adapter-flight-booking]机票单品下单返回报文SuppResponse：" + JSONMapper.getInstance().writeValueAsString(suppResponse));
-                       String json = JSONMapper.getInstance().writeValueAsString(suppResponse);
-                       suppResponse = JSONMapper.getInstance().readValue(json, new TypeReference<SuppResponse<OrderMainDto>>() {});
-                       OrderMainDto flightOrderMain = (OrderMainDto) suppResponse.getResult();
-                   	   logger.error("当前主单号【"+fitSuppMainOrderDto.getVstMainOrderNo()+"】，当前航程类型【"+tripTypeFlag+"】当前子单号【"+fitSuppOrderDto.getVstOrderNo()+"】，请求机票单品下单返回flightOrderMain:"+JSONMapper.getInstance().writeValueAsString(flightOrderMain));
-                       // 如果预定成功，保存信息
-                       if (flightOrderMain != null) {
-                       	boolean isBookingSuccess = true;
-                       	for(FlightOrderDto flightOrderDto : flightOrderMain.getFlightOrders()){
-	                   			FlightOrderStatusDto statusDto = flightOrderDto.getFlightOrderStatus();
-	                   			if(statusDto == null || statusDto.getOrderBookingStatus() != OrderBookingStatus.BOOKING_SUCC){
-	                   				isBookingSuccess = false;
-	                   				break;
-	                   			}
-                   		   }
-	                       FitOrderStatusType orderStatusType = null; 
-	                       if (tripTypeFlag.equals(FlightTripType.DEPARTURE.name())) {
-	                        	orderStatusType = FitOrderStatusType.DEP_FLI_ORDER_STATUS;
+            //如果下单的航班不是包机航班,就按照以前老的逻辑
+            if(!SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(0).getSaleType())){
+	            for (int i = 0; i < fitOrderFlightDtos.size(); i++) {
+	            	   try {
+	                       tripTypeFlag = fitOrderFlightDtos.get(i).getTripType().name();
+	                       FitSuppOrderDto fitSuppOrderDto = fitSuppMainOrderDto.getByFlightTripType(fitOrderFlightDtos.get(i).getTripType());
+	                       FlightOrderBookingRequest flightOrderBookingRequest =this.buildFlightOrderBookingRequest(request, fitOrderFlightDtos.get(i), fitSuppMainOrderDto.getVstMainOrderNo(), fitSuppOrderDto.getVstOrderNo());
+	                       if(request.getFitFlightBookingType()==FitFlightBookingType.BOOKING_AFTER_VST_AUDIT){
+	                    	       //如果是后置下单，则先不予以调用机票侧下单，待vst回调下单即可
+		                    	   FitSuppOrderForFlightCallBackDto flightCallBackDto = new FitSuppOrderForFlightCallBackDto();
+		                    	   flightCallBackDto.setVstOrderMainNo(String.valueOf(fitSuppMainOrderDto.getVstMainOrderNo()));
+		                    	   flightCallBackDto.setVstOrderNo(String.valueOf(fitSuppOrderDto.getVstOrderNo()));
+		                    	   flightCallBackDto.setCallRequestStr(JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
+		                    	   flightCallBackDto.setTripType(fitOrderFlightDtos.get(i).getTripType());
+		                    	   flightCallBackDto.setCallbackType(CallbackType.DEFAULT);
+		                    	   fitSuppOrderDto.setFlightCallBackDto(flightCallBackDto);
+		                    	   continue;
 	                       }
-	                       if (tripTypeFlag.equals(FlightTripType.RETURN.name())) {
-	                       	   orderStatusType = FitOrderStatusType.ARV_FLI_ORDER_STATUS;
+	                       SuppResponse suppResponse = fitFlightClient.bookingRebuild(flightOrderBookingRequest);
+	                       //logger.error("[adapter-flight-booking]机票单品下单返回报文SuppResponse：" + JSONMapper.getInstance().writeValueAsString(suppResponse));
+	                       String json = JSONMapper.getInstance().writeValueAsString(suppResponse);
+	                       suppResponse = JSONMapper.getInstance().readValue(json, new TypeReference<SuppResponse<OrderMainDto>>() {});
+	                       OrderMainDto flightOrderMain = (OrderMainDto) suppResponse.getResult();
+	                   	   logger.error("当前主单号【"+fitSuppMainOrderDto.getVstMainOrderNo()+"】，当前航程类型【"+tripTypeFlag+"】当前子单号【"+fitSuppOrderDto.getVstOrderNo()+"】，请求机票单品下单返回flightOrderMain:"+JSONMapper.getInstance().writeValueAsString(flightOrderMain));
+	                       // 如果预定成功，保存信息
+	                       if (flightOrderMain != null) {
+	                       	boolean isBookingSuccess = true;
+	                       	for(FlightOrderDto flightOrderDto : flightOrderMain.getFlightOrders()){
+		                   			FlightOrderStatusDto statusDto = flightOrderDto.getFlightOrderStatus();
+		                   			if(statusDto == null || statusDto.getOrderBookingStatus() != OrderBookingStatus.BOOKING_SUCC){
+		                   				isBookingSuccess = false;
+		                   				break;
+		                   			}
+	                   		   }
+		                       FitOrderStatusType orderStatusType = null; 
+		                       if (tripTypeFlag.equals(FlightTripType.DEPARTURE.name())) {
+		                        	orderStatusType = FitOrderStatusType.DEP_FLI_ORDER_STATUS;
+		                       }
+		                       if (tripTypeFlag.equals(FlightTripType.RETURN.name())) {
+		                       	   orderStatusType = FitOrderStatusType.ARV_FLI_ORDER_STATUS;
+		                       }
+	                       	   FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, isBookingSuccess?FitOrderResultStatus.SUCCESS:FitOrderResultStatus.FAIL, isBookingSuccess?"":"供应商下单失败");
+	                       	   FitOrderTraceContext.setOrderMsg(orderMsgDto);
+	                           
+	                           //根据机票子单构造机酒供应商航班订单
+	                           for (FlightOrderDto flightOrder : flightOrderMain.getFlightOrders()) {
+	                           	String curOrderPassengerType =  flightOrder.getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name();
+	                           	FitSuppFlightOrderDto suppFlightOrderDto = fitSuppOrderDto.getByPassengerType(com.lvmama.lvfit.common.dto.enums.PassengerType.valueOf(curOrderPassengerType));
+	                           	suppFlightOrderDto.setFlightOrderNo(flightOrder.getFlightOrderNo().getOrderNo());
+	                           	suppFlightOrderDto.setBookingStatus(com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus.valueOf(flightOrder.getFlightOrderStatus().getOrderBookingStatus().name()));
+	                           	suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(flightOrder.getFlightOrderAmount()));
+	                           }
 	                       }
-                       	   FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, isBookingSuccess?FitOrderResultStatus.SUCCESS:FitOrderResultStatus.FAIL, isBookingSuccess?"":"供应商下单失败");
-                       	   FitOrderTraceContext.setOrderMsg(orderMsgDto);
-                           
-                           //根据机票子单构造机酒供应商航班订单
-                           for (FlightOrderDto flightOrder : flightOrderMain.getFlightOrders()) {
-                           	String curOrderPassengerType =  flightOrder.getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name();
-                           	FitSuppFlightOrderDto suppFlightOrderDto = fitSuppOrderDto.getByPassengerType(com.lvmama.lvfit.common.dto.enums.PassengerType.valueOf(curOrderPassengerType));
-                           	suppFlightOrderDto.setFlightOrderNo(flightOrder.getFlightOrderNo().getOrderNo());
-                           	suppFlightOrderDto.setBookingStatus(com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus.valueOf(flightOrder.getFlightOrderStatus().getOrderBookingStatus().name()));
-                           	suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(flightOrder.getFlightOrderAmount()));
-                           }
-                       }
-                   
-       			} catch (Exception e) {
-       				    logger.error("请求机票单品下单异常：", e);
-       		        	FitOrderStatusType orderStatusType = null; 
-       		            if (tripTypeFlag.equals(FlightTripType.DEPARTURE.name())) {
-       		            	orderStatusType = FitOrderStatusType.DEP_FLI_ORDER_STATUS;
-       		            }
-       		            if (tripTypeFlag.equals(FlightTripType.RETURN.name())) {
-       		            	orderStatusType = FitOrderStatusType.ARV_FLI_ORDER_STATUS;
-       		            }
-       		            if (e instanceof ExceptionWrapper) {
-       		                ExceptionWrapper ew = (ExceptionWrapper) e;
-       		             	FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, FitOrderResultStatus.FAIL, ew.getErrMessage());
-       		                FitOrderTraceContext.setOrderMsg(orderMsgDto);
-       		            } else {
-       		            	FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, FitOrderResultStatus.FAIL, e.getMessage());
-       		                FitOrderTraceContext.setOrderMsg(orderMsgDto);
-       		            }
-       			}
+	                   
+	       			} catch (Exception e) {
+	       				    logger.error("请求机票单品下单异常：", e);
+	       		        	FitOrderStatusType orderStatusType = null; 
+	       		            if (tripTypeFlag.equals(FlightTripType.DEPARTURE.name())) {
+	       		            	orderStatusType = FitOrderStatusType.DEP_FLI_ORDER_STATUS;
+	       		            }
+	       		            if (tripTypeFlag.equals(FlightTripType.RETURN.name())) {
+	       		            	orderStatusType = FitOrderStatusType.ARV_FLI_ORDER_STATUS;
+	       		            }
+	       		            if (e instanceof ExceptionWrapper) {
+	       		                ExceptionWrapper ew = (ExceptionWrapper) e;
+	       		             	FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, FitOrderResultStatus.FAIL, ew.getErrMessage());
+	       		                FitOrderTraceContext.setOrderMsg(orderMsgDto);
+	       		            } else {
+	       		            	FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, FitOrderResultStatus.FAIL, e.getMessage());
+	       		                FitOrderTraceContext.setOrderMsg(orderMsgDto);
+	       		            }
+	       			}
+	            }
             }
         try {
 			logger.error("请求机票单品下单后fitSuppMainOrderDto:"+JSONMapper.getInstance().writeValueAsString(fitSuppMainOrderDto));

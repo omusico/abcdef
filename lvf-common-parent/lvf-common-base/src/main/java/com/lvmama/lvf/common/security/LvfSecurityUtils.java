@@ -39,6 +39,12 @@ public class LvfSecurityUtils {
 		
 		String lvfId=getSecurityId(request,response);
 		if(null == lvfId){
+			try{
+				String ip = IpUtils.getIpAddr(request);
+				logger.error("getIp error:"+ip);
+			}catch(Exception ex){
+				logger.error("getIp:",ex);
+			}
 			return null;
 		}
 		
@@ -133,6 +139,24 @@ public class LvfSecurityUtils {
 			Cookie cookie =  null;
 			String lvfsessionId1 =  null;
 			String lvfsessionId2 = null;
+			
+			if(null==cookies){
+				//没有cookie,重新初始化
+				lvfsessionId1 = UUID.randomUUID().toString()+"_"+new Date().getTime();
+				cookie = new Cookie("lvfsessionId1",lvfsessionId1);
+				cookie.setDomain(".lvmama.com");
+				cookie.setMaxAge(60*60*24*90);
+				response.addCookie(cookie);
+				
+				//生成签名作为id2
+				lvfsessionId2 = MD5Utils.generatePassword(lvfsessionId1+SECURITY_KEY).toLowerCase();
+				cookie = new Cookie("lvfsessionId2",lvfsessionId2);
+				cookie.setDomain(".lvmama.com");
+				cookie.setMaxAge(60*60*24*90);
+				response.addCookie(cookie);
+				return lvfsessionId1;
+			}
+			
 			for(Cookie co:cookies){
 				if("lvfsessionId1".equals(co.getName())){
 					cookie = co;

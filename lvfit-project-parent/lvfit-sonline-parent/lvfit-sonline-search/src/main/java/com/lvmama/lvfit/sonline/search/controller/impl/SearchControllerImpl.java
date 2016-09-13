@@ -318,8 +318,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		req.setDepCityCode("SHA");//出发：天津
 		req.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		req.setDistributorId(3L);
-	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req);
-	    MockUtil.writeJsonToFile("e:\\"+System.currentTimeMillis()+".txt", goodsInfo);
+	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req); 
 	    SearchGoodsResponseForm respForm = new SearchGoodsResponseForm(goodsInfo);
 	    //设置最低价航班.根据参数是否非对接优先，决定当前选择的航班是包机还是全部价格最低.找到默认选择的航班.
 	    respForm = setSumFlights(respForm,req);

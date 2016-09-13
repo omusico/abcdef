@@ -122,7 +122,7 @@ public enum Profile {
     ROUTE_RESCHEDULE_SEARCH("国内机票可改航班查询"),
     
     /**机酒相关Profile */
- 	FIT_SELECT_HOTEL_FROM_VST("从VST获取酒店信息"),
+ 	FIT_SELECT_HOTEL_FROM_VST("从VST获取酒店信息"), 
  	FIT_QUERY_VST_GOODS_PRICE_LIST("从VST查询时间价格表"),
  	FIT_VST_ORDER_CREATE("请求VST下单"),
  	FIT_FLIGHT_ORDER_CREATE("请求机票下单"),

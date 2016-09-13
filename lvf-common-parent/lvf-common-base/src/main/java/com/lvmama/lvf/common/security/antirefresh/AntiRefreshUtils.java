@@ -58,6 +58,32 @@ public class AntiRefreshUtils extends LvfSecurityUtils {
 		}
 	}
 	
+	private int getAcct(){
+		try{
+			String str = CustomizedPropertyPlaceholderConfigurer.getContextProperty("antiRefresh.config.countTime");
+			if(null==str){
+				return 60*60*12;
+			}
+			return new Integer(str);
+		}catch(Exception ex){
+			logger.error("load anti refresh config error",ex);
+			return 60*60*12;
+		}
+	}
+	
+	private int getAnCount(){
+		try{
+			String str = CustomizedPropertyPlaceholderConfigurer.getContextProperty("antiRefresh.config.cip.ancount");
+			if(null==str){
+				return Integer.MAX_VALUE;
+			}
+			return new Integer(str);
+		}catch(Exception ex){
+			logger.error("load anti refresh config error",ex);
+			return Integer.MAX_VALUE;
+		}
+	}
+	
 	protected AntiRefreshUtils(){
 	}
 	
@@ -79,6 +105,16 @@ public class AntiRefreshUtils extends LvfSecurityUtils {
 		return count(map,ipAndLvfId[0],ipAndLvfId[1]);
 	}
 	
+	public static void main(String agrs[]){
+		
+		String ip = "127.0.0.1";
+		String[] cips = ip.split("\\.");
+		String cip = cips[0]+"."+cips[1]+"."+cips[2];
+		String ccountKey = cip+"_CIP_COUNT_";
+		
+		System.out.println(ccountKey);
+	}
+	
 	protected Boolean count(Map<String,String[]> map,String ip,String lvfId){
 
 		try{
@@ -87,54 +123,76 @@ public class AntiRefreshUtils extends LvfSecurityUtils {
 				String type = entry.getKey();
 				Long lv1 = new Long(entry.getValue()[0]);
 				Long lv2 = new Long(entry.getValue()[1]);
-				String timeKey = lvfId+type+"TIME_";
-				String countKey = lvfId+type+"COUNT_";
+				String timeKey = ip+type+"TIME_";
+				String countKey = ip+type+"COUNT_";
+				
+				String[] cips = ip.split("\\.");
+				String cip = cips[0]+"."+cips[1]+"."+cips[2];
+				String ccountKey = cip+"_CIP_COUNT_";
+
+				Integer ccount = (Integer)MemcachedUtil.getInstance().get(ccountKey);
+				//获取不到则重置
+				if(null == ccount){
+					ccount = 0;
+				}
+				if(ccount>getAnCount()){
+					logger.error("建议拒绝访问c段ip:"+cip+";"+"该c段IP累计被拒绝请求次数:"+ccount);
+					MemcachedUtil.getInstance().set(ccountKey,getAcct()*7,ccount+1);
+					return false;
+				}
 				
 				Long longTime = (Long)MemcachedUtil.getInstance().get(timeKey);
 				Integer count = (Integer)MemcachedUtil.getInstance().get(countKey);
 				
 				//获取不到则重置
 				if(null == count){
+					logger.error("memcache未获取到countKey=="+countKey);
 					count = 0;
 				}
 				if(null == longTime){
+					logger.error("memcache未获取到timeKey=="+timeKey);
 					longTime = new Date().getTime();
 				}
 				
+				boolean memcacheCountKeyResult = false;
+				boolean memcacheTimeKeyResult = false;
 				if(type.startsWith("F")){
 					//访问速度间隔低于FN秒时
 					if(new Date().getTime() - longTime < 1000*(new Long(type.substring(1)))){
-						MemcachedUtil.getInstance().set(countKey,count+1);
+						memcacheCountKeyResult = MemcachedUtil.getInstance().set(countKey,getAcct(),count+1);
 					}else{
-						MemcachedUtil.getInstance().set(countKey,count);
+						memcacheCountKeyResult = MemcachedUtil.getInstance().set(countKey,getAcct(),count);
 					}
-					MemcachedUtil.getInstance().set(timeKey,new Date().getTime());
+					memcacheTimeKeyResult = MemcachedUtil.getInstance().set(timeKey,getAcct(),new Date().getTime());
 				}else if(type.equals("SUM")){
-					MemcachedUtil.getInstance().set(countKey,count+1);
-					MemcachedUtil.getInstance().set(timeKey,longTime);
+					memcacheCountKeyResult = MemcachedUtil.getInstance().set(countKey,getAcct(),count+1);
+					memcacheTimeKeyResult = MemcachedUtil.getInstance().set(timeKey,getAcct(),longTime);
 				}else{
 					if((new Date().getTime() - longTime) < 1000*(new Long(type))){
-						MemcachedUtil.getInstance().set(countKey,count+1);
-						MemcachedUtil.getInstance().set(timeKey,longTime);
+						memcacheCountKeyResult = MemcachedUtil.getInstance().set(countKey,getAcct(),count+1);
+						memcacheTimeKeyResult = MemcachedUtil.getInstance().set(timeKey,getAcct(),longTime);
 					}else{
-						MemcachedUtil.getInstance().set(countKey,0);
-						MemcachedUtil.getInstance().set(timeKey,new Date().getTime());
+						memcacheCountKeyResult = MemcachedUtil.getInstance().set(countKey,getAcct(),0);
+						memcacheTimeKeyResult = MemcachedUtil.getInstance().set(timeKey,getAcct(),new Date().getTime());
 					}
 				}
+				logger.error("memcache设置timeKey结果=="+memcacheTimeKeyResult);
+				logger.error("memcache设置countKey结果=="+memcacheCountKeyResult);
 				
 				logger.error("ip:"+ip+";lvfId:"+lvfId
 						+";"+type+"上次访问时间:"+DateUtils.formatCnHmDateS(new Date(longTime))
 						+";"+type+"累计请求次数:"+count);
 				
 				if(count > lv2){
-					Thread.sleep(1000);
+					Thread.sleep(500);
 					logger.error("建议拒绝访问ip:"+ip+";lvfId:"+lvfId
 							+";"+type+"上次访问时间:"+DateUtils.formatCnHmDateS(new Date(longTime))
-							+";"+type+"累计请求次数:"+count);					
+							+";"+type+"累计请求次数:"+count);
+					MemcachedUtil.getInstance().set(ccountKey,getAcct()*7,ccount+1);
 					return false;
 				}
 				if(count > lv1){
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 					return true;
 				}
 				

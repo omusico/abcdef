@@ -277,42 +277,7 @@ $(function(){
             title: "更换其他机票",
             content: $content,
             width:1120,
-            height: 660,
-            beforeunload:function(){//关闭对话框回调  
-                var that = this; 
-                if($("#selectDepFlightNo").val()==''){
-                    $.confirmNew("您尚未选择去程航班，是否继续选去程？", function () {
-                        // 确认操作的事件(默认可不写，为关闭操作)
-                        $('.traffic_tab li').eq(1).click();
-                    }, function () {
-                        // 取消操作的事件(默认可不写，为关闭操作)
-                        delete that.config.beforeunload;
-                        that.close();
-                    },
-                        "继续选择去程", // 确定按钮文本
-                        "关闭", // 取消按钮文本
-                        "dialog_btn_ok",
-                        "dialog_btn_cancel"
-                    );
-                    return false;
-                }
-                else if($("#selectArvFlightNo").val()==''){
-                    $.confirmNew("您尚未选择返程航班，是否继续选返程？", function () {
-                        // 确认操作的事件(默认可不写，为关闭操作)
-                        $('.traffic_tab li').eq(1).click();
-                    }, function () {
-                        // 取消操作的事件(默认可不写，为关闭操作)
-                        delete that.config.beforeunload;
-                        that.close();
-                    },
-                        "继续选择返程", // 确定按钮文本
-                        "关闭", // 取消按钮文本
-                        "dialog_btn_ok",
-                        "dialog_btn_cancel"
-                    );
-                    return false;
-                } 
-            } 
+            height: 660 
         });
     });
 
@@ -407,9 +372,8 @@ $(function(){
     $('.arv_fh_select').live('click',function(e) {
         var event = e || window.event;
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-
         chgFlightAjaxSubmit($(this).data("flightno"), "RETURN");
-        $(".dialog-close").trigger("click");
+         $(".dialog-close").trigger("click");
     });
 
     // 筛选条件点击
@@ -612,8 +576,11 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
             }
         });
         $("#selectDepFlightNo").val(flightNo); 
+        console.log("goods.js//////selectSaleType="+$("#selectSaleType").val());
         if($("#selectSaleType").val()=='DomesticProduct'){
             $("#selectArvFlightNo").val('');  
+            $("#selectSaleType").val('common');
+            return ;
         }
         $("#selectSaleType").val('common');
     }
@@ -628,8 +595,11 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
             }
         });
         $("#selectArvFlightNo").val(flightNo);
+        console.log("goods.js//////selectSaleType="+$("#selectSaleType").val());
         if($("#selectSaleType").val()=='DomesticProduct'){
             $("#selectDepFlightNo").val('');  
+            $("#selectSaleType").val('common');
+            return ;
         }
         $("#selectSaleType").val('common');
     }
@@ -666,7 +636,6 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                 });
             }
             if (tripType === "CHARTER") {
-                
             }
             initPriceInBaseInfo();
         }

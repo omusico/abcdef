@@ -278,7 +278,10 @@ public class FitSdpServiceImpl implements FitSdpService {
 					try {
 						// 机票查询
 						if (request instanceof FlightQueryRequest) {
-							context.put(key, fitAggregateClient.searchFlightInfo((FlightQueryRequest) request));
+							//只查询单程的，往返的等查询完毕两个单程之后，再单独查询一次.
+							if(!FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name().equals(key)){
+								context.put(key, fitAggregateClient.searchFlightInfo((FlightQueryRequest) request));
+							}
 						}
 						// 商品查询
 						if (request instanceof FitSdpGoodsRequest) {
@@ -298,11 +301,12 @@ public class FitSdpServiceImpl implements FitSdpService {
 				Exception curException = (Exception)context.get(FitBusinessExceptionType.valueOf(key).name());
 				throw new RuntimeException(curException);
 			}
-		}
+		} 
+		
 		List<FlightSearchFlightInfoDto> goFlightInfo = null;
 		List<FlightSearchFlightInfoDto> backFlightInfo = null; 
 		BaseSingleResultDto<FitSdpGoodsDto> goodsResult = null;  
-		//	去程
+		//去程
 		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name());
 		goFlightInfo = this.handleFlightSearchResult(goFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
 
@@ -310,8 +314,8 @@ public class FitSdpServiceImpl implements FitSdpService {
 		FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
 		backFlightInfo = this.handleFlightSearchResult(backFlightSearchResult, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
 		
-		//包机信息.
-		FlightSearchResult<FlightSearchFlightInfoDto> goAndBackFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name());
+		//查询完毕两个单程之后，再单独查询包机信息.
+		FlightSearchResult<FlightSearchFlightInfoDto> goAndBackFlightSearchResult = fitAggregateClient.searchFlightInfo((FlightQueryRequest) reqMap.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name()));
 		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goAndBackFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
 				, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),goodsRequest); 
 		

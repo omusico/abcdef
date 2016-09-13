@@ -18,7 +18,7 @@ import com.lvmama.lvf.common.trace.profile.ProfilePoint;
 public abstract class SolrClient {
 
     @Autowired
-    private RestClient client;
+    protected RestClient client;
 
     public abstract String getSolrUrl();
     
@@ -26,7 +26,7 @@ public abstract class SolrClient {
     	return getSolrUrl()+coreSplitKey;
     };
 
-    private enum SolrSearchCommand {
+    protected enum SolrSearchCommand {
 
         UPDATE("/update?commit=true"),
         SELECT("/search/flight/flight?"),

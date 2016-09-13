@@ -10,7 +10,7 @@ public enum BookingSourceType {
 	WAP("WAP",				true , true , true , true , 	true , false, true , true , false,  true , 		true ),
 	APP("APP",				true , true , true , true , 	true , false, true , true , false,  true , 		true ),
 	VST("主站",				false, true , false, true , 	true , false, false, false, false,  false, 		true ),
-	FIT("交通X",				false, true , false, true , 	true , false, false, false, false,  false, 		true ),
+	FIT("交通X",				false, true , false, true , 	true , false, false, true, true,  false, 		true ),
 	BACK("机票后台",			true , false, true , true , 	true , false, true , true , true,  true , 		true ),
 	VST_BACK("打包后台", 		false, true , false, true , 	true , false, true , true , false,  true , 		true ),
 	FRONT("网站",			true , true , true , true , 	true , false, true , true , false,  true , 		true ),

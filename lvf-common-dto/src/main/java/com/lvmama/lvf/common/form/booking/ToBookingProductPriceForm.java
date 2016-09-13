@@ -17,6 +17,7 @@ public class ToBookingProductPriceForm implements Form{
 	private String suppPolicyNo;
 	private String suppName;
 	private String suppCode;
+	private String policySource; //政策来源，用于包机切位政策
 	public PassengerType getPassengerType() {
 		return passengerType;
 	}
@@ -83,5 +84,11 @@ public class ToBookingProductPriceForm implements Form{
 	}
 	public void setSuppCode(String suppCode) {
 		this.suppCode = suppCode;
+	}
+	public String getPolicySource() {
+		return policySource;
+	}
+	public void setPolicySource(String policySource) {
+		this.policySource = policySource;
 	}
 }

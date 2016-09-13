@@ -49,6 +49,7 @@ com\lvmama\lvf\common\exception\CommonAPIExceptionHandler.class
 com\lvmama\lvf\common\client\redis\JedisTemplate$3.class
 com\lvmama\lvf\common\trace\TraceExtendHandler.class
 com\lvmama\lvf\common\convert\exception\ResourceNotExistException.class
+com\lvmama\lvf\common\utils\csv\CsvConfig$12.class
 com\lvmama\lvf\common\solr\json\base\criteria\SolrQCollapse.class
 com\lvmama\lvf\common\solr\json\base\criteria\annotation\SolrOrder.class
 com\lvmama\lvf\common\domain\DomainBaseService.class
