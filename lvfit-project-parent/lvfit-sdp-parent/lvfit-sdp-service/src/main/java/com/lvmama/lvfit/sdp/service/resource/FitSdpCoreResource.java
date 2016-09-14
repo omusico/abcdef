@@ -1,10 +1,5 @@
 package com.lvmama.lvfit.sdp.service.resource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,15 +15,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.lvmama.lvf.common.dto.flight.FlightLowPriceDayCacheDto;
-import com.lvmama.lvfit.common.utils.FliMemcachedUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.common.client.path.SdpClientPath;
 import com.lvmama.lvfit.common.dto.enums.FlightTripType;
 import com.lvmama.lvfit.common.dto.enums.JudgeType;
@@ -58,9 +48,8 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
+import com.lvmama.lvfit.common.utils.FliMemcachedUtil;
 import com.lvmama.lvfit.sdp.core.service.FitSdpService;
-import com.lvmama.lvfit.sdp.core.service.impl.FitSdpServiceImpl;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShoppingService;
 
 @Component

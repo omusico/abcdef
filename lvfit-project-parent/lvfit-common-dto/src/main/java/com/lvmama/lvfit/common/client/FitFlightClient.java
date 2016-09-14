@@ -1,9 +1,10 @@
 package com.lvmama.lvfit.common.client;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
+import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
@@ -32,18 +33,17 @@ import com.lvmama.lvf.common.trace.profile.Profile;
 import com.lvmama.lvf.common.trace.profile.ProfilePoint;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.JSONMapper;
-import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
 import com.lvmama.lvfit.common.aspect.suppinterface.SuppInterfacePoint;
+import com.lvmama.lvfit.common.cache.CacheBoxConvert;
 import com.lvmama.lvfit.common.cache.CacheKey;
+import com.lvmama.lvfit.common.cache.CachePoint;
 import com.lvmama.lvfit.common.client.path.FlightClientPath;
 import com.lvmama.lvfit.common.dto.calculator.AmountCalculatorDto;
 import com.lvmama.lvfit.common.dto.calculator.AmountCalculatorRequest;
-import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.utils.FitLoggerHandler;
 
 @Component
@@ -74,7 +74,8 @@ public class FitFlightClient {
 	
 	@Autowired
 	private FitLoggerHandler fitLoggerHandler;
- 
+	
+
 	/**
      * 查询航班及舱位或客票信息
      * @param request
@@ -92,11 +93,9 @@ public class FitFlightClient {
     	url = command.url(lvfaggregateBaseurl);
     	try
     	{
-    		MockUtil.writeJsonToFile("d:\\log_test\\最终查询航班"+System.currentTimeMillis()+".txt",request);
     		String result = restClient.post(url, String.class, request);
     		if(StringUtils.isNotBlank(result))
     		{
-    			MockUtil.writeFile("e:\\hangban"+File.separator+System.currentTimeMillis()+".txt",result);
     			ObjectMapper objectMapper = JSONMapper.getInstance();
     			FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = objectMapper.readValue(result, 
     				new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
@@ -155,7 +154,6 @@ public class FitFlightClient {
 		FlightClientPath command = FlightClientPath.AMOUNT_CALCULATE;
 		String url = command.url(businessBaseUrl);
 		try {
-			MockUtil.writeFile("D:\\log_test\\amount"+System.currentTimeMillis()+".txt", MockUtil.toJsonStr(request));
 			String resultString = restClient.post(url,String.class,request);
 			if (null == resultString && "".equals(resultString)) {
 				return null;
@@ -245,7 +243,6 @@ public class FitFlightClient {
 		FlightClientPath command = FlightClientPath.BOOKING_REBUILD_NEW;
 		String url = command.url(businessBaseUrl);
 		try {
-			MockUtil.writeJsonToFile("d:\\flightrequest\\航班下单请求"+System.currentTimeMillis()+".txt", flightOrderBookingRequest);
 			return restClient.post(url, SuppResponse.class,flightOrderBookingRequest);
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);

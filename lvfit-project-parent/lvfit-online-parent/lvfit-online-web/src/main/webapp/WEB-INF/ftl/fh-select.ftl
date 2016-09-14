@@ -68,7 +68,8 @@
     <div class="banWrap mt40 <#if searchform.tripType == "DC">fh-single-flight</#if>">
         <!-- 搜索部分 -->
         <form id="myForm" action="${request.contextPath}/search" method="get">
-        <input class="selectPage" type="hidden">
+            <input type="hidden" name="shoppingUUID" id ="shoppingUUID" value="${shoppingUUID}">
+            <input class="selectPage" type="hidden">
         <div class="fhMain">
             <!-- 搜索部分 -->
             <#if toFlight==null>
@@ -89,8 +90,6 @@
                             <!--TODO value中填写当前城市 -->
                             <input type="text" id="departureCityName" autocomplete="off" class="input-city input-city JS_select_depa select_depa"  value="${searchform.departureCityName}" placeholder="请输入出发地">
                             <em class="input-info">出发地：</em>
-
-                            <input type="hidden" name="shoppingUUID" id ="shoppingUUID" value="${searchform.shoppingUUID}">
                             <input class="h_select_depa" id="departureCityCode" type="hidden"  name='departureCityCode' value="${searchform.departureCityCode}"/><!-- 隐藏域 存储出发地 -->
                         </div>
                         <div class="fh-input-group">
@@ -596,6 +595,8 @@
     <div class="city_mdd_hotel">
         <#include "city.ftl">
     </div>
+
+    <!--请求计算价格失败弹框 start  -->
     <!-- 正在加载弹层 START-->
     <div class="fh-overlay"></div>
     <div class="fh-dialog-loading">
@@ -605,17 +606,17 @@
             </div>
         </div>
     </div>
+    <div class="resortOverlay"></div>
     <!-- 正在加载弹层 END-->
-
-    <!--请求计算价格失败弹框 start  -->
     <div class="returnAlert">
         <a href="javascript:;" class="ph_icon_closeAlert"></a>
         <div class="prompt">提示</div>
         <div class="sorryWarp">
             <div class="sorryImg"></div>
-            <p id ='errorMsg'>该酒店在您所选的日期已内售完，请返回重新查询</p>
+            <p id ='errorMsgOutTime'>该机票在您所选的日期已内售完，请返回重新查询</p>
         </div>
         <div class="sorryBtn">
+            <input id="reloadUrl" type="hidden" value=""/>
             <a href="javascript:;" class="fh-return-btn">重新查询</a>
         </div>
     </div>

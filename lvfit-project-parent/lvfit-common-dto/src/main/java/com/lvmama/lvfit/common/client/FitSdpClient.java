@@ -269,7 +269,7 @@ public class FitSdpClient {
             logger.error(ew.getErrMessage(), ew);
             throw ew;
         }
-    }  
+    }
     
     /**
 	 * 根据shoppingUUID加载购物车缓存
@@ -278,12 +278,13 @@ public class FitSdpClient {
 	 * @return
 	 * @throws Exception
 	 */
-	public FitSdpShoppingDto getShoppingByUUID(String shoppingUUID){ 
+	public FitSdpShoppingDto getShoppingByUUID(String shoppingUUID){
+
 		SdpClientPath command = SdpClientPath.GET_SHOPPING_BY_UUID;
 		String url = StringUtils.EMPTY;
 		url = command.url(baseUrl);
 		try {
-			String result = restClient.post(url, String.class, shoppingUUID); 
+			String result = restClient.post(url, String.class, shoppingUUID);
 			if (StringUtils.isNotBlank(result)) {
 				ObjectMapper objectMapper = JSONMapper.getInstance();
 				FitSdpShoppingDto dto = objectMapper.readValue(result, new TypeReference<FitSdpShoppingDto>() {
@@ -557,5 +558,5 @@ public class FitSdpClient {
     @CachePoint(value = CacheBoxConvert.String, cacheExpireTimeKey = "lvfit.product.cacheTime", isCacheEnable = false)
     public String getBottomInfoAndUpdCache(@CacheKey Long productId, Long bizCategoryId) {
         return this.getBottomInfo(productId, bizCategoryId);
-    } 
+    }
 }

@@ -204,7 +204,7 @@
             <p id ='errorMsgOutTime'>该机票在您所选的日期已内售完，请返回重新查询</p>
         </div>
         <div class="sorryBtn">
-        	<input id="reloadUrl" type="hidden" value=""/>
+        	<input id="reloadUrl" name="reloadUrl" type="hidden" />
             <a href="javascript:;" class="fh-return-btn">重新查询</a>
         </div>
     </div>
@@ -217,13 +217,33 @@
 	<script src="${request.contextPath}/js/common/common.js"></script>
     <script>
         var path="${request.contextPath}/search/backToShopping?shoppingUUID=" + $("#shoppingUUID").val();
+
+        $(function() {
+            var uuid = $("#shoppingUUID").val();
+            var searchCondition = window.localStorage.getItem('searchCondition');
+            if(searchCondition != null && searchCondition != '') {
+                var tripType = searchCondition.split('|')[0];
+                var departureCityCode = searchCondition.split('|')[1];
+                var arrivalCityCode = searchCondition.split('|')[2];
+                var cityCode = searchCondition.split('|')[3];
+                var flightStartDate = searchCondition.split('|')[4];
+                var flightEndDate = searchCondition.split('|')[5];
+                var hotelStartDate = searchCondition.split('|')[6];
+                var hotelEndDate = searchCondition.split('|')[7];
+                var adultsCount = searchCondition.split('|')[8];
+                var childCount = searchCondition.split('|')[9];
+
+                var reloadUrl = "${request.contextPath}/search?shoppingUUID=" + uuid + "&tripType=" + tripType + "&departureCityCode=" + departureCityCode + "&arrivalCityCode=" + arrivalCityCode + "&departureTime=" + flightStartDate + "&returnTime=" + flightEndDate + "&cityCode=" + cityCode + "&checkInTime=" + hotelStartDate + "&checkOutTime=" + hotelEndDate + "&adultsCount=" + adultsCount + "&childCount=" + childCount;
+                $('#reloadUrl').val(reloadUrl);
+            }
+        });
+
         //点击返回上一页
         $(".btn-text").click(function(){
             goBack();
         });
 
         function goBack() {
-
             window.location.href = path;
         }
 
@@ -457,7 +477,6 @@
             $(".returnAlert").show();
             $('.resortOverlay').stop(true,true).show();
             $("#errorMsgOutTime").html("系统繁忙，请重新查询！");
-            $('#reloadUrl').val(path);
         }
 
         function showPlanInfo() {
@@ -488,6 +507,10 @@
                 $(this).hide();
             });
         }
+
+        $(".fh-return-btn").live("click", function () {
+            window.location.href = $('#reloadUrl').val();
+        });
     </script>
 </body>
 

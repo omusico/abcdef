@@ -29,9 +29,8 @@ public class FlightServiceImpl implements FlightService{
 		// TODO Auto-generated method stub
 		FlightSearchResult<FlightSearchFlightInfoDto> result = null;
 		try {
-			//result = searchClient.getSearchFlightInfo(request); 
+			//result = searchClient.getSearchFlightInfo(request);
 			result = fitFlightClient.getSearchFlights(request);
-			System.out.println("agg-core-33:getSearchFlights()=="+result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

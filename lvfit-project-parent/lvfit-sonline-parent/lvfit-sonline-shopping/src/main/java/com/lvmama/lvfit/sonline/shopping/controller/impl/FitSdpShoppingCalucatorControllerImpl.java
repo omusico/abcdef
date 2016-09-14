@@ -28,7 +28,7 @@ public class FitSdpShoppingCalucatorControllerImpl implements FitSdpShoppingCalu
 	public BaseSingleResultDto<FitSdpShoppingAmountDto> calucateAmount(FitSdpCalucateAmountRequestForm form) {
 	    FitSdpCalculateAmountRequest amountRequest = new FitSdpCalculateAmountRequest();
 	    amountRequest.setShoppingUUID(form.getShoppingUUID());
-		amountRequest.setBookingSource(BookingSource.FIT_SDP_FRONT); 
+		amountRequest.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		return fitSdpClient.calculateAmount(amountRequest);
 	}
 }

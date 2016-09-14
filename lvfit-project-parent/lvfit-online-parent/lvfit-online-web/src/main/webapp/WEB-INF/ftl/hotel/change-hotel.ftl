@@ -340,6 +340,26 @@
     <script>
         var path="${request.contextPath}/search/backToShopping?shoppingUUID=" + $("#shoppingUUID").val();
 
+        $(function() {
+            var uuid = $("#shoppingUUID").val();
+            var searchCondition = window.localStorage.getItem('searchCondition');
+            if(searchCondition != null && searchCondition != '') {
+                var tripType = searchCondition.split('|')[0];
+                var departureCityCode = searchCondition.split('|')[1];
+                var arrivalCityCode = searchCondition.split('|')[2];
+                var cityCode = searchCondition.split('|')[3];
+                var flightStartDate = searchCondition.split('|')[4];
+                var flightEndDate = searchCondition.split('|')[5];
+                var hotelStartDate = searchCondition.split('|')[6];
+                var hotelEndDate = searchCondition.split('|')[7];
+                var adultsCount = searchCondition.split('|')[8];
+                var childCount = searchCondition.split('|')[9];
+
+                var reloadUrl = "${request.contextPath}/search?shoppingUUID=" + uuid + "&tripType=" + tripType + "&departureCityCode=" + departureCityCode + "&arrivalCityCode=" + arrivalCityCode + "&departureTime=" + flightStartDate + "&returnTime=" + flightEndDate + "&cityCode=" + cityCode + "&checkInTime=" + hotelStartDate + "&checkOutTime=" + hotelEndDate + "&adultsCount=" + adultsCount + "&childCount=" + childCount;
+                $('#reloadUrl').val(reloadUrl);
+            }
+        });
+
 		$(".search_subCon_list dd").click(function (e) {
             var event = e || window.event;
             event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
@@ -704,7 +724,7 @@
                 success: function() {
                     goBack();
                 },
-                error:function(obj) {
+                error:function() {
                     handelError();
                 }
             });
@@ -714,8 +734,11 @@
             $(".returnAlert").show();
             $('.resortOverlay').stop(true,true).show();
             $("#errorMsgOutTime").html("系统繁忙，请重新查询！");
-            $('#reloadUrl').val(path);
         }
+
+        $(".fh-return-btn").live("click", function () {
+            window.location.href = $('#reloadUrl').val();
+        });
 	</script>
 </body>
 </html>

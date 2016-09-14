@@ -77,7 +77,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 			input.setBookingSource(BookingSource.FIT_BACK);
 		}
 		super.initModelData(model, request);
-
+		model.addAttribute("shoppingUUID", input.getShoppingUUID());
 		try {
 			FitShoppingDto shoppingDto = dpClient.getShoppingResult(input.getRequest());
 			model.addAttribute("searchform", input);
@@ -110,6 +110,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 
 		super.initModelData(model, request);
 		String shoppingUUID = request.getParameter("shoppingUUID");
+		model.addAttribute("shoppingUUID", shoppingUUID);
 
 		FitShoppingDto shoppingDto;
 		BaseSingleResultDto<FitShoppingDto> baseDto;
@@ -119,7 +120,6 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 
 		if (shoppingDto != null) {
 			FitBaseSearchRequest searchRequest = shoppingDto.getSearchRequest();
-
 			model.addAttribute("searchform", searchRequest);
 			getShoppingInfos(model, shoppingDto);
 		}

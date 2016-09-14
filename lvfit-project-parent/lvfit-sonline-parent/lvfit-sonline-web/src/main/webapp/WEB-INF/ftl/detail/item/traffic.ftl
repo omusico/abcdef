@@ -8,8 +8,7 @@
 <input type="hidden" id="backSortRuleType" name="backSortRuleType" value="${backSortRule.sortRuleType?string}"/>
 
     <!-- 对接往返程的已选择航班 -->
-    <#include "detail/item/traffic_free_selected.ftl">
-
+    <#include "detail/item/traffic_free_selected.ftl"> 
  
 </div>
 <!-- 交通模板结束 -->

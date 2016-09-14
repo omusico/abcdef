@@ -52,15 +52,15 @@ public class SearchGoodsResponseForm implements Serializable, Form {
     
     public SearchGoodsResponseForm(FitSdpGoodsDto fitSdpGoodsDto) {
         this.fitSdpGoodsDto = fitSdpGoodsDto;
-//        if (CollectionUtils.isNotEmpty(getOtherTicketDto())) {
-//            otherTicketMaps = genTicketProduct(getOtherTicketDto());
-//        }
-//        if (CollectionUtils.isNotEmpty(getHotelCombo())) {
-//            setDiffPriceOfHotelCombo(getHotelCombo());
-//        }
-//        if (CollectionUtils.isNotEmpty(getHotelGroups())) {
-//        	setDiffPriceOfHotelGroup(getHotelGroups());
-//        }
+        if (CollectionUtils.isNotEmpty(getOtherTicketDto())) {
+            otherTicketMaps = genTicketProduct(getOtherTicketDto());
+        }
+        if (CollectionUtils.isNotEmpty(getHotelCombo())) {
+            setDiffPriceOfHotelCombo(getHotelCombo());
+        }
+        if (CollectionUtils.isNotEmpty(getHotelGroups())) {
+        	setDiffPriceOfHotelGroup(getHotelGroups());
+        }
     }
 
     public FitSdpGoodsDto getFitSdpGoodsDto() {

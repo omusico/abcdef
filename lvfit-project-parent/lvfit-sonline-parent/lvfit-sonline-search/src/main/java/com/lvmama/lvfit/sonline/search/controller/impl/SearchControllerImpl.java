@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lvmama.lvf.common.client.RestClient;
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
-import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
@@ -64,7 +63,6 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpBookingNoticeReque
 import com.lvmama.lvfit.common.dto.search.flight.FlightFacetType;
 import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.vst.VstSeoFriendLinkDto;
 import com.lvmama.lvfit.common.dto.vst.VstSeoInnerLinkDto;
 import com.lvmama.lvfit.sonline.base.BaseController;
@@ -314,8 +312,8 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	@Override
 	@RequestMapping(value = "loadsGoods", method = { RequestMethod.POST ,RequestMethod.GET})
 	public String searchGoodsInfo(Model model, FitSdpGoodsRequest req) { 
-		req.setArvCityCode("CAN");//到达：成都
-		req.setDepCityCode("SHA");//出发：天津
+//		req.setArvCityCode("CAN");//到达：成都
+//		req.setDepCityCode("SHA");//出发：天津
 		req.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		req.setDistributorId(3L);
 	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req); 

@@ -28,32 +28,83 @@ var _shoppingUUID = $("#shoppingUUID").val();
 $(function() {
     var uuid = _shoppingUUID;
     var errorMsgOutTime = $("#errorMsgOutTime").val();
-    if(errorMsgOutTime!='') {
+    if(errorMsgOutTime!=''){
+        var searchCondition = window.localStorage.getItem('searchCondition');
+        if(searchCondition != null && searchCondition != ''){
+            var tripType = searchCondition.split('|')[0];
+            var departureCityCode = searchCondition.split('|')[1];
+            var arrivalCityCode = searchCondition.split('|')[2];
+            var cityCode = searchCondition.split('|')[3];
+            var flightStartDate = searchCondition.split('|')[4];
+            var flightEndDate = searchCondition.split('|')[5];
+            var hotelStartDate = searchCondition.split('|')[6];
+            var hotelEndDate = searchCondition.split('|')[7];
+            var adultsCount = searchCondition.split('|')[8];
+            var childCount = searchCondition.split('|')[9];
+            $("#tripType").val(tripType);
+            if(tripType == 'DC'){
+                $("#dcButton").trigger("click");
+            }else if(tripType == 'WF'){
+                $("#wfButton").trigger("click");
+            }
 
-        var tripType = $("#tripType").val();
-        var departureCityCode = $("#departureCityCode").val();
-        var arrivalCityCode = $("#arrivalCityCode").val();
-        var cityCode = $("#cityCode").val();
-        var flightStartDate = $("#flightStartDate").val();
-        var flightEndDate = $("#flightEndDate").val();
-        var hotelStartDate = $("#hotelStartDate").val();
-        var hotelEndDate = $("#hotelEndDate").val();
-        var adultsCount = $("#adultsCount").val();
-        var childCount = $("#childCount").val();
+            $("#departureCityCode").val(departureCityCode);
+            for(var i=0;i<allCities.length;i++){
+                if(allCities[i].indexOf(departureCityCode)!=-1){
+                    var deptCity=allCities[i].split("|")[0];
+                    $("#departureCityName").val(deptCity);
+                    break;
+                }
+            }
 
+            $("#arrivalCityCode").val(arrivalCityCode);
+            for(var i=0;i<allCities.length;i++){
+                if(allCities[i].indexOf(arrivalCityCode)!=-1){
+                    var arrvCity=allCities[i].split("|")[0];
+                    $("#arrivalCityName").val(arrvCity);
+                    break;
+                }
+            }
+
+            $("#cityCode").val(cityCode);
+            for(var i=0;i<allCities.length;i++){
+                if(allCities[i].indexOf(cityCode)!=-1){
+                    var hotelCity=allCities[i].split("|")[0];
+                    $("#hotelCityName").val(hotelCity);
+                    break;
+                }
+            }
+            $("#flightStartDate").val(flightStartDate);
+            var flightGoDayWeek = getDayOfWeek(flightStartDate);
+            $("#flightStartDayOfWeek").text(flightGoDayWeek);
+
+            $("#flightEndDate").val(flightEndDate);
+            var flightBackDayWeek = getDayOfWeek(flightEndDate);
+            $("#flightEndDayOfWeek").text(flightBackDayWeek);
+
+            $("#hotelStartDate").val(hotelStartDate);
+            var hotelGoDayWeek = getDayOfWeek(hotelStartDate);
+            $("#hotelStartDayOfWeek").text(hotelGoDayWeek);
+
+            $("#hotelEndDate").val(hotelEndDate);
+            var hotelBackDayWeek = getDayOfWeek(hotelEndDate);
+            $("#hotelEndDayOfWeek").text(hotelBackDayWeek);
+            $("#adultsCount").val(adultsCount);
+            $("#adultCountSpan").text(adultsCount);
+
+            $("#childCount").val(childCount);
+            $("#childCountSpan").text(childCount);
+        }
         $(".returnAlert").show();
         $('.resortOverlay').stop(true,true).show();
         $("#errorMsg").html(errorMsgOutTime);
-        var reloadUrl = baseUrl+"/search/"+uuid+"?tripType="+tripType+"&departureCityCode="+departureCityCode+"&arrivalCityCode="+arrivalCityCode+"&departureTime="+flightStartDate+"&returnTime="+flightEndDate+"&cityCode="+cityCode+"&checkInTime="+hotelStartDate+"&checkOutTime="+hotelEndDate+"&adultsCount="+adultsCount+"&childCount="+childCount;
-        $('#reloadUrl').val(reloadUrl);
     }
 });
 
-function writeSearchRecord(){
+function writeSearchRecord() {
     var searchCondition = $("#tripType").val()+"|"+$("#departureCityCode").val()+"|"+$("#arrivalCityCode").val()+"|"+$("#cityCode").val()+"|"+$("#flightStartDate").val()+"|"+$("#flightEndDate").val()+"|"+$("#hotelStartDate").val()+"|"+$("#hotelEndDate").val()+"|"+$("#adultsCount").val()+"|"+$("#childCount").val();
-    if(window.localStorage){
-        //console.log('记录搜索条件='+searchCondition);
-        window.localStorage.setItem('searchCondition',searchCondition);
+    if(window.localStorage) {
+        window.localStorage.setItem('searchCondition', searchCondition);
     }
 }
 
@@ -257,22 +308,19 @@ $(".xuanze").die().live("click",function() {
     });
 });
 
-$('.fh-return-btn').click(function(){
+$('.fh-return-btn').click(function() {
     $('.returnAlert').stop(true,true).fadeOut();
     $('.resortOverlay').stop(true,true).fadeOut();
     $('body').removeAttr('style');
-    var form = $('#search_form');
-    form.submit();
-
+    $("#myForm").submit();
 });
 
-$('.ph_icon_closeAlert').click(function(){
+$('.ph_icon_closeAlert').click(function() {
     $('.returnAlert').stop(true,true).fadeOut();
     $('.resortOverlay').stop(true,true).fadeOut();
     $('body').removeAttr('style');
-    var form = $('#search_form');
-    form.submit();
-})
+    $("#myForm").submit();
+});
 
 //加载可选择房间数
 $(function() {
@@ -283,9 +331,9 @@ $(function() {
     if (tripType == "DC") {
         $(".fh-return-day-group").addClass("fh-input-group-disable");
     }
+    initAjax();
     // 初始化购物车中的产品信息，产品选择模块的默认值
     initProduct();
-    initAjax();
 });
 
 // 门票详情展示
@@ -638,6 +686,9 @@ var saveFliInsToCache = function(obj) {
 
 // 初始化时如果缓存中存在产品信息，展示相应信息
 var initProduct = function() {
+    if (!_shoppingUUID) {
+        return;
+    }
     $.ajax({
         type: "post",
         async: false,
@@ -653,7 +704,7 @@ var initProduct = function() {
             hideProductPriceListIfNotExist();
         }
     });
-}
+};
 var handleSpotTicketResult = function(data) {
     var selTickets = data.selectTicketInfo;
     for (var i = 0; i < selTickets.length; i++) {

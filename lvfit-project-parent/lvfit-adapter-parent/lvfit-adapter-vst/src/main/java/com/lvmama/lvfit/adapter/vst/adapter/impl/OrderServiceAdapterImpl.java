@@ -111,7 +111,6 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
 			    throw new ExceptionWrapper(ExceptionCode.BOOKING_FAIL_FOR_CUSTOMER);
 			}
 			Map<String,FitOrderDto> fitOrderMap =vstBookingRequest.getFitOrderMap();
-			//构造一个map，key是乘客类型（成人，儿童），值是乘客列表.
 			Map<String,List<FitOrderPassengerDto>> fitOrderPassengerMap = vstBookingRequest.getFitOrderPassengerMap();
 			return this.generateSuppOrder(resultHandleT,fitOrderMap,fitOrderPassengerMap);
 			
@@ -150,7 +149,7 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
         
         for (OrdOrderItem item : ordOrder.getOrderItemList()) {
         	FitOrderDto fitOrderDto = new FitOrderDto();
-        	FitSuppOrderDto suppOrderDto = new FitSuppOrderDto(); 
+        	FitSuppOrderDto suppOrderDto = new FitSuppOrderDto();
         	if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(item.getCategoryId())){
         		
         		//当订单未机票类型的子单时，需构造供应商订单航班信息
@@ -161,7 +160,7 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
 					logger.error("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】,供应商对应的乘客Map【"+JSONMapper.getInstance().writeValueAsString(fitOrderPassengerMap)+"】");
 				} catch (Exception e) {
 					e.printStackTrace();
-				}  
+				} 
         		for (Entry<String, List<FitOrderPassengerDto>> entry : fitOrderPassengerMap.entrySet()) {
         			FitSuppFlightOrderDto suppFlightOrderDto = new FitSuppFlightOrderDto();
         			List<FitSuppFlightOrderDetailDto> suppFlightOrderDetailDtos = new ArrayList<FitSuppFlightOrderDetailDto>();
@@ -170,11 +169,8 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
                 		suppDetailOrderDto.setFitOrderPassenger(fitOrderPassengerDto);
                 		suppFlightOrderDetailDtos.add(suppDetailOrderDto);
     				}
-                	//航段类型
                 	suppFlightOrderDto.setTripType(fitOrderDto.getTripType());
-                	//乘客类型
                 	suppFlightOrderDto.setPassengerType(PassengerType.valueOf(entry.getKey()));
-                	//具体乘客列表
                 	suppFlightOrderDto.setSuppFlightOrderDetailDtos(suppFlightOrderDetailDtos);
                 	suppFlightOrderDtos.add(suppFlightOrderDto);
 				}

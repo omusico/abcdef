@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
+import com.lvmama.lvf.common.exception.ExceptionCode;
+import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,14 +71,13 @@ public class ShoppingProductControllerImpl extends BaseExceptionHandler implemen
     @ResponseBody
     @RequestMapping(value="/getShoppingInfo")
     public FitShoppingDto getShoppingDtoByCache(@RequestParam String shoppingUuid) {
-        try {
-            BaseSingleResultDto<FitShoppingDto> result = fitDpClient.getShoppingByUUID(shoppingUuid);
-            return result.getResult();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (shoppingUuid == null) {
+            throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
         }
-        return null;
+        BaseSingleResultDto<FitShoppingDto> result = fitDpClient.getShoppingByUUID(shoppingUuid);
+        return result.getResult();
     }
+
 
     /**
      * 更新购物车中选中航意险信息

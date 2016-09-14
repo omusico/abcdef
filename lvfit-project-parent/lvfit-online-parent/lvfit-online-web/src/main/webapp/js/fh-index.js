@@ -689,8 +689,7 @@ $(document).ready(function(){
     function writeSearchRecord(){
         var searchCondition = $("#tripType").val()+"|"+$("#departureCityCode").val()+"|"+$("#arrivalCityCode").val()+"|"+$("#cityCode").val()+"|"+$("#flightStartDate").val()+"|"+$("#flightEndDate").val()+"|"+$("#hotelStartDate").val()+"|"+$("#hotelEndDate").val()+"|"+$("#adultsCount").val()+"|"+$("#childCount").val();
         if(window.localStorage){
-        	//console.log('记录搜索条件='+searchCondition);
-        	window.localStorage.setItem('searchCondition',searchCondition);
+        	window.localStorage.setItem('searchCondition', searchCondition);
         }
     }
 
