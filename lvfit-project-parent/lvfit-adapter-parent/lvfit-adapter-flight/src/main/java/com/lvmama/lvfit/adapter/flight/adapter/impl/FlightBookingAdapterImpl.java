@@ -158,13 +158,16 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 					FlightOrderBookingRequest flightOrderBookingRequest = this.buildCharterFlightOrderBookingRequest(request,fitOrderFlightDtos,fitSuppMainOrderDto.getVstMainOrderNo(),fitSuppMainOrderDto);
 					// 去程，返程都一样的处理,设置回调dto
 					for (FitSuppOrderDto fitSuppOrderDto : fitSuppOrders) { 
-						FitSuppOrderForFlightCallBackDto flightCallBackDto = new FitSuppOrderForFlightCallBackDto();
-						flightCallBackDto.setVstOrderMainNo(String.valueOf(fitSuppMainOrderDto.getVstMainOrderNo()));
-						flightCallBackDto.setVstOrderNo(String.valueOf(fitSuppOrderDto.getVstOrderNo()));
-						flightCallBackDto.setCallRequestStr(JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
-						flightCallBackDto.setTripType(fitSuppOrderDto.getTripType());
-						flightCallBackDto.setCallbackType(CallbackType.DEFAULT);
-						fitSuppOrderDto.setFlightCallBackDto(flightCallBackDto);
+						//如果是往返程子单..
+						if(fitSuppOrderDto.getTripType()!=null){
+							FitSuppOrderForFlightCallBackDto flightCallBackDto = new FitSuppOrderForFlightCallBackDto();
+							flightCallBackDto.setVstOrderMainNo(String.valueOf(fitSuppMainOrderDto.getVstMainOrderNo()));
+							flightCallBackDto.setVstOrderNo(String.valueOf(fitSuppOrderDto.getVstOrderNo()));
+							flightCallBackDto.setCallRequestStr(JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
+							flightCallBackDto.setTripType(fitSuppOrderDto.getTripType());
+							flightCallBackDto.setCallbackType(CallbackType.DEFAULT);
+							fitSuppOrderDto.setFlightCallBackDto(flightCallBackDto);
+						}
 					}
 					
 					SuppResponse suppResponse = fitFlightClient.bookingRebuild(flightOrderBookingRequest);
@@ -465,8 +468,8 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
         relationRequest.setSalesMainOrderId(vstMainOrderId); 
         //外部主订单ID：VST机票订单ID
         List<FitSuppOrderDto> suppOrderDtos = fitSuppMainOrderDto.getFitSuppOrderDtos(); 
-        //这里待改
-        //relationRequest.setLockSeatOrderId(suppOrderDtos.get(0).getVstOrderNo()+","+suppOrderDtos.get(1).getVstOrderNo());
+      	//设置两个子单连接起来的字符串
+        relationRequest.setLockSeatOrderId(suppOrderDtos.get(0).getVstOrderNo()+","+suppOrderDtos.get(1).getVstOrderNo());
         relationRequest.setSalesOrderId(suppOrderDtos.get(0).getVstOrderNo());
         flightOrderBookingRequest.setRelationRequest(relationRequest);
 

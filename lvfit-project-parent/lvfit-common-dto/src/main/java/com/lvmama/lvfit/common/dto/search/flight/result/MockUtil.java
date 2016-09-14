@@ -22,6 +22,7 @@ import org.codehaus.jackson.type.TypeReference;
 
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
+import com.lvmama.lvf.common.utils.ZipUnZipUtils;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 
 /**
@@ -237,11 +238,13 @@ public class MockUtil {
 		return null;
 	}
 
-	public static void main(String[] aegs) throws JsonParseException,
-			JsonMappingException, IOException {
+	public static void main(String[] aegs) throws Exception {
 		Long a = 1476288000000L; 
-		System.out.println(DateUtils.parseDate(a, "yyyy-MM-dd"));
 		
+		String inputStr = readFile("d:\\zipstr.txt");
+		String callRequestStr = ZipUnZipUtils.getInstance().unzipBase642String(inputStr,"UTF-8");
+		System.out.println(callRequestStr);
+		 
 //		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = MockUtil
 //				.createFromJsonFile(
 //						"d:\\new_flight.txt",
