@@ -102,5 +102,13 @@ public class FlightOrderSalesOrderRelationRequest implements Serializable{
 	public void setBookingSourceType(BookingSourceType bookingSourceType) {
 		relationDto.setBookingSourceType(bookingSourceType);
 	}
+	
+	public String getLockSeatOrderId() {
+		return relationDto.getLockSeatOrderId();
+	}
+
+	public void setLockSeatOrderId(String lockSeatOrderId) {
+		relationDto.setLockSeatOrderId(lockSeatOrderId);;
+	}
 
 }

@@ -62,7 +62,7 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
             		//1. 获取乘客key对应的票号信息
             		FlightOrderSalesOrderRelationDto salesOrderRelation = new FlightOrderSalesOrderRelationDto();
                     salesOrderRelation.setSalesMainOrderId(Long.valueOf(suppMainOrderDto.getVstMainOrderNo()));
-                    salesOrderRelation.setSalesOrderId(Long.valueOf(suppOrder.getVstOrderNo()));
+                    salesOrderRelation.setSalesOrderId(Long.valueOf(suppOrder.getVstOrderNo()));  
                     BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
                        
                     for (FlightOrderDetailViewDto viewDto : lvfResultDto.getResults()) {

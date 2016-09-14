@@ -217,6 +217,8 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         fligtFeeAmount = this.getProductFeeRulesByProductId(fitSdpShoppingRequest.getProductId(),fligtFeeAmount);
         bookingRequest.setFlightFeeAmount(fligtFeeAmount); 
         
+        //对于包机切位的航班如何加价？
+        
         for (FlightSearchFlightInfoDto searchFlight : shoppingDto.getSelectedFlightInfos()) {
 	    	 FlightSearchSeatDto searchSeat = searchFlight.getSeats().get(0);
 	    	 FitOrderFlightDto fitOrderFlightDto = new FitOrderFlightDto();
@@ -373,7 +375,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         for (FitOrderFlightDto f : bookingRequest.getFitOrderFlightDtos()) {
         	//如果当前是包机切位的航班，就不计算单价了。因为已经在completeBookingRequest()中计算了.
         	if(SuppSaleType.DomesticProduct.name().equals(f.getSaleType())){
-				break;
+        		continue;
 			}
         	
         	FitOrderFlightDto curFitOrderFlightDto = new FitOrderFlightDto();

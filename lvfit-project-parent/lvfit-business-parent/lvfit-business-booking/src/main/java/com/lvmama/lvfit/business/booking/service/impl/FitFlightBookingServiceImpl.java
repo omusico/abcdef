@@ -28,10 +28,12 @@ import com.lvmama.lvfit.common.client.FitFlightClient;
 import com.lvmama.lvfit.common.client.FitVstClient;
 import com.lvmama.lvfit.common.dto.adapter.request.FlightBookingRequest;
 import com.lvmama.lvfit.common.dto.booking.FitFliCallBackResponseVSTDto;
+import com.lvmama.lvfit.common.dto.enums.BookingBusinessType;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.CallbackType;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.enums.FitFlightBookingType;
+import com.lvmama.lvfit.common.dto.enums.SuppSaleType;
 import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
@@ -86,8 +88,23 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
         flightRequest.setOrderTotalSalesAmount(fit.getOrderAmount().getFlightTotalSalesAmount());
         flightRequest.setFitSuppMainOrderDto(fit.getFitSuppMainOrderDto());
         flightRequest.setBookingSource(fit.getBookingSource());
+        flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_AFTER_VST_AUDIT);
+        if(CollectionUtils.isNotEmpty(fit.getFitOrderFlightDtos())){
+        	if(SuppSaleType.DomesticProduct.name().equals(fit.getFitOrderFlightDtos().get(0).getSaleType())){
+        		 flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
+        	}
+        }
+        
+        if(fit.getBookingSource().getBookingBusinessType().name().equals(BookingBusinessType.FIT.name())){
+        	if(CollectionUtils.isEmpty(fit.getFitOrderHotelDtos())
+            		&&CollectionUtils.isEmpty(fit.getFitOrderInsuranceDtos())
+            		&&CollectionUtils.isEmpty(fit.getFitOrderSpotTicketDtos())){
+         	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
+            }
+        }
+        
         //机+X机票预订方式目前部分时段，统一设为后置下单（即vst资源审核通过之后下机票单 
-        if(this.getIsFitFlightBookingAfterVstAudit().booleanValue()){
+        /*if(this.getIsFitFlightBookingAfterVstAudit().booleanValue()){
         	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_AFTER_VST_AUDIT);
         }else{
         	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
@@ -96,7 +113,7 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
         		&&CollectionUtils.isEmpty(fit.getFitOrderInsuranceDtos())
         		&&CollectionUtils.isEmpty(fit.getFitOrderSpotTicketDtos())){
      	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
-        }
+        }*/
         return flightRequest;
     }
 

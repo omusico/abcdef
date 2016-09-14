@@ -74,6 +74,9 @@ public class RevenueReportRequest implements Serializable, Dto {
     
     /** 订单支付状态 */
     private OrderPayStatus orderPayStatus;
+    
+    /** 子订单id*/
+    private Long orderId;
 
     public String getBookingQueryBegTime() {
         return bookingQueryBegTime;
@@ -217,5 +220,13 @@ public class RevenueReportRequest implements Serializable, Dto {
     public Long getId() {
         return null;
     }
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
 
 }
