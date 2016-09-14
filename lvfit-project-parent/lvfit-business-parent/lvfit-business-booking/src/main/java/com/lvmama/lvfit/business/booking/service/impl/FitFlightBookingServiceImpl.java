@@ -32,11 +32,11 @@ import com.lvmama.lvfit.common.dto.enums.BookingBusinessType;
 import com.lvmama.lvfit.common.dto.enums.CallbackType;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.enums.FitFlightBookingType;
-import com.lvmama.lvfit.common.dto.enums.SuppSaleType;
 import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
 import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.trace.FitOpLogTraceContext;
 
 /**
@@ -90,10 +90,8 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
         //默认是审批之后下单。
         flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_AFTER_VST_AUDIT);
         //包机切位都是审批前下单
-        if(CollectionUtils.isNotEmpty(fit.getFitOrderFlightDtos())){
-        	if(SuppSaleType.DomesticProduct.name().equals(fit.getFitOrderFlightDtos().get(0).getSaleType())){
-        		 flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
-        	}
+        if(CharterFlightFilterUtil.isCharsetFlight(fit.getFitOrderFlightDtos())){
+        	 flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT); 
         }
         
         //动态打包的只有机票的订单就提前下单

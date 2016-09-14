@@ -539,8 +539,8 @@
                 success: function(data) {
                     //$(".fh-overlay, .fh-dialog-loading").hide();
                     $("#hotel_list").html(data);
-                    $(".JS_showAllRoom").live("click", showAllRoom);
-                    $(".roomName").live("click", showRoomDetail);
+                    $(".JS_showAllRoom").die().bind("click", showAllRoom);
+                    $(".roomName").die().bind("click", showRoomDetail);
                 }
             });
         }
@@ -576,7 +576,7 @@
 			// 构建排序规则
 			$(".rank_box li").each(function () {
 				if ($(this).hasClass("active")) {
-					var sortValue = $(this).data("sortval");
+					var sortValue = $(this).attr("data-sortval");
 					if (sortValue !== "") {
                         str += "S" + sortValue;
 					}

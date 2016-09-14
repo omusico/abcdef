@@ -17,17 +17,25 @@
 <div class="traffic_change" id="traffic_change">
     <span class="traffic_tab_tips"><i class="tip-icon tip-icon-warning"></i>所有航班起抵时间均为当地时间（24小时制）</span>
     <!-- 自由组合   开始 -->
-    <ul class="traffic_tab">
-        <li class="active">往返推荐</li>
-        <li>自由组合</li>
-    </ul>
-	<div class="traffic_type" style="display:block;">
-       <#include "detail/item/traffic_recommend_pop.ftl">
-    </div>
-	
-    <div class="traffic_type">
-       <#include "detail/item/traffic_free_pop.ftl">
-    </div>
+	<#if queryCharsetFlightFlag=='true'>
+		<ul class="traffic_tab">
+			<li class="active">往返推荐</li>
+			<li>自由组合</li>
+		</ul>	
+		<div class="traffic_type" style="display:block;">
+		   <#include "detail/item/traffic_recommend_pop.ftl">
+		</div> 	
+		<div class="traffic_type">
+		   <#include "detail/item/traffic_free_pop.ftl">
+		</div>	
+	<#else>
+	   <ul class="traffic_tab"> 
+		  <li>自由组合</li> 
+		</ul>	 
+		<div class="traffic_type" style="display:block;">
+		   <#include "detail/item/traffic_free_pop.ftl">
+		</div>  
+	</#if> 
     <!-- 自由组合结束 -->
 </div>
 

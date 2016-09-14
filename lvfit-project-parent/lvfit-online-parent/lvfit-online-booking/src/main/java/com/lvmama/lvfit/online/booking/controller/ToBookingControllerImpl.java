@@ -9,8 +9,6 @@
 
 package com.lvmama.lvfit.online.booking.controller;
 
-import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
-import org.codehaus.jackson.type.TypeReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,16 +32,13 @@ import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.utils.DateUtils;
-import com.lvmama.lvf.common.utils.FileUtils;
-import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.common.client.FitDpClient;
 import com.lvmama.lvfit.common.client.FitVstClient;
 import com.lvmama.lvfit.common.dto.member.FitMemUserDto;
 import com.lvmama.lvfit.common.dto.member.FitUserContacterDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderPassengerDto;
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.dto.request.MemUserRequest;
-import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
-import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchRoomDto;

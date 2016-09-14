@@ -334,6 +334,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    }
 
 	    model.addAttribute("depFlightInfos", respForm.getDepFlightInfos());
+	    model.addAttribute("queryCharsetFlightFlag", CharterFlightFilterUtil.getQueryCharsetFlight());
 	    model.addAttribute("arvFlightInfos", respForm.getArvFlightInfos());
 	    
 	    model.addAttribute("sumDepFlightInfos", respForm.getSumDepFlightInfos());

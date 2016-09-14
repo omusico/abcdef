@@ -61,7 +61,7 @@ public class ZipUnZipUtils {
 		return (new BASE64Decoder()).decodeBuffer(str);
 	}
 	
-	public String inputStr(String str) throws Exception{
+	public String unzipBase642String(String str) throws Exception{
 		return unzipBase642String(str,"UTF-8");
 	}
 	

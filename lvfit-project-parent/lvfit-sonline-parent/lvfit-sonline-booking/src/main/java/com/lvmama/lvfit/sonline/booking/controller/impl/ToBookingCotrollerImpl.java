@@ -51,6 +51,7 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
 import com.lvmama.lvfit.sonline.booking.ToBookingController;
@@ -108,7 +109,7 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 		FitSdpShoppingResponseForm resultForm = new FitSdpShoppingResponseForm(fitSdpShoppingDto);
 		FlightSearchFlightInfoDto firstFlight = fitSdpShoppingDto.getSelectedFlightInfos().get(0);
 		// 如果是包机航班，查询库存，判断舱位是否足够.
-		if (SuppSaleType.DomesticProduct.name().equals(firstFlight.getSaleType())) {
+		if (CharterFlightFilterUtil.isCharset(firstFlight)) {
 			if (!chargeCharsetFlight(BookingSource.FIT_FRONT,resultForm.getFitSdpShoppingRequest().getFitPassengerRequest(), firstFlight)) {
 				logger.error("下单之前进行包机航班复查时舱位不足，提示舱位不够.");
 				throw new ExceptionWrapper(ExceptionCode.GET_FLIGHT_PRICE_FAIL);
@@ -141,6 +142,12 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 		model.addAttribute("quantity", resultForm.getFitSdpShoppingRequest().getQuantity());
 		//酒店信息
 		model.addAttribute("hotels", resultForm.getSelectedRoomtypes());
+		//成人儿童数
+		if(fitSdpShoppingDto.getFitSdpShoppingRequest() != null && fitSdpShoppingDto.getFitSdpShoppingRequest().getFitPassengerRequest() != null){
+			FitPassengerRequest  passenger = fitSdpShoppingDto.getFitSdpShoppingRequest().getFitPassengerRequest();
+			model.addAttribute("adultCount",passenger.getAdultCount());
+			model.addAttribute("childCount",passenger.getChildCount());
+		}
 		return "order/to-booking";
 	}
 

@@ -26,6 +26,7 @@ import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.price.FitFlightTicketPriceDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
 
@@ -74,7 +75,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 		AmountCalculatorRequest flightPriceRequest = this.getFlightPriceRequest(selectSearchFlightInfoDtos,fitSdpShoppingRequest);
 		if(flightPriceRequest!=null){ 
 			//如果当前是包机航班，就修改里面的乘客的航意险的数量为原有的两倍.
-			if(SuppSaleType.DomesticProduct.name().equals(selectSearchFlightInfoDtos.get(0).getSaleType())){
+			if(CharterFlightFilterUtil.isCharsetFlightDots(selectSearchFlightInfoDtos)){
 				 List<BookingDetailDto>  bookingDetails = flightPriceRequest.getPassengerDetailDtos();
 				 for(BookingDetailDto bkdetail:bookingDetails){
 					 List<InsuranceCalculatRequest> insRequests =  bkdetail.getInsuranceCalculatRequests();
@@ -133,7 +134,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				FlightTicketPriceDto flightTicketPriceDto = new FlightTicketPriceDto();
 				FitFlightTicketPriceDto fitFlightTicketPriceDto = new FitFlightTicketPriceDto(); 
 				//如果不是包机切位，就考虑儿童舱的问题
-				if(!SuppSaleType.DomesticProduct.name().equals(selectSearchFlightInfoDto.getSaleType())){
+				if(!CharterFlightFilterUtil.isCharset(selectSearchFlightInfoDto)){
 					if(passengerDetailDto.getPassengerType()==PassengerType.CHILDREN){
 						fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassType()).getFlightTicketPriceDto();
 					}else{
@@ -155,7 +156,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				amountDetailDtos.add(amountDetailDto);
 			}
 			//如果是包机切位，只计算一个航程的价格.
-			if(SuppSaleType.DomesticProduct.name().equals(selectSearchFlightInfoDto.getSaleType())){
+			if(CharterFlightFilterUtil.isCharset(selectSearchFlightInfoDto)){
 				break;
 			}
 		}

@@ -191,7 +191,7 @@ function checkUser(that){
 		    	return false;
 		    }
 	   	});*/
-   }else{
+   }else{//遍历游玩人
 	   $(".border_t1_dotted").each(function(){
 		    if(!$(this).find("input[type_name='text']").val()){
 			   		$(this).find("input[type_name='text']").val(name);

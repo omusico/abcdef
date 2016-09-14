@@ -32,9 +32,6 @@ public class HotelQueryRequest  implements Serializable{
 	/**放置各种参数的字段 （注意参数的规则，请查看PC）*/
 	private String params;
 	
-	/**房间数*/
-	private Integer roomCounts;
-	
 	/**queryId*/
 	private String queryId;
 	
@@ -100,14 +97,6 @@ public class HotelQueryRequest  implements Serializable{
 
 	public void setParams(String params) {
 		this.params = params;
-	}
-
-	public Integer getRoomCounts() {
-		return roomCounts;
-	}
-
-	public void setRoomCounts(Integer roomCounts) {
-		this.roomCounts = roomCounts;
 	}
 
 	public String getQueryId() {

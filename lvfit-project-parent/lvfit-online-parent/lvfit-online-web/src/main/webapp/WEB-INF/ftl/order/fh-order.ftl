@@ -15,69 +15,6 @@ _data._shopingUUID = '${shopingUUID}';
 _data._contextPath = "${request.contextPath}";
 _data._visitTime = "${flightInfos?first.departureDate }";
 </script>
-
-<style>
-
-.fillInBtn{
-    display: inline-block;
-    font-size: 12px;
-    font-family: &quot;SimSun&quot;,sans-serif;
-    color: #666;
-    border-bottom: #999 dashed 1px;
-    padding-bottom: 2px;
-    cursor: pointer;
-    margin-right: 10px;
-    margin-left: 10px;
-    line-height: 12px;
-}
-.fillingExplanation{
-    display:none;
-    position: absolute;
-    left: 385px;
-    top: 34px;
-    background: #FFF;
-    width: 430px;
-    padding: 0px 16px 20px;
-    border: #CCC solid 1px;
-    z-index: 1000;
-}
-.fillingExplanation ol{
-    list-style-type: decimal;
-    list-style-position: inside;
-    margin-top: 15px;
-    color: #666;
-    line-height: 20px;
-}
-
-.fillingExplanation ol>li{
-    display: list-item;
-    padding-left: 0;
-}
-.fillingExplanation ul{
-    list-style-type: disc;
-}
-.fillingExplanation ul>li{
-    display: list-item;
-    padding-left: 20px;
-}
-.fillingExplanation .info_arrow {
-    height: 14px;
-    width: 14px;
-    overflow: hidden;
-    left: 17px;
-    top: -7px;
-}
-.fillingExplanation .info_arrow span {
-    color: #CCC;
-}
-.fillingExplanation .info_arrow i {
-    color: #FFF;
-    top: 1px;
-}
-
-
-</style>
-
 </head>
 <body class="order fh-order">
     <!-- 流量埋点 -->

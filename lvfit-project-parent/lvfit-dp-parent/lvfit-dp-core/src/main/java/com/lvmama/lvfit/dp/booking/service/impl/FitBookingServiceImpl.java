@@ -354,8 +354,6 @@ public class FitBookingServiceImpl implements FitBookingService {
             hotelQueryRequest.setDepartureDate(request.getCheckInTime());
             hotelQueryRequest.setReturnDate(request.getCheckOutTime());
             hotelQueryRequest.setHotelFromRecommendedOnly(false);
-            hotelQueryRequest.setRoomCounts(
-                HotelUtils.getMinRoomCount(request.getAdultsCount(), request.getChildCount()));
             hotelQueryRequest.setQueryId(request.getShoppingUUID());
             hotelQueryRequest.setAdultCount(request.getAdultsCount());
             hotelQueryRequest.setChildCount(request.getChildCount());

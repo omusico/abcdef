@@ -1,3 +1,366 @@
+$(function(){ 
+	
+	
+	var fixed_box = $('.fk_box_fixed');
+	if(fixed_box.length>0){
+		function fk_scroll(){
+			var win_t = $(window).height() - fixed_box.height();
+			var obj_t = fixed_box.offset().top;
+			var scroll_t = $(document).scrollTop();
+			if(scroll_t > obj_t - win_t){
+				fixed_box.find('.fk_box').css('position','absolute')
+			}else{
+				fixed_box.find('.fk_box').css('position','fixed')
+			}
+		}
+		$(window).scroll(function(){ 
+			fk_scroll();
+		});
+		fk_scroll();
+		
+	}
+	
+	$(".js_birthday").each(function(){
+		$(this).ui("calendar",{
+		   input : this,
+		   parm:{dateFmt:'yyyy-MM-dd'}
+		})
+	})
+	
+	$('.js_zhengjian').change(function(){ 
+		setTimeout(function(){
+			var T = $(document).scrollTop();
+			$('body,html').scrollTop(T+1);
+		},150);
+		$(this).siblings('.input').val('');
+	});
+	
+	//手机号码放大
+	var bigHtml = '<div id="text_big" style="height:36px; line-height:36px; padding:0 10px; background:#FFFDE6;  border:#FFAA00 solid 1px; position:absolute; color:#333; font-family:Arial; font-size:20px; display:none;"></div>';
+	$('body').append(bigHtml)
+	$('.js_textBig').live('keyup',function(){ 
+		var This = $(this);
+		textBig(This);
+
+	})
+	$('.js_textBig').live('focus',function(){ 
+		var This = $(this);
+		var text = This.val();
+		if(text.length>0){
+			textBig(This);
+		}
+	})
+	$('.js_textBig').live('blur',function(){ 
+		$('#text_big').hide().html('');
+	});
+	
+	function textBig(This){
+		var text = This.val();
+		var L = This.offset().left;
+		var T = This.offset().top-37;
+		var arr = [];
+		for(var i=0;i<text.length;i++){
+			arr.push(text.substring(i,i+1));
+			if(This.attr('type_name') == 'mobile'){
+				if(i==2 || i==6){
+					arr.push(" ");
+				}
+			}else if(This.attr('type_name') == 'shenfenzheng'){
+				if(i==5 || i==13){
+					arr.push(" ");
+				}
+			}
+			
+		}
+		$('#text_big').show().css({'left':L,'top':T,'min-width':$(This).outerWidth()-22}).html(arr.join(''));
+	}
+	
+	
+	//点击产品名称，展开内容
+	$('.pro_name,.pro_info_sq,.js_name').live("click", function(){ 
+		var pro_info = $(this).parents('.table_t').find('.pro_info');
+		if(pro_info.is(':hidden')){
+			$(this).parents('.table_t').addClass('jt_up').find('.pro_info').show();
+		}else{
+			$(this).parents('.table_t').removeClass('jt_up').find('.pro_info').hide();
+		}
+	});
+	
+	$(".tagsback,.tags101,.bx_ts,.js_tips").poptip({
+		place : 6
+	});
+	
+	$(".bx_ts").poptip({
+		place : 6,
+		skin:'#ff6600'
+	});
+	
+	
+	//鼠标离开输入框，验证
+	$('.js_yz').live('blur',function(){ 
+		var This = $(this);
+		setTimeout(function(){
+			yanzhengThis(This)
+		},150)
+		
+	});
+	
+	
+	//选择发票
+	$('.js_fapiaoYes').change(function(){ 
+		$(this).parents('.list_tit').next('.user_info').show();
+		$('.js_fapiaoTip').show();
+	});
+	$('.js_fapiaoNo').change(function(){ 
+		$(this).parents('.list_tit').next('.user_info').hide();
+		$('.js_fapiaoTip').hide();
+	});
+	
+	//协议更多展开
+	$('.xieyi_gd').click(function(){ 
+		$(this).hide().siblings('.lv-agree').addClass('xieyi_show');
+		$('html,body').animate({'scrollTop':$(document).scrollTop()+250},300)
+	})
+	
+	//合同弹窗
+	$('.xieyi_qw').click(function(){ 
+		pandora.dialog({
+			title: "合同模板",
+			width: 780,
+			content: $(".ht_box")
+		});
+	})
+	
+	
+	
+
+	
+	$('.js_btn_qita').live('click',function(){ 
+		var pro_info = $(this).siblings('.otherHideDiv');
+		if(pro_info.find('.table_t').eq(0).is(':hidden')){
+			$(this).hide().addClass('jt_up');
+			pro_info.show().find('.table_t').show();
+		}else{
+			$(this).removeClass('jt_up');
+			pro_info.hide().find('.table_t').hide();
+		}
+		
+	});
+	
+	
+	$('.js_name_shouqi').live('click',function(){ 
+		if($(this).hasClass('btn_up')){
+			$(this).removeClass('btn_up').html('更多<i class="icon_arrow"></i>').parent().height(26);
+		}else{
+			$(this).addClass('btn_up').html('收起<i class="icon_arrow"></i>').parent().height('auto');;
+		}
+		$(this).parents('.name_list_new_box').height($(this).parent().outerHeight(true));
+		
+	});
+	
+	
+	//直接显示证件类型
+	$('.js_zj_show').live('change',function(){ 
+		$(this).parent().siblings('.zj_list').show();
+	});
+	//客服来电填写证件
+	$('.js_zj_hide').live('change',function(){ 
+		$(this).parent().siblings('.zj_list').hide();
+	});
+	//邮轮填写信息，清空
+	/*$('.js_btn_qk').live('click',function(){ 
+		$(this).parents('.user_info').find('input').val('');
+		$(this).parents('.user_info').find('dd,li').removeClass('error_show');
+	});*/
+	
+	$(".js_yk_name").die().live('keyup',function(){
+	    if($(this).val().trim() == $('.js_jj_name').val()){
+	        $('.js_jj_name').parent('dd').addClass('error_show2');
+	    }else{
+	        $('.js_jj_name').parent('dd').removeClass('error_show2');
+	    }
+	});
+
+	$('.js_yk_mobile').die().live('keyup',function(){
+	    if($(this).val().trim() == $('.js_jj_mobile').val()){
+	        $('.js_jj_mobile').parent('dd').addClass('error_show2');
+	    }else{
+	        $('.js_jj_mobile').parent('dd').removeClass('error_show2');
+	    }
+	});
+	//邮轮紧急联系人手机检测
+	$('.js_jj_mobile').live('keyup',function(){ 
+		var $This = $(this);
+		for(var i=0;i<$('.js_yk_mobile').length;i++){
+			if($('.js_yk_mobile').eq(i).val()==$This.val() && $This.val()!=''){
+				setTimeout(function(){
+					$This.parent('dd').addClass('error_show2');
+				},200)
+			}else{
+				$This.parent('dd').removeClass('error_show2');
+			}
+			
+		}
+	});
+	//邮轮紧急联系人姓名检测
+	$('.js_jj_name').live('keyup',function(){ 
+		var $This = $(this);
+		for(var i=0;i<$('.js_yk_name').length;i++){
+			if($('.js_yk_name').eq(i).val()==$This.val() && $This.val()!=''){
+				setTimeout(function(){
+					$This.parent('dd').addClass('error_show2');
+				},200)
+			}else{
+				$This.parent('dd').removeClass('error_show2');
+			}
+			
+		}
+	});
+	
+	//复制购买人信息
+	$('.js_btn_copy').live('click',function(){ 
+		var $input1 = $('.js_copy_info').eq(0).find('.js_yz');
+		var $input2 = $(this).parents('.user_info').find('.js_yz');
+		for(var i=0;i<$input1.length;i++){
+			var attr1 = $input1.eq(i).attr('placeholder');
+			var value = $input1.eq(i).val();
+			if(value!=''){
+				for(var j=0;j<$input2.length;j++){
+					var attr2 = $input2.eq(j).attr('placeholder');
+					if(attr1==attr2){
+						$input2.eq(j).val(value).trigger("change");
+					}
+				}
+				$(this).parents('.user_info').find('dd').removeClass('error_show');
+			}else{
+				if(attr1=='姓名' || attr1=='手机' || attr1=='邮箱'){
+					//alert('购买人信息不完整!')
+				}
+				
+			}
+			
+		}
+		
+	});
+	
+	//邮箱自动补全
+	var emailArr = ['qq.com','163.com','126.com','sina.com','sina.cn','yahoo.com','hotmail.com','gmail.com','sohu.com','yeah.net','139.com','foxmail.com','189.com'],
+		emailIndex = -1,
+		nowInput;
+	
+	if($('.js_email').length>0){};
+	
+	$('body').append('<ul class="email_list" id="email_list" style="z-index:1000;"></ul>');
+	
+	$('.js_email').live('keyup',function(e){ 
+		var This = $(this),
+			email_list = $('#email_list'),
+			sText = This.val();
+		
+		if(/@/.test(sText)){
+			var thisL = This.offset().left,
+				thisT = This.offset().top+This.outerHeight()-1,
+				html = '',
+				emaillen = emailArr.length,
+				activeText = '';
+			
+			if(sText.substring(sText.length-1,sText.length)=="@"){
+				for(var i=0;i<emaillen;i++){
+					html+='<li>'+sText+emailArr[i]+'</li>';
+				}
+				email_list.html(html).css({'display':'block','left':thisL,'top':thisT});
+				emailIndex=-1;
+			};
+			if(e.keyCode == "38"){
+				emailIndex--;
+				if(emailIndex<=-1){emailIndex=emaillen-1};
+				email_list.find('li').eq(emailIndex).addClass('active').click().siblings().removeClass('active');
+			}else if(e.keyCode == "40"){
+				
+				emailIndex++;
+				if(emailIndex>=emaillen){emailIndex=0};
+				email_list.find('li').eq(emailIndex).addClass('active').click().siblings().removeClass('active');
+			}else if(e.keyCode == "13"){
+				This.blur();
+			}
+		}else{
+			email_list.hide();
+			emailIndex=-1;
+		};
+		
+	}).live('focus',function(){ 
+		nowInput = $(this);
+	}).live('blur',function(){ 
+		setTimeout(function(){
+			$('#email_list').hide();
+			emailIndex=-1;
+		},150)
+		
+	});;
+	
+	$('#email_list li').live('click',function(e){ 
+		var ThisLi = $(this),
+			sText = ThisLi.text();
+		nowInput.val(sText);
+		if(ThisLi.click.caller==null){
+			nowInput.blur();
+		}
+	});
+	
+	
+	//var bx_tab_info = $('.bx_tab_info');
+	var timer_bx = null;
+	$('.bx_tab li').live('mouseenter',function(){ 
+		var L = $(this).parent().offset().left,
+			thisT = $(this).offset().top+35-$('.main_box').offset().top,
+			arrowL = $(this).width()/2+8,
+			infoL = $(this).offset().left,
+			num = $(this).index();
+		
+		if(num>0){
+			clearTimeout(timer_bx);
+			$('.bx_tab_info').show().css({'left':infoL,'top':thisT}).find('li').eq(num-1).show().siblings().hide();
+			$('.bx_tab_info').find('.info_arrow').css('left',arrowL);
+		}
+	});
+	$('.bx_tab li').live('mouseleave',function(){
+		var num = $(this).index();
+		if(num>0){
+			timer_bx = setTimeout(function(){
+				$('.bx_tab_info').hide();
+			},200);
+		}
+	});
+	
+	$('.bx_tab_info').live('mouseenter',function(){ 
+		clearTimeout(timer_bx);
+	});
+	$('.bx_tab_info').live('mouseleave',function(){ 
+		timer_bx = setTimeout(function(){
+			$('.bx_tab_info').hide();
+		},200)
+	});
+	
+	
+	
+	
+	$('.pro_name_bx').live('click',function(){ 
+		if(!$(this).parents('dl').hasClass('jt_up')){
+			$(this).parents('dl').addClass('jt_up');
+			$(this).siblings('.pro_info_bx').show();
+		}else{
+			$(this).parents('dl').removeClass('jt_up');
+			$(this).siblings('.pro_info_bx').hide();
+		}
+	});
+	
+	$('.pro_info_bx_sq').live('click',function(){ 
+		$('.pro_name_bx').click();
+	});
+	
+});
+
+
 //验证姓名，是否符合规范
 function checkUserName(that){
 	var userName = $(that).val();

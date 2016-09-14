@@ -369,9 +369,12 @@ public class FitSdpServiceImpl implements FitSdpService {
 	}
 
 	private List<FlightSearchFlightInfoDto> handleFlightSearchResult(FlightSearchResult<FlightSearchFlightInfoDto> flightResult,
-		FitSdpProductTrafficRulesDto trafficRule, FitSdpGoodsRequest goodsRequest) {
+		FitSdpProductTrafficRulesDto trafficRule, FitSdpGoodsRequest goodsRequest) { 
+		if (flightResult == null){
+			return null;
+		}
 		List<FlightSearchFlightInfoDto> flightInfo = flightResult.getResults();
-		if (flightResult == null || CollectionUtils.isEmpty(flightInfo)) {
+		if(CollectionUtils.isEmpty(flightInfo)){
 			return null;
 		}
 		//剔除是包机切位的航班信息.
@@ -407,8 +410,10 @@ public class FitSdpServiceImpl implements FitSdpService {
 		//如果map里面有数据.
 		if(reqMap.size()>1){
 			FlightQueryRequest goAndBackReq = (FlightQueryRequest)reqMap.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name());
-			FlightQueryRequest backReq = (FlightQueryRequest)reqMap.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
-			goAndBackReq.setBackDate(backReq.getDepartureDate());
+			if(goAndBackReq!=null){
+				FlightQueryRequest backReq = (FlightQueryRequest)reqMap.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
+				goAndBackReq.setBackDate(backReq.getDepartureDate());
+			}
 		}
 	}
 	
@@ -430,10 +435,12 @@ public class FitSdpServiceImpl implements FitSdpService {
 				reqMap.put(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name(),  queryReq);
 				
 				//往返程
-				FlightQueryRequest queryReq2 = cloneFlightQueryRequest(queryReq);
-				//只查询包机政策的往返程.
-				queryReq2.setSaleType(new SuppSaleType[]{SuppSaleType.DomesticProduct});  
-				reqMap.put(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name(),  queryReq2);
+				if(CharterFlightFilterUtil.getQueryCharsetFlight()){
+					FlightQueryRequest queryReq2 = cloneFlightQueryRequest(queryReq);
+					//只查询包机政策的往返程.
+					queryReq2.setSaleType(new SuppSaleType[]{SuppSaleType.DomesticProduct});  
+					reqMap.put(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name(),  queryReq2);
+				}
 			}
 			if (trafficRule.getTrafficTripeType().equals(TrafficTripeType.BACK_WAY)) {
 				reqMap.put(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name(),  queryReq);
@@ -938,9 +945,12 @@ public class FitSdpServiceImpl implements FitSdpService {
 	 * @return
 	 */
 	private List<FlightSearchFlightInfoDto> handleCharterFlightResult(FlightSearchResult<FlightSearchFlightInfoDto> flightResult,
-			FitSdpProductTrafficRulesDto goRule,FitSdpProductTrafficRulesDto backRule,FitSdpGoodsRequest goodsRequest) {
+			FitSdpProductTrafficRulesDto goRule,FitSdpProductTrafficRulesDto backRule,FitSdpGoodsRequest goodsRequest) { 
+			if (flightResult == null )  {
+				return null;
+			}
 			List<FlightSearchFlightInfoDto> flightInfo = flightResult.getResults();
-			if (flightResult == null || CollectionUtils.isEmpty(flightInfo)) {
+			if(CollectionUtils.isEmpty(flightInfo)){
 				return null;
 			}
 			//剔除不是包机切位的航班信息.

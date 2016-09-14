@@ -188,7 +188,7 @@ public class FitDpServiceImpl implements FitDpService{
 	 * 1.设置选择的机票和酒店, 基准价
 	 * 2.将信息保存到缓存中
 	 * 3.将返回为空的产品，记录为业务异常，保存到context中
-	 * @param request
+	 * @param
 	 * @param fitSearchResult
 	 */
 	private void handleSearchResult(FitSearchResult fitSearchResult, int adultCount, int childCount){
@@ -328,8 +328,6 @@ public class FitDpServiceImpl implements FitDpService{
         hotelQueryReq.setAdultCount(request.getAdultCount());
         hotelQueryReq.setChildCount(request.getChildCount());
 
-        int roomCount = HotelUtils.getMinRoomCount(request.getAdultCount(), request.getChildCount());
-        hotelQueryReq.setRoomCounts(roomCount);
         HotelSearchResult<HotelSearchHotelDto> hotelSearchResult = getHotelSearchResult(hotelQueryReq);
         return hotelSearchResult;
     }
@@ -345,7 +343,7 @@ public class FitDpServiceImpl implements FitDpService{
         List<HotelSearchHotelDto> returnList = new ArrayList<HotelSearchHotelDto>();
 
         //2. 对酒店数据进行过滤
-        if(hotelQueryReq.getParams().contains("P1") && null == hotelQueryReq.getKeywords()) {
+        if(hotelQueryReq.getParams().contains("P1") && StringUtils.isBlank(hotelQueryReq.getKeywords())) {
             try {
                 StringBuilder sb = new StringBuilder();
                 List<FitConRecomHotelDto> recomHotelsAll = fitBusinessClient.getFitConRecomHotelsAll();
@@ -362,7 +360,7 @@ public class FitDpServiceImpl implements FitDpService{
                     if (recomHotelResult != null && CollectionUtils.isNotEmpty(recomHotelResult.getResults())) {
                         returnList.addAll(recomHotelResult.getResults()); // 添加推荐酒店信息
                         for (HotelSearchHotelDto hotelDto : hotelSearchResult.getResults()) { // 添加去掉推荐酒店后的酒店信息
-                            if (productIds.contains(hotelDto.getProductId())) {
+                            if (!productIds.contains(hotelDto.getProductId())) {
                                 returnList.add(hotelDto);
                             }
                         }
@@ -443,9 +441,9 @@ public class FitDpServiceImpl implements FitDpService{
      * 设置房间最大最小间数，房间数
      */
     private void setHotelRoomCount(List<HotelSearchHotelDto> hotels, int adultCount, int childCount) {
-        int roomcount = HotelUtils.getMinRoomCount(adultCount, childCount);
         for (HotelSearchHotelDto hotel : hotels) {
             for (HotelSearchRoomDto room : hotel.getRooms()) {
+                int roomcount = HotelUtils.getMinRoomCount(adultCount, childCount, Integer.parseInt(room.getMaxVisitor()));
                 room.setRoomCounts(roomcount);
                 for (HotelSearchPlanDto plan : room.getPlans()) {
                     int maxQuantity = plan.getMaxQuantity();
@@ -598,9 +596,6 @@ public class FitDpServiceImpl implements FitDpService{
                 hotelQueryReq.setHotelFromRecommendedOnly(getHotelFromRecommended());
                 hotelQueryReq.setAdultCount(request.getAdultsCount());
                 hotelQueryReq.setChildCount(request.getChildCount());
-
-                int roomCount = HotelUtils.getMinRoomCount(request.getAdultsCount(), request.getChildCount());
-                hotelQueryReq.setRoomCounts(roomCount);
 
                 HotelSearchResult<HotelSearchHotelDto> hotelSearchResult = getHotelSearchResult(hotelQueryReq);
                 context.put(FitBusinessType.FIT_Q_H.name(), hotelSearchResult);

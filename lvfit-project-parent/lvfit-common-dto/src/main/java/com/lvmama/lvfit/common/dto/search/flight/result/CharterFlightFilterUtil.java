@@ -18,9 +18,11 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.lvmama.lvf.common.dto.enums.SuppSaleType;
+import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvfit.common.dto.enums.FlightTripType;
 import com.lvmama.lvfit.common.dto.enums.SortRuleType;
+import com.lvmama.lvfit.common.dto.order.FitOrderFlightDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpGoodsDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
@@ -33,6 +35,73 @@ import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
  *
  */
 public class CharterFlightFilterUtil {
+	/**
+     * 判断是否是包机航班
+     * @param fitOrderFlightDtos
+     * @return
+     */
+    public static boolean isCharsetFlight(List<FitOrderFlightDto> fitOrderFlightDtos){
+    	//两个航段类型，并且都是包机类型
+    	if(CollectionUtils.isNotEmpty(fitOrderFlightDtos)&&fitOrderFlightDtos.size()==2){
+    		if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(0).getSaleType())){
+    			if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(1).getSaleType())){
+        			return true;
+        		}
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * 判断是否是包机航班
+     * @param fitOrderFlightDtos
+     * @return
+     */
+    public static boolean isCharsetFlightDots(List<FlightSearchFlightInfoDto> fitOrderFlightDtos){
+    	//两个航段类型，并且都是包机类型
+    	if(CollectionUtils.isNotEmpty(fitOrderFlightDtos)&&fitOrderFlightDtos.size()==2){
+    		if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(0).getSaleType())){
+    			if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(1).getSaleType())){
+        			return true;
+        		}
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * 判断是不是包机
+     * @param flightSearchFlightInfoDto
+     * @return
+     */
+    public static boolean isCharset(FlightSearchFlightInfoDto flightSearchFlightInfoDto){
+ 		if(SuppSaleType.DomesticProduct.name().equals(flightSearchFlightInfoDto.getSaleType())){
+			return true;
+		} 
+    	return false;
+    }
+    
+    /**
+     * 判断是不是包机
+     * @param fitOrderFlightDto
+     * @return
+     */
+    public static boolean isCharset(FitOrderFlightDto fitOrderFlightDto){
+ 		if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDto.getSaleType())){
+			return true;
+		} 
+    	return false;
+    }
+    
+	/**
+	 * 是否查询包机航班.
+	 * @return
+	 */
+	public static Boolean getQueryCharsetFlight() {
+//		return Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
+		return true;
+    }
+	
 	/**
 	 * 过滤包机的航班信息.
 	 * @param searchFlightInfoDtos

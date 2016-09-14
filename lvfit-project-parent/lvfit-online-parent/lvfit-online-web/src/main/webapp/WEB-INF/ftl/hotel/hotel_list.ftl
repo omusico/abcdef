@@ -6,7 +6,7 @@
     <div class="fh-nr-text">
         <p class="sorry">非常抱歉，没有找到符合您条件的酒店</p>
         <p class="suggestion">建议您适当减少已选择的条件 或
-            <a href="${request.contextPath}/search/hotels/${uuid}/ALL/ALL/ALL/ALL/ALL/1">取消条件重新搜索</a>
+            <a href="javascript:void(0)" onclick="closeAll()">取消条件重新搜索</a>
         </p>
     </div>
 </div>

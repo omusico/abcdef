@@ -20,7 +20,6 @@ import com.lvmama.lvf.common.dto.enums.IDCardType;
 import com.lvmama.lvf.common.dto.enums.PassengerType;
 import com.lvmama.lvf.common.dto.enums.RemarkType;
 import com.lvmama.lvf.common.dto.enums.RouteType;
-import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.dto.order.FlightOrderAmountDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderContacterDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderCustomerDto;
@@ -55,6 +54,7 @@ import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.shopping.FlightInsuranceDto;
 import com.lvmama.lvfit.common.dto.trace.FitOrderTraceContext;
 
@@ -64,8 +64,8 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
     private static final Logger logger = LoggerFactory.getLogger(FlightBookingAdapterImpl.class);
 
     @Autowired
-    private FitFlightClient fitFlightClient;
-
+    private FitFlightClient fitFlightClient; 
+    
     @Override
     public FitSuppMainOrderDto booking(FlightBookingRequest request) {
     	
@@ -78,7 +78,7 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 			} 
             List<FitOrderFlightDto> fitOrderFlightDtos = request.getFitOrderFlightDtoList(); 
             //如果下单的航班不是包机航班,就按照以前老的逻辑
-            if(!SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(0).getSaleType())){
+            if(!CharterFlightFilterUtil.isCharsetFlight(fitOrderFlightDtos)){
 	            for (int i = 0; i < fitOrderFlightDtos.size(); i++) {
 	            	   try {
 	                       tripTypeFlag = fitOrderFlightDtos.get(i).getTripType().name();
@@ -470,7 +470,8 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
         List<FitSuppOrderDto> suppOrderDtos = fitSuppMainOrderDto.getFitSuppOrderDtos(); 
       	//设置两个子单连接起来的字符串
         relationRequest.setLockSeatOrderId(suppOrderDtos.get(0).getVstOrderNo()+","+suppOrderDtos.get(1).getVstOrderNo());
-        relationRequest.setSalesOrderId(suppOrderDtos.get(0).getVstOrderNo());
+        //包机的这里就不传.
+//        relationRequest.setSalesOrderId(suppOrderDtos.get(0).getVstOrderNo());
         flightOrderBookingRequest.setRelationRequest(relationRequest);
 
         //9.订单来源

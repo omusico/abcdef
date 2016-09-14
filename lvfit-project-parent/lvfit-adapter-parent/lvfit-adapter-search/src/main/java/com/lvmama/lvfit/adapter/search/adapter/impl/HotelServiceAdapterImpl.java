@@ -126,11 +126,6 @@ public class HotelServiceAdapterImpl implements HotelServiceAdapter{
 		if (resultHandle == null ) {
 			return null;
 		}
-//		try {
-//			//logger.info("[adapter-search-hotel]调用主站酒店查询接口返回结果"+JSONMapper.getInstance().writeValueAsString(resultHandle));
-//		} catch (Exception e1) {
-//			e1.printStackTrace();
-//		}
 		
 		PageConfigVo<?> pageConfig = resultHandle.getReturnContent().getPageConfig();
 		Map<String, Object> resultMap = resultHandle.getReturnContent().getResultMap();
@@ -165,7 +160,8 @@ public class HotelServiceAdapterImpl implements HotelServiceAdapter{
 		Map<String,HotelSearchPlanDto> pricePlans = new HashMap<String,HotelSearchPlanDto>();
 		List<Long> goodsIds = new ArrayList<Long>();
 
-		for(Map<String,Object> item:items){
+		int roomCount = 0;
+		for(Map<String,Object> item:items) {
 			
 			//获取返回结果中的“product”
 			if(null == item.get("product")){
@@ -215,6 +211,12 @@ public class HotelServiceAdapterImpl implements HotelServiceAdapter{
 				}
 				
 				BranchBean vstRoomInfo = (BranchBean)vstRoom.get("branch");
+
+				int maxVisitor = 1;
+				try {
+					maxVisitor = Integer.parseInt(vstRoomInfo.getMaxVisitor());
+				} catch (Exception e) {}
+				roomCount = HotelUtils.getMinRoomCount(hotelQueryRequest.getAdultCount(), hotelQueryRequest.getChildCount(), maxVisitor);
 				HotelSearchRoomDto room = new HotelSearchRoomDto();
 				
 				BeanUtils.copyProperties(vstRoomInfo,room);
@@ -252,7 +254,7 @@ public class HotelServiceAdapterImpl implements HotelServiceAdapter{
 				plan.setDayPrice(entrys.getValue());
 				List<FitHotelPlanPriceDto> fitHotelPlanPriceDtos = plan.getDayPrice();
 				//判断商品是否可卖
-				Boolean isGoodsSale=isGoodsSaleAble(plan, Integer.parseInt(String.valueOf(days)), (int)hotelQueryRequest.getRoomCounts(),adultsCount);
+				Boolean isGoodsSale=isGoodsSaleAble(plan, Integer.parseInt(String.valueOf(days)), roomCount, adultsCount);
 				if(isGoodsSale){
 					plan.setDayPrice(fitHotelPlanPriceDtos);
 				}else{
