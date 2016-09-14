@@ -312,8 +312,8 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	@Override
 	@RequestMapping(value = "loadsGoods", method = { RequestMethod.POST ,RequestMethod.GET})
 	public String searchGoodsInfo(Model model, FitSdpGoodsRequest req) { 
-		req.setArvCityCode("CAN");//到达：成都
-		req.setDepCityCode("SHA");//出发：天津
+//		req.setArvCityCode("CAN");//到达：成都
+//		req.setDepCityCode("SHA");//出发：天津
 		req.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		req.setDistributorId(3L);
 	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req); 
