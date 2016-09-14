@@ -3,6 +3,7 @@ package com.lvmama.lvfit.common.client;
 import com.lvmama.lvf.common.client.RestClient;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResponseDto;
+import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
@@ -21,8 +22,10 @@ import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.request.CalculateAmountRequest;
 import com.lvmama.lvfit.common.dto.request.ChangeFlightRequest;
 import com.lvmama.lvfit.common.dto.request.ChangeHotelRequest;
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.dto.request.FitCommentRequest;
 import com.lvmama.lvfit.common.dto.request.FitDpUpdateShoppingRequest;
+import com.lvmama.lvfit.common.dto.request.FitFilterFlightRequest;
 import com.lvmama.lvfit.common.dto.request.FitHotelRequest;
 import com.lvmama.lvfit.common.dto.request.FitOrderBookingRequest;
 import com.lvmama.lvfit.common.dto.request.FitRecordSearchRequest;
@@ -97,7 +100,7 @@ public class FitDpClient {
 		}
 	}
 
-	public FitShoppingDto getShoppingResult(@CacheKey FitSearchRequest request) {
+	public FitShoppingDto getShoppingResult(FitBaseSearchRequest request) {
 
 		
 		DpClientPath command = DpClientPath.GET_SHOPPING_RESULT;
@@ -185,151 +188,20 @@ public class FitDpClient {
 	}
 
 	/**
-	 * 获取酒店列表信息
-	 * 
-	 * @param request
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
-	public FitSearchResult queryHotels(FitSearchRequest request) throws Exception {
-
-		FitSearchResult fitSearchResult = new FitSearchResult();
-
-		DpClientPath command = DpClientPath.GET_HOTEL_LIST;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl);
-
-		try {
-			String result = restClient.post(url, String.class, request);
-			if (StringUtils.isNotBlank(result)) {
-				ObjectMapper objectMapper = JSONMapper.getInstance();
-				FitSearchResult fitsearchResult = objectMapper.readValue(result, new TypeReference<FitSearchResult>() {
-				});
-				fitSearchResult.setHotelSearchResult(fitsearchResult.getHotelSearchResult());
-				return fitSearchResult;
-			}
-		} catch (ExceptionWrapper ew) {
-			throw ew;
-		}
-		return null;
-	}
-	
-	/**
-	 * 获取酒店列表信息fromCache
-	 * @return
-	 * @throws Exception
-	 */
-	public List<HotelSearchHotelDto> getHotelsFromCache(String uuid) throws Exception {
-
-		DpClientPath command = DpClientPath.GET_HOTEL_LIST_CACHE;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl);
-
-		try {
-			String result = restClient.post(url, String.class,uuid);
-			if (StringUtils.isNotBlank(result)) {
-				ObjectMapper objectMapper = JSONMapper.getInstance();
-				List<HotelSearchHotelDto> hotels = objectMapper.readValue(result, new TypeReference<List<HotelSearchHotelDto>>() {
-				});
-				return hotels;
-			}
-		} catch (ExceptionWrapper ew) {
-			throw ew;
-		}
-		return null;
-	}
-
-	/**
-	 * 获取航班列表信息
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	public FitSearchResult queryFlights(String uuid,String method) throws Exception {
-
-		DpClientPath command = DpClientPath.GET_FLIGHT_LIST;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl,uuid,method);
-		try {
-			FitSearchResult result = restClient.get(url,FitSearchResult.class);
-			return result;
-		} catch (ExceptionWrapper ew) {
-			throw ew;
-		}
-
-	}
-	
-	
-	
-	/**
-	 * 获取往返航班列表信息
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	public FitSearchResult queryToBackFlights(FitSearchRequest request) throws Exception {
-
-		DpClientPath command = DpClientPath.GET_FLIGHT_LIST_TO_BACK;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl);
-
-		try {
-			String result = restClient.post(url, String.class, request);
-			if (StringUtils.isNotBlank(result)) {
-				ObjectMapper objectMapper = JSONMapper.getInstance();
-				FitSearchResult fitsearchResult = objectMapper.readValue(result, new TypeReference<FitSearchResult>() {
-				});
-
-				return fitsearchResult;
-			}
-			return null;
-		} catch (ExceptionWrapper ew) {
-			throw ew;
-		}
-
-	}
-	
-	/**
-	 * 获取航班列表信息
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	public FitSearchResult getFlightsFromCache(String uuid) throws Exception {
-
-		DpClientPath command = DpClientPath.GET_FLIGHT_LIST_CACHE;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl);
-
-		try {
-			FitSearchResult result = restClient.post(url, FitSearchResult.class,uuid);
-			return result;
-		} catch (ExceptionWrapper ew) {
-			throw ew;
-		}
-
-	}
-
-	/**
 	 * 更换机票刷新缓存
 	 * 
 	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
-	public BaseSingleResultDto<FitShoppingDto> changeFlight(ChangeFlightRequest request) {
+	public List<FlightSearchFlightInfoDto> changeFlight(ChangeFlightRequest request) {
 
 		DpClientPath command = DpClientPath.CHANGE_SHOPPING_FLIGHT;
 		String url = command.url(baseUrl);
 		try {
 		    String result = restClient.post(url, String.class, request);
 			ObjectMapper objectMapper = JSONMapper.getInstance();
-			return  objectMapper.readValue(result, new TypeReference<BaseSingleResultDto<FitShoppingDto>>() {
+			return  objectMapper.readValue(result, new TypeReference<List<FlightSearchFlightInfoDto>>() {
 			});
 		}catch (ExceptionWrapper ew) {
 			throw ew;
@@ -350,15 +222,14 @@ public class FitDpClient {
 	 * @return
 	 * @throws Exception
 	 */
-	public BaseSingleResultDto<FitShoppingDto> changeHotel(ChangeHotelRequest request){
+	public BaseSingleResultDto<List<HotelSearchHotelDto>> changeHotel(ChangeHotelRequest request){
 
 		DpClientPath command = DpClientPath.CHANGE_SHOPPING_HOTEL;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl);
+		String url = command.url(baseUrl);
 		try {
 		    String result = restClient.post(url, String.class, request);
 			ObjectMapper objectMapper = JSONMapper.getInstance();
-			return  objectMapper.readValue(result, new TypeReference<BaseSingleResultDto<FitShoppingDto>>() {
+			return  objectMapper.readValue(result, new TypeReference<BaseSingleResultDto<List<HotelSearchHotelDto>>>() {
 			});
 		}catch (ExceptionWrapper ew) {
 			throw ew;
@@ -528,74 +399,6 @@ public class FitDpClient {
 		}
 	}
 	
-	
-	
-	/**
-	 * 根据shoppingUUID加载购物车缓存
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	public BaseSingleResultDto<FitSearchRequest> getShoppingRequestByShoppingUUID(String shoppingUUID){
-
-		DpClientPath command = DpClientPath.REDUCTION_SEARCH_REQUEST;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl);
-		try {
-			String result = restClient.post(url, String.class, shoppingUUID);
-			if (StringUtils.isNotBlank(result)) {
-				ObjectMapper objectMapper = JSONMapper.getInstance();
-				BaseSingleResultDto<FitSearchRequest> request = objectMapper.readValue(result, new TypeReference<BaseSingleResultDto<FitSearchRequest>>() {
-				});
-				return request;
-			}
-			return null;
-		}catch (ExceptionWrapper ew) {
-			logger.error(ew.getErrMessage(), ew);
-			throw ew;
-		} catch (Exception e) {
-			ExceptionWrapper ew = new ExceptionWrapper();
-			ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
-			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
-			logger.error(ew.getErrMessage(), ew);
-			throw ew;
-		}
-	}
-	
-	
-	/**
-	 * 根据shoppingUUID加载购物车缓存，第一次加载不到，调用查询接口，再次查询
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	public BaseSingleResultDto<FitShoppingDto> reGetShoppingByShoppingUUID(String shoppingUUID){
-
-		DpClientPath command = DpClientPath.RE_GET_SHOPPING_BY_UUID;
-		String url = StringUtils.EMPTY;
-		url = command.url(baseUrl);
-		try {
-			String result = restClient.post(url, String.class, shoppingUUID);
-			if (StringUtils.isNotBlank(result)) {
-				ObjectMapper objectMapper = JSONMapper.getInstance();
-				BaseSingleResultDto<FitShoppingDto> dto;
-				try {
-					dto = objectMapper.readValue(result, new TypeReference<BaseSingleResultDto<FitShoppingDto>>() {
-					});
-					return dto;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			return null;
-		} catch (ExceptionWrapper ew) {
-			throw ew;
-		}
-	}
-	
 	/**
 	 * 需要城市id获取推荐酒店
 	 * @param districtId
@@ -710,7 +513,7 @@ public class FitDpClient {
             throw ew;
         }
 	}
-	
+
 	/**
      *  保险信息更新缓存
      * @author wanghuihui
@@ -818,5 +621,31 @@ public class FitDpClient {
 			throw ew;
 		}
 		return null;
+	}
+
+	/**
+	 * 获取筛选后的航班信息
+	 *
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public List<FlightSearchFlightInfoDto> getFlightInfos(FitFilterFlightRequest request) {
+
+		DpClientPath command = DpClientPath.GET_FLIGHT_INFOS_BY_CONDITION;
+		String url = command.url(baseUrl);
+		try {
+			String result = restClient.post(url, String.class, request);
+			return JSONMapper.getInstance().readValue(result, new TypeReference<List<FlightSearchFlightInfoDto>>() {
+			});
+		} catch (ExceptionWrapper ew) {
+			throw ew;
+		} catch (Exception e) {
+			ExceptionWrapper ew = new ExceptionWrapper();
+			ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+			logger.error(ew.getErrMessage(), ew);
+			throw ew;
+		}
 	}
 }

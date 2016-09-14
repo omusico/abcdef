@@ -180,7 +180,7 @@ public class SearchResultUtil implements Serializable{
 	 * 如果没有儿童，就直接判断库存是否大于等于人数
 	 * 判断方式：seatClassType 为"Y"时，有seatClassCode也为Y的舱位  才可以卖儿童票，同理F-F,C-C
 	 * */
-	public static FlightSearchFlightInfoDto isAvailableSeat(FlightSearchFlightInfoDto flightSearchFlightInfoDto,FitSearchRequest request){
+	public static FlightSearchFlightInfoDto isAvailableSeat(FlightSearchFlightInfoDto flightSearchFlightInfoDto, int adultCount, int childCount){
 		List<FlightSearchSeatDto> yCFSeats = new ArrayList<FlightSearchSeatDto>();
 		List<FlightSearchSeatDto> ySeats = new ArrayList<FlightSearchSeatDto>();
 		List<FlightSearchSeatDto> cSeats = new ArrayList<FlightSearchSeatDto>();
@@ -202,19 +202,19 @@ public class SearchResultUtil implements Serializable{
 			
 		}
 		
-		if (request.getFitPassengerRequest().getChildCount() ==0){//没有儿童
+		if (childCount == 0){//没有儿童
 			for (FlightSearchSeatDto seatDto:ySeats){
-				if(seatDto.getInventoryCount() >=request.getFitPassengerRequest().getAdultCount()){
+				if(seatDto.getInventoryCount() >= adultCount){
 					yCFSeats.add(seatDto);
 				}
 			}
 			for (FlightSearchSeatDto seatDto:cSeats){
-				if(seatDto.getInventoryCount() >=request.getFitPassengerRequest().getAdultCount()){
+				if(seatDto.getInventoryCount() >= adultCount){
 					yCFSeats.add(seatDto);
 				}
 			}
 			for (FlightSearchSeatDto seatDto:fSeats){
-				if(seatDto.getInventoryCount() >=request.getFitPassengerRequest().getAdultCount()){
+				if(seatDto.getInventoryCount() >= adultCount){
 					yCFSeats.add(seatDto);
 				}
 			}
@@ -227,14 +227,14 @@ public class SearchResultUtil implements Serializable{
 				for (FlightSearchSeatDto seatDto:ySeats){
 					if(null != childrenSeats.get(seatDto.getSeatClassCode())){
 						if(seatDto.getSeatClassCode().equals(childrenSeats.get(seatDto.getSeatClassCode()).getSeatClassCode())){//成人也选择基础舱位
-							if(seatDto.getInventoryCount() >= (request.getFitPassengerRequest().getAdultCount()+request.getFitPassengerRequest().getChildCount())){
+							if(seatDto.getInventoryCount() >= (adultCount + childCount)){
 								yCFSeats.add(seatDto);
 								seatDto.setChildrenPrice(childrenSeats.get(seatDto.getSeatClassCode()).getSalesPrice());
 							}
 						} else {
 							if(null != childrenSeats.get(seatDto.getSeatClassCode()) && 
-									childrenSeats.get(seatDto.getSeatClassCode()).getInventoryCount() >= request.getFitPassengerRequest().getChildCount()){
-								if(seatDto.getInventoryCount() >=request.getFitPassengerRequest().getAdultCount()){
+									childrenSeats.get(seatDto.getSeatClassCode()).getInventoryCount() >= childCount){
+								if(seatDto.getInventoryCount() >= adultCount){
 									seatDto.setChildrenPrice(childrenSeats.get(seatDto.getSeatClassCode()).getSalesPrice());
 									yCFSeats.add(seatDto);
 								}
@@ -246,14 +246,14 @@ public class SearchResultUtil implements Serializable{
 				for (FlightSearchSeatDto seatDto:cSeats){
 					if(null != childrenSeats.get(seatDto.getSeatClassCode())){
 						if(seatDto.getSeatClassCode().equals(childrenSeats.get(seatDto.getSeatClassCode()).getSeatClassCode())){//成人也选择基础舱位
-							if(seatDto.getInventoryCount() >= (request.getFitPassengerRequest().getAdultCount()+request.getFitPassengerRequest().getChildCount())){
+							if(seatDto.getInventoryCount() >= (adultCount + childCount)){
 								yCFSeats.add(seatDto);
 								seatDto.setChildrenPrice(childrenSeats.get(seatDto.getSeatClassCode()).getSalesPrice());
 							}
 						} else {
 							if(null != childrenSeats.get(seatDto.getSeatClassCode()) && 
-									childrenSeats.get(seatDto.getSeatClassCode()).getInventoryCount() >= request.getFitPassengerRequest().getChildCount()){
-								if(seatDto.getInventoryCount() >=request.getFitPassengerRequest().getAdultCount()){
+									childrenSeats.get(seatDto.getSeatClassCode()).getInventoryCount() >= childCount){
+								if(seatDto.getInventoryCount() >= adultCount){
 									seatDto.setChildrenPrice(childrenSeats.get(seatDto.getSeatClassCode()).getSalesPrice());
 									yCFSeats.add(seatDto);
 								}
@@ -264,14 +264,14 @@ public class SearchResultUtil implements Serializable{
 			for (FlightSearchSeatDto seatDto:fSeats){
 				if(null != childrenSeats.get(seatDto.getSeatClassCode())){
 					if(seatDto.getSeatClassCode().equals(childrenSeats.get(seatDto.getSeatClassCode()).getSeatClassCode())){//成人也选择基础舱位
-						if(seatDto.getInventoryCount() >= (request.getFitPassengerRequest().getAdultCount()+request.getFitPassengerRequest().getChildCount())){
+						if(seatDto.getInventoryCount() >= (adultCount + childCount)){
 							seatDto.setChildrenPrice(childrenSeats.get(seatDto.getSeatClassCode()).getSalesPrice());
 							yCFSeats.add(seatDto);
 						}
 					} else {
 						if(null != childrenSeats.get(seatDto.getSeatClassCode()) && 
-								childrenSeats.get(seatDto.getSeatClassCode()).getInventoryCount() >= request.getFitPassengerRequest().getChildCount()){
-							if(seatDto.getInventoryCount() >=request.getFitPassengerRequest().getAdultCount()){
+								childrenSeats.get(seatDto.getSeatClassCode()).getInventoryCount() >= childCount){
+							if(seatDto.getInventoryCount() >= adultCount){
 								seatDto.setChildrenPrice(childrenSeats.get(seatDto.getSeatClassCode()).getSalesPrice());
 								yCFSeats.add(seatDto);
 							}

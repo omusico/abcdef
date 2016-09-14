@@ -1,8 +1,9 @@
 package com.lvmama.lvfit.aggregate.resource.insurance.service;
 
 import com.lvmama.lvfit.common.dto.search.insurance.InsuranceQueryRequest;
-import com.lvmama.lvfit.common.dto.search.insurance.InsuranceSearchResult;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceDto;
+
+import java.util.List;
 
 public interface InsuranceService {
 	/**
@@ -11,6 +12,5 @@ public interface InsuranceService {
 	 * @date:2016年3月22日 下午5:41:03
 	 * @return
 	 */
-	public InsuranceSearchResult<InsuranceDto> searchInsuranceFromVst(InsuranceQueryRequest request);
-
+	List<InsuranceDto> searchInsuranceFromVst(InsuranceQueryRequest request);
 }

@@ -106,7 +106,7 @@
 	</insert>
 	
 	 <!-- 根据产品ID查询索引信息 -->
-    <select id="getInfoList" parameterType="java.util.List" resultMap="resultMap">  
+    <select id="getInfoList" parameterType="java.lang.Long" resultMap="resultMap">  
 	    SELECT  
 	    	    s.product_id,
 		        start_district_id,

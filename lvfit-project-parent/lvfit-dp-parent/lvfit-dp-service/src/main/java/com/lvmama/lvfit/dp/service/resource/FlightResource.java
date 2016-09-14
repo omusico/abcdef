@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.lvmama.lvfit.common.dto.app.FitAppFlightRequest;
+import com.lvmama.lvfit.common.dto.request.FitFilterFlightRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import org.codehaus.jackson.JsonGenerationException;
@@ -61,36 +62,7 @@ public class FlightResource {
 		FitSearchResult fitSearchResult = shoppingService.getFlightSearchResult(uuid);
 		return Response.ok(fitSearchResult).build();
 	}
-	
-	@POST
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.GET_FLIGHT_LIST)
-	public Response searchFlight(@PathParam("uuid")String uuid,@PathParam("method")String method) throws JsonGenerationException, JsonMappingException, IOException{
 
-		FitSearchResult fitSearchResult = fitDpService.flightChangeSearch(uuid,method);
-		if(null == fitSearchResult){
-			throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
-		}
-		return Response.ok(fitSearchResult).build();
-	}
-	
-	
-	/**
-	 * 获取去程和返程航班
-	 * */
-	@POST
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.GET_FLIGHT_LIST_TO_BACK)
-	public Response queryToBackFlights(FitSearchRequest request) throws JsonGenerationException, JsonMappingException, IOException{
-
-		logger.error("requesttoback="+JSONMapper.getInstance().writeValueAsString(request));
-		FitSearchResult fitSearchResult = fitDpService.queryToBackFlights(request);
-		return Response.ok(fitSearchResult).build();
-	}
 
 	/**
 	 * 获取航班信息
@@ -105,5 +77,16 @@ public class FlightResource {
 				request.getReturnDate(), request.getDepCityCode(), request.getArvCityCode(),
 				request.getBookingSource());
 		return Response.ok(allFlightInfos).build();
+	}
+
+	/**
+	 * 获取航班信息
+	 * */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path(DpClientPath.Path.GET_FLIGHT_INFOS_BY_CONDITION)
+	public Response getFilteredFlightInfos(FitFilterFlightRequest request) {
+		return Response.ok(fitDpService.getFlightInfos(request)).build();
 	}
 }

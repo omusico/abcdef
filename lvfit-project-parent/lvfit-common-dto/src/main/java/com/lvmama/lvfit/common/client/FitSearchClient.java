@@ -1,8 +1,10 @@
 package com.lvmama.lvfit.common.client;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpInstalmentDto;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -144,7 +146,7 @@ public class FitSearchClient {
 	 * @param insuranceQueryRequest
 	 * @return
 	 */
-	public InsuranceSearchResult<InsuranceDto> searchInsuranceFromVst(InsuranceQueryRequest insuranceQueryRequest) {
+	public List<InsuranceDto> searchInsuranceFromVst(InsuranceQueryRequest insuranceQueryRequest) {
 		SearchClientPath command = SearchClientPath.INSURANCE_INFO_SEARCH;
     	String url = command.url(adapterbaseurl);
 		try {
@@ -152,9 +154,9 @@ public class FitSearchClient {
 			String jsonRequest = objectMapper.writeValueAsString(insuranceQueryRequest);
 			String jsonResult = restClient.post(url, String.class, jsonRequest);
 			if (StringUtils.isBlank(jsonResult)) {
-			    return new InsuranceSearchResult<InsuranceDto>();
+			    return new ArrayList<InsuranceDto>();
 			}
-			return objectMapper.readValue(jsonResult, new TypeReference<InsuranceSearchResult<InsuranceDto>>() {});
+			return objectMapper.readValue(jsonResult, new TypeReference<List<InsuranceDto>>() {});
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);
 			throw ew;

@@ -23,4 +23,10 @@ public interface FitSdpCityGroupMapper
 	 * @return
 	 */
 	List<FitSdpCityGroupDto> queryAllCitysByFkId(Long fkId);
+
+	/**	根据productId条件查询所有城市组城市
+	 * @param list
+	 * @return
+	 */
+	List<FitSdpCityGroupDto> queryCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
 }

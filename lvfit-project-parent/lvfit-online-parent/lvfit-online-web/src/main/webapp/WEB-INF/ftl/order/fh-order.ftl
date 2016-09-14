@@ -274,8 +274,8 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                                 </div>
                                 <div class="hotel-time">
                                     <div class="hotel-time-day">
-                                        <div class="hotel-top">${hotelRequest.departureDate} <!-- 入住 --></div>
-                                        <div class="hotel-bottom">${hotelRequest.returnDate} <!-- 离店 --></div>
+                                        <div class="hotel-top">${checkInDate} <!-- 入住 --></div>
+                                        <div class="hotel-bottom">${checkOutDate} <!-- 离店 --></div>
                                     </div>
                                     <div class="hotel-center"><#if (roomDate)??>(${roomDate }晚)<#else></#if> </div>
                                 </div>

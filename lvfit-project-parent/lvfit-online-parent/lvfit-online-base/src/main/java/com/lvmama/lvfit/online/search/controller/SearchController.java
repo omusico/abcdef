@@ -21,27 +21,6 @@ public interface SearchController<I extends Form
 	 * @param input
 	 * @return
 	 */
-	public String search(Model model,@PathVariable("uuid")String uuid,SearchConditionForm input,HttpServletRequest request);
-	
-	/**
-	 * 
-	 * searchByShoppingUUID:(根据shoppingUUID 加载产品选择页，页面初始化会调用calucateAmount重新算价). <br/>
-	 *
-	 * @author liuweiguo
-	 * @param model
-	 * @param input
-	 * @return
-	 * @since JDK 1.6
-	 */
-	public String searchByShoppingUUID(Model model,HttpServletRequest request);
-	
-	/**
-	 * 适用于无uuid直接访问的场景
-	 * @param model
-	 * @param input
-	 * @param request
-	 * @return
-	 */
-	public String searchNoUuid(Model model,SearchConditionForm input,HttpServletRequest request);
+	public String search(Model model, SearchConditionForm input,HttpServletRequest request);
 	
 }

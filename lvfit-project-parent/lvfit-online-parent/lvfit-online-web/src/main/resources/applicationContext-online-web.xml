@@ -45,4 +45,5 @@
 	
 	<import resource="classpath*:applicationContext-online-web-online.xml" />
 	<import resource="classpath*:applicationContext-online-web-freemarker.xml" />
+	<import resource="classpath*:applicationContext-cat.xml" />
 </beans>

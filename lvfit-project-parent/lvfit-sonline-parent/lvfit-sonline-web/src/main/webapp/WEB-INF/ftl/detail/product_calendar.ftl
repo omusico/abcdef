@@ -3,7 +3,6 @@
 			     <p class="canderBox-load"><span class="canderBox-loadpic"></span><br>请稍后，日历正在加载中...</p>
 		  </div>
       <input type="hidden" name="selectDate" id="selectDate">
-
 <script>
 var weekDay  = new Array("周日","周一","周二","周三","周四","周五","周六");
 
@@ -51,8 +50,8 @@ function initCalendar(cdata){
 		selectDateCallback:function(that){//点击选择日期后的回调函数
 			var $el = $(".ui-calendar td[date-map='" + that.selectedDate + "']");
 			var priceTxt = $(".selectModel_freetour #"+that.selectedDate).html();
-			var showPrice= that.selectedDate+"("+weekDay[$el.attr("week")]+")" + priceTxt;
-
+			priceTxt = priceTxt.replace('/份','')+'起/人';
+			var showPrice= that.selectedDate+"("+weekDay[$el.attr("week")]+")" + priceTxt; 
 			$(".cxrq").html( showPrice );
 			$("#selectDate").val(that.selectedDate);
 

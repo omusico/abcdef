@@ -86,18 +86,17 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 	@Override
 	public BaseSingleResultDto<FitShoppingAmountDto> calculateAmount(CalculateAmountRequest amountRequest) {
 		
-			//初始化算价上下文
-			String shoppingUUID = amountRequest.getShoppingUUID();
-			FitShoppingDto fitShopppingDto = shoppingService.getFitShopping(shoppingUUID);
-			if(fitShopppingDto==null){
-				throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
-			}
-			FitShoppingDto selectShoppingDto = fitShopppingDto.getSelectedInfo();
-			CalculateAmountDetailRequest amountDetailRequest = new CalculateAmountDetailRequest();
-			amountDetailRequest.setBookingSource(amountRequest.getBookingSource());
-			amountDetailRequest.setFitShoppingDto(selectShoppingDto);
-			
-			return this.calculateAmountByDetail(amountDetailRequest);
+		//初始化算价上下文
+		String shoppingUUID = amountRequest.getShoppingUUID();
+		FitShoppingDto fitShopppingDto = shoppingService.getFitShopping(shoppingUUID);
+		if(fitShopppingDto==null){
+			throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
+		}
+		CalculateAmountDetailRequest amountDetailRequest = new CalculateAmountDetailRequest();
+		amountDetailRequest.setBookingSource(amountRequest.getBookingSource());
+		amountDetailRequest.setFitShoppingDto(fitShopppingDto);
+
+		return this.calculateAmountByDetail(amountDetailRequest);
 			
 	}
 
@@ -115,7 +114,7 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 			//2. 生成算价任务组
 			TaskMainGroup<FitShoppingAmountDto> taskMainGroup =this.generatorCalculateTaskGroup(context);
 		    
-	       //3. 并发执行算价任务组
+	        //3. 并发执行算价任务组
 	        FitShoppingAmountDto  fitShoppingAmountDto =  taskMainGroup.getResult(requestMap.keySet().size());
 	        
 	        if(fitShoppingAmountDto==null){

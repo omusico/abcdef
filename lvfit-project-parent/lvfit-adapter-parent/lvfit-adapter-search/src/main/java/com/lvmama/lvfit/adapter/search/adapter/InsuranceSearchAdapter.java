@@ -2,6 +2,7 @@ package com.lvmama.lvfit.adapter.search.adapter;
 
 import java.util.List;
 
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
 import com.lvmama.lvfit.common.dto.search.insurance.InsuranceQueryRequest;
 import com.lvmama.lvfit.common.dto.search.insurance.InsuranceSearchResult;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceDto;
@@ -19,6 +20,6 @@ public interface InsuranceSearchAdapter {
 	 * @param insuranceQueryRequest
 	 * @return
 	 */
-	public InsuranceSearchResult<InsuranceDto>  searchInsurance(InsuranceQueryRequest insuranceQueryRequest);
+	List<InsuranceDto> searchInsurance(InsuranceQueryRequest insuranceQueryRequest);
 
 }

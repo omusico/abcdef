@@ -43,6 +43,8 @@ public class HotelQueryRequest  implements Serializable{
 	
 	/**成人数*/
 	private Integer adultCount;
+	/**儿童数*/
+	private  Integer childCount;
 	
 	public String getKeywords() {
 		return keywords;
@@ -132,4 +134,11 @@ public class HotelQueryRequest  implements Serializable{
 		this.adultCount = adultCount;
 	}
 
+	public Integer getChildCount() {
+		return childCount;
+	}
+
+	public void setChildCount(Integer childCount) {
+		this.childCount = childCount;
+	}
 }

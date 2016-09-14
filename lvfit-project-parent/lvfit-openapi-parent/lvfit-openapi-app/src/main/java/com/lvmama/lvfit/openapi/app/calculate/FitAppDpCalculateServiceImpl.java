@@ -1,19 +1,25 @@
 package com.lvmama.lvfit.openapi.app.calculate;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.lvmama.lvf.common.utils.BeanUtils;
+import com.lvmama.lvf.common.utils.JSONMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.exception.FitExceptionCode;
-import com.lvmama.lvf.common.utils.BeanUtils;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvfit.common.client.FitDpClient;
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsInfo;
@@ -24,9 +30,10 @@ import com.lvmama.lvfit.common.dto.app.FitAppTrafficInfoDto;
 import com.lvmama.lvfit.common.dto.calculator.request.CalculateAmountDetailRequest;
 import com.lvmama.lvfit.common.dto.enums.FlightTripType;
 import com.lvmama.lvfit.common.dto.enums.TrafficTripeType;
-import com.lvmama.lvfit.common.dto.price.FitHotelPlanPriceDto;
+import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
 import com.lvmama.lvfit.common.dto.price.FitTicketAddTimePriceDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelSearchResult;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
@@ -43,7 +50,6 @@ import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedInsuranceDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedTicketDto;
 import com.lvmama.lvfit.common.dto.shopping.FlightInsuranceDto;
 import com.lvmama.lvfit.openapi.app.search.FitAppDpSearchService;
-import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
 
 /**
  * Created by leizhengwei
@@ -52,6 +58,8 @@ import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
  */
 @Service
 public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
 	private FitDpClient dpClient;
@@ -79,15 +87,8 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 		}
 		//相关参数
 		shoppingDto.getSearchRequest().setBookingSource(request.getBookingSource());
-		shoppingDto.getSearchRequest().getFitPassengerRequest().setAdultCount(request.getAdultCount());;
-		shoppingDto.getSearchRequest().getFitPassengerRequest().setChildCount(request.getChildCount());
-		
-		//清空已选信息
-		shoppingDto.getHotels().clear();
-		shoppingDto.getFlightInfos().clear();
-		shoppingDto.getSelectInsuranceInfo().clear();
-		shoppingDto.getSelectTicketInfo().clear();
-		shoppingDto.getSelectFlightInsInfo().clear();
+		shoppingDto.getSearchRequest().setAdultsCount(request.getAdultCount());;
+		shoppingDto.getSearchRequest().setChildCount(request.getChildCount());
 				
 		Map<String, List<FitAppGoodsInfo>> map =request.getSelectGoodsInfo();
 		
@@ -95,38 +96,41 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 			//酒店
     		if(FitAppGoodsType.valueOf(entry.getKey())==FitAppGoodsType.HOTEL){
     			FitAppGoodsInfo appGoodsInfo = entry.getValue().get(0);
-    			
-    			FitAppHotelRequest hotelRequest = new FitAppHotelRequest();
-    			hotelRequest.setAdultCount(request.getAdultCount());
-    			hotelRequest.setChildCount(request.getChildCount());
-    			hotelRequest.setDepartureDate(appGoodsInfo.getVisitDate());
-    			hotelRequest.setReturnDate(appGoodsInfo.getAppHotelRequest().getReturnDate());
-    			hotelRequest.setKeywords(appGoodsInfo.getAppHotelRequest().getKeywords());
-    			hotelRequest.setHotelFromRecommendedOnly(false);
-    			hotelRequest.setParams("P1");
-    			hotelRequest.setCityCode(appGoodsInfo.getAppHotelRequest().getCityCode());
-    			HotelSearchResult<HotelSearchHotelDto> hotelSearchResult = fitAppDpSearchService.changeHotelInfo(hotelRequest);
+
+    			HotelSearchResult<HotelSearchHotelDto> hotelSearchResult = shoppingDto.getHotels();
     			List<HotelSearchHotelDto> hotels = new ArrayList<HotelSearchHotelDto>();
-    			if(CollectionUtils.isNotEmpty(hotelSearchResult.getResults())){
-    				HotelSearchHotelDto selectHotelDto = hotelSearchResult.getResults().get(0);
-    				
-    				for (HotelSearchRoomDto room : selectHotelDto.getRooms()) {
-						for (HotelSearchPlanDto plan : room.getPlans()) {
-							if(appGoodsInfo.getGoodsId()!=null && appGoodsInfo.getGoodsId().equals(plan.getSuppGoodsId())){
-									plan.setSelectedFlag(true);
-									room.setSelectedFlag(true);
-									room.setRoomCounts(appGoodsInfo.getCount());
-							}else{//如果不是计划入住的房型，设置为未选择状态
-								plan.setSelectedFlag(false);room.setSelectedFlag(false);
+    			if (hotelSearchResult == null || CollectionUtils.isEmpty(hotelSearchResult.getResults())) {
+					throw new ExceptionWrapper(FitExceptionCode.APP_GOODS_NO_MATCH, appGoodsInfo.getGoodsId());
+    			}
+				HotelSearchHotelDto selectHotel = new HotelSearchHotelDto();
+				HotelSearchRoomDto selectRoom = new HotelSearchRoomDto();
+				HotelSearchPlanDto selectPlan = new HotelSearchPlanDto();
+				for (HotelSearchHotelDto hotel : hotels) {
+					for (HotelSearchRoomDto roomDto : hotel.getRooms()) {
+						for (HotelSearchPlanDto plan : roomDto.getPlans()) {
+							if (plan.getSuppGoodsId().equals(appGoodsInfo.getGoodsId())) {
+								try {
+									BeanUtils.copyProperties(selectPlan, plan);
+									BeanUtils.copyProperties(selectRoom, roomDto);
+									BeanUtils.copyProperties(selectHotel, hotel);
+									selectRoom.setRoomCounts(appGoodsInfo.getCount());
+								} catch (Exception e) {
+									logger.error(e.getMessage(), e);
+								}
 							}
 						}
 					}
-    				hotels.add(selectHotelDto);
-    			}else{
-    				throw new ExceptionWrapper(FitExceptionCode.APP_GOODS_NO_MATCH, appGoodsInfo.getGoodsId());
-    			}
-    			shoppingDto.setHotels(hotels);
-    		}
+				}
+				List<HotelSearchPlanDto> planDtoList = new ArrayList<HotelSearchPlanDto>();
+				planDtoList.add(selectPlan);
+				selectRoom.setPlans(planDtoList);
+
+				List<HotelSearchRoomDto> roomDtoList = new ArrayList<HotelSearchRoomDto>();
+				roomDtoList.add(selectRoom);
+
+				selectHotel.setRooms(roomDtoList);
+    			shoppingDto.setSelectHotel(selectHotel);
+			}
     		//门票
     		else if(FitAppGoodsType.valueOf(entry.getKey())==FitAppGoodsType.TICKET){
     			List<FitShoppingSelectedTicketDto> selectTickets = new ArrayList<FitShoppingSelectedTicketDto>();
@@ -189,45 +193,27 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
     		//保险
     		else if(FitAppGoodsType.valueOf(entry.getKey())==FitAppGoodsType.INSURANCE){
     			List<FitShoppingSelectedInsuranceDto> selectInsurances = new ArrayList<FitShoppingSelectedInsuranceDto>();
-    			for(int i=0;entry.getValue()!=null && i<entry.getValue().size();i++){
+    			for(int i = 0; entry.getValue() != null && i<entry.getValue().size(); i++){
 					FitAppGoodsInfo appGoodsInfo = entry.getValue().get(i);
-					if(shoppingDto.getInsurances()!=null){
-						boolean flag = false;
-						for(int inx=0;inx<shoppingDto.getInsurances().size()&&(!flag);inx++){
-							InsuranceDto insurance = shoppingDto.getInsurances().get(inx);
-							if(insurance.getInsuranceProductList()!=null){
-								for(int j=0;j<insurance.getInsuranceProductList().size()&&(!flag);j++){
-									InsuranceProdProduct prodProduct = insurance.getInsuranceProductList().get(j);
-									if(prodProduct.getInsuranceProductBranchList()!=null){
-										for(InsuranceProdProductBranch productBranch :prodProduct.getInsuranceProductBranchList()){
-											if(productBranch.getInsuranceSuppGoodList()!=null){
-												for(InsuranceSuppGoods suppGoods :productBranch.getInsuranceSuppGoodList()){
-													if(appGoodsInfo.getGoodsId()!=null && appGoodsInfo.getGoodsId().equals(suppGoods.getSuppGoodsId())){
-														if(appGoodsInfo.getPrice().compareTo(new BigDecimal(suppGoods.getInsPrice().getPrice()))==0){
-															FitShoppingSelectedInsuranceDto selectInsurance = new FitShoppingSelectedInsuranceDto();
-															selectInsurance.setProductId(String.valueOf(insurance.getProductId()));
-															selectInsurance.setProductName(prodProduct.getProductName());
-															selectInsurance.setInsuranceCount(appGoodsInfo.getCount());
-															selectInsurance.setInsurancePrice(appGoodsInfo.getPrice());
-															selectInsurance.setSuppGoodsId(String.valueOf(suppGoods.getSuppGoodsId()));
-															selectInsurance.setBranchId(String.valueOf(suppGoods.getInsuranceGoodBranch().getBranchId()));
-															selectInsurance.setBranchName(suppGoods.getInsuranceGoodBranch().getBranchName());
-															selectInsurance.setSuppGoodsName(suppGoods.getGoodsName());
-															selectInsurances.add(selectInsurance);
-															flag = true;
-															break;
-														}else{
-															throw new ExceptionWrapper(FitExceptionCode.SDP_AMOUNT_NOT_MATCH, appGoodsInfo.getGoodsId(),
-																 appGoodsInfo.getPrice(),suppGoods.getSuppGoodsId(),suppGoods.getInsPrice());
-														}
-													}
-												}
-											}
-										}
-									}
-									
+					if(shoppingDto.getInsurances()!=null) {
+						for (InsuranceDto suppGoods : shoppingDto.getInsurances()) {
+							if(appGoodsInfo.getGoodsId()!=null && appGoodsInfo.getGoodsId().equals(String.valueOf(suppGoods.getSuppGoodsId()))){
+								if(appGoodsInfo.getPrice().floatValue() == suppGoods.getPrice().floatValue()) {
+									FitShoppingSelectedInsuranceDto selectInsurance = new FitShoppingSelectedInsuranceDto();
+									selectInsurance.setProductId(suppGoods.getProductId().toString());
+									selectInsurance.setProductName(suppGoods.getProductName());
+									selectInsurance.setInsuranceCount(appGoodsInfo.getCount());
+									selectInsurance.setInsurancePrice(appGoodsInfo.getPrice());
+									selectInsurance.setSuppGoodsId(String.valueOf(suppGoods.getSuppGoodsId()));
+									selectInsurance.setBranchId(String.valueOf(suppGoods.getBranchId()));
+									selectInsurance.setBranchName(suppGoods.getBranchName());
+									selectInsurance.setSuppGoodsName(suppGoods.getGoodsName());
+									selectInsurances.add(selectInsurance);
+									break;
+								} else {
+									throw new ExceptionWrapper(FitExceptionCode.SDP_AMOUNT_NOT_MATCH, appGoodsInfo.getGoodsId(),
+																 appGoodsInfo.getPrice(),suppGoods.getSuppGoodsId(),suppGoods.getPrice());
 								}
-								
 							}
 						}
 					}
@@ -283,6 +269,18 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 			if(entry.getValue()!=null){
 				FlightSearchFlightInfoDto flightDto = entry.getValue().getSearchFlightInfoDto();
 				if(flightDto!=null){
+					List<FlightSearchSeatDto> seats = new ArrayList<FlightSearchSeatDto>();
+					for (FlightSearchSeatDto seat : flightDto.getSeats()) {
+						if (entry.getValue().getSeatCode().equals(seat.getSeatClassCode())) {
+							seat.setSelectFlag(true);
+							seats.add(seat);
+							break;
+						}
+					}
+					flightDto.setSeats(seats);
+					if(seats.size()==0){
+						throw new ExceptionWrapper(FitExceptionCode.APP_FLIGHT_NO_MATCH,entry.getValue().getFlightNo());
+					}
 					if(TrafficTripeType.GO_WAY==TrafficTripeType.valueOf(entry.getKey())){
 						flightDto.setBackOrTo(FlightTripType.DEPARTURE.name());
 						if(selectFlightInfoDtos.size()>0){
@@ -305,7 +303,10 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 				throw new ExceptionWrapper(FitExceptionCode.APP_FLIGHT_NO_MATCH,entry.getValue().getFlightNo());
 			}
 		}
-		shoppingDto.setFlightInfos(selectFlightInfoDtos);
+		shoppingDto.setSelectToFlight(selectFlightInfoDtos.get(0));
+		if (selectFlightInfoDtos.size() == 2) {
+			shoppingDto.setSelectBackFlight(selectFlightInfoDtos.get(1));
+		}
 		
 		calculateAmountRequest.setFitShoppingDto(shoppingDto); 
 		calculateAmountRequest.setBookingSource(request.getBookingSource());

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.lvmama.lvf.common.form.Form;
 import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelSearchResult;
@@ -24,69 +25,40 @@ public class FitSearchResult implements Serializable,Form{
 	 */
 	private static final long serialVersionUID = 1813842723984560591L;
 	
-	//机票搜索结果
-	private List<FlightSearchResult<FlightSearchFlightInfoDto>> flightSearchResult;
-	
 	//区分去程和返程
-	private Map<String,List<FlightSearchFlightInfoDto>> distinctFlightMap = new HashMap<String,List<FlightSearchFlightInfoDto>>();
+	private Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> distinctFlightMap = new HashMap<String, FlightSearchResult<FlightSearchFlightInfoDto>>();
 	
 	//酒店搜索结果
-	private List<HotelSearchResult<HotelSearchHotelDto>> hotelSearchResult;
+	private HotelSearchResult<HotelSearchHotelDto> hotelSearchResult;
 	
 	//门票搜索结果
-	private List<SpotSearchResult<SpotSearchSpotDto>> spotSearchResult;
+	private List<SpotSearchSpotDto> spotSearchResult;
 	
 	//可用保险
-	private InsuranceSearchResult<InsuranceDto> insuranceResult;
+	private List<InsuranceDto> insuranceResult;
 	
 	//机票保险搜索结果
 	private List<InsuranceInfoDto> flightInsuranceResult;
 
-	//查询条件带回去
-	private FitSearchRequest searchRequest;
-	
-	//默认推荐酒店id
-	private String recomHotelId;
-	
-	public List<FlightSearchResult<FlightSearchFlightInfoDto>> getFlightSearchResult() {
-		return flightSearchResult;
-	}
-	public void setFlightSearchResult(
-			List<FlightSearchResult<FlightSearchFlightInfoDto>> flightSearchResult) {
-		this.flightSearchResult = flightSearchResult;
-	}
-	public List<HotelSearchResult<HotelSearchHotelDto>> getHotelSearchResult() {
+	public HotelSearchResult<HotelSearchHotelDto> getHotelSearchResult() {
 		return hotelSearchResult;
 	}
 	public void setHotelSearchResult(
-			List<HotelSearchResult<HotelSearchHotelDto>> hotelSearchResult) {
+			HotelSearchResult<HotelSearchHotelDto> hotelSearchResult) {
 		this.hotelSearchResult = hotelSearchResult;
 	}
-	public List<SpotSearchResult<SpotSearchSpotDto>> getSpotSearchResult() {
+	public List<SpotSearchSpotDto> getSpotSearchResult() {
 		return spotSearchResult;
 	}
 	public void setSpotSearchResult(
-			List<SpotSearchResult<SpotSearchSpotDto>> spotSearchResult) {
+			List<SpotSearchSpotDto> spotSearchResult) {
 		this.spotSearchResult = spotSearchResult;
 	}
-	public final InsuranceSearchResult<InsuranceDto> getInsuranceResult() {
+	public final List<InsuranceDto> getInsuranceResult() {
 		return insuranceResult;
 	}
-	public final void setInsuranceResult(InsuranceSearchResult<InsuranceDto> insuranceResult) {
+	public final void setInsuranceResult(List<InsuranceDto> insuranceResult) {
 		this.insuranceResult = insuranceResult;
-	}
-	public FitSearchRequest getSearchRequest() {
-		return searchRequest;
-	}
-	public void setSearchRequest(FitSearchRequest searchRequest) {
-		this.searchRequest = searchRequest;
-	}
-	public Map<String, List<FlightSearchFlightInfoDto>> getDistinctFlightMap() {
-		return distinctFlightMap;
-	}
-	public void setDistinctFlightMap(
-			Map<String, List<FlightSearchFlightInfoDto>> distinctFlightMap) {
-		this.distinctFlightMap = distinctFlightMap;
 	}
     public List<InsuranceInfoDto> getFlightInsuranceResult() {
         return flightInsuranceResult;
@@ -94,10 +66,13 @@ public class FitSearchResult implements Serializable,Form{
     public void setFlightInsuranceResult(List<InsuranceInfoDto> flightInsuranceResult) {
         this.flightInsuranceResult = flightInsuranceResult;
     }
-	public String getRecomHotelId() {
-		return recomHotelId;
+
+	public Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> getDistinctFlightMap() {
+		return distinctFlightMap;
 	}
-	public void setRecomHotelId(String recomHotelId) {
-		this.recomHotelId = recomHotelId;
+
+	public void setDistinctFlightMap(
+		Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> distinctFlightMap) {
+		this.distinctFlightMap = distinctFlightMap;
 	}
 }

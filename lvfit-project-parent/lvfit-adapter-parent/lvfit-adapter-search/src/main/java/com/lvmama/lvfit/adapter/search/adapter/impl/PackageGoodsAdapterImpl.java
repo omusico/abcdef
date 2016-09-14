@@ -438,6 +438,7 @@ public class PackageGoodsAdapterImpl implements PackageGoodsAdapter {
            		Long allBase = baseAdult+baseChild; 
             	 //公式：份数=选择总人数÷打包总人数 (规则1.打包总人数包括成人+儿童，2如有余数进1取整数)
 	            hotelCombo.setQuantity(new Double(Math.ceil(allIn.doubleValue()/allBase.doubleValue())).longValue());
+	            hotelCombo.setPrice(hotelCombo.getPrice().multiply(new BigDecimal(hotelCombo.getQuantity())));
             }
             hotelCombo.setPrice(hotelCombo.getPrice().multiply(new BigDecimal(hotelCombo.getQuantity())));
             hotelGoods.add(hotelCombo);

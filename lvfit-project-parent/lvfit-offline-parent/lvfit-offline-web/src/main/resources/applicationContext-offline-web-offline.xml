@@ -31,5 +31,6 @@
 	
 	<import resource="classpath*:applicationContext-offline-base-offline.xml"/>
 	<import resource="classpath*:applicationContext-offline-web-freemarker.xml"/>
+	<import resource="classpath*:applicationContext-cat.xml" />
 
 </beans>

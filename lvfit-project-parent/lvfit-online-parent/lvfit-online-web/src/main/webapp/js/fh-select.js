@@ -1,85 +1,61 @@
+var allCities = ['北京|beijing|bj|PEK', '上海|shanghai|sh|SHA', '重庆|chongqing|cq|CKG', '深圳|shenzhen|sz|SZX', '广州|guangzhou|gz|CAN', '杭州|hangzhou|hz|HGH',
+    '南京|nanjing|nj|NKG',  '天津|tianjin|tj|TSN', '成都|chengdu|cd|CTU', '南昌|nanchang|nc|KHN', '三亚|sanya|sy|SYX', '青岛|qingdao|qd|TAO','武汉|wuhan|wh|WUH',
+    '厦门|xiamen|xm|XMN', '西安|xian|xa|XIY', '长沙|changsha|cs|CSX', '合肥|hefei|hf|HFE', '安庆|anqing|aq|AQG', '安顺|anshun|as|AVA','阿勒泰|aletai|alt|AAT', '鞍山|anshan|as|AOG','阿里|ali|al|NGQ','阿尔山|aershan|aes|YIE',
+    '阿克苏|akesu|aks|AKU', '包头|baotou|bt|BAV', '北海|beihai|bh|BHY', '百色|baise|bs|AEB','巴彦淖尔|bayannaoer|byne|RLK', '保山|baoshan|bs|BSD', '毕节|bijie|bj|BFJ','博乐|bole|bl|BPL','长治|changzhi|cz|CIH', '长春|changchun|cc|CGQ', '常州|changzhou|cz|CZX', '昌都|changdu|cd|BPX',
+    '朝阳|chaoyang|cy|CHG', '常德|changde|cd|CGD', '长白山|changbaishan|cbs|NBS', '赤峰|chifeng|cf|CIF', '池州|chizhou|cz|JUH','大同|datong|dt|DAT', '大连|dalian|dl|DLC', '东营|dongying|dy|DOY', '迪庆|diqing|dq|DIG', '丹东|dandong|dd|DDG','达州|dazhou|dz|DAX','稻城|daocheng|dc|DCY',
+    '大理|dali|dl|DLU', '敦煌|dunhuang|dh|DNH', '鄂尔多斯|eerduosi|eeds|DSN', '恩施|enshi|es|ENH', '二连浩特|erlianhaote|elht|ERL','福州|fuzhou|fz|FOC', '阜阳|fuyang|fy|FUG', '佛山|foshan|fs|FUO','贵阳|guiyang|gy|KWE','赣州|ganzhou|gz|KOW',
+    '桂林|guilin|gl|KWL', '广元|guangyuan|gy|GYS', '格尔木|geermu|gem|GOQ','固原|guyuan|gy|GYU', '呼和浩特|huhehaote|hhht|HET', '哈密|hami|hm|HMI',
+    '黑河|heihe|hh|HEK', '海拉尔|hailaer|hle|HLD', '哈尔滨|haerbin|heb|HRB', '海口|haikou|hk|HAK', '黄山|huangshan|hs|TXN', '邯郸|handan|hd|HDG',
+    '汉中|hanzhong|hz|HZG', '和田|hetian|ht|HTN', '淮安|huaian|ha|HIA','怀化|huaihua|hh|HJJ','惠州|huizhou|hz|HUZ', '锦州|jinzhou|jz|JNZ', '景德镇|jingdezhen|jdz|JDZ',
+    '嘉峪关|jiayuguan|jyg|JGN', '鸡西|jixi|jx|JXA','加格达奇|jiaerdaqi|jedq|JGD','井冈山|jinggangshan|jgs|JGS','金昌|jinchang|jc|JIC', '济宁|jining|jn|JNG', '九江|jiujiang|jj|JIU','九寨沟|jiuzhaigou|jzg|JZH', '佳木斯|jiamusi|jms|JMU', '济南|jinan|jn|TNA','揭阳|jieyang|jy|SWA',
+    '喀什|kashi|ks|KHG', '昆明|kunming|km|KMG', '康定|kangding|kd|KGT', '凯里|kaili|kl|KJH','喀纳斯|kanasi|kns|KJI','克拉玛依|kelamayi|klmy|KRY', '库尔勒|kuerle|kel|KRL', '库车|kuche|kc|KCA', '兰州|lanzhou|lz|LHW',
+    '洛阳|luoyang|ly|LYA', '丽江|lijiang|lj|LJG', '荔波|libo|lb|LLB','吕梁|lvliang|ll|LLV','六盘水|liupanshui|lps|LPF','林芝|linzhi|lz|LZY', '柳州|liuzhou|lz|LZH', '泸州|luzhou|lz|LZO', '连云港|lianyungang|lyg|LYG', '黎平|liping|lp|HZH','龙岩|longyan|ly|LCX',
+    '拉萨|lasa|ls|LXA', '临沧|lincang|lc|LNJ', '临沂|linyi|ly|LYI', '芒市|mangshi|ms|LUM', '牡丹江|mudanjiang|mdj|MDG', '满洲里|manzhouli|mzl|NZH', '绵阳|mianyang|my|MIG',
+    '漠河|mohe|mh|OHE', '南充|nanchong|nc|NAO', '南宁|nanning|nn|NNG', '南阳|nanyang|ny|NNY', '南通|nantong|nt|NTG', '那拉提|nalati|nlt|NLT',
+    '宁波|ningbo|nb|NGB', '攀枝花|panzhihua|pzh|PZI','普洱|puer|pe|SYM', '衢州|quzhou|qz|JUZ','泉州|quanzhou|qz|JJN', '秦皇岛|qinhuangdao|qhd|SHP','日喀则|rikaze|rkz|RKZ','日照|rizhao|rz|RIZ', '庆阳|qingyang|qy|IQN', '齐齐哈尔|qiqihaer|qqhe|NDG',
+    '石家庄|shijiazhuang|sjz|SJW', '沈阳|shenyang|sy|SHE', '铜仁|tongren|tr|TEN', '塔城|tacheng|tc|TCG','唐山|tangshan|ts|TVS', '腾冲|tengchong|tc|TCZ', '台州|taizhou|tz|HYN',
+    '通辽|tongliao|tl|TGO','天水|tianshui|ts|THQ', '太原|taiyuan|ty|TYN', '威海|weihai|wh|WEH', '梧州|wuzhou|wz|WUZ', '文山|wenshan|ws|WNH', '无锡|wuxi|wx|WUX', '潍坊|weifang|wf|WEF', '武夷山|wuyishan|wys|WUS', '武陵山|wulinshan|wls|JIQ','乌兰浩特|wulanhaote|wlht|HLH',
+    '温州|wenzhou|wz|WNZ', '乌鲁木齐|wulumuqi|wlmq|URC', '万州|wanzhou|wz|WXN', '乌海|wuhai|wh|WUA', '兴义|xingyi|xy|ACX', '西昌|xichang|xc|XIC', '襄樊|xiangfan|xf|XFN',
+    '西宁|xining|xn|XNN', '锡林浩特|xilinhaote|xlht|XIL', '西双版纳|xishuangbanna|xsbn|JHG', '徐州|xuzhou|xz|XUZ', '义乌|yiwu|yw|YIW', '永州|yongzhou|yz|LLF', '榆林|yulin|yl|UYN', '延安|yanan|ya|ENY', '运城|yuncheng|yc|YCU',
+    '烟台|yantai|yt|YNT', '银川|yinchuan|yc|INC', '宜昌|yichang|yc|YIH', '宜春|yichun|yc|YIC','宜宾|yibin|yb|YBP', '盐城|yancheng|yc|YNZ','扬州|yangzhou|yz|YTY', '延吉|yanji|yj|YNJ', '玉树|yushu|ys|YUS', '伊宁|yining|yn|YIN', '珠海|zhuhai|zh|ZUH', '昭通|zhaotong|zt|ZAT',
+    '张家界|zhangjiajie|zjj|DYG','张家口|zhangjiakou|zjk|ZQZ','张掖|zhangye|zy|YZY', '舟山|zhoushan|zs|HSN', '郑州|zhengzhou|zz|CGO', '中卫|zhongwei|zw|ZHY','中山|zhongshan|zs|ZGN', '湛江|zhanjiang|zj|ZHA','遵义|zhunyi|zy|ZYI',
+    '阿拉善右旗|alashanyouqi|alsyq|RHT','阿拉善左旗|alashanzuoqi|alszq|AFX','安康|ankang|ak|AKA','长海|changhai|ch|CNI','德令哈|delingha|dlh|HXD','额济纳旗|ejinaqi|ejnq|EJN','抚远|fuyuan|fy|FYJ','富蕴|fuyun|fy|FYN','河池|hechi|hc|HCJ','衡阳|hengyang|hy|HNY','红原|hongyuan|hy|AHJ',
+    '花土沟|huatugou|htg|HTT','宁蒗|ninglang|nl|NLH','且末|qiemo|qm|IQM','三明|sanming|sm|SQJ','神农架|shennongjia|snj|HPG','通化|tonghua|th|TNH','吐鲁番|tulufan|tlf|TLQ','夏河|xiahe|xh|GXH','忻州|xinzhou|xz|WUT'
+];
+
 var _shoppingUUID = $("#shoppingUUID").val();
 
-$(function(){
+$(function() {
     var uuid = _shoppingUUID;
     var errorMsgOutTime = $("#errorMsgOutTime").val();
-    if(errorMsgOutTime!=''){
-        var searchCondition = window.localStorage.getItem('searchCondition');
-        if(searchCondition != null && searchCondition != ''){
-            var tripType = searchCondition.split('|')[0];
-            var departureCityCode = searchCondition.split('|')[1];
-            var arrivalCityCode = searchCondition.split('|')[2];
-            var cityCode = searchCondition.split('|')[3];
-            var flightStartDate = searchCondition.split('|')[4];
-            var flightEndDate = searchCondition.split('|')[5];
-            var hotelStartDate = searchCondition.split('|')[6];
-            var hotelEndDate = searchCondition.split('|')[7];
-            var adultsCount = searchCondition.split('|')[8];
-            var childCount = searchCondition.split('|')[9];
-            $("#tripType").val(tripType);
-            if(tripType == 'DC'){
-                $("#dcButton").trigger("click");
-            }else if(tripType == 'WF'){
-                $("#wfButton").trigger("click");
-            }
+    if(errorMsgOutTime!='') {
 
-            $("#departureCityCode").val(departureCityCode);
-            for(var i=0;i<allCities.length;i++){
-                if(allCities[i].indexOf(departureCityCode)!=-1){
-                    var deptCity=allCities[i].split("|")[0];
-                    $("#departureCityName").val(deptCity);
-                    break;
-                }
-            }
+        var tripType = $("#tripType").val();
+        var departureCityCode = $("#departureCityCode").val();
+        var arrivalCityCode = $("#arrivalCityCode").val();
+        var cityCode = $("#cityCode").val();
+        var flightStartDate = $("#flightStartDate").val();
+        var flightEndDate = $("#flightEndDate").val();
+        var hotelStartDate = $("#hotelStartDate").val();
+        var hotelEndDate = $("#hotelEndDate").val();
+        var adultsCount = $("#adultsCount").val();
+        var childCount = $("#childCount").val();
 
-            $("#arrivalCityCode").val(arrivalCityCode);
-            for(var i=0;i<allCities.length;i++){
-                if(allCities[i].indexOf(arrivalCityCode)!=-1){
-                    var arrvCity=allCities[i].split("|")[0];
-                    $("#arrivalCityName").val(arrvCity);
-                    break;
-                }
-            }
-
-            $("#cityCode").val(cityCode);
-            for(var i=0;i<allCities.length;i++){
-                if(allCities[i].indexOf(cityCode)!=-1){
-                    var hotelCity=allCities[i].split("|")[0];
-                    $("#hotelCityName").val(hotelCity);
-                    break;
-                }
-            }
-            $("#flightStartDate").val(flightStartDate);
-            var flightGoDayWeek = getDayOfWeek(flightStartDate);
-            $("#flightStartDayOfWeek").text(flightGoDayWeek);
-
-            $("#flightEndDate").val(flightEndDate);
-            var flightBackDayWeek = getDayOfWeek(flightEndDate);
-            $("#flightEndDayOfWeek").text(flightBackDayWeek);
-
-            $("#hotelStartDate").val(hotelStartDate);
-            var hotelGoDayWeek = getDayOfWeek(hotelStartDate);
-            $("#hotelStartDayOfWeek").text(hotelGoDayWeek);
-
-            $("#hotelEndDate").val(hotelEndDate);
-            var hotelBackDayWeek = getDayOfWeek(hotelEndDate);
-            $("#hotelEndDayOfWeek").text(hotelBackDayWeek);
-            $("#adultsCount").val(adultsCount);
-            $("#adultCountSpan").text(adultsCount);
-
-            $("#childCount").val(childCount);
-            $("#childCountSpan").text(childCount);
-        }
         $(".returnAlert").show();
         $('.resortOverlay').stop(true,true).show();
         $("#errorMsg").html(errorMsgOutTime);
         var reloadUrl = baseUrl+"/search/"+uuid+"?tripType="+tripType+"&departureCityCode="+departureCityCode+"&arrivalCityCode="+arrivalCityCode+"&departureTime="+flightStartDate+"&returnTime="+flightEndDate+"&cityCode="+cityCode+"&checkInTime="+hotelStartDate+"&checkOutTime="+hotelEndDate+"&adultsCount="+adultsCount+"&childCount="+childCount;
         $('#reloadUrl').val(reloadUrl);
     }
-
 });
 
-
+function writeSearchRecord(){
+    var searchCondition = $("#tripType").val()+"|"+$("#departureCityCode").val()+"|"+$("#arrivalCityCode").val()+"|"+$("#cityCode").val()+"|"+$("#flightStartDate").val()+"|"+$("#flightEndDate").val()+"|"+$("#hotelStartDate").val()+"|"+$("#hotelEndDate").val()+"|"+$("#adultsCount").val()+"|"+$("#childCount").val();
+    if(window.localStorage){
+        //console.log('记录搜索条件='+searchCondition);
+        window.localStorage.setItem('searchCondition',searchCondition);
+    }
+}
 
 
 $(function(){
@@ -184,122 +160,44 @@ $(function(){
     });
 });
 
-//搜索
-$(".fh-search-btn").on("click", function(e) {
+
+$(".select-class").live("click", function(e) {
     var event = e || window.event;
-    //IE用cancelBubble=true来阻止而FF下需要用stopPropagation方法
     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-    if (validateFhInput()) {
-        // TODO
-        var form = $('#search_form');
-        form.submit();
-    }
+
+    var left = $(this).offset().left;
+    var top = $(this).offset().top + $(this).offsetHeight;
+    $(this).siblings(".select-class-list").css("left", left).css("top", top).show();
 });
 
 //更换舱位
-$(".select-class-list li").on("click", function(e) {
+$(".select-class-list li").live("click", function(e) {
     var event = e || window.event;
     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-    // TODO 更换舱位后的操作
-    var $this = $(this);
-    var $parent = $(this).parent();
-    $this.addClass('active').siblings().removeClass('active');
-    $parent.siblings(".select-class").find("em").html($this.find(".scl-class").html());
 
-    if($this.find(".scl-remain").html()==null){
-
-        $parent.siblings(".flight-ticket-amount").attr("style","display: none;");
-
-    }else{
-
-        $parent.siblings(".flight-ticket-amount").attr("style","");
-
-    }
-    $parent.siblings(".flight-ticket-amount").html($this.find(".scl-remain").html());
-
-    $parent.siblings(".select-class").find("em").attr("code",$this.find(".scl-class").attr("code"));
-    $parent.siblings(".select-class").find("em").val($this.find(".scl-class").val());
-    $parent.hide();
-
-    var adaultPrice=$(this).attr("adaultPrice");//当前的成人价格
-    var childPrice=$(this).attr("childPrice");//当前的小孩价格
-    var adaultCount=$("#adultsCount").val();//成人数
-    var childCount =$("#childCount").val(); //儿童数
-    var price=parseFloat(adaultPrice)*adaultCount+parseFloat(childPrice)*childCount;
-    for(var i=0;i<$(this).parent().find("li").length;i++){
-        var adaultPriceI=$(this).parent().find("li").eq(i).attr("adaultPrice");
-        var childPriceI=$(this).parent().find("li").eq(i).attr("childPrice");
-        var baseAmount = $(this).parent().find("li").eq(i).attr("baseAmount");
-        var priceI=parseFloat(adaultPriceI)*adaultCount+parseFloat(childPriceI)*childCount;//当前选中地价格
-        var qq=priceI-baseAmount;
-        if(qq<0){
-            qq=qq*-1;
-            $(this).parent().find("li").eq(i).find(".scl-diff").html("-<i class='price-rmb'>&yen</i>"+qq);
-        }else{
-            $(this).parent().find("li").eq(i).find(".scl-diff").html("+<i class='price-rmb'>&yen</i>"+qq);
-        }
-    }
-    var code = $(this).parents(".flight-detail").find("em").attr("code");
-    var policyid = $(this).children().eq(1).attr("policyid");
-    var flightNo = $(this).parents(".flight-detail").find("em").attr("flightNo");
-    var shoppingUUID = _shoppingUUID;
-    var flightType = $(this).parents(".flight-detail").find("em").attr("flightType");;
+    var shoppingUUID = $("#shoppingUUID").val();
+    var flightNo = $(this).data("flightno");
+    var seatCode = $(this).data("code");
+    var flightType = $(this).data("type");
     $.ajax({
         type: "post",
-        async: true,
-        dataType: "json",
-        url:baseUrl+"/shopping/changeflight",
+        url: baseUrl + "/shopping/changeSeat",
         data: {
-            shoppingUUID:shoppingUUID,
-            flightNo:flightNo,
-            seatCode:code,
-            policyId:policyid,
-            flightType:flightType
+            shoppingUUID : shoppingUUID,
+            flightNo: flightNo,
+            seatCode: seatCode,
+            flightType: flightType
         },
-        success: function(obj) {
-            var url = baseUrl+"/search/backToShopping?shoppingUUID="+shoppingUUID;
-            window.location.href=url;
-        },
-        error:function(obj)
-        {
-            $(".returnAlert").show();
-            $('.resortOverlay').stop(true,true).show();
-            $("#errorMsg").html(eval('(' + obj.responseText + ')').message);
+        success: function(data) {
+            if (flightType === "DEPARTURE") {
+                $("#to_flightInfo").html(data);
+            }
+            if (flightType === "RETURN") {
+                $("#back_flightInfo").html(data);
+            }
         }
     });
 });
-
-function roomSelected(productId,branchId,suppGoodsId){
-    var roomCount = $("#"+productId+branchId+suppGoodsId+"").text();
-    var shoppingUUID = _shoppingUUID;
-    $.ajax({
-        type: "post",
-        async: false,
-        dataType: "json",
-        url: baseUrl+"/shopping/changehotel",
-        data:
-        {
-            shoppingUUID:shoppingUUID,
-            hotelId:productId,
-            roomId:branchId,
-            planId:suppGoodsId,
-            roomCount:roomCount
-        },
-        success: function(obj) {
-            if(obj.isSuccess){
-                var url = baseUrl+"/search/backToShopping?shoppingUUID="+shoppingUUID;
-                window.location.href=url;
-                //initAjax();
-            }
-        },
-        error:function(obj)
-        {
-            $(".returnAlert").show();
-            $('.resortOverlay').stop(true,true).show();
-            $("#errorMsg").html(eval('(' + obj.responseText + ')').message);
-        }
-    });
-};
 
 function initAjax(){
     if(!$(".fh-no-result").length){
@@ -330,60 +228,36 @@ function initAjax(){
     }
 };
 
-$(".xuanze").die().live("click",function(e){
-    $(".selectedBtn").html("选择");
-    $(".selectedBtn").attr("class","btn btn-small btn-orange xuanze");
-    var productId = $(this).attr('productId');
-    var branchId  = $(this).attr('branchId');
-    var suppGoodsId=$(this).attr('suppGoodsId');
+$(".xuanze").die().live("click",function() {
+    var $dd = $(this).parents("dd");
+    var productId = $dd.data('productid');
+    var branchId  = $dd.data('branchid');
+    var suppGoodsId = $dd.data('goodsid');
+    var roomCount = $dd.siblings(".roomTable-td4").find(".select-div span").text();
 
-    e.target.className="selectedBtn";
-    e.target.innerHTML="已选"+"<span class='ph_icon ph_icon_selected'></span>";
-    //差价计算
-    roomSelected(productId,branchId,suppGoodsId);
+    $.ajax({
+        type: "post",
+        url: baseUrl + "/shopping/changePlan",
+        data: {
+            shoppingUUID: _shoppingUUID,
+            hotelId: productId,
+            roomId: branchId,
+            planId: suppGoodsId,
+            roomCount: Number(roomCount)
+        },
+        success: function(data) {
+            $("#hotelInfo").html(data);
+            $(".JS_showAllRoom").bind("click", showAllRoom);
+        },
+        error:function(obj) {
+            $(".returnAlert").show();
+            $('.resortOverlay').stop(true,true).show();
+            $("#errorMsg").html(eval('(' + obj.responseText + ')').message);
+        }
+    });
 });
 
-//更换房间数  (改为不联动)
-function changeRoomNum(){
-    // 更换房间数
-    $(".select-div-list li").on("click", function(e) {
-        var event = e || window.event;
-        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-        var roomNum = $(this).data("num");//房间数
-        var $selectList = $(this).parent();
-        var baseAmount=$("#baseAmount").val();//酒店基准价
-        var goodsId = $(this).parent().parent().find("span").attr("id");
-
-        //console.info("roomNum="+roomNum+";baseAmount="+baseAmount);
-        //只变相同商品的房间数
-        $("span[id="+goodsId+"]").html(roomNum);
-        $selectList.hide();
-
-        var priceDiffDiv = $("dd[name='priceDiff"+goodsId+"']");
-        var selectButton = priceDiffDiv.parent().find(".roomTable-td6");
-        var settlementPrice = $(selectButton).find("a").attr("settlementPrice");
-        var priceDiff = (settlementPrice*roomNum)-baseAmount;
-        //console.info("settlementPrice="+settlementPrice+";priceDiff="+priceDiff);
-        //改价格
-        var priceDiffHtml = "";
-        if(priceDiff >= 0){
-            priceDiffHtml += "+&yen;<dfn class='f14 pl2 bold'>"+priceDiff+"</dfn>";
-        }else{
-            priceDiffHtml += "-&yen;<dfn class='f14 pl2 bold'>"+Math.abs(priceDiff)+"</dfn>";
-        }
-        $(priceDiffDiv).html(priceDiffHtml);
-
-        //把已选按钮改成选择
-        if($(".roomTable-td6").find("a").hasClass("selectedBtn")){
-            $(".roomTable-td6").find("a").removeClass("selectedBtn").addClass("btn btn-small btn-orange xuanze");
-            $(".roomTable-td6").find("a").html("选择");
-        }
-
-    });
-}
-
 $('.fh-return-btn').click(function(){
-    var shoppingUUID = _shoppingUUID;
     $('.returnAlert').stop(true,true).fadeOut();
     $('.resortOverlay').stop(true,true).fadeOut();
     $('body').removeAttr('style');
@@ -401,9 +275,7 @@ $('.ph_icon_closeAlert').click(function(){
 })
 
 //加载可选择房间数
-$(function(){
-    // 更换房间数
-    changeRoomNum();
+$(function() {
     initTicket();
     initInsurance();
     // 如果为单程，返程日期disable
@@ -779,12 +651,6 @@ var initProduct = function() {
             handleInsuranceResult(data);
             handleFlightInsuranceResult(data);
             hideProductPriceListIfNotExist();
-        },
-        error:function(data)
-        {
-            $(".returnAlert").show();
-            $('.resortOverlay').stop(true,true).show();
-            $("#errorMsg").html(eval('(' + data.responseText + ')').message);
         }
     });
 }
@@ -903,8 +769,7 @@ var calProductPrice = function() {
         success: function(data) {
             productPrice = data;
         },
-        error:function(data)
-        {
+        error:function(data) {
             $(".returnAlert").show();
             $('.resortOverlay').stop(true,true).show();
             $("#errorMsg").html(eval('(' + data.responseText + ')').message);
@@ -1067,59 +932,18 @@ function openCoustomerDialog()
     });
 }
 
-$("#toChangeFlightBtn").click(function() {
-    $.ajax({
-        type: "post",
-        async: true,
-        dataType: "json",
-        url: baseUrl+"/search/flight/check/recordBookingLogNoLogin?shopingUUID="+_shoppingUUID,
-        success: function(data){
-            if(data.isSuccess=='SUCCESS'){
-                var url = baseUrl+"/search/flight/"+_shoppingUUID+"/to/true/ALL/ALL/ALL/ALL/ALL/false/true/asc?pageType=select";
-                window.location.href=url;
-            }else{
-                $(".returnAlert").show();
-                $('.resortOverlay').stop(true,true).show();
-                $("#errorMsg").html(data.errMessage);
-            }
-        }
-    });
+$(".fh-change-btn").live("click", function() {
+    var shoppingUuid = $("#shoppingUUID").val();
+    
+    var flightTripType = $(this).data("type");
+    var url = baseUrl + "/search/flightList?shoppingUUID=" + shoppingUuid + "&flightType=" + flightTripType;
+    window.location.href = url;
 });
-$("#backChangeFlightBtn").click(function() {
-    $.ajax({
-        type: "post",
-        async: true,
-        dataType: "json",
-        url: baseUrl+"/search/flight/check/recordBookingLogNoLogin?shopingUUID="+_shoppingUUID,
-        success: function(data){
-            if(data.isSuccess=='SUCCESS'){
-                var url = baseUrl+"/search/flight/"+_shoppingUUID+"/back/true/ALL/ALL/ALL/ALL/ALL/false/true/asc?pageType=select";
-                window.location.href=url;
-            }else{
-                $(".returnAlert").show();
-                $('.resortOverlay').stop(true,true).show();
-                $("#errorMsg").html(data.errMessage);
-            }
-        }
-    });
-});
-$("#changeHotelBtn").click(function() {
-    $.ajax({
-        type: "post",
-        async: true,
-        dataType: "json",
-        url: baseUrl+"/search/hotel/check/recordBookingLogNoLogin?shopingUUID="+_shoppingUUID,
-        success: function(data){
-            if(data.isSuccess=='SUCCESS'){
-                var url = baseUrl+"/search/hotels/"+_shoppingUUID+"/ALL/ALL/ALL/ALL/ALL/1?pageType=select";
-                window.location.href=url;
-            }else{
-                $(".returnAlert").show();
-                $('.resortOverlay').stop(true,true).show();
-                $("#errorMsg").html(data.errMessage);
-            }
-        }
-    });
+
+$("#changeHotelBtn").live("click", function() {
+    var shoppingUuid = $("#shoppingUUID").val();
+    var url = baseUrl+"/search/hotelList/"+ shoppingUuid;
+    window.location.href = url;
 });
 
 /**
@@ -1139,3 +963,178 @@ function getDayOfWeek(date){
     var dayArray = ["星期天","星期一","星期二","星期三","星期四","星期五","星期六"];
     return dayArray[day];
 }
+
+$(".JS_select_city").click(function() {
+    $(this).select();
+    $(".complete-wrap,.des_error_tips").hide();
+});
+$(document).bind("click", function($element) {
+    $(".complete-wrap,.roundTrip ,.liveDepart").hide();
+    $(".backTracking,.checkOut").removeClass("fh-city-error");
+});
+$("input").bind("click", function($element) {
+    $(".roundTrip ,.liveDepart").hide();
+    $(".backTracking,.checkOut").removeClass("fh-city-error");
+});
+// 搜索
+$(".fh-search-btn").live("click", function(e) {
+    var event = e || window.event;
+    //IE用cancelBubble=true来阻止而FF下需要用stopPropagation方法
+    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    $('.city_mdd_depa,.city_mdd_dest,.city_mdd_hotel').hide();
+    if (validateFhInput()) {
+        var selectDepa=$(".select_depa").val().replace(/ /g, "");
+        var selectDest=$(".select_dest").val().replace(/ /g, "");
+        var selectHotel=$(".select-hotel").val().replace(/ /g, "");
+        for(var i=0;i<allCities.length;i++){
+            if(allCities[i].indexOf(selectDepa)!=-1){
+                selectDepa=allCities[i].split("|")[3];
+                $(".h_select_depa").val(selectDepa);
+            }
+            if(allCities[i].indexOf(selectDest)!=-1){
+                selectDest=allCities[i].split("|")[3];
+                $(".h_select_dest").val(selectDest)
+            }
+            if(allCities[i].indexOf(selectHotel)!=-1){
+                selectHotel=allCities[i].split("|")[3];
+                $(".h_select_hotel").val(selectHotel)
+            }
+        }
+        $("#myForm").submit();
+    }else{
+        return false;
+    }
+    writeSearchRecord();
+});
+
+
+function validateFhInput() {
+    // 判断输入是否为空
+    if (!validateRequire()) {
+        return false
+    }
+
+    var allCitie=[];
+    var allCitieStr = "";
+    for(var i=0;i<allCities.length;i++){
+        allCitie.push(allCities[i].split("|")[0]);
+        allCitieStr = allCitieStr + ","+allCities[i].split("|")[0];
+    }
+    // 判断出发城市是否存在
+    if (allCitieStr.indexOf($("#departureCityName").val().replace(/ /g, ""))==-1) {
+        if($(".selectPage").length!=0){
+            showInvalidCityError($(".JS_select_depa"),{
+                "top":87,
+                "left":67
+            });
+        }else{
+            showInvalidCityError($(".JS_select_depa"),{
+                "top":139,
+                "left":60
+            });
+        }
+        return false;
+    }
+    // 判断目的地城市是否存在
+    if (allCitieStr.indexOf($("#arrivalCityName").val().replace(/ /g, ""))==-1) {
+        if($(".selectPage").length!=0){
+            showInvalidCityError($(".JS_select_dest"),{
+                "top":132,
+                "left":67
+            });
+        }else{
+            showInvalidCityError($(".JS_select_dest"),{
+                "top":185,
+                "left":60
+            });
+        }
+
+        return false;
+    }
+    // 判断入住城市是否存在
+    if (allCitieStr.indexOf($("#hotelCityName").val().replace(/ /g, ""))==-1) {
+        if($(".selectPage").length!=0){
+            showInvalidCityError($(".select-hotel"),{
+                "top":87,
+                "left":560
+            });
+        }else{
+            showInvalidCityError($(".select-hotel"),{
+                "top":230,
+                "left":60
+            });
+        }
+
+        return false;
+    }
+    // 判断出发地城市和目的地城市是否相同
+    if ($("#departureCityName").val().replace(/ /g, "") === $("#arrivalCityName").val().replace(/ /g, "")) {
+        if($(".selectPage").length!=0){
+            showSameCityError($(".JS_select_dest"),{
+                "top":132,
+                "left":67
+            });
+        }else{
+            showSameCityError($(".JS_select_dest"),{
+                "top":185,
+                "left":60
+            });
+        }
+        return false;
+    }
+    return true;
+}
+
+function validateRequire() {
+    var $cityInput = $(".input-city");
+    var $cityMdd = $(".city_mdd");
+    $cityMdd.hide();
+    $cityInput.removeClass("fh-city-error");
+    for (var i = 0; i < $cityInput.length; i++) {
+        var $thisCityInput = $cityInput.eq(i);
+        if ($thisCityInput.val() === "" || $thisCityInput.val()=== $thisCityInput.attr("placeholder")) {
+            $thisCityInput.addClass("fh-city-error");
+            if (!$cityMdd.is(":visible")) {
+                $thisCityInput.click();
+            }
+            return false;
+        }
+    }
+    return true;
+}
+
+function showAllRoom () {
+    var $this = $(this);
+    var text = $this.html();
+    var $thisList = $this.parents(".listMain");
+    var $openRoom = $thisList.find('.room-content .open');
+    var $diff = $thisList.find(".roomHead .roomTable-td5");
+    if ($openRoom.length) {
+        $openRoom.find('.roomName').click();
+    }
+    if ($this.children('.arrow').length) {
+        $diff.show();
+        $thisList.find(".room-content").show();
+        $thisList.find(".romLi-more dl").show();
+        $this.html(text.replace('展开', '收起').replace('arrow', 'arrow_up'));
+    } else {
+        $diff.hide();
+        $thisList.find(".room-content:gt(0)").hide();
+        var $rooms = $thisList.find(".romLi-more");
+        $rooms.each(function(index, ele) {
+            $(ele).find('dl:gt(0)').hide();
+        });
+        $this.html(text.replace('收起', '展开').replace('arrow_up', 'arrow'));
+    }
+}
+
+$(".select-div-list li").live("click", function () {
+    var $selectSpan = $(this).parents(".select-div-list").siblings(".select-div").find("span");
+    var num = $(this).data("num");
+    var curNum = Number( $selectSpan.text() );
+
+    if (num !== curNum) {
+        $selectSpan.text(num);
+        $(this).parents(".roomTable-td4").siblings(".roomTable-td6").html("<a href=\"javascript:void(0);\" class=\"btn btn-small btn-orange xuanze\">选择</a>");
+    }
+});

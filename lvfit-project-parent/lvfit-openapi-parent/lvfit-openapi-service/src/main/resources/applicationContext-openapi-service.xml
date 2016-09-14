@@ -32,5 +32,5 @@
 	</bean>
 
 	<import resource="classpath*:applicationContext-openapi-service-app.xml" />
-
+	<import resource="classpath*:applicationContext-cat.xml" />
 </beans>

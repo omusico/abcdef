@@ -16,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +55,7 @@ public class VstInsuranceResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(SearchClientPath.Path.INSURANCE_INFO_SEARCH)
 	public Response getVstProductDetail(InsuranceQueryRequest request) {
-		try {
-			InsuranceSearchResult<InsuranceDto> result = insuranceSearchAdapter.searchInsurance(request);
-			return Response.ok(result).build();
-		} catch (Exception e) {
-			logger.error("保险相关信息查询失败-------", e);
-		}
-		return null;
+		return Response.ok(insuranceSearchAdapter.searchInsurance(request)).build();
 	}
 	
 }

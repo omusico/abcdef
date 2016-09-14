@@ -3,9 +3,7 @@ package com.lvmama.lvfit.openapi.app.search;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.exception.FitExceptionCode;
-import com.lvmama.lvf.common.task.Task;
-import com.lvmama.lvf.common.task.TaskContext;
-import com.lvmama.lvf.common.task.TaskMainGroup;
+import com.lvmama.lvf.common.utils.BeanUtils;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvfit.common.client.FitAggregateClient;
@@ -16,29 +14,17 @@ import com.lvmama.lvfit.common.dto.app.FitAppGoodsDto;
 import com.lvmama.lvfit.common.dto.app.FitAppHotelRequest;
 import com.lvmama.lvfit.common.dto.app.FitAppInsuranceDto;
 import com.lvmama.lvfit.common.dto.app.FitAppSearchRequest;
-import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.FlightTripType;
 import com.lvmama.lvfit.common.dto.enums.TripeType;
 import com.lvmama.lvfit.common.dto.enums.VSTDistrictCityEnum;
-import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
-import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchResult;
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
-import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelSearchResult;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
-import com.lvmama.lvfit.common.dto.search.insurance.InsuranceQueryRequest;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceDto;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProduct;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProductBranch;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceSuppGoods;
-import com.lvmama.lvfit.common.dto.search.spot.SpotQueryRequest;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
-import com.lvmama.lvfit.common.utils.HotelUtils;
-import com.thoughtworks.xstream.converters.basic.UUIDConverter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -46,12 +32,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -80,7 +65,7 @@ public class FitAppDpSearchServiceImpl implements FitAppDpSearchService {
     @Override
     public FitAppGoodsDto searchGoodsInfo(FitAppSearchRequest request) {
         this.validateSearchRequest(request);
-        FitSearchRequest fitSearchRequest = this.genRequestParam(request);
+        FitBaseSearchRequest fitSearchRequest = this.genRequestParam(request);
         FitShoppingDto shoppingResult = fitDpClient.getShoppingResult(fitSearchRequest);
         return convertToAppGoods(shoppingResult);
     }
@@ -100,8 +85,8 @@ public class FitAppDpSearchServiceImpl implements FitAppDpSearchService {
         }
         fitAppGoodsDto.setSearchFlightInfoDtoMap(flightMap);
         // 酒店信息
-        if (CollectionUtils.isNotEmpty(shoppingDto.getHotels())) {
-            fitAppGoodsDto.setSearchHotelDto(shoppingDto.getHotels().get(0));
+        if (shoppingDto.getHotels() != null && CollectionUtils.isNotEmpty(shoppingDto.getHotels().getResults())) {
+            fitAppGoodsDto.setSearchHotelDto(shoppingDto.getHotels().getResults().get(0));
         }
         // 门票信息
         fitAppGoodsDto.setSpotDtos(shoppingDto.getSpots());
@@ -111,20 +96,16 @@ public class FitAppDpSearchServiceImpl implements FitAppDpSearchService {
             List<FitAppInsuranceDto> appInsurances = new ArrayList<FitAppInsuranceDto>();
             for (InsuranceDto insurance : insurances) {
                 FitAppInsuranceDto appInsDto = new FitAppInsuranceDto();
-                for (InsuranceProdProduct insuranceProduct : insurance.getInsuranceProductList()) {
-                    appInsDto.setProductId(insuranceProduct.getProductId());
-                    appInsDto.setProductType(insuranceProduct.getInsuranceType().toString());
-                    appInsDto.setProductName(insuranceProduct.getProductName());
-                    for (InsuranceProdProductBranch branch : insuranceProduct.getInsuranceProductBranchList()) {
-                        appInsDto.setBranchId(branch.getProductBranchId());
-                        appInsDto.setBranchName(branch.getBranchName());
-                        for (InsuranceSuppGoods suppGoods : branch.getInsuranceSuppGoodList()) {
-                            appInsDto.setSuppGoodsId(suppGoods.getSuppGoodsId().toString());
-                            appInsDto.setSuppGoodsName(suppGoods.getGoodsName());
-                            appInsDto.setInsuranceDetail(suppGoods.getInsuranceGoodBranch().getInsuranceDesc());
-                        }
-                    }
-                }
+                appInsDto.setProductId(insurance.getProductId());
+                appInsDto.setProductType(insurance.getProductType());
+                appInsDto.setProductName(insurance.getProductName());
+                appInsDto.setBranchId(insurance.getProductBranchId());
+                appInsDto.setBranchName(insurance.getBranchName());
+                appInsDto.setSuppGoodsId(insurance.getSuppGoodsId().toString());
+                appInsDto.setSuppGoodsName(insurance.getGoodsName());
+                appInsDto.setInsuranceDetail(insurance.getBranchDesc());
+                appInsDto.setPrice(insurance.getPrice());
+
                 appInsurances.add(appInsDto);
             }
             fitAppGoodsDto.setInsuranceDtos(appInsurances);
@@ -135,70 +116,17 @@ public class FitAppDpSearchServiceImpl implements FitAppDpSearchService {
         return fitAppGoodsDto;
     }
 
-    private FitSearchRequest genRequestParam(FitAppSearchRequest request) {
-
-        FitSearchRequest fitSearchRequest = new FitSearchRequest();
-        fitSearchRequest.setShoppingId(request.getShoppingUuid());
-        fitSearchRequest.setTripType(request.getTripType());
-        /** 构造机票请求参数 */
-
-        List<FlightQueryRequest> flightSearchRequests = new ArrayList<FlightQueryRequest>();
-        flightSearchRequests.add(genFlightSearchRequest(request, FlightTripType.DEPARTURE));
-        if (request.getTripType().equals(TripeType.WF.name())) {
-            flightSearchRequests.add(genFlightSearchRequest(request, FlightTripType.RETURN));
+    private FitBaseSearchRequest genRequestParam(FitAppSearchRequest request) {
+        FitBaseSearchRequest searchRequest = new FitBaseSearchRequest();
+        try {
+            BeanUtils.copyProperties(searchRequest, request);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
-        fitSearchRequest.setFlightSearchRequests(flightSearchRequests);
 
-        /** 构造酒店请求参数 */
-        HotelQueryRequest hotelQueryRequest = new HotelQueryRequest();
-        VSTDistrictCityEnum checkInCity = VSTDistrictCityEnum.valueOf(request.getCityCode());
-        hotelQueryRequest.setCityDistrictId(String.valueOf(checkInCity.getDistrictId()));
-        hotelQueryRequest.setCityCode(request.getCityCode());
-        hotelQueryRequest.setCityName(checkInCity.getCnName());
-        hotelQueryRequest.setDepartureDate(request.getCheckInTime());
-        hotelQueryRequest.setReturnDate(request.getCheckOutTime());
-        hotelQueryRequest.setHotelFromRecommendedOnly(getHotelFromRecommended());
-        hotelQueryRequest.setAdultCount(request.getAdultsCount());
-
-        List<HotelQueryRequest> hotelSearchRequests = new ArrayList<HotelQueryRequest>();
-        hotelSearchRequests.add(hotelQueryRequest);
-        /** 构造乘客信息 */
-        FitPassengerRequest passengerRequest = new FitPassengerRequest();
-        passengerRequest.setAdultCount(request.getAdultsCount());
-        passengerRequest.setChildCount(request.getChildCount());
-        fitSearchRequest.setHotelSearchRequests(hotelSearchRequests);
-        fitSearchRequest.setFitPassengerRequest(passengerRequest);
-
-        /** 景点门票参数封装 */
-        SpotQueryRequest spotQueryRequest = new SpotQueryRequest();
-        String cityCode = hotelQueryRequest.getCityCode();
-        Long districtId = VSTDistrictCityEnum.getDestId(cityCode);
-
-        spotQueryRequest.setDestinationId(districtId.toString());
-        spotQueryRequest.setVisitorNum(passengerRequest.getAdultCount()+passengerRequest.getChildCount());
-        //景点的游玩日期为入驻日期的后一天
-        Date startDate = DateUtils.parseDate(hotelQueryRequest.getDepartureDate());
-        spotQueryRequest.setStartDate(DateUtils.getDateAfterDateDays(startDate, 1));
-        spotQueryRequest.setEndDate(DateUtils.parseDate(hotelQueryRequest.getReturnDate()));
-        List<SpotQueryRequest> spotQueryRequests = new ArrayList<SpotQueryRequest>();
-        spotQueryRequests.add(spotQueryRequest);
-        fitSearchRequest.setSpotQueryRequests(spotQueryRequests);
-
-        /** 保险参数封装 **/
-        InsuranceQueryRequest insuranceQueryRequest = new InsuranceQueryRequest();
-        insuranceQueryRequest.setCurrentProductId(636165L);
-        insuranceQueryRequest.setDistributorId(3L);
-        if (TripeType.WF.name().equals(request.getTripType())) {
-            int insuranceDays = DateUtils.getDateDiffByDay(DateUtils.parseDate(request.getReturnTime()), DateUtils.parseDate(request.getDepartureTime())) + 1;
-            insuranceQueryRequest.setInsuranceDays((long)insuranceDays);
-        } else { //单程的被保天数
-            insuranceQueryRequest.setInsuranceDays(1L);
-        }
-        insuranceQueryRequest.setVistorDate(DateUtils.parseDate(request.getDepartureTime()));
-        insuranceQueryRequest.setPersonNum(passengerRequest.getAdultCount() + passengerRequest.getChildCount());
-        fitSearchRequest.setInsuranceQueryRequest(insuranceQueryRequest);
-
-        return fitSearchRequest;
+        return searchRequest;
     }
 
     private FlightQueryRequest genFlightSearchRequest(FitAppSearchRequest request, FlightTripType flightTripType) {

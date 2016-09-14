@@ -46,17 +46,6 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 	
 	@Override
-	public FitSearchRequest getFitSearchRequest(String shoppingUUID) {
-		
-		CacheBox box = MemcachedUtil.getInstance().get(shoppingUUID);
-		if(null==box){
-			return null;
-		}
-		FitShoppingDto shoppingDto =  CacheBoxConvert.ShoppingDtoResult.convertTo(box.getJson());
-		return shoppingDto.getSearchRequest();
-	}
-	
-	@Override
 	public FitShoppingDto getFitShopping(String shoppingUUID) {
 		
 		CacheBox box = MemcachedUtil.getInstance().get(shoppingUUID);
@@ -189,52 +178,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	@Override
 	public FitShoppingDto changedFlight(ChangeFlightRequest request){
-		
-		FitShoppingDto shoppingDto =  getFitShopping(request.getShoppingUUID());
-		if(null == shoppingDto){
-			throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
-		}
-		
-		List<FlightSearchFlightInfoDto> infos =  null;
-		try{
-			infos =  getFlightSearchResult(request.getShoppingUUID())
-					.getFlightSearchResult().get(0).getResults();
-		}catch(Exception ex){
-		}
-		
-		FlightSearchFlightInfoDto changedFlightDto = getSelected(request,infos);
-		
-		if(null==changedFlightDto){
-			changedFlightDto=getSelected(request,shoppingDto.sameSegment(request.getFlightNo()));
-		}
-		
-		if(null==changedFlightDto){
-			return shoppingDto;
-		}
-		
-		shoppingDto.changeFlight(changedFlightDto);
-		infos = shoppingDto.getFlightInfos();
-		//更仓位后，重新设置机票基准价 
-		FitSearchRequest searchRequest = shoppingDto.getSearchRequest();
-		FitPassengerRequest fitPassengerRequest = searchRequest.getFitPassengerRequest();
-		int adultCount = fitPassengerRequest.getAdultCount();
-		int childCount = fitPassengerRequest.getChildCount();
-		BigDecimal toFlightBasePrice = new BigDecimal(0);
-    	BigDecimal backFlightBasePrice = new BigDecimal(0);
-    	FlightSearchFlightInfoDto flightSearchFlightInfoDto = new FlightSearchFlightInfoDto();
-    	if("to".equalsIgnoreCase(request.getFlightType())){
-    		flightSearchFlightInfoDto = infos.get(0);
-    		toFlightBasePrice = this.getNewBasePrice(flightSearchFlightInfoDto,adultCount,childCount);
-    		shoppingDto.setToFlightBasePrice(toFlightBasePrice);
-    	}else{
-    		flightSearchFlightInfoDto = infos.get(1);
-    		backFlightBasePrice = this.getNewBasePrice(flightSearchFlightInfoDto,adultCount,childCount);
-    		shoppingDto.setBackFlightBasePrice(backFlightBasePrice);
-    	}
-    	
-		
-		putShoppingCache(request.getShoppingUUID(),shoppingDto);
-		return shoppingDto;
+		return null;
 	}
 
 	/**
@@ -271,21 +215,12 @@ public class ShoppingServiceImpl implements ShoppingService {
 		HotelSearchHotelDto changedHotelDto = this.getSelected(request,infos);
 		
 		if(null==changedHotelDto){
-			changedHotelDto=this.getSelected(request,shoppingDto.getHotels());
+			changedHotelDto=this.getSelected(request,shoppingDto.getHotels().getResults());
 		}
 		
 		if(null==changedHotelDto){
 			return shoppingDto;
 		}
-		
-		shoppingDto.changeHotel(changedHotelDto);
-		
-		//设置新的酒店基准价，用来前台计算差价
-		BigDecimal hotelBasePrice = BigDecimal.valueOf(0);
-		hotelBasePrice = this.getBaseHotelPrice(changedHotelDto,request);
-		shoppingDto.setHotelBasePrice(hotelBasePrice);
-		
-		this.putShoppingCache(request.getShoppingUUID(),shoppingDto);
 		
 		return shoppingDto;
 		

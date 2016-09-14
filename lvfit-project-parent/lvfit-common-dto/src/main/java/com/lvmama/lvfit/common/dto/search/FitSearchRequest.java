@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
+import com.lvmama.lvfit.common.dto.request.FlightBackQueryRequest;
+import com.lvmama.lvfit.common.dto.request.FlightToQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.insurance.InsuranceQueryRequest;
@@ -17,22 +19,20 @@ public class FitSearchRequest implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 5388774510727443668L;
-	// 机票搜索条件列表
-	private List<FlightQueryRequest> flightSearchRequests = new ArrayList<FlightQueryRequest>();
+	// 去程机票请求
+	private FlightToQueryRequest flightToQueryRequest;
+	// 返程机票请求
+	private FlightBackQueryRequest flightBackQueryRequest;
 	// 酒店搜索条件列表
-	private List<HotelQueryRequest> hotelSearchRequests = new ArrayList<HotelQueryRequest>();
+	private HotelQueryRequest hotelSearchRequests;
 	//景点搜索条件列表
-	private List<SpotQueryRequest> spotQueryRequests = new ArrayList<SpotQueryRequest>();
+	private SpotQueryRequest spotQueryRequests;
 	//保险搜索条件列表
 	private InsuranceQueryRequest insuranceQueryRequest ;
 	// 人数
 	private FitPassengerRequest fitPassengerRequest;
 	// 来源
 	private BookingSource bookingSource = BookingSource.DEFAULT;
-	
-	
-	//标识去程返程,此字段用于标识航班是去程还是返程，当为to是，为去程，为back时，为返程
-	private String backOrto;
 	
 	//shoppingId
 	private String shoppingId;
@@ -53,25 +53,34 @@ public class FitSearchRequest implements Serializable{
 	public static String createUUID(){
 		return UUID.randomUUID().toString().replace("-","");
 	}
-	
-	public List<FlightQueryRequest> getFlightSearchRequests() {
-		return flightSearchRequests;
+
+	public FlightToQueryRequest getFlightToQueryRequest() {
+		return flightToQueryRequest;
 	}
-	public void setFlightSearchRequests(
-			List<FlightQueryRequest> flightSearchRequests) {
-		this.flightSearchRequests = flightSearchRequests;
+
+	public void setFlightToQueryRequest(FlightToQueryRequest flightToQueryRequest) {
+		this.flightToQueryRequest = flightToQueryRequest;
 	}
-	public List<HotelQueryRequest> getHotelSearchRequests() {
+
+	public FlightBackQueryRequest getFlightBackQueryRequest() {
+		return flightBackQueryRequest;
+	}
+
+	public void setFlightBackQueryRequest(FlightBackQueryRequest flightBackQueryRequest) {
+		this.flightBackQueryRequest = flightBackQueryRequest;
+	}
+
+	public HotelQueryRequest getHotelSearchRequests() {
 		return hotelSearchRequests;
 	}
-	public void setHotelSearchRequests(List<HotelQueryRequest> hotelSearchRequests) {
+	public void setHotelSearchRequests(HotelQueryRequest hotelSearchRequests) {
 		this.hotelSearchRequests = hotelSearchRequests;
 	}
-	public List<SpotQueryRequest> getSpotQueryRequests() {
+	public SpotQueryRequest getSpotQueryRequests() {
 		return spotQueryRequests;
 	}
 
-	public void setSpotQueryRequests(List<SpotQueryRequest> spotQueryRequests) {
+	public void setSpotQueryRequests(SpotQueryRequest spotQueryRequests) {
 		this.spotQueryRequests = spotQueryRequests;
 	}
 
@@ -101,12 +110,6 @@ public class FitSearchRequest implements Serializable{
 	}
 	public void setShoppingId(String shoppingId) {
 		this.shoppingId = shoppingId;
-	}
-	public String getBackOrto() {
-		return backOrto;
-	}
-	public void setBackOrto(String backOrto) {
-		this.backOrto = backOrto;
 	}
 	public String getArrivalCityName() {
 		return arrivalCityName;

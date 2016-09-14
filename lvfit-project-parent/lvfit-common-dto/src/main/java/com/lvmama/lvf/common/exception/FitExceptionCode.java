@@ -56,4 +56,8 @@ public class FitExceptionCode extends  ExceptionCode{
     public final static ExceptionCode FIT_PERSON_PARAM_ERROR_2 = new ExceptionCode("FIT_PERSON_PARAM_ERROR_2", "每个成人最多携带2个儿童！");
     public final static ExceptionCode FIT_NO_FLIGHT_RESULT = new ExceptionCode("FIT_NO_FLIGHT_RESULT", "未搜索到相应的航班！出发日期日期[%s],出发城市[%s],到达城市[%s]");
     public final static ExceptionCode FIT_NO_HOTEL_RESULT = new ExceptionCode("FIT_NO_FLIGHT_RESULT", "未搜索到相应的酒店信息");
+    
+    /********************************************************顾客信息ExceptionCode*************************************************************************/
+    public final static ExceptionCode FIT_PASSENGER_NOT_FOUND = new ExceptionCode("FIT_PASSENGER_NOT_FOUND", "顾客信息为空禁止下单！");
+    public final static ExceptionCode FIT_PASSENGER_NOT_FULL = new ExceptionCode("FIT_PASSENGER_NOT_FULL", "顾客信息不全,请检查该顾客所有填写信息！");
 }

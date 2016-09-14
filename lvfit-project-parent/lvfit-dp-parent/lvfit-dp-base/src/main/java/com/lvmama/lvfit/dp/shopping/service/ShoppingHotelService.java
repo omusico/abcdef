@@ -11,7 +11,10 @@ package com.lvmama.lvfit.dp.shopping.service;
 
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvfit.common.dto.request.ChangeHotelRequest;
+import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
+
+import java.util.List;
 
 /**
  * ClassName:ShoppingController <br/>
@@ -34,10 +37,5 @@ public interface ShoppingHotelService{
 	 * @return
 	 * @since JDK 1.6
 	 */
-	public BaseSingleResultDto<FitShoppingDto> changeHotel(ChangeHotelRequest request);
-	
-	
-	
-	
-
+	List<HotelSearchHotelDto> changeHotel(ChangeHotelRequest request);
 }

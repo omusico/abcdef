@@ -47,6 +47,9 @@ public class FitSuppMainOrderDto extends Entity {
 	/** 航意险信息 */
 	private List<FlightOrderInsuranceDto> flightInsDtos = new ArrayList<FlightOrderInsuranceDto>();
 
+	/** (真往返)子单关联信息 */
+	private List<FitSuppFlightOrderDto> suppFlightOrderDtos = new ArrayList<FitSuppFlightOrderDto>();
+
 	public Long getFitMainOrderId() {
 		return fitMainOrderId;
 	}
@@ -145,4 +148,11 @@ public class FitSuppMainOrderDto extends Entity {
         this.flightInsDtos = flightInsDtos;
     }
 
+	public List<FitSuppFlightOrderDto> getSuppFlightOrderDtos() {
+		return suppFlightOrderDtos;
+	}
+
+	public void setSuppFlightOrderDtos(List<FitSuppFlightOrderDto> suppFlightOrderDtos) {
+		this.suppFlightOrderDtos = suppFlightOrderDtos;
+	}
 }

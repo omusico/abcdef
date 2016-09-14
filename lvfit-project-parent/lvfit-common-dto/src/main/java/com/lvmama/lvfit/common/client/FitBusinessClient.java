@@ -35,25 +35,15 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 import com.lvmama.lvfit.common.dto.shopping.ShoppingDbDto;
 import com.lvmama.lvfit.common.dto.shopping.ShoppingDetailDto;
+import com.lvmama.lvfit.common.form.booking.BookingInputForm;
 import com.lvmama.lvfit.common.form.order.FitOrderOpLogForm;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 业务接口远程调用类
@@ -156,6 +146,24 @@ public class FitBusinessClient {
 			throw ew;
 		}
 	}
+	
+	public ResultStatus validatePassengers(FitOrderBookingRequest fitOrderBookingRequest){
+		
+		BussinessClientPath command = BussinessClientPath.VALIDATE_PASSENGERS;
+		String url = command.url(baseUrl);
+		try{
+			return restClient.post(url, ResultStatus.class, fitOrderBookingRequest);
+		} catch (ExceptionWrapper ew) {
+			throw ew;
+		} catch (Exception e) {
+			ExceptionWrapper ew = new ExceptionWrapper();
+			ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+			logger.error(ew.getErrMessage(), ew);
+			throw ew;
+		}
+	}
+	
 	
 	public ShoppingDbDto loadShoppingDbInfoByUuId(String shoppingUuId){
 		BussinessClientPath command = BussinessClientPath.GETDP_SHOPPING;
@@ -678,6 +686,26 @@ public class FitBusinessClient {
        }
  	}
    
+   
+   public FitSdpCityGroupDto getProductCityGroupById(Long id){
+		
+	   BussinessClientPath command = BussinessClientPath.GET_SDP_PRODUCT_CITY_GROUP_BY_ID;
+       String url = command.url(baseUrl, id);
+       try {
+           String jsonResult = restClient.get(url, String.class);
+           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<FitSdpCityGroupDto>(){});
+       } catch (ExceptionWrapper ew) {
+           logger.error(ew.getErrMessage(), ew);
+           throw ew;
+       } catch (Exception e) {
+           ExceptionWrapper ew = new ExceptionWrapper();
+           ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+           ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+           logger.error(ew.getErrMessage(), ew);
+           throw ew;
+       }
+ 	}
+   
    public List<FitSdpCityGroupDto> getSelectProductCityGroupByProductId(Long productId){
 		
 	   BussinessClientPath command = BussinessClientPath.GET_SDP_PRODUCT_SELECT_CITY_GROUP_BY_PRODUCT_ID;
@@ -723,6 +751,24 @@ public class FitBusinessClient {
 		String url = command.url(baseUrl);
 		try{
 			return restClient.post(url, ResultStatus.class, fitSdpCityGroupDtos);
+		} catch (ExceptionWrapper ew) {
+			logger.error(ew.getErrMessage(), ew);
+			throw ew;
+		}catch (Exception e) {
+	           ExceptionWrapper ew = new ExceptionWrapper();
+	           ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+	           ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+	           logger.error(ew.getErrMessage(), ew);
+	           throw ew;
+	    }
+	}
+   
+   public ResultStatus updateOneCityGroup(FitSdpCityGroupDto fitSdpCityGroupDto){
+	   
+	    BussinessClientPath command = BussinessClientPath.UPDATE_ONE_CITY_GROUP;
+		String url = command.url(baseUrl);
+		try{
+			return restClient.post(url, ResultStatus.class, fitSdpCityGroupDto);
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);
 			throw ew;
@@ -916,6 +962,53 @@ public class FitBusinessClient {
 	    try {
 	           String jsonResult = restClient.post(url, String.class);
 	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSynMsg>>(){});
+	    }
+		catch (ExceptionWrapper ew) 
+		{
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} 
+		catch (Exception e) 
+		{
+			ExceptionWrapper ew = new ExceptionWrapper();
+	        ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+	        ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+	        logger.error(ew.getErrMessage(), ew);
+	        throw ew;
+		}
+	}
+
+	public BaseResultDto<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(
+			Long productId) {
+		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_INDEX_TRAFFIC;
+		String url = command.url(baseUrl, productId);
+	    try {
+	           String jsonResult = restClient.post(url, String.class);
+	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSearchIndexTraffic>>(){});
+	    }
+		catch (ExceptionWrapper ew) 
+		{
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} 
+		catch (Exception e) 
+		{
+			ExceptionWrapper ew = new ExceptionWrapper();
+	        ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+	        ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+	        logger.error(ew.getErrMessage(), ew);
+	        throw ew;
+		}
+	}
+
+	public BaseResultDto<FitSdpCityGroupDto> querySdpProductDepartureCityList(BaseQueryDto<FitSdpCityGroupDto> baseQuery) {
+		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_DEPART_CITY;
+		String url = command.url(baseUrl);
+	    try {
+	    	ObjectMapper objectMapper = JSONMapper.getInstance();
+	    	String jsonRequest = objectMapper.writeValueAsString(baseQuery);
+			String jsonResult = restClient.post(url, String.class, jsonRequest);
+			return objectMapper.readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpCityGroupDto>>() {});
 	    }
 		catch (ExceptionWrapper ew) 
 		{

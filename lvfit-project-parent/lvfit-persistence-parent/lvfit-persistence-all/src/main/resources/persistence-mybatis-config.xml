@@ -10,9 +10,13 @@
 
     <plugins>
         <plugin interceptor="com.lvmama.lvf.common.domain.mybatis.interceptor.FkIdsInterceptor"/>
+        <!-- plugin interceptor="com.lvmama.cat.interceptor.CatMybatisPlugins"/> -->
     </plugins>
     
     <mappers>
         <mapper resource="com/lvmama/lvfit/persistence/mybatis/oracle/OraclePagination.xml"/>
     </mappers>
+
+
+
 </configuration>

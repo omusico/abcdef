@@ -49,6 +49,16 @@ public class FitBookingResource {
 	}
 	
 	/**
+	 * 校验乘客信息是否正确填写
+	 */
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.VALIDATE_PASSENGERS)
+	public Response validatePassengers(FitOrderBookingRequest fitOrderBookingRequest) {
+		return Response.ok(fitBookingService.validatePassengers(fitOrderBookingRequest)).build();
+	}
+	/**
 	 * VST侧回调机票下单
 	 * @param vstOrderNoMap
 	 * @return

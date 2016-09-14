@@ -1,6 +1,8 @@
 package com.lvmama.lvfit.adapter.search.adapter.impl;
 
 
+import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
+import com.lvmama.vst.api.vo.prod.GoodsBaseVo;
+import com.lvmama.vst.api.vo.prod.ProdProductPropBaseVo;
+import com.lvmama.vst.api.vo.prod.ProductBaseVo;
+import com.lvmama.vst.api.vo.prod.ProductBranchBaseVo;
+import com.lvmama.vst.back.goods.po.SuppGoodsBaseTimePrice;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -49,7 +57,7 @@ public class InsuranceSearchAdapterImpl implements InsuranceSearchAdapter {
 	private FitLoggerHandler fitLoggerHandler;
 
 	@Override
-	public InsuranceSearchResult<InsuranceDto> searchInsurance(InsuranceQueryRequest insuranceQueryRequest) {
+	public List<InsuranceDto> searchInsurance(InsuranceQueryRequest insuranceQueryRequest) {
 		
 		/** 产品ID  **/
 		Long currentProductId = insuranceQueryRequest.getCurrentProductId();
@@ -74,80 +82,26 @@ public class InsuranceSearchAdapterImpl implements InsuranceSearchAdapter {
 			fitLoggerHandler.addFitLog(RequestResponse.RS.toString(), InterfaceKey.SearchInsuranceInfoFromVst.name(), returnObj, StringUtils.EMPTY, gid);
 		}
 		
-		if(resultHandle != null && resultHandle.getReturnContent() != null){
-			List<InsuranceDto> result = this.getInsuranceList(resultHandle.getReturnContent());
+		if(CollectionUtils.isNotEmpty(resultHandle.getReturnContent())) {
+			List<InsuranceDto> insuranceList = this.getInsuranceList(resultHandle.getReturnContent().get(0).getInsSuppGoodsList(), insuranceQueryRequest.getPersonNum());
 			try {
-				logger.info("调用保险返回结果:insuranceList="+JSONMapper.getInstance().writeValueAsString(result));
+				logger.info("调用保险返回结果:insuranceList="+JSONMapper.getInstance().writeValueAsString(insuranceList));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			//过滤保险数据
-			result = this.handleResult(result,insuranceQueryRequest);
-			if(null != result && result.size() > 0){
-				InsuranceSearchResult<InsuranceDto> temp = new InsuranceSearchResult<InsuranceDto>();
-				temp.setResults(result);
-				return temp;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * 过滤保险数据
-	 * @param result
-	 * @param insuranceQueryRequest
-	 */
-	private List<InsuranceDto> handleResult(List<InsuranceDto> result,InsuranceQueryRequest insuranceQueryRequest) {
-		List<InsuranceDto> newResult = new ArrayList<InsuranceDto>();
-		if(CollectionUtils.isNotEmpty(result)){
-			for (InsuranceDto insuranceDto : result) {
-				if(CollectionUtils.isNotEmpty(insuranceDto.getInsuranceProductList())){
-					List<InsuranceProdProduct> newProductList = new ArrayList<InsuranceProdProduct>();
-					for (InsuranceProdProduct insuranceProdProduct : insuranceDto.getInsuranceProductList()) {
-						if(CollectionUtils.isNotEmpty(insuranceProdProduct.getInsuranceProductBranchList())){
-							List<InsuranceProdProductBranch> newBranchList = new ArrayList<InsuranceProdProductBranch>();
-							for (InsuranceProdProductBranch insuranceProdProductBranch : insuranceProdProduct.getInsuranceProductBranchList()) {
-								if(CollectionUtils.isNotEmpty(insuranceProdProductBranch.getInsuranceSuppGoodList())){
-									List<InsuranceSuppGoods> newGoodsList = new ArrayList<InsuranceSuppGoods>();
-									for (InsuranceSuppGoods suppgoods : insuranceProdProductBranch.getInsuranceSuppGoodList()) {
-										Boolean isSalse = isGoodsSaleAble(suppgoods,insuranceQueryRequest);
-										if(isSalse){
-											newGoodsList.add(suppgoods);
-										}
-									}
-									if(CollectionUtils.isNotEmpty(newGoodsList)){
-										insuranceProdProductBranch.setInsuranceSuppGoodList(newGoodsList);
-										newBranchList.add(insuranceProdProductBranch);
-									}
-								}
-							}
-							if(CollectionUtils.isNotEmpty(newBranchList)){
-								insuranceProdProduct.setInsuranceProductBranchList(newBranchList);
-								newProductList.add(insuranceProdProduct);
-							}
-						}
-					}
-					if(CollectionUtils.isNotEmpty(newProductList)){
-						insuranceDto.setInsuranceProductList(newProductList);
-						newResult.add(insuranceDto);
-					}
-				}
-			}
-			return newResult;
+			return insuranceList;
 		}
 		return null;
 	}
 
 	/**
 	 * 是否可售
-	 * @param suppgoods
-	 * @param insuranceQueryRequest 
 	 * @return
 	 */
-	private Boolean isGoodsSaleAble(InsuranceSuppGoods suppgoods, InsuranceQueryRequest insuranceQueryRequest) {
+	private Boolean isGoodsSaleAble(SuppGoods suppgoods, int count) {
 		
 		//6. 只保留人保的保险 供应商id11502
-		if(!String.valueOf(suppgoods.getSupplierId()).equals("11052")){
+		if(!String.valueOf(suppgoods.getSupplierId()).equals("11052")) {
 			return Boolean.FALSE;
 		}
 		//1. 可售性
@@ -159,158 +113,54 @@ public class InsuranceSearchAdapterImpl implements InsuranceSearchAdapter {
 			return Boolean.FALSE;
 		}
 		//3. 最小购买量(小于最小)
-		if(null == suppgoods.getMinQuantity()||insuranceQueryRequest.getPersonNum()<suppgoods.getMinQuantity()){
+		if(null == suppgoods.getMinQuantity() || count < suppgoods.getMinQuantity()){
 			return Boolean.FALSE;
 		}
 		//4. 最大购买量(大于最大)
-		if(null == suppgoods.getMaxQuantity()||insuranceQueryRequest.getPersonNum()>suppgoods.getMaxQuantity()){
+		if(null == suppgoods.getMaxQuantity() || count > suppgoods.getMaxQuantity()){
 			return Boolean.FALSE;
 		}
 		//5. 提前预定时间(保险那边的人已经过滤了)
 		return Boolean.TRUE;
 	}
 
-	private List<InsuranceDto> getInsuranceList(List<SuppGoodsSaleRe> inSuranceGoodsList) {
-		List<InsuranceDto> result = new ArrayList<InsuranceDto>();
-		if(CollectionUtils.isNotEmpty(inSuranceGoodsList)){
-			for(SuppGoodsSaleRe invo :inSuranceGoodsList){
-				InsuranceDto insProductDto = new InsuranceDto();
-				insProductDto.setProductId(invo.getProductId());
-				insProductDto.setReBranchId(invo.getReBranchId());
-				insProductDto.setReType(invo.getReType());
-			    insProductDto.setInsuranceProductList(getInsProductList(invo.getInsSuppGoodsList()));
-				result.add(insProductDto);
-			} 
-		}
-		return result;
-	}
-	
-	/**
-	 *  得到产品列表
-	 * @author wanghuihui
-	 * @date:2016年3月30日 下午4:03:35
-	 * @param insSuppGoodsList
-	 * @return
-	 */
-	private List<InsuranceProdProduct> getInsProductList(List<SuppGoods> insSuppGoodsList) {
-		//List<SuppGoods> insSuppGoodsList = vstSuppGoods.getInsSuppGoodsList();
-		if(null == insSuppGoodsList || insSuppGoodsList.size() == 0){
-			return null;
-		}
-		
-		List<InsuranceProdProduct> insProductList = new ArrayList<InsuranceProdProduct>();
-		Set<Long> productSet = new HashSet<Long>();
-		for(SuppGoods suppGood : insSuppGoodsList){
-			Long productId = suppGood.getProductId();
-			ProdProduct prodProduct = suppGood.getProdProduct();
-			if(productSet.contains(productId)){
-				for(InsuranceProdProduct insuranceProdProduct : insProductList){
-					Long id = insuranceProdProduct.getProductId();
-					if(productId.equals(id)){
-						updateProductBranchGood(suppGood,insuranceProdProduct.getInsuranceProductBranchList());
-					}
-				}
-			}else{
-				InsuranceProdProduct insProduc = new InsuranceProdProduct();
-				BeanUtils.copyProperties(prodProduct,insProduc);
-				insProduc.setInsuranceProductBranchList(getInsProductBranchList(suppGood,prodProduct.getProdProductBranchList()));
-				insProductList.add(insProduc);
-			}
-			productSet.add(productId);
-		}
-		
-		return insProductList;
-	}
-	
-	/**
-	 *  已经存在的 产品 的规格更新
-	 * @author wanghuihui
-	 * @date:2016年3月30日 下午6:56:57
-	 * @param suppGood
-	 * @param insuranceProductBranchList
-	 */
-	private void updateProductBranchGood(SuppGoods suppGood,
-			List<InsuranceProdProductBranch> insuranceProductBranchList) {
-		for(InsuranceProdProductBranch branch : insuranceProductBranchList){
-			if(suppGood.getProductBranchId().equals(branch.getProductBranchId())){
-				List<InsuranceSuppGoods> insSuppGoods = branch.getInsuranceSuppGoodList();
-				if(null == insSuppGoods){
-					insSuppGoods = new ArrayList<InsuranceSuppGoods>();
-				}
-				completeInsSuppGoodsList(suppGood,branch,insSuppGoods);
-			}
-			
-		}
-	}
+	private List<InsuranceDto> getInsuranceList(List<SuppGoods> suppGoodsList, int count) {
+		List<InsuranceDto> insurances = new ArrayList<InsuranceDto>();
 
-	/**
-	 *  得到产品规格 list
-	 * @author wanghuihui
-	 * @date:2016年3月30日 下午4:44:27
-	 * @param suppGood
-	 * @param prodProductBranchList
-	 * @return
-	 */
-	private List<InsuranceProdProductBranch> getInsProductBranchList(
-			SuppGoods suppGood,List<ProdProductBranch> prodProductBranchList) {
-		if(null == prodProductBranchList || prodProductBranchList.size() == 0){
-			return null;
-		}
-		
-		List<InsuranceProdProductBranch> insuranceProdProductBranchList = new ArrayList<InsuranceProdProductBranch>();
-		for(ProdProductBranch prodProductBranch : prodProductBranchList){
-			InsuranceProdProductBranch result = new InsuranceProdProductBranch();
-			BeanUtils.copyProperties(prodProductBranch,result);
-			if(prodProductBranch.getProductBranchId().equals(suppGood.getProductBranchId())){
-				List<InsuranceSuppGoods> suppGoodsDtoList = new ArrayList<InsuranceSuppGoods>();
-				result.setInsuranceSuppGoodList(completeInsSuppGoodsList(suppGood,result,suppGoodsDtoList));
+		for (SuppGoods suppGoods : suppGoodsList) {
+			if (!isGoodsSaleAble(suppGoods, count)) {
+				continue;
 			}
-			insuranceProdProductBranchList.add(result);
-		}
-		return insuranceProdProductBranchList;
-	}
+			ProdProduct prodProduct = suppGoods.getProdProduct();
 
-	/**
-	 *  更新 商品列表信息 
-	 * @author wanghuihui
-	 * @param insSuppGoods 
-	 * @param suppGoods 
-	 * @date:2016年3月30日 下午3:12:50
-	 * @param result || null 
-	 * @return
-	 */
-	private List<InsuranceSuppGoods> completeInsSuppGoodsList(SuppGoods suppGood, InsuranceProdProductBranch insBranch, List<InsuranceSuppGoods> suppGoodsDtoList) {
-		if(null == insBranch || null == suppGood){
-			return null;
+			InsuranceDto insurance = new InsuranceDto();
+			insurance.setProductId(prodProduct.getProductId());
+			insurance.setProductName(prodProduct.getProductName());
+			insurance.setGoodsName(suppGoods.getGoodsName());
+			insurance.setSuppGoodsId(suppGoods.getSuppGoodsId());
+			insurance.setMinQuantity(suppGoods.getMinQuantity());
+			insurance.setMaxQuantity(suppGoods.getMaxQuantity());
+
+			ProdProductBranch prodProductBranch = suppGoods.getProdProductBranch();
+			insurance.setBranchId(prodProductBranch.getBranchId());
+			insurance.setBranchName(prodProductBranch.getBranchName());
+			if (prodProductBranch.getPropValue() != null
+				&& prodProductBranch.getPropValue().get("branch_desc") != null) {
+				insurance.setBranchDesc(prodProductBranch.getPropValue().get("branch_desc").toString());
+			}
+
+			SuppGoodsNotimeTimePrice timePrice = (SuppGoodsNotimeTimePrice) suppGoods.getSuppGoodsBaseTimePrice();
+
+			insurance.setPrice(BigDecimal.valueOf(timePrice.getPriceYuan()));
+			// 产品推荐级别
+			insurance.setProRecommendLvl(prodProduct.getRecommendLevel().intValue());
+			// 商品推荐级别
+			insurance.setBranchRecommendLvl(prodProductBranch.getRecommendLevel().intValue());
+			// 产品类型
+			insurance.setProductType(prodProduct.getProductType());
+
+			insurances.add(insurance);
 		}
-		
-		InsuranceSuppGoods suppGoodDto = new InsuranceSuppGoods();
-		suppGoodDto.setContractId(suppGood.getContractId());
-		suppGoodDto.setProductBranchId(suppGood.getProductBranchId());
-		suppGoodDto.setProductId(suppGood.getProductId());
-		suppGoodDto.setSuppGoodsId(suppGood.getSuppGoodsId());
-		suppGoodDto.setSupplierId(suppGood.getSupplierId());
-		suppGoodDto.setGoodsName(suppGood.getGoodsName());
-		suppGoodDto.setCancelFlag(suppGood.getCancelFlag());
-		suppGoodDto.setOnlineFlag(suppGood.getOnlineFlag());
-		suppGoodDto.setMaxQuantity(suppGood.getMaxQuantity());
-		suppGoodDto.setMinQuantity(suppGood.getMinQuantity());
-		
-		if(null != suppGood.getProdProductBranch()){
-			InsuranceProdProductBranch branchDto = new InsuranceProdProductBranch();
-			BeanUtils.copyProperties(suppGood.getProdProductBranch(),branchDto);
-			suppGoodDto.setInsuranceGoodBranch(branchDto);
-		}
-		
-		if(null != suppGood.getSuppGoodsBaseTimePrice()){
-			SuppGoodsNotimeTimePrice insTimePrice = (SuppGoodsNotimeTimePrice) suppGood.getSuppGoodsBaseTimePrice();
-			InsurancePriceDto noTimePrice = new InsurancePriceDto();
-			BeanUtils.copyProperties(insTimePrice, noTimePrice);
-			suppGoodDto.setInsPrice(noTimePrice);
-		}
-		suppGoodsDtoList.add(suppGoodDto);
-		insBranch.setInsuranceSuppGoodList(suppGoodsDtoList);
-		return suppGoodsDtoList;
+		return insurances;
 	}
-	
 }

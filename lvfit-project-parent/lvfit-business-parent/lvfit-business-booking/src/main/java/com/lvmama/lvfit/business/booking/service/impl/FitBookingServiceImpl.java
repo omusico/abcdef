@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +14,14 @@ import org.springframework.stereotype.Service;
 
 import com.lvmama.lvf.common.dto.BusinessType;
 import com.lvmama.lvf.common.dto.OperType;
+import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvf.common.event.Event;
 import com.lvmama.lvf.common.event.EventPoint;
+import com.lvmama.lvf.common.exception.ExceptionWrapper;
+import com.lvmama.lvf.common.exception.FitExceptionCode;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
+import com.lvmama.lvf.common.utils.StringUtil;
 import com.lvmama.lvfit.business.booking.service.FitBookingService;
 import com.lvmama.lvfit.business.order.domain.FitOrderMain;
 import com.lvmama.lvfit.business.order.domain.repository.FitOrderBasicInfoRepository;
@@ -34,8 +39,10 @@ import com.lvmama.lvfit.business.order.domain.repository.FitOrderRepository;
 import com.lvmama.lvfit.business.order.domain.repository.FitOrderRoomDiffRepository;
 import com.lvmama.lvfit.business.order.domain.repository.FitOrderSpotTicketRepository;
 import com.lvmama.lvfit.business.order.domain.repository.FitOrderStatusRepository;
+import com.lvmama.lvfit.common.dto.enums.IDCardType;
 import com.lvmama.lvfit.common.dto.enums.OrderOpType;
 import com.lvmama.lvfit.common.dto.enums.OrderType;
+import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.enums.Product;
 import com.lvmama.lvfit.common.dto.order.FitOrderBasicInfoDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderDto;
@@ -56,6 +63,7 @@ import com.lvmama.lvfit.common.dto.order.FitOrderStatusDto;
 import com.lvmama.lvfit.common.dto.request.FitOrderBookingRequest;
 import com.lvmama.lvfit.common.dto.shopping.FlightInsuranceDto;
 import com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus;
+import com.lvmama.lvfit.common.form.booking.BookingInputForm;
 import com.lvmama.lvfit.common.utils.FitGeneratorOrderNo;
 
 
@@ -425,5 +433,43 @@ public class FitBookingServiceImpl implements FitBookingService {
 		for (FitOrderOtherTicketDto otherTicketDto : orderMain.self().getFitOrderOtherTicketDtos()) {
 			fitOrderOtherTicketRepository.save(otherTicketDto);
 		}
+	}
+
+	@Override
+	public ResultStatus validatePassengers(FitOrderBookingRequest fitOrderBookingRequest) {
+		List<FitOrderPassengerDto>  passengers = fitOrderBookingRequest.getFitOrderPassengerDtos();
+		if(passengers!=null){
+			for(FitOrderPassengerDto passenger:passengers){
+				boolean flag = true;
+				/*if(passenger.getPassengerId()==null || "".equals(passenger.getPassengerId())){
+					flag = false;
+				}*/
+				if(StringUtils.isBlank(passenger.getPassengerName())){
+					flag  = false;
+				}
+				if(passenger.getPassengerType()==null || !(passenger.getPassengerType() instanceof PassengerType)){
+					flag  = false;
+				}
+				if(passenger.getPassengerIDCardType()==null || !(passenger.getPassengerIDCardType() instanceof IDCardType)){
+					flag  = false;
+				}
+				if(StringUtils.isBlank(passenger.getPassengerIDCardNo())){
+					flag  = false;
+				}
+				/*if(passenger.getMobile()==null || "".equals(passenger.getMobile().trim())){
+					flag  = false;
+				}*/
+				if(StringUtils.isBlank(passenger.getPassengerBirthday())){
+					flag = false;
+				}
+				if(!flag){
+					throw new ExceptionWrapper(FitExceptionCode.FIT_PASSENGER_NOT_FULL);
+				}
+			}
+		}else{
+			throw new ExceptionWrapper(FitExceptionCode.FIT_PASSENGER_NOT_FOUND);
+		}
+		
+		return ResultStatus.SUCCESS;
 	}
 }

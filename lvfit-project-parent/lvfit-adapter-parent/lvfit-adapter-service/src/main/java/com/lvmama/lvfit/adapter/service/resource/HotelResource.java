@@ -60,8 +60,9 @@ public class HotelResource {
 	}
 	
 	/**
+	 *
 	 * 调用主站接口查询酒店主图url地址.
-	 * @param productRequest
+	 * @param
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")

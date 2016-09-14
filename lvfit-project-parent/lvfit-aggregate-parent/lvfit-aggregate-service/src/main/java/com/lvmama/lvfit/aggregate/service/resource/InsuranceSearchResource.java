@@ -44,8 +44,7 @@ public class InsuranceSearchResource {
 	 @Produces(MediaType.APPLICATION_JSON)
 	 @Path(AggregateClientPath.Path.INSURANCE_SEARCH)
 	public Response searchInsuranceFromVst(InsuranceQueryRequest request){
-		 InsuranceSearchResult<InsuranceDto> insuranceResult =  insuranceService.searchInsuranceFromVst(request);
-		 return Response.ok(insuranceResult).build();
+		 return Response.ok(insuranceService.searchInsuranceFromVst(request)).build();
 		
 	}
 	 

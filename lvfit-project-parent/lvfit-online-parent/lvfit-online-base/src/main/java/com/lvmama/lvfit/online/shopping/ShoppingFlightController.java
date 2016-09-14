@@ -9,6 +9,7 @@
 
 package com.lvmama.lvfit.online.shopping;
 
+import com.lvmama.lvfit.common.dto.request.ChangeFlightRequest;
 import org.springframework.ui.Model;
 
 import com.lvmama.lvf.common.dto.BaseResponseDto;
@@ -40,11 +41,9 @@ public interface ShoppingFlightController <I extends Form, R extends BaseRespons
 	 * changeTempOrder:修改shopping(选择机票触发，更新shopping信息). <br/>
 	 * 
 	 * @author liuweiguo
-	 * @param model
-	 * @param input
 	 * @return
 	 * @since JDK 1.6
 	 */
-	public R changeFlight(Model model, ChangeFlightRequestForm form);
+	String changeFlight(Model model, ChangeFlightRequest request);
 	
 }

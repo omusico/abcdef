@@ -1,5 +1,6 @@
 package com.lvmama.lvfit.business.booking.service;
 
+import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.request.FitOrderBookingRequest;
 
@@ -24,4 +25,6 @@ public interface FitBookingService {
     FitOrderMainDto booking(FitOrderBookingRequest fitOrderBookingRequest);
 
     public void storeOrder(FitOrderMainDto orderMainDto);
+
+    ResultStatus validatePassengers(FitOrderBookingRequest fitOrderBookingRequest);
 }

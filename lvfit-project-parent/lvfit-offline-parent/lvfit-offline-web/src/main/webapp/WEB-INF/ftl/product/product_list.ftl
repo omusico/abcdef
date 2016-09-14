@@ -368,7 +368,7 @@
 					}
 					depCitys.push(depCity);
 				});
-					
+				console.info(depCitys);	
 				if(selectedCount<1){
 					alert("请至少选择一个城市!");return;
 				}

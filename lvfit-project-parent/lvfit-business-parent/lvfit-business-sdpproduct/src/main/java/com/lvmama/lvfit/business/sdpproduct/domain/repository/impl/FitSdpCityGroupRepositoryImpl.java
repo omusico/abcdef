@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpCityGroup;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpCityGroupRepository;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
@@ -47,8 +48,8 @@ public class FitSdpCityGroupRepositoryImpl implements FitSdpCityGroupRepository 
 	}
 	
 	@Override
-	public List<FitSdpCityGroupDto> queryAllCitysByFkId(Long fkId) {
-		return fitSdpCityGroupMapper.queryAllCitysByFkId(fkId);
+	public List<FitSdpCityGroupDto> queryAllCitysByFkId(Long productId) {
+		return fitSdpCityGroupMapper.queryAllCitysByFkId(productId);
 	}
 	
 	@Override
@@ -59,6 +60,17 @@ public class FitSdpCityGroupRepositoryImpl implements FitSdpCityGroupRepository 
 	@Override
 	public int updateCityUseFlag(FitSdpCityGroupDto dto){
 		return fitSdpCityGroupMapper.updateUseFlag(dto);
+	}
+
+	@Override
+	public FitSdpCityGroupDto queryOneCityById(Long id) {
+		return  fitSdpCityGroupMapper.getById(id);
+	}
+
+	@Override
+	public List<FitSdpCityGroupDto> queryCityGroupByDto(
+			BaseQueryDto<FitSdpCityGroupDto> dto) {
+		return fitSdpCityGroupMapper.queryCityGroupByDto(dto);
 	}
 
 }

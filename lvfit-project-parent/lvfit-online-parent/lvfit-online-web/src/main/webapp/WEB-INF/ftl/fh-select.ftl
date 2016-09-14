@@ -21,20 +21,19 @@
 
     <style>
 
-    .Mybtn
-{
-    border-right: #7b9ebd 1px solid;
-    padding-right: 2px;
-    border-top: #7b9ebd 1px solid;
-    padding-left: 2px;
-    font-size: 12px;
-    FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,  StartColorStr=#ffffff,  EndColorStr=#cecfde);
-    border-left: #7b9ebd 1px solid;
-    cursor: hand;
-    color: black;
-    padding-top: 2px;
-    border-bottom: #7b9ebd 1px solid;
-}
+    .Mybtn {
+        border-right: #7b9ebd 1px solid;
+        padding-right: 2px;
+        border-top: #7b9ebd 1px solid;
+        padding-left: 2px;
+        font-size: 12px;
+        FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,  StartColorStr=#ffffff,  EndColorStr=#cecfde);
+        border-left: #7b9ebd 1px solid;
+        cursor: hand;
+        color: black;
+        padding-top: 2px;
+        border-bottom: #7b9ebd 1px solid;
+    }
 
     </style>
 
@@ -68,7 +67,7 @@
 
     <div class="banWrap mt40 <#if searchform.tripType == "DC">fh-single-flight</#if>">
         <!-- 搜索部分 -->
-        <form id="search_form" action="${request.contextPath}/search/${searchform.shoppingUUID}" method="get">
+        <form id="myForm" action="${request.contextPath}/search" method="get">
         <input class="selectPage" type="hidden">
         <div class="fhMain">
             <!-- 搜索部分 -->
@@ -265,678 +264,255 @@
     </div>
         <!-- 产品部分 -->
         <div class="fh-product clearfix">
-
             <!-- 搜索无结果 -->
             <#if toFlight==null>
-            <div class="fh-no-result clearfix">
-                <i></i>
-                <p class="suggestion" ></p>
-                <div class="fh-nr-text" >
-                	<p class="sorry" style="padding-top:5px;">${errorMsg}</p>
-                	<p class="suggestion">请尝试修改上述搜索条件</p>
+                <div class="fh-no-result clearfix">
+                    <i></i>
+                    <p class="suggestion" ></p>
+                    <div class="fh-nr-text" >
+                        <p class="sorry" style="padding-top:5px;">${errorMsg}</p>
+                        <p class="suggestion">请尝试修改上述搜索条件</p>
+                    </div>
                 </div>
-            </div>
-			</#if>
-            <#if toFlight!=null>
-            <!-- 产品主体 -->
-            <div class="fh-product-main">
-                <!-- 机票 -->
-                <div class="fh-pm-flight">
-                    <h3 class="fh-title fh-flight-title">
-                        机票
-                        <span class="from">${searchform.departureCityName}</span>
-                        <i class="icon icon-from-to-sm"></i>
-                        <span>${searchform.arrivalCityName}</span>
-                    </h3>
-                    <!-- 机票列表 -->
-                    <div class="flight-list">
-                        <!-- 去程航班 -->
-                          <div class="flight-item">
-                            <div class="flight-detail clearfix">
-                                <div class="flight-col flight-name">
-                                    <i class="fh-icon fh-icon-depa"></i>
-                                    <div class="flight-center">${toFlight.departureDate}</div>
-                                </div>
-                                <div class="flight-col flight-info">
-                                    <div class="flight-top"><i class="fh-icon-ac fh-icon-ac-${toFlight.carrierCode}"></i>${toFlight.carrierName}</div>
-                                    <!-- TODO 机型信息填在对应的data属性中 -->
-                                    <div class="flight-bottom"><span class="flight-number">${toFlight.flightNo}</span><span class="plane-type" data-plan=${toFlight.airplane.code} data-name=${toFlight.airplane.name} data-type="${toFlight.airplane.airplaneType}" data-min=${toFlight.airplane.minSeats} data-max=${toFlight.airplane.maxSeats}>${toFlight.airplane.code}</span></div>
-                                </div>
-                                <div class="flight-col flight-time flight-depa-time">
-                                    <div class="flight-top">${toFlight.departureTime}</div>
-                                    <div class="flight-bottom"><a class="airport-name" href="javascript:;" title="${toFlight.departureAirportName}">${toFlight.departureAirportName}</a><span>${toFlight.departureTermainalBuilding}</span></div>
-                                </div>
-                                <div class="flight-col flight-stop">
-                                    <!-- TODO 没有经停时，删除“经停”两字，切勿删除P标签 -->
-                                    <p class="flight-stop-text">
-                                    <#if toFlight.stopCount gt 0>
-                                    	经停
-                                    </#if>
-                                    </p>
-                                    <div class="fh-icon-stop"></div>
-                                </div>
-                                <div class="flight-col flight-time flight-arrival-time">
-                                    <div class="flight-top">
-                                        <span class="time">${toFlight.arrivalTime}</span>
+            </#if>
 
-                                        <#if toFlight.highLightFlag == true>
-                                        <span class="flight-add-one-day" tip-content="航班到达日期为起飞日期<span class='tip-add-one'>+1天</span>。">+1</span>
+            <#if toFlight!=null>
+                <!-- 产品主体 -->
+                <div class="fh-product-main">
+                    <!-- 机票 -->
+                    <#include "flight/flightInfo.ftl">
+                    <!--新版酒店开始-->
+                    <#if hotel != null>
+                    <div class="listMain mt10 bd_ddd">
+                        <div class="fh-title fh-flight-title">酒店
+                            <span class="pl10 f14 c9">
+                                <dfn>${searchform.checkInTime}</dfn> 至 <dfn>${searchform.checkOutTime}</dfn>
+                                <span id="countDay">（${stayDays}晚）</span>
+                            </span>
+                        </div>
+                        <div id="hotelInfo">
+                        <#include "hotel/hotelInfo.ftl">
+                        </div>
+                    </div>
+                    </#if>
+                    <!--新版酒店结束-->
+
+                    <#if toFlight!=null>
+                        <div class="fh-pm-xpro">
+                            <h3 class="fh-title">可选产品</h3>
+                            <ul class="xpro-head clearfix">
+                                <li class="xh-type">类型</li>
+                                <li class="xh-name">产品名称</li>
+                                <li class="xh-price">单价</li>
+                                <li class="xh-date">使用日期</li>
+                                <li class="xh-count">份数</li>
+                            </ul>
+                            <div class="xpro-main">
+                                <!-- 门票 -->
+                                <#if spots?size gt 0 >
+                                    <div class="xm-product-box clearfix" id="spotsInfoDiv">
+                                        <div class="xh-type">
+                                            门票
+                                        </div>
+                                        <div class="xpb-content">
+                                            <#list spots as spot>
+                                                <div class="xpb-list" <#if spot_index != 0>style="display:none;"</#if>>
+                                                    <div class="xpbl-title"><em <#if spot.spotTickets?size = 1>class="no_gaoguang"</#if> data-productId="${spot.productId}">${spot.productName}<#if spot.spotTickets?size gt 1><i class="arrow"></i></#if></em></div>
+                                                    <!-- 默认显示一条 -->
+                                                    <#list spot.spotTickets as ticket>
+                                                        <div class="xpbl-item clearfix" <#if ticket_index != 0>style="display:none;"</#if> data-id="T${ticket.suppGoodsId}">
+                                                            <div class="xh-name"><em title="${ticket.goodsName}">${ticket.goodsName}</em></div>
+                                                            <div class="xh-price"><dfn>￥</dfn><span>${ticket.dayTimePriceDtos[0].price}</span></div>
+                                                            <div class="xh-date">
+                                                                <div class="select-day">
+                                                                    <span>请选择游玩日期</span>
+                                                                    <i class="arrow"></i>
+                                                                </div>
+                                                                <ol class="select-day-list">
+                                                                    <#list ticket.dayTimePriceDtos as dayPrice>
+                                                                        <li data-day="${dayPrice.specDate?string('yyyy-MM-dd')}" data-price="${dayPrice.price}">${dayPrice.specDate?string('yyyy-MM-dd')}</li>
+                                                                    </#list>
+                                                                </ol>
+                                                            </div>
+                                                            <div class="xh-count">
+                                                                <div class="select-count">
+                                                                    <span>0</span>
+                                                                    <i class="arrow"></i>
+                                                                </div>
+                                                                <span class="xh-unit">份</span>
+                                                                <ol class="select-count-list ticket-count">
+                                                                    <#if ticket.minQuantity gt 0>
+                                                                        <li data-count="0">0</li>
+                                                                    </#if>
+                                                                    <#list ticket.minQuantity..ticket.maxQuantity as num>
+                                                                        <li data-count="${num}">${num}</li>
+                                                                    </#list>
+                                                                </ol>
+                                                            </div>
+                                                            <i class="xh-check-icon"></i>
+                                                        </div>
+
+                                                        <div class="fh-ticket-detail" id="TDTL${ticket.suppGoodsId}">
+                                                            <dl class="clearfix">
+                                                                <dt>费用说明</dt>
+                                                                <dd>
+                                                                ${ticket.ticketGoodsDetailDto.priceIncludes}
+                                                                </dd>
+                                                            </dl>
+                                                            <dl class="clearfix">
+                                                                <dt>预定时间</dt>
+                                                                <dd>
+                                                                    游玩当天${ticket.ticketGoodsDetailDto.aheadBookTime}前可下单，请尽早预订，以免耽误您的行程。
+                                                                </dd>
+                                                            </dl>
+                                                            <dl class="clearfix">
+                                                                <dt>入园须知</dt>
+                                                                <dd>
+                                                                    取票时间：${ticket.ticketGoodsDetailDto.changeTime}<br>
+                                                                    取票地点：${ticket.ticketGoodsDetailDto.changeAddress}<br>
+                                                                    入园方式：${ticket.ticketGoodsDetailDto.enterStyle}<br>
+                                                                    <#if ticket.ticketGoodsDetailDto.limitFlag?exists && ticket.ticketGoodsDetailDto.limitFlag == "0">
+                                                                        入园限制：请在入园当天的<#if ticket.ticketGoodsDetailDto.limitTime?exists>${ticket.ticketGoodsDetailDto.limitTime?split(":")[0]}</#if>点<#if ticket.ticketGoodsDetailDto.limitTime?exists>${ticket.ticketGoodsDetailDto.limitTime?split(":")[1]}</#if>分以前入园<br>
+                                                                    <#else>
+                                                                        入园限制：无限制<br>
+                                                                    </#if>
+
+                                                                    <#if ticket.ticketGoodsDetailDto.aperiodicFlag?exists && ticket.ticketGoodsDetailDto.aperiodicFlag == "Y">
+                                                                        有效期限：（有效期内，仅限入园1次）有效期从${ticket.ticketGoodsDetailDto.startTimeStr?if_exists}到${ticket.ticketGoodsDetailDto.endTimeStr?if_exists}有效。
+                                                                    <#else>
+                                                                        <#if ticket.ticketGoodsDetailDto.days?exists && ticket.ticketGoodsDetailDto.days == 1>
+                                                                            有效期限：（有效期内，仅限入园1次）指定游玩日当天内有效。
+                                                                        <#else>
+                                                                            有效期限：（有效期内，仅限入园1次）指定游玩日${ticket.ticketGoodsDetailDto.days?if_exists}天内有效。
+                                                                        </#if>
+                                                                    </#if>
+                                                                    <br>
+                                                                    详情信息请见：<a href="" target="_blank"></a>
+                                                                </dd>
+                                                            </dl>
+                                                            <dl class="clearfix">
+                                                                <dt>重要提示</dt>
+                                                                <dd>
+                                                                    <#if ticket.ticketGoodsDetailDto.height?exists && ticket.ticketGoodsDetailDto.height ? length gt 0>
+                                                                        身高：${ticket.ticketGoodsDetailDto.height}<br>
+                                                                    </#if>
+                                                                    <#if ticket.ticketGoodsDetailDto.age?exists && ticket.ticketGoodsDetailDto.age ? length gt 0>
+                                                                        年龄：${ticket.ticketGoodsDetailDto.age}<br>
+                                                                    </#if>
+                                                                    <#if ticket.ticketGoodsDetailDto.region?exists && ticket.ticketGoodsDetailDto.region ? length gt 0>
+                                                                        地域：${ticket.ticketGoodsDetailDto.region}<br>
+                                                                    </#if>
+                                                                    <#if ticket.ticketGoodsDetailDto.maxQuantity?exists && ticket.ticketGoodsDetailDto.maxQuantity ? length gt 0>
+                                                                        最大限购：${ticket.ticketGoodsDetailDto.maxQuantity}<br>
+                                                                    </#if>
+                                                                    <#if ticket.ticketGoodsDetailDto.express?exists && ticket.ticketGoodsDetailDto.express ? length gt 0>
+                                                                        快递：${ticket.ticketGoodsDetailDto.express}<br>
+                                                                    </#if>
+                                                                    <#if ticket.ticketGoodsDetailDto.entityTicket?exists && ticket.ticketGoodsDetailDto.entityTicket ? length gt 0>
+                                                                        实体票：${ticket.ticketGoodsDetailDto.entityTicket}<br>
+                                                                    </#if>
+                                                                    <#if ticket.ticketGoodsDetailDto.others?exists && ticket.ticketGoodsDetailDto.others ? length gt 0>
+                                                                        其他：${ticket.ticketGoodsDetailDto.others?if_exists}
+                                                                    </#if>
+                                                                </dd>
+                                                            </dl>
+                                                            <span class="shouqi">收起<i class="arrow"></i></span>
+                                                            <div class="ftd-arrow"><span>◆</span><i>◆</i></div>
+                                                        </div>
+                                                    </#list>
+                                                </div>
+                                            </#list>
+                                            <#if spots?size gt 1>
+                                                <p class="xh-more"><em>更多门票<i class="arrow"></i></em></p>
+                                            </#if>
+                                        </div>
+                                    </div><!-- 门票结束 -->
+                                </#if>
+
+
+                                <!-- 保险 xpb-insurance -->
+                                <div class="xm-product-box xpb-insurance clearfix">
+                                    <div class="xh-type">
+                                        保险
+                                    </div>
+                                    <div class="xpb-content">
+                                        <div class="xpb-list">
+                                            <div class="xpbl-title"><em <#if flightInsuranceInfos?size = 1>class="no_gaoguang"</#if>>${flightInsuranceInfos[0].insuranceClass.name}<#if flightInsuranceInfos?size gt 1><i class="arrow"></i></#if></em></div>
+                                            <#list flightInsuranceInfos as fInsurance>
+                                                <div class="xpbl-item clearfix" data-id="F${fInsurance.id}" data-suppname="${fInsurance.supp.name}" <#if fInsurance_index gt 0>style="display:none;"</#if> >
+                                                    <div class="xh-name"><em title="${fInsurance.insuranceRemark}">${fInsurance.insuranceRemark}</em></div>
+                                                    <div class="xh-price"><dfn>￥</dfn><span>${fInsurance.insurancePrice}</span></div>
+                                                    <div class="xh-time" >--</div>
+                                                    <div class="xh-count">
+                                                        <div class="select-count">
+                                                            <span>0</span>
+                                                            <i class="arrow"></i>
+                                                        </div>
+                                                        <span class="xh-unit">份</span>
+                                                        <ol class="select-count-list select-flightInsurance-count-list">
+                                                            <li data-count="0">0</li>
+                                                        </ol>
+                                                        <i class="fh-icon-ques" tip-content="每程每人各一份"></i>
+                                                    </div>
+                                                    <i class="xh-check-icon"></i>
+                                                </div>
+
+                                                <div class="fh-ticket-detail" id="TDTL${fInsurance.id}">
+                                                    <dl class="clearfix">
+                                                        <dt>描述</dt>
+                                                        <dd>
+                                                        ${fInsurance.insuranceDesc}
+                                                        </dd>
+                                                    </dl>
+                                                    <span class="shouqi">收起<i class="arrow"></i></span>
+                                                    <div class="ftd-arrow"><span>◆</span><i>◆</i></div>
+                                                </div>
+                                            </#list>
+                                        </div>
+
+                                        <#if insuranceMap??>
+                                        <#list insuranceMap?keys as key>
+                                            <div class="xpb-list" id="insuranceList">
+                                                <div class="xpbl-title"><em <#if insuranceMap[key]?size == 1>class="no_gaoguang"</#if>>${insuranceMap[key][0].productName}<#if insuranceMap[key]?size gt 1><i class="arrow"></i></#if></em></div>
+                                                <#list insuranceMap[key] as suppGood >
+                                                <div class="xpbl-item clearfix" data-id="I${suppGood.suppGoodsId }" <#if suppGood_index gt 0>style="display:none;"</#if> >
+                                                    <div class="xh-name"><em title="${suppGood.goodsName } -- ${branch.branchName }">${suppGood.goodsName } -- ${branch.branchName} </em></div>
+                                                    <div class="xh-price"><dfn>￥</dfn><span>${suppGood.price}</span></div>
+                                                    <div class="xh-time" >--</div>
+                                                    <div class="xh-count">
+                                                        <div class="select-count">
+                                                            <span>0</span>
+                                                            <i class="arrow"></i>
+                                                        </div>
+                                                        <span class="xh-unit">份</span>
+                                                        <ol class="select-count-list select-insurance-list"></ol>
+                                                    </div>
+                                                    <i class="xh-check-icon "></i>
+                                                </div>
+
+                                                <div class="fh-ticket-detail" id="TDTL${suppGood.suppGoodsId}">
+                                                    <dl class="clearfix">
+                                                        <dt>描述</dt>
+                                                        <dd>
+                                                        ${suppGood.branchDesc}
+                                                        </dd>
+                                                    </dl>
+                                                    <span class="shouqi">收起<i class="arrow"></i></span>
+                                                    <div class="ftd-arrow"><span>◆</span><i>◆</i></div>
+                                                </div>
+                                                </#list>
+                                            </div>
+                                        </#list>
+                                        <p class="insurance-warning"><i class="fh-icon fh-icon-warning"></i>为了您再出游过程中获得更为全面的保障，强烈建议旅游者出游时间根据个人意愿和需要，自行投保人参意外伤害保险等个人险种。</p>
                                         </#if>
                                     </div>
-                                    <div class="flight-bottom">
-                                        <a class="airport-name" href="javascript:;" title="${toFlight.arrivalAirportName}">${toFlight.arrivalAirportName}</a><span>${toFlight.arrivalTerminalBuilding}</span>
-                                    </div>
-                                </div>
-                                <div class="flight-col flight-duration">
-                                    <div class="flight-center">${toFlight.flyTime}</div>
-                                </div>
-                                <div class="flight-col flight-type">
-                                    <div class="flight-center">
-                                        <#list toFlight.seats as seats>
-			                            <#if seats.selectFlag==true>
-    			                            <div class="select-class">
-                                                <!--<span flightno="${toFlight.flightNo}" code="${seats.seatClassCode}" policyid="${seats.pricePolicyId}">${seats.seatClassTypeName}</span>-->
-    				                            <em flightno="${toFlight.flightNo}" code="${seats.seatClassCode}" policyid="${seats.pricePolicyId}" flightType="to"><span>${seats.seatClassTypeName}</span></em>
-    				                            <!--<span>${seats.seatClassTypeName}</span>-->
-    				                            <i></i>
-    			                            </div>
-    			                            <#if seats.inventoryCount lte 9>
-    			                            <span class="flight-ticket-amount">剩余${seats.inventoryCount}</span>
-    										<#else>
-    					                    <span class="flight-ticket-amount" style="display:none;"></span>
-    			                            </#if>
-			                            </#if>
-			                       	    </#list>
-                                        <ol class="select-class-list">
-                                        <#list toFlight.seats as seats>
-                                        	<#if seats.selectFlag==true>
-                                        	<li class="active" baseAmount="${toAmount}" childPrice="${seats.childrenPrice}"    adaultPrice="${seats.flightTicketPriceDto.salesPrice}">
-                                            <#else>
-                                            <li baseAmount="${toAmount}" childPrice="${seats.childrenPrice}" adaultPrice="${seats.flightTicketPriceDto.salesPrice}">
-                                            </#if>
-                                            <#if seats.differentPrice lt 0>
-                                               	<span class="scl-diff-minus">-<i class="price-rmb">¥</i>${seats.differentPrice * -1}</span>
-                                                <#else>
-                                                <span class="scl-diff">+<i class="price-rmb">¥</i>${seats.differentPrice}</span>
-                                                </#if>
-                                                <span class="scl-class" code="${seats.seatClassCode}" policyid="${seats.pricePolicyId}">${seats.seatClassTypeName}</span>
-                                                <#if seats.inventoryCount lte 9>
-			                                	<span class="flight-ticket-amount">剩余${seats.inventoryCount}</span>
-			                                	</#if>
-                                            </li>
-            							</#list>
-            							</ol>
-                                    </div>
-                                </div>
-                           		<a id="toChangeFlightBtn" href="javascript:;"  class="btn btn-sm btn-pink fh-change-btn">更换航班</a>
+                                </div><!-- 保险 xpb-insurance end -->
                             </div>
-                            <#if toFlight.highLightFlag == true>
-                            <p class="flight-warning">
-                                <i class="fh-icon fh-icon-warning"></i>该航班为隔夜航班，请留意您的酒店入住日期
-                            </p>
-                            </#if>
-                        </div>
-                        <#if backFlight !=null || backFlight !=''>
-                        <!-- 返程航班 -->
-                        <div class="flight-item flight-item-back">
-                            <div class="flight-detail clearfix">
-                                <div class="flight-col flight-name">
-                                    <i class="fh-icon fh-icon-dest"></i>
-                                    <div class="flight-center">${backFlight.departureDate}</div>
-                                </div>
-                                <div class="flight-col flight-info">
-                                    <div class="flight-top"><i class="fh-icon-ac fh-icon-ac-${backFlight.carrierCode}"></i>${backFlight.carrierName}</div>
-                                    <!-- TODO 机型信息填在对应的data属性中 -->
-                                    <div class="flight-bottom"><span class="flight-number">${backFlight.flightNo}</span><span class="plane-type" data-plan=${backFlight.airplane.code} data-name=${backFlight.airplane.name} data-type="${backFlight.airplane.airplaneType}" data-min=${backFlight.airplane.minSeats} data-max=${backFlight.airplane.maxSeats}>${backFlight.airplane.code}</span></div>
-                                </div>
-                                <div class="flight-col flight-time flight-depa-time">
-                                    <div class="flight-top">${backFlight.departureTime}</div>
-                                    <div class="flight-bottom"><a class="airport-name" href="javascript:;" title="${backFlight.departureAirportName}">${backFlight.departureAirportName}</a><span>${backFlight.departureTermainalBuilding}</span></div>
-                                </div>
-                                <div class="flight-col flight-stop">
-                                    <!-- TODO 没有经停时，删除“经停”两字，切勿删除P标签 -->
-                                    <p class="flight-stop-text"></p>
-                                    <div class="fh-icon-stop"></div>
-                                </div>
-                                <div class="flight-col flight-time flight-arrival-time">
-                                    <div class="flight-top"><span class="time">${backFlight.arrivalTime}</span>
-                                    <#if backFlight.highLightFlag == true>
-                                    	<span class="flight-add-one-day" tip-content="航班到达日期为起飞日期<span class='tip-add-one'>+1天</span>。">+1</span>
-                                    </#if>
-                                    </div>
-                                    <div class="flight-bottom"><a class="airport-name" href="javascript:;" title="${backFlight.arrivalAirportName}">${backFlight.arrivalAirportName}</a>${backFlight.arrivalTerminalBuilding}</div>
-                                </div>
-                                <div class="flight-col flight-duration">
-                                    <div class="flight-center">${backFlight.flyTime}</div>
-                                </div>
-                                <div class="flight-col flight-type">
-                                    <div class="flight-center">
-                                        <#list backFlight.seats as seats>
-			                            <#if seats.selectFlag==true>
-			                            	<div class="select-class">
-			                            		<!--<span flightNo="${backFlight.flightNo}"code="${seats.seatClassCode}" policyid="${seats.pricePolicyId}">${seats.seatClassTypeName}</span>-->
-				                                <em flightNo="${backFlight.flightNo}"code="${seats.seatClassCode}" policyid="${seats.pricePolicyId}" flightType="back"><span>${seats.seatClassTypeName}</span></em>
-				                                <!--<span>${seats.seatClassTypeName}</span>-->
-				                                <i></i>
-			                                </div>
-			                                <#if seats.inventoryCount lte 9>
-			                                <span class="flight-ticket-amount">剩余${seats.inventoryCount}</span>
-											<#else>
-					                        <span class="flight-ticket-amount" style="display:none;"></span>
-			                                </#if>
-			                            </#if>
-			                       	    </#list>
-                                        <ol class="select-class-list">
-                                        <#list backFlight.seats as seats>
-                                        	<#if seats.selectFlag==true>
-                                        	<li class="active" baseAmount="${backAmount}"  childPrice="${seats.childrenPrice}"    adaultPrice="${seats.flightTicketPriceDto.salesPrice}">
-                                            <#else>
-                                            <li baseAmount="${backAmount}"  childPrice="${seats.childrenPrice}"    adaultPrice="${seats.flightTicketPriceDto.salesPrice}">
-                                            </#if>
-                                                <#if seats.differentPrice lt 0>
-                                                <span class="scl-diff-minus" id="${backFlight.flightNo}${seats.seatClassCode}">-<i class="price-rmb">¥</i>${seats.differentPrice*-1}</span>
-                                                <#else>
-                                                <span class="scl-diff" id="${backFlight.flightNo}${seats.seatClassCode}">+<i class="price-rmb">¥</i>${seats.differentPrice}</span>
-                                                </#if>
-
-                                                <span class="scl-class" code="${seats.seatClassCode}" policyid="${seats.pricePolicyId}">${seats.seatClassTypeName}</span>
-                                                <#if seats.inventoryCount lte 9>
-                                                <span class="flight-ticket-amount">剩余${seats.inventoryCount}</span>
-    			                                </#if>
-                                            </li>
-            							</#list>
-                                        </ol>
-                                    </div>
-                                </div>
-                                <a id="backChangeFlightBtn" href="javascript:;"  class="btn btn-sm btn-pink fh-change-btn">更换航班</a>
-                            </div>
-                            <#if backFlight.highLightFlag == true>
-                            <p class="flight-warning">
-                                <i class="fh-icon fh-icon-warning"></i>该航班为隔夜航班，请留意您的酒店入住日期
-                            </p>
-                            </#if>
-                        </div>
-                        </#if>
-                    </div><!-- //flight-list -->
-                </div><!-- //fh-pm-flight -->
-                <!-- 酒店结果开始 listMain-->
-
-
-                <!--新版酒店开始-->
-                <#if hotel != null>
-                <div class="listMain mt10 bd_ddd">
-                <div class="fh-title fh-flight-title">
-            		酒店<span class="pl10 f14 c9"><dfn>${searchform.checkInTime}</dfn> 至 <dfn>${searchform.checkOutTime}</dfn><span id="countDay">（${stayDays}晚）</span></span>
+                        </div> <!-- 可选产品结束 fh-pm-xpro-->
+                    </#if>
                 </div>
-
-
-
-
-                <!-- 列表开始 -->
-                <div class="list-box">
-                	<div class="list-t">
-                        <a id="changeHotelBtn" href="javascript:;" class="btn btn-sm btn-pink fh-change-hotel-btn">更换酒店</a>
-                        <a name="${hotel.productId }" href="javascript:;" class="list-t-img pa"><img src="http://pic.lvmama.com${hotel.photoUrl}" width="180" height="120" alt=""/></a>
-                        <h4 class="list-t-tit">
-                            <a name="${hotel.productId }" href="javascript:;" class="yh f20 c3">${hotel.productName}</a>
-                            <span class="c9 f12">
-                            <#if hotel.starDesc ? ends_with("酒店")>
-	        				<#assign sublength = hotel.starDesc?index_of("酒店")/>
-	        				[${hotel.starDesc ? substring(0,sublength)}]
-	        				<#else>
-	        				[${hotel.starDesc}]
-        					</#if>
-                            </span>
-                        </h4>
-
-                        <p class="list-icon">
-                        <#if hotel.facilities??>
-        	    			<#list hotel.facilities?split(',') as facility>
-        	    			<!-- 460,461,462,463,464 -->
-        	    			<#if facility="472">
-        	    			<span class="ph_icon_hotel ph_icon_mr" title="会议室"></span>
-        	    			</#if>
-        	    			<#if facility="470">
-        	    			<span class="ph_icon_hotel ph_icon_gym" title="健身房"></span>
-        	    			</#if>
-        	    			<#if facility="464">
-        	    			<span class="ph_icon_hotel ph_icon_park_f" title="免费停车场"></span>
-        	    			</#if>
-        	    			<#if facility="460">
-        	    			<span class="ph_icon_hotel ph_icon_wifi_f" title="免费Wifi"></span>
-        	    			</#if>
-        	    			<#if facility="462">
-        	    			<span class="ph_icon_hotel ph_icon_internet_f" title="免费宽带"></span>
-        	    			</#if>
-        	    			<#if facility="471">
-        	    			<span class="ph_icon_hotel ph_icon_bc" title="商务中心"></span>
-        	    			</#if>
-        	    			<#if facility="468">
-        	    			<span class="ph_icon_hotel ph_icon_swim-in" title="室内游泳池"></span>
-        	    			</#if>
-        	    			<#if facility="461">
-        	    			<span class="ph_icon_hotel ph_icon_wifi_c" title="收费Wifi"></span>
-        	    			</#if>
-        	    			<#if facility="465">
-        	    			<span class="ph_icon_hotel ph_icon_park_c" title="收费停车场"></span>
-        	    			</#if>
-        	    			<#if facility="473">
-        	    			<span class="ph_icon_hotel ph_icon_restaurant" title="酒店餐厅"></span>
-        	    			</#if>
-        	    			<#if facility="463">
-        	    			<span class="ph_icon_hotel ph_icon_internet_c" title="收费宽带"></span>
-        	    			</#if>
-        	    			<#if facility="466">
-        	    			<span class="ph_icon_hotel ph_icon_pick_f" title="免费接机"></span>
-        	    			</#if>
-        	    			<#if facility="467">
-        	    			<span class="ph_icon_hotel ph_icon_pick_c" title="收费接机"></span>
-        	    			</#if>
-        	    			<#if facility="469">
-        	    			<span class="ph_icon_hotel ph_icon_swim-out" title="室外游泳池"></span>
-        	    			</#if>
-        					<!--<span class="tagsback tagsback-orange"><i>${tag}</i></span>-->
-        					</#list>
-        				</#if>
-                        </p>
-                        <p class="list-info mt10 c9">
-							<#if hotel.commentGood?? && hotel.commentGood gt 0>
-							<dfn class="cf60 f14 pr5">${hotel.commentGood}%</dfn>好评率来自
-							</#if>
-							<#if hotel.commentNum?? && hotel.commentNum gt 0>
-							<a name="${hotel.productId }" href="javascript:;" class="JS_alertBox c09c">${hotel.commentNum}</a>条点评
-							</#if>
-						</p>
-                        <p class="list-address c9 mt10">
-                                                                      地址：<span class="pl5 c6">${hotel.address}</span>
-                            <a name="${hotel.productId }" class="list-maplink pl5 c09c JS_maplink" href="javascript:;"><span class="ph_icon ph_icon_map"></span>地图</a>
-                        </p>
-                        </div><!-- //list-t -->
-                        <ul class="roomHead roomTable clearfix">
-                            <li class="roomTable-td roomTable-td1">房型</li>
-                            <li class="roomTable-td roomTable-td2">床型</li>
-                            <li class="roomTable-td roomTable-td3">早餐</li>
-                            <li class="roomTable-td roomTable-td-kd">宽带</li>
-                            <li class="roomTable-td roomTable-td4">间数</li>
-                            <li class="roomTable-td roomTable-td5">差价</li>
-                        </ul>
-                        <#if hotel.rooms?? && hotel.rooms?size gt 0><!--房型开始-->
-						<#assign showGoodCount = 0 /><#--默认房型,为了只展示两个-->
-						<#list hotel.rooms as room><!--房型列表开始-->
-						<#assign showGoodCount = showGoodCount +1 /><#--默认房型-->
-						<#if room.plans?? && room.plans?size gt 0>
-						<#assign goodDefault = room.plans[0] /><#--默认房型-->
-                        <div class="room-content" style="display:${(showGoodCount lte 1)?string("block;","none;")}">
-                            <!-- 展开加open -->
-                            <div class="roomLi clearfix">
-                                <div class="roomTable-td roomTable-td1"><em class="roomName pr"><span class="ht-icon"></span>${room.branchName}<i class="arrow"></i></em></div>
-                                <!--房型设施 info_box-->
-                                <div class="info_box">
-                                    <img src="http://pic.lvmama.com${room.photoUrl}" data-src="http://pic.lvmama.com${room.photoUrl}" width="90" height="60">
-                                    <div class="room-meta">
-                                       <#if room.bedType>
-								    	<p>床型：${room.bedType}</p>
-								    	</#if>
-								    	<#if room.extraBed>
-							            <p class="room-addBed">加床：${room.extraBed}</p>
-							            </#if>
-							            <#if room.area>
-							            <p class="room-area">面积：${room.area}平方米</p>
-							            </#if>
-							            <#if room.floor>
-							            <p>楼层：${room.floor}</p>
-							            </#if>
-							            <#if room.broadband>
-							            <p>宽带：${room.broadband}</p>
-							            </#if>
-								    </div>
-								    <#if room.branchDesc>
-								    <p class="room-other">其他：${room.branchDesc}</p>
-								    <#else>
-								    <p class="room-other"></p>
-								    </#if>
-                                    <a class="room-up" href="javascript:;">收起</a>
-                                </div><!-- //info_box -->
-                            </div>
-
-                            <div class="romLi-more clearfix">
-                            <#assign roomXiaoJi = 0 /><#--默认房型-->
-							<#list room.plans as plan>
-								<dl style="display:${(roomXiaoJi == 0)?string("block;","none;")}">
-								<#assign roomXiaoJi = roomXiaoJi + 1 />
-                                    <dt class="roomTable-td roomTable-td1">${plan.goodsName}</dt>
-                                    <!--床型开始-->
-                                    <#if room.bedType??>
-									<dd class="roomTable-td roomTable-td2">${room.bedType}</dd>
-									<#else>
-									<dd class="roomTable-td roomTable-td2">暂无介绍</dd>
-									</#if>
-									<!--床型结束-->
-                                    <!--早餐介绍-->
-								   <#assign hasBreakfast = false/>
-						           <#if plan.dayPrice?? && plan.dayPrice?size gt 0>
-						               <#list plan.dayPrice as goodsTimePrice>
-						               			<#if goodsTimePrice.breakfast gt 0>
-						               				<#assign hasBreakfast = true/>
-						               				<#break>
-						               			</#if>
-						                </#list>
-						           </#if>
-						           <#if hasBreakfast>
-						          	    <#assign hasBreakfast = false/>
-						          	    <dd class="roomTable-td roomTable-td3">有早餐</dd>
-						           <#else>
-						         	     <dd class="roomTable-td roomTable-td3">无早餐</dd>
-						           </#if>
-								   <!--早餐结束-->
-                                    <#if room.broadband??><!--宽带开始-->
-									<dd class="roomTable-td roomTable-td-kd">${room.broadband}</dd>
-									<#else>
-									<dd class="roomTable-td roomTable-td-kd">暂无介绍</dd>
-									</#if><!--宽带结束-->
-
-
-                                    <!--房间数开始-->
-                                    <dd class="roomTable-td roomTable-td4">
-										<div class="select-div">
-			                                <span id="${hotel.productId}${room.branchId}${plan.suppGoodsId}">
-			                                <#if room.roomCounts gt plan.maxQuantity>
-				                                ${plan.minRoomCounts}
-			                                <#else>
-			                                	${room.roomCounts}
-			                                </#if>
-			                                </span>
-			                                <i class="arrow"></i>
-			                            </div>
-			                            <ol class="select-div-list">
-			                                <#if plan.dayPrice?? && plan.dayPrice?size gt 0 && plan.maxRoomCounts gte plan.minRoomCounts>
-			                            		<#list plan.minRoomCounts..plan.maxRoomCounts as roomNum>
-			                            			<li data-num="${roomNum}">${roomNum}</li>
-			                            	 	</#list>
-			                            	</#if>
-			                            </ol>
-									</dd>
-                                    <!--房间数结束-->
-                                    <!--差价开始-->
-                                    <!-- 差价"-"加room-diff-minus -->
-									<#if plan.selectedFlag == true><!--选中的商品变为已选-->
-									<!--<dd class="roomTable-td roomTable-td5 cf60 yh f12"><span>+</span>&yen;<dfn class="f14 pl2 bold"></dfn></dd>-->
-									<#if plan.priceDifferences lt 0>
-									<dd class="roomTable-td roomTable-td5 room-diff-minus" name="priceDiff${hotel.productId}${room.branchId}${plan.suppGoodsId}">
-									<#else>
-									<dd class="roomTable-td roomTable-td5" name="priceDiff${hotel.productId}${room.branchId}${plan.suppGoodsId}">
-									</#if>
-
-		                                <span id="${settlementPrice}">
-		                                	 <#if plan.priceDifferences != '' && plan.priceDifferences lt 0>
-		                                		-
-		                                		</span>&yen;<dfn id="${plan.priceDifferencesSingle}" class="f14 pl2 bold">${plan.priceDifferences*-1}</dfn>
-		                                	<#else>
-		                                		+
-		                                		</span>&yen;<dfn id="${plan.priceDifferencesSingle}" class="f14 pl2 bold">${plan.priceDifferences}</dfn>
-		                                	</#if>
-
-		                            </dd>
-									<dd class="roomTable-td roomTable-td6"><a href="javascript:void(0);" settlementPrice ="${plan.price}" class="selectedBtn" roomCounts ="${room.roomCounts}"  productId="${hotel.productId}" branchId="${room.branchId}" suppGoodsId="${plan.suppGoodsId}">已选 <span class="ph_icon ph_icon_selected"></span></a></dd>
-									<#else>
-									<!--<dd class="roomTable-td roomTable-td5 cf60 yh f12" name="priceDiff${hotel.productId}${room.branchId}${plan.suppGoodsId}">-->
-									<dd <#if goodDefault.priceDifferences lt 0> class="roomTable-td roomTable-td5 room-diff-minus" <#else> class="roomTable-td roomTable-td5"</#if> name="priceDiff${hotel.productId}${room.branchId}${goodDefault.suppGoodsId}">
-										<span>
-		                            	<#if plan.priceDifferences lt 0>
-		                            		-
-		                            		</span>&yen;<dfn class="f14 pl2 bold">${plan.priceDifferences?default(0)*(-1)}</dfn>
-		                            	<#else>
-		                            		+
-		                            		</span>&yen;<dfn class="f14 pl2 bold">${plan.priceDifferences}</dfn>
-		                            	</#if>
-									</dd>
-									<dd class="roomTable-td roomTable-td6"><a href="javascript:void(0);" class="btn btn-small btn-orange xuanze" settlementPrice ="${plan.price}" roomCounts ="${room.roomCounts}"  productId="${hotel.productId}" branchId="${room.branchId}" suppGoodsId="${plan.suppGoodsId}">选择 </a></dd>
-									</#if>
-                                    <!--差价结束-->
-                                </dl>
-                             </#list>
-                            </div><!-- //romLi-more -->
-                        </div>
-                        </#if>
-                        </#list>
-                        </#if>
-                </div>
-					<#if hotel.rooms?size gte 2>
-						<p class="mt10 tr">
-						<a href="javascript:;" class="c09c arrowMain pr showAllRoom JS_showAllRoom">展开全部房型<dfn>（${hotel.rooms?size}）</dfn><i class="arrow"></i></a>
-						</p>
-					</#if>
-                </div>
-                </#if>
-                <!--新版酒店结束-->
-
-                <#if toFlight!=null>
-                <div class="fh-pm-xpro">
-                    <h3 class="fh-title">可选产品</h3>
-                    <ul class="xpro-head clearfix">
-                        <li class="xh-type">类型</li>
-                        <li class="xh-name">产品名称</li>
-                        <li class="xh-price">单价</li>
-                        <li class="xh-date">使用日期</li>
-                        <li class="xh-count">份数</li>
-                    </ul>
-                    <div class="xpro-main">
-                        <!-- 门票 -->
-                        <#if spots?size gt 0 >
-                        <div class="xm-product-box clearfix" id="spotsInfoDiv">
-                            <div class="xh-type">
-                                门票
-                            </div>
-                            <div class="xpb-content">
-                                <#list spots as spot>
-                                <div class="xpb-list" <#if spot_index != 0>style="display:none;"</#if>>
-                                    <div class="xpbl-title"><em <#if spot.spotTickets?size = 1>class="no_gaoguang"</#if> data-productId="${spot.productId}">${spot.productName}<#if spot.spotTickets?size gt 1><i class="arrow"></i></#if></em></div>
-                                    <!-- 默认显示一条 -->
-                                    <#list spot.spotTickets as ticket>
-                                    <div class="xpbl-item clearfix" <#if ticket_index != 0>style="display:none;"</#if> data-id="T${ticket.suppGoodsId}">
-                                        <div class="xh-name"><em title="${ticket.goodsName}">${ticket.goodsName}</em></div>
-                                        <div class="xh-price"><dfn>￥</dfn><span>${ticket.dayTimePriceDtos[0].price}</span></div>
-                                        <div class="xh-date">
-                                            <div class="select-day">
-                                                <span>请选择游玩日期</span>
-                                                <i class="arrow"></i>
-                                            </div>
-                                            <ol class="select-day-list">
-                                                <#list ticket.dayTimePriceDtos as dayPrice>
-                                                <li data-day="${dayPrice.specDate?string('yyyy-MM-dd')}" data-price="${dayPrice.price}">${dayPrice.specDate?string('yyyy-MM-dd')}</li>
-                                                </#list>
-                                            </ol>
-                                        </div>
-                                        <div class="xh-count">
-                                            <div class="select-count">
-                                                <span>0</span>
-                                                <i class="arrow"></i>
-                                            </div>
-                                            <span class="xh-unit">份</span>
-                                            <ol class="select-count-list ticket-count">
-                                                <#if ticket.minQuantity gt 0>
-                                                <li data-count="0">0</li>
-                                                </#if>
-                                                <#list ticket.minQuantity..ticket.maxQuantity as num>
-                                                <li data-count="${num}">${num}</li>
-                                                </#list>
-                                            </ol>
-                                        </div>
-                                        <i class="xh-check-icon"></i>
-                                    </div>
-
-                                    <div class="fh-ticket-detail" id="TDTL${ticket.suppGoodsId}">
-                                        <dl class="clearfix">
-                                            <dt>费用说明</dt>
-                                            <dd>
-                                                ${ticket.ticketGoodsDetailDto.priceIncludes}
-                                            </dd>
-                                        </dl>
-                                        <dl class="clearfix">
-                                            <dt>预定时间</dt>
-                                            <dd>
-                                                游玩当天${ticket.ticketGoodsDetailDto.aheadBookTime}前可下单，请尽早预订，以免耽误您的行程。
-                                            </dd>
-                                        </dl>
-                                        <dl class="clearfix">
-                                            <dt>入园须知</dt>
-                                            <dd>
-                                                取票时间：${ticket.ticketGoodsDetailDto.changeTime}<br>
-                                                取票地点：${ticket.ticketGoodsDetailDto.changeAddress}<br>
-                                                入园方式：${ticket.ticketGoodsDetailDto.enterStyle}<br>
-                                                <#if ticket.ticketGoodsDetailDto.limitFlag?exists && ticket.ticketGoodsDetailDto.limitFlag == "0">
-                                                    入园限制：请在入园当天的<#if ticket.ticketGoodsDetailDto.limitTime?exists>${ticket.ticketGoodsDetailDto.limitTime?split(":")[0]}</#if>点<#if ticket.ticketGoodsDetailDto.limitTime?exists>${ticket.ticketGoodsDetailDto.limitTime?split(":")[1]}</#if>分以前入园<br>
-                                                <#else>
-                                                    入园限制：无限制<br>
-                                                </#if>
-
-                                                <#if ticket.ticketGoodsDetailDto.aperiodicFlag?exists && ticket.ticketGoodsDetailDto.aperiodicFlag == "Y">
-                                                有效期限：（有效期内，仅限入园1次）有效期从${ticket.ticketGoodsDetailDto.startTimeStr?if_exists}到${ticket.ticketGoodsDetailDto.endTimeStr?if_exists}有效。
-                                                <#else>
-                                                    <#if ticket.ticketGoodsDetailDto.days?exists && ticket.ticketGoodsDetailDto.days == 1>
-                                                    有效期限：（有效期内，仅限入园1次）指定游玩日当天内有效。
-                                                    <#else>
-                                                    有效期限：（有效期内，仅限入园1次）指定游玩日${ticket.ticketGoodsDetailDto.days?if_exists}天内有效。
-                                                    </#if>
-                                                </#if>
-                                                <br>
-                                                详情信息请见：<a href="" target="_blank"></a>
-                                            </dd>
-                                        </dl>
-                                        <dl class="clearfix">
-                                            <dt>重要提示</dt>
-                                            <dd>
-                                            <#if ticket.ticketGoodsDetailDto.height?exists && ticket.ticketGoodsDetailDto.height ? length gt 0>
-                                            身高：${ticket.ticketGoodsDetailDto.height}<br>
-                                            </#if>
-                                            <#if ticket.ticketGoodsDetailDto.age?exists && ticket.ticketGoodsDetailDto.age ? length gt 0>
-                                            年龄：${ticket.ticketGoodsDetailDto.age}<br>
-                                            </#if>
-                                            <#if ticket.ticketGoodsDetailDto.region?exists && ticket.ticketGoodsDetailDto.region ? length gt 0>
-                                            地域：${ticket.ticketGoodsDetailDto.region}<br>
-                                            </#if>
-                                            <#if ticket.ticketGoodsDetailDto.maxQuantity?exists && ticket.ticketGoodsDetailDto.maxQuantity ? length gt 0>
-                                            最大限购：${ticket.ticketGoodsDetailDto.maxQuantity}<br>
-                                            </#if>
-                                            <#if ticket.ticketGoodsDetailDto.express?exists && ticket.ticketGoodsDetailDto.express ? length gt 0>
-                                            快递：${ticket.ticketGoodsDetailDto.express}<br>
-                                            </#if>
-                                            <#if ticket.ticketGoodsDetailDto.entityTicket?exists && ticket.ticketGoodsDetailDto.entityTicket ? length gt 0>
-                                            实体票：${ticket.ticketGoodsDetailDto.entityTicket}<br>
-                                            </#if>
-                                            <#if ticket.ticketGoodsDetailDto.others?exists && ticket.ticketGoodsDetailDto.others ? length gt 0>
-                                            其他：${ticket.ticketGoodsDetailDto.others?if_exists}
-                                            </#if>
-                                            </dd>
-                                        </dl>
-                                        <span class="shouqi">收起<i class="arrow"></i></span>
-                                        <div class="ftd-arrow"><span>◆</span><i>◆</i></div>
-                                    </div>
-                                    </#list>
-                                </div>
-                                </#list>
-                                <#if spots?size gt 1>
-                                <p class="xh-more"><em>更多门票<i class="arrow"></i></em></p>
-                                </#if>
-                            </div>
-                        </div><!-- 门票结束 -->
-                        </#if>
-
-
-                        <!-- 保险 xpb-insurance -->
-                        <div class="xm-product-box xpb-insurance clearfix">
-                            <div class="xh-type">
-                                保险
-                            </div>
-                            <div class="xpb-content">
-                                <div class="xpb-list">
-                                    <div class="xpbl-title"><em <#if flightInsuranceInfos?size = 1>class="no_gaoguang"</#if>>${flightInsuranceInfos[0].insuranceClass.name}<#if flightInsuranceInfos?size gt 1><i class="arrow"></i></#if></em></div>
-                                    <#list flightInsuranceInfos as fInsurance>
-                                    <div class="xpbl-item clearfix" data-id="F${fInsurance.id}" data-suppname="${fInsurance.supp.name}" <#if fInsurance_index gt 0>style="display:none;"</#if> >
-                                        <div class="xh-name"><em title="${fInsurance.insuranceRemark}">${fInsurance.insuranceRemark}</em></div>
-                                        <div class="xh-price"><dfn>￥</dfn><span>${fInsurance.insurancePrice}</span></div>
-                                        <div class="xh-time" >--</div>
-                                        <div class="xh-count">
-                                            <div class="select-count">
-                                                <span>0</span>
-                                                <i class="arrow"></i>
-                                            </div>
-                                            <span class="xh-unit">份</span>
-                                            <ol class="select-count-list select-flightInsurance-count-list">
-                                                <li data-count="0">0</li>
-                                            </ol>
-                                            <i class="fh-icon-ques" tip-content="每程每人各一份"></i>
-                                        </div>
-                                        <i class="xh-check-icon"></i>
-                                    </div>
-
-                                    <div class="fh-ticket-detail" id="TDTL${fInsurance.id}">
-                                        <dl class="clearfix">
-                                            <dt>描述</dt>
-                                            <dd>
-                                                ${fInsurance.insuranceDesc}
-                                            </dd>
-                                        </dl>
-                                        <span class="shouqi">收起<i class="arrow"></i></span>
-                                        <div class="ftd-arrow"><span>◆</span><i>◆</i></div>
-                                    </div>
-                                    </#list>
-                                </div>
-
-                                <#list insuranceDto.insuranceProductList as insuranceInfo>
-                                <div class="xpb-list" id="insuranceList">
-                                    <div class="xpbl-title"><em <#if insuranceInfo.insuranceCount == 1>class="no_gaoguang"</#if>>${insuranceInfo.productName}<#if insuranceInfo.insuranceCount gt 1><i class="arrow"></i></#if></em></div>
-                                    <#list insuranceInfo.insuranceProductBranchList as branch >
-                                    <#if branch.insuranceSuppGoodList ? size gt 0>
-                                    <#list branch.insuranceSuppGoodList as suppGood >
-                                    <div class="xpbl-item clearfix" data-id="I${suppGood.suppGoodsId }" <#if branch_index gt 0 || suppGood_index gt 0>style="display:none;"</#if> >
-                                    	<input type="hidden"  name="productId"  value="${insuranceInfo.productId}"/>
-                                    	<input type="hidden"  name="productType" value="${insuranceInfo.insuranceType}" />
-                                    	<input type="hidden"  name="productName" value="${insuranceInfo.productName}" />
-                                    	<input type="hidden"  name="branchId" value="${branch.productBranchId }"/>
-                                    	<input type="hidden"  name="branchName" value="${branch.branchName }" />
-                                    	<input type="hidden"  name="suppGoodsId" value="${suppGood.suppGoodsId }" />
-                                    	<input type="hidden"  name="suppGoodsName" value="${suppGood.goodsName }" />
-                                    	<input type="hidden"  name="insuranceDetail" value="${suppGood.insuranceGoodBranch.insuranceDesc?html}" />
-                                        <div class="xh-name"><em title="${suppGood.goodsName } -- ${branch.branchName }">${suppGood.goodsName } -- ${branch.branchName } </em></div>
-                                        <div class="xh-price"><dfn>￥</dfn><span>${suppGood.insPrice.priceYuan }</span></div>
-                                        <div class="xh-time" >--</div>
-                                        <div class="xh-count">
-                                            <div class="select-count">
-                                                <span>0</span>
-                                                <i class="arrow"></i>
-                                            </div>
-                                            <span class="xh-unit">份</span>
-                                            <ol class="select-count-list select-insurance-list"></ol>
-                                        </div>
-                                        <i class="xh-check-icon "></i>
-                                    </div>
-
-                                    <div class="fh-ticket-detail" id="TDTL${suppGood.suppGoodsId}">
-                                        <dl class="clearfix">
-                                            <dt>描述</dt>
-                                            <dd>
-                                                ${suppGood.insuranceGoodBranch.insuranceDesc}
-                                            </dd>
-                                        </dl>
-                                        <span class="shouqi">收起<i class="arrow"></i></span>
-                                        <div class="ftd-arrow"><span>◆</span><i>◆</i></div>
-                                    </div>
-                                    </#list>
-                                    </#if>
-                                    </#list>
-                                </div>
-                                </#list>
-                                <p class="insurance-warning"><i class="fh-icon fh-icon-warning"></i>为了您再出游过程中获得更为全面的保障，强烈建议旅游者出游时间根据个人意愿和需要，自行投保人参意外伤害保险等个人险种。</p>
-                            </div>
-                        </div><!-- 保险 xpb-insurance end -->
-
-                    </div>
-                </div> <!-- 可选产品结束 fh-pm-xpro-->
-                </#if>
-            </div>
-            </#if>            <!-- //romLi-more -->
-                    <!-- 列表结束 -->
+            </#if>
+            <!-- 列表结束 -->
 
                 <#if toFlight!=null>
 		            <div class="fh-product-side"
@@ -1068,18 +644,12 @@
     <div class="img-dialog">
         <img src="" alt="" width="300" height="200">
     </div>
-    <input id="shoppingUUID" type="hidden" value="${searchform.shoppingUUID}">
-    <input id="departureCityName" type="hidden" value="${searchform.departureCityName}">
-    <input id="arrivalCityName" type="hidden" value="${searchform.arrivalCityName}">
-    <input id="productName" type="hidden" value="${hotel.productName}">
+
     <input id="_requestPath" type="hidden" value="${request.contextPath}">
-    <input id="baseAmount" type="hidden" value="${baseAmount}">
-    <input id="adultsCount" type="hidden" value="${searchform.adultsCount}">
-    <input id="childCount" type="hidden" value="${searchform.childCount}">
     <input id="isBackBooking" type="hidden" value="${isBackBooking}">
     <input id="errorMsgOutTime" type="hidden" value="${errorMsgOutTime}">
-    
-    
+
+    <#include "hotel/hotel_detail.ftl"/>
     <!-- 正在加载弹层 END-->
     <!-- 地图js -->
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
@@ -1087,25 +657,21 @@
 
 	<script src="http://pic.lvmama.com/min/index.php?f=/js/new_v/jquery-1.7.2.min.js,/js/v6/header_new.js,/js/ui/lvmamaUI/lvmamaUI.js,/js/v5/modules/pandora-poptip.js,/js/v5/modules/pandora-dialog.js,/js/common/poplogin.js,/js/lv/calendar.js,/js/common/losc.js"></script>
     <script src="http://pic.lvmama.com/min/index.php?f=/js/v6/flighthotel/fh-flight-tip.js,/js/v6/flighthotel/fh-select-alert.js,/js/fit/v3/select.js,/js/fit/v3/search.js"></script>
-    <script src="${request.contextPath}/js/fh-index.js"></script>
-    <script src="${request.contextPath}/js/fh-select.js"></script>
 
 	  <#if isBackBooking=='true'>
        <#else>
 	       <#include "online_foot.ftl">
        </#if>
 
-	<!-- <script src="${request.contextPath}/js/fh-select_all.js"></script> -->
-	<script src="${request.contextPath}/js/fh-room.js"></script>
 	<script src="${request.contextPath}/js/common/login.js"></script>
-<!-- hotelAlert 酒店弹窗 start 包括：详情、点评、地图 -->
+    <!-- hotelAlert 酒店弹窗 start 包括：详情、点评、地图 -->
     <script src="${request.contextPath}/js/common/common.js"></script>
     <script src="${request.contextPath}/js/moment.js"></script>
 
-     <link type="text/css" rel="stylesheet" href="${request.contextPath}/js/jquery-dialog/jquery-ui-1.8.9.custom.css" />
+    <link type="text/css" rel="stylesheet" href="${request.contextPath}/js/jquery-dialog/jquery-ui-1.8.9.custom.css" />
     <script language="javascript" src="${request.contextPath}/js/jquery-dialog/jquery-ui-1.8.9.custom.min.js"></script>
-
-	<#include "hotel/hotel_detail.ftl"/>
 	<!-- hotelAlert 酒店弹窗结束 -->
+    <script src="${request.contextPath}/js/fh-select.js"></script>
+    <script src="${request.contextPath}/js/fh-hotel-detail.js"></script>
 </body>
 </html>

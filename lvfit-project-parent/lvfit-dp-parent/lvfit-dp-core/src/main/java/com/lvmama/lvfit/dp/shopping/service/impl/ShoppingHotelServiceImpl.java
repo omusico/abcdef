@@ -9,6 +9,11 @@
 
 package com.lvmama.lvfit.dp.shopping.service.impl;
 
+import com.lvmama.lvfit.common.dto.enums.FlightTripType;
+import com.lvmama.lvfit.common.dto.price.FitHotelPlanPriceDto;
+import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
+import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
+import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchRoomDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,9 @@ import com.lvmama.lvfit.common.dto.search.spot.result.SpotSearchSpotDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingHotelService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingService;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * ClassName:ShoppingHotelServiceImpl <br/>
@@ -50,42 +58,73 @@ public class ShoppingHotelServiceImpl implements ShoppingHotelService {
 	FitAggregateClient fitAggregateClient;
 
 	@Override
-	public BaseSingleResultDto<FitShoppingDto> changeHotel(ChangeHotelRequest request) {
-		
-		try{
-			FitShoppingDto shoppingDto = shoppingService.changedHotel(request);
-			BaseSingleResultDto<FitShoppingDto> result = new BaseSingleResultDto<FitShoppingDto>();
-			result.setResult(shoppingDto);
-			result.setStatus(ResultStatus.SUCCESS);
-			return result;
-			} catch(ExceptionWrapper ew){
-				throw ew;
-			}
-	}
-	
-	/**
-	 * 更换酒店之后，根据酒店id再进行查询景点门票信息 
-	 * @param request
-	 * @param shoppingDto
-	 */
-	private void querySpotByHotelId(ChangeHotelRequest request,FitShoppingDto shoppingDto) {
-		SpotSearchResult<SpotSearchSpotDto> spotResult = new SpotSearchResult<SpotSearchSpotDto>();
-		try{
-			String shoppingId = request.getShoppingUUID();
-			SpotQueryRequest spotQueryRequest = shoppingDto.getSearchRequest().getSpotQueryRequests().get(0);
-			spotQueryRequest.setHotelId(request.getHotelId());
-			spotResult = fitAggregateClient.searchSpot(spotQueryRequest);
-			shoppingDto.setSpots(spotResult.getResults());
-			shoppingService.putShoppingCache(shoppingId,shoppingDto);
-		} catch(Exception e){
-			if(e instanceof ExceptionWrapper){
-				ExceptionWrapper exceptionWrapper = (ExceptionWrapper)e;
-				throw exceptionWrapper;
-			}else{
-				logger.error("查询景点门票信息异常",e);
-				throw new ExceptionWrapper(ExceptionCode.UNDEF_ERROR);
+	public List<HotelSearchHotelDto> changeHotel(ChangeHotelRequest request) {
+		FitShoppingDto shoppingDto = shoppingService.getFitShopping(request.getShoppingUUID());
+		List<HotelSearchHotelDto> hotelList = shoppingDto.getHotels().getResults();
+
+		// 根据选择房间设置新的基准价
+		BigDecimal hotelBasePrice = BigDecimal.ZERO;
+		for (HotelSearchHotelDto hotel : hotelList) {
+			for (HotelSearchRoomDto room : hotel.getRooms()) {
+				for (HotelSearchPlanDto plan : room.getPlans()) {
+					if (request.getHotelId().equals(hotel.getProductId())
+						&& request.getRoomId().equals(room.getBranchId())
+						&& request.getPlanId().equals(plan.getSuppGoodsId())) {
+						room.setRoomCounts(request.getRoomCount());
+						hotelBasePrice = plan.getPrice().multiply(BigDecimal.valueOf(request.getRoomCount()));
+						break;
+					}
+				}
 			}
 		}
+		// 根据基准价设置新的差价
+		for (HotelSearchHotelDto hotel : hotelList) {
+			for (HotelSearchRoomDto room : hotel.getRooms()) {
+				for (HotelSearchPlanDto plan : room.getPlans()) {
+					plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(room.getRoomCounts())).subtract(hotelBasePrice));
+				}
+			}
+		}
+		// 将选中的酒店规格放在list首位
+		HotelSearchHotelDto selectHotelDto = null;
+		for (int i = 0; i < hotelList.size(); i++) {
+			if (request.getHotelId().equals(hotelList.get(i).getProductId())) {
+				selectHotelDto = hotelList.get(i);
+				hotelList.remove(i);
+				break;
+			}
+		}
+		if (selectHotelDto != null) {
+			HotelSearchRoomDto selectRoom = null;
+			for (int j = 0; j < selectHotelDto.getRooms().size(); j++) {
+				HotelSearchRoomDto room = selectHotelDto.getRooms().get(j);
+				if (request.getRoomId().equals(room.getBranchId())) {
+					selectRoom = room;
+					selectHotelDto.getRooms().remove(j);
+					break;
+				}
+			}
+			if (selectRoom != null) {
+				HotelSearchPlanDto selectPlan = null;
+				for (int k = 0; k < selectRoom.getPlans().size(); k++) {
+					HotelSearchPlanDto plan = selectRoom.getPlans().get(k);
+					if (request.getPlanId().equals(plan.getSuppGoodsId())) {
+						selectPlan = plan;
+						selectRoom.getPlans().remove(k);
+						break;
+					}
+				}
+				if (selectPlan != null) {
+					selectRoom.getPlans().add(0, selectPlan);
+					selectHotelDto.getRooms().add(0, selectRoom);
+					hotelList.add(0, selectHotelDto);
+				}
+			}
+		}
+		// 更新购物车信息
+		shoppingDto.getHotels().setResults(hotelList);
+		shoppingDto.setSelectHotel(hotelList.get(0));
+		shoppingService.putShoppingCache(request.getShoppingUUID(), shoppingDto);
+		return hotelList;
 	}
-	
 }

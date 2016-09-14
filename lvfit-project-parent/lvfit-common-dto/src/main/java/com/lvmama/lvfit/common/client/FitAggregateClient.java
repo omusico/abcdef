@@ -6,6 +6,7 @@ import java.util.List;
 import com.lvmama.lvfit.common.cache.CacheBoxConvert;
 import com.lvmama.lvfit.common.cache.CacheKey;
 import com.lvmama.lvfit.common.cache.CachePoint;
+import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
@@ -39,7 +40,6 @@ import com.lvmama.lvfit.common.dto.sdp.product.result.FitSdpGroupCalendarSearchR
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelSearchResult;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
@@ -75,7 +75,6 @@ public class FitAggregateClient {
     	url = command.url(lvfitaggregateBaseurl);
     	try
     	{
-    		MockUtil.writeFile("d:\\log_test\\查询航班"+System.currentTimeMillis()+".txt", MockUtil.toJsonStr(request));
     		String result = restClient.post(url, String.class, request);
     		if(StringUtils.isNotBlank(result))
     		{
@@ -255,19 +254,14 @@ public class FitAggregateClient {
      * @param request
      * @return
      */
-	public InsuranceSearchResult<InsuranceDto> searchInsuranceFromVst(InsuranceQueryRequest request) {
+	public List<InsuranceDto> searchInsuranceFromVst(InsuranceQueryRequest request) {
 		AggregateClientPath command = AggregateClientPath.INSURANCE_SEARCH;
-    	String url = StringUtils.EMPTY;
-    	url = command.url(lvfitaggregateBaseurl);
-    	try
-    	{
+		String url = command.url(lvfitaggregateBaseurl);
+    	try {
     		String result = restClient.post(url, String.class, request);
-    		if(StringUtils.isNotBlank(result))	
-    		{
+    		if(StringUtils.isNotBlank(result)) {
     			ObjectMapper objectMapper = JSONMapper.getInstance();
-    			InsuranceSearchResult<InsuranceDto> searchResult = objectMapper.readValue(result, 
-    					new TypeReference<InsuranceSearchResult<InsuranceDto>>(){});
-    			return searchResult;		
+    			return objectMapper.readValue(result, new TypeReference<List<InsuranceDto>>(){});
     		}
     		return null;
     	} catch (ExceptionWrapper ew) {

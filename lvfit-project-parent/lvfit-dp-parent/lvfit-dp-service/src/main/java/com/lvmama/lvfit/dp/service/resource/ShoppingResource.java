@@ -9,27 +9,10 @@
 
 package com.lvmama.lvfit.dp.service.resource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvfit.common.client.path.DpClientPath;
-import com.lvmama.lvfit.common.client.path.SdpClientPath;
 import com.lvmama.lvfit.common.dto.calculator.request.CalculateAmountDetailRequest;
 import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
 import com.lvmama.lvfit.common.dto.request.CalculateAmountRequest;
@@ -39,7 +22,8 @@ import com.lvmama.lvfit.common.dto.request.FitDpUpdateShoppingRequest;
 import com.lvmama.lvfit.common.dto.request.FitShoppingFliInsRequest;
 import com.lvmama.lvfit.common.dto.request.FitShoppingInsuranceRequest;
 import com.lvmama.lvfit.common.dto.request.FitShoppingTicketRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceDto;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProduct;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProductBranch;
@@ -57,6 +41,20 @@ import com.lvmama.lvfit.dp.shopping.service.ShoppingFlightService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingHotelService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingViewService;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName:ShoppingResource <br/>
@@ -104,7 +102,7 @@ public class ShoppingResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(DpClientPath.Path.CHANGE_SHOPPING_FLIGHT)
 	public Response changeFlight(ChangeFlightRequest request) {
-		BaseSingleResultDto<FitShoppingDto> result = shoppingFlightService.changeFlight(request);
+		List<FlightSearchFlightInfoDto> result = shoppingFlightService.changeFlight(request);
 		return Response.ok(result).build();
 	}
 
@@ -122,7 +120,9 @@ public class ShoppingResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(DpClientPath.Path.CHANGE_SHOPPING_HOTEL)
 	public Response changeHotel(ChangeHotelRequest request) {
-		BaseSingleResultDto<FitShoppingDto> result = shoppingHotelService.changeHotel(request);
+		List<HotelSearchHotelDto> hotels = shoppingHotelService.changeHotel(request);
+		BaseSingleResultDto<List<HotelSearchHotelDto>> result = new BaseSingleResultDto<List<HotelSearchHotelDto>>();
+		result.setResult(hotels);
 		return Response.ok(result).build();
 	}
 
@@ -144,40 +144,6 @@ public class ShoppingResource {
 		return Response.ok(result).build();
 	}
 
-	
-	
-	/**
-	 * 
-	 * reGetShoppingByShoppingUUID:产品选择页，第一次查不到时，再查一次. <br/>
-	 * 
-	 * @author liuweiguo
-	 * @param shoppingUUID
-	 * @return
-	 * @since JDK 1.6
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.RE_GET_SHOPPING_BY_UUID)
-	public Response reGetShoppingByShoppingUUID(String shoppingUUID) {
-		FitShoppingDto fitShoppingDto = shoppingService.getFitShopping(shoppingUUID);
-		BaseSingleResultDto<FitShoppingDto> result = new BaseSingleResultDto<FitShoppingDto>();
-		if(null == fitShoppingDto){//第一次查不到，再查一次
-			//获取查询条件
-			FitSearchRequest fitSearchRequest = shoppingService.getFitSearchRequest(shoppingUUID);
-			if(null != fitSearchRequest){
-				fitShoppingDto = fitDpService.getShoppingResult(fitSearchRequest);
-			} else {
-					throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
-			}
-		}
-		result.setResult(fitShoppingDto);
-		return Response.ok(result).build();
-	}
-	
-	
-	
-	
 	/**
 	 * 
 	 * calculatPrice:计算购物车价格. <br/>
@@ -212,43 +178,6 @@ public class ShoppingResource {
 	public Response calculatAmountByDetail(CalculateAmountDetailRequest request) {
 		BaseSingleResultDto<FitShoppingAmountDto> result = shoppingCalculateService.calculateAmountByDetail(request);
 		return Response.ok(result).build();
-	}
-	
-	/**
-	 * 
-	 * putShoppingInfoByShoppingUUID:还原购物车信息. <br/>
-	 *
-	 * @author zengzhimin
-	 * @param request
-	 * @return
-	 * @since JDK 1.6
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.REDUCTION_SHOPPINGINFO)
-	public Response putShoppingInfoByShoppingUUID(String shoppingUUID){
-		BaseSingleResultDto baseSingleResultDto = shoppingViewService.putShoppingInfo(shoppingUUID);
-		return Response.ok(baseSingleResultDto).build();
-	}
-	
-	
-	/**
-	 * 
-	 * putShoppingInfoByShoppingUUID:还原购物车信息. <br/>
-	 *
-	 * @author zengzhimin
-	 * @param request
-	 * @return
-	 * @since JDK 1.6
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.REDUCTION_SEARCH_REQUEST)
-	public Response getShoppingRequestByShoppingUUID(String shoppingUUID){
-		BaseSingleResultDto baseSingleResultDto = shoppingViewService.getShoppingRequestByShoppingUUID(shoppingUUID);
-		return Response.ok(baseSingleResultDto).build();
 	}
 	
 	@POST
@@ -322,29 +251,16 @@ public class ShoppingResource {
     	if (fitShoppingDto == null) {
     	    throw new ExceptionWrapper(ExceptionCode.GET_NO_CACHE_SHOPPING);
     	}
-    	
-    	List<FitShoppingSelectedInsuranceDto> insuranceDtoList = req.getInsuranceDtoList(); //页面传过来的。
-    	List<FitShoppingSelectedInsuranceDto> selectInsuranceNew= new ArrayList<FitShoppingSelectedInsuranceDto>();
-    	List<InsuranceDto> insuranceDtos = fitShoppingDto.getInsurances();
-    	Map<String,String> insuranceDetailMap = new HashMap<String, String>();
-    	if(CollectionUtils.isNotEmpty(insuranceDtos)){
-    		for (InsuranceDto insuranceDto : insuranceDtos) {
-    		    for (InsuranceProdProduct  insuranceProdProduct  : insuranceDto.getInsuranceProductList()) {
-					for (InsuranceProdProductBranch prodProductBranch : insuranceProdProduct.getInsuranceProductBranchList()) {
-						for (InsuranceSuppGoods insuranceSuppGoods : prodProductBranch.getInsuranceSuppGoodList()) {
-							insuranceDetailMap.put(String.valueOf(insuranceSuppGoods.getSuppGoodsId()), insuranceSuppGoods.getInsuranceGoodBranch().getInsuranceDesc());
-						}
-					}
-				 }
-    		}
+
+    	for (FitShoppingSelectedInsuranceDto selectedInsuranceDto : req.getInsuranceDtoList()) {
+			for (InsuranceDto insuranceDto : fitShoppingDto.getInsurances()) {
+				if (selectedInsuranceDto.getSuppGoodsId().equals(insuranceDto.getSuppGoodsId().toString())) {
+					selectedInsuranceDto.setInsuranceDetail(insuranceDto.getBranchDesc());
+				}
+			}
     	}
     	
-    	for(FitShoppingSelectedInsuranceDto insuranceDto : insuranceDtoList){
-    		insuranceDto.setInsuranceDetail(insuranceDetailMap.get(insuranceDto.getSuppGoodsId()));
-    		selectInsuranceNew.add(insuranceDto);
-    	}
-    	
-    	fitShoppingDto.setSelectInsuranceInfo(selectInsuranceNew);
+    	fitShoppingDto.setSelectInsuranceInfo(req.getInsuranceDtoList());
     	boolean result = shoppingService.putShoppingCache(shoppingUuid, fitShoppingDto);
     	return Response.ok(result).build();
     }

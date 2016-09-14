@@ -31,10 +31,13 @@ import com.lvmama.lvfit.common.client.FitVstServiceClient;
 import com.lvmama.lvfit.common.dto.enums.BizEnum;
 import com.lvmama.lvfit.common.dto.enums.BizEnum.BIZ_CATEGORY_TYPE;
 import com.lvmama.lvfit.common.dto.enums.JudgeType;
+import com.lvmama.lvfit.common.dto.enums.VSTDistrictCityEnum;
+import com.lvmama.lvfit.common.dto.hotel.FitConRecomHotelDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
@@ -99,6 +102,13 @@ public class SdpProductControllerImpl  implements SdpProductController{
 		return "product/product_traffic_index_list";
 	}
 	
+	@RequestMapping(value = "sdpProduct/departureCity", method = { RequestMethod.POST, RequestMethod.GET })
+	public String searchDepartCity(Model model,Long productId) {
+		buildOrderModel(model);
+		model.addAttribute("productId", productId);
+		model.addAttribute("cityGroup", VSTDistrictCityEnum.values());
+		return "product/product_departure_city_list";
+	}
 	
 	private void buildOrderModel(Model model) {
 		model.addAttribute("JudgeType", JudgeType.values());   //订单状态
@@ -171,13 +181,13 @@ public class SdpProductControllerImpl  implements SdpProductController{
 	
 	@ResponseBody
 	@RequestMapping(value = "sdpProduct/queryTrafficIndexList", method = { RequestMethod.POST, RequestMethod.GET })
-	public BaseResultDto<FitSdpProductSynMsg> queryTrafficIndexList(Model model,Long productId,Pagination pg) {
-		BaseResultDto<FitSdpProductSynMsg> result = new BaseResultDto<FitSdpProductSynMsg>();
+	public BaseResultDto<FitSdpProductSearchIndexTraffic> queryTrafficIndexList(Model model,Long productId,Pagination pg) {
+		BaseResultDto<FitSdpProductSearchIndexTraffic> result = new BaseResultDto<FitSdpProductSearchIndexTraffic>();
 		try {
 			if(productId!=null){
-				result = fitBusinessClient.querySdpProductSynInfoList(productId);
-				List<FitSdpProductSynMsg> list = result.getResults();
-				List<FitSdpProductSynMsg> res = new ArrayList<FitSdpProductSynMsg>();
+				result = fitBusinessClient.querySdpProductIndexTrafficList(productId);
+				List<FitSdpProductSearchIndexTraffic> list = result.getResults();
+				List<FitSdpProductSearchIndexTraffic> res = new ArrayList<FitSdpProductSearchIndexTraffic>();
 				int start = (pg.getPage()-1)*pg.getRows();
 				for(int i=0;i<pg.getRows();i++){
 					if(list.size()>(start+i)){
@@ -193,7 +203,39 @@ public class SdpProductControllerImpl  implements SdpProductController{
 				return result;
 			}
 		} catch (Exception e) {
-			logger.error("查询产品同步信息失败！");
+			logger.error("查询产品索引规则失败！");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "sdpProduct/queryDepartureCityList", method = { RequestMethod.POST, RequestMethod.GET })
+	public BaseResultDto<FitSdpCityGroupDto> queryDepartCityList(Model model, FitSdpCityGroupDto dto,Pagination pg) {
+		BaseResultDto<FitSdpCityGroupDto> result = new BaseResultDto<FitSdpCityGroupDto>();
+		BaseQueryDto<FitSdpCityGroupDto> baseQuery = new BaseQueryDto<FitSdpCityGroupDto>();
+		baseQuery.setCondition(dto);
+		try {
+			if(dto!=null){
+				result = fitBusinessClient.querySdpProductDepartureCityList(baseQuery);
+				List<FitSdpCityGroupDto> list = result.getResults();
+				List<FitSdpCityGroupDto> res = new ArrayList<FitSdpCityGroupDto>();
+				int start = (pg.getPage()-1)*pg.getRows();
+				for(int i=0;i<pg.getRows();i++){
+					if(list.size()>(start+i)){
+						res.add(list.get(start+i));
+					}else{
+						break;
+					}
+				}
+				result.setResults(res);
+				pg.setTotal((list.size()+pg.getRows()-1)/pg.getRows());
+				pg.setRecords(list.size());
+				result.setPagination(pg);
+				return result;
+			}
+		} catch (Exception e) {
+			logger.error("查询产品Id索引失败！");
 			e.printStackTrace();
 		}
 		return null;
@@ -347,7 +389,7 @@ public class SdpProductControllerImpl  implements SdpProductController{
 	@RequestMapping(value = "sdpProduct/cityGroupQuery", method = { RequestMethod.POST, RequestMethod.GET })
 	public List<FitSdpCityGroupDto> queryCityGroup(Model model, Long productId) {
 		try {
-			List<FitSdpCityGroupDto> baseResultDto = fitBusinessClient.getProductCityGroupByProductId(productId);
+			List<FitSdpCityGroupDto> baseResultDto = fitBusinessClient.getSelectProductCityGroupByProductId(productId);
 			
 			if(baseResultDto != null)	{
 				return baseResultDto;
@@ -358,6 +400,23 @@ public class SdpProductControllerImpl  implements SdpProductController{
 		}
 		return null;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "sdpProduct/queryOneCity", method = { RequestMethod.POST, RequestMethod.GET })
+	public FitSdpCityGroupDto queryOneCity(Model model, Long id) {
+		try {
+			FitSdpCityGroupDto resultDto = fitBusinessClient.getProductCityGroupById(id);
+			
+			if(resultDto != null)	{
+				return resultDto;
+			}
+		} catch (Exception e) {
+			logger.error("自主打包产品城市查询失败！");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	@ResponseBody
 	@RequestMapping(value = "sdpProduct/updateCitysUseFlag", method = { RequestMethod.POST, RequestMethod.GET })
@@ -377,6 +436,22 @@ public class SdpProductControllerImpl  implements SdpProductController{
 		}
 		return null;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "sdpProduct/updateCityGroup", method = { RequestMethod.POST, RequestMethod.GET })
+	public Map<String,String> updateCityGroup(Model model,FitSdpCityGroupDto cityGroupDto){
+		Map<String,String> map = new HashMap<String,String>();
+		try {
+			ResultStatus returnStr = fitBusinessClient.updateOneCityGroup(cityGroupDto);
+			map.put("returnStr", returnStr.name());
+			return map;
+		} catch (Exception e) {
+			logger.error("自主打包产品加价规则保存失败！");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
    @Async
 	private void updateSdpProductSearchIndex(Long productId) {

@@ -10,13 +10,10 @@ public enum DpClientPath {
 	GET_FLIGHT_AND_HOTEL(Path.GET_FLIGHT_AND_HOTEL,"获取机票酒店信息"),
 	QUERY_COMMENT_PAGE(Path.QUERY_COMMENT_PAGE,"获取点评列表"),
 	GET_HOTEL_DETAIL(Path.GET_HOTEL_DETAIL,"获取酒店详情信息"),
-	
-	GET_HOTEL_LIST(Path.GET_HOTEL_LIST,"获取更换酒店列表"),
 	GET_HOTEL_LIST_CACHE(Path.GET_HOTEL_LIST_CACHE,"获取更换酒店列表"),
 	
 	GET_FLIGHT_LIST(Path.GET_FLIGHT_LIST,"获取更换航班列表"),
 	GET_FLIGHT_LIST_CACHE(Path.GET_FLIGHT_LIST_CACHE,"获取更换航班列表"),
-	GET_FLIGHT_LIST_TO_BACK(Path.GET_FLIGHT_LIST_TO_BACK,"获取往返的航班列表"),
 	
 	CHANGE_SHOPPING_FLIGHT(Path.CHANGE_SHOPPING_FLIGHT,"更换航班重新加载购物车"),
 	CHANGE_SHOPPING_HOTEL(Path.CHANGE_SHOPPING_HOTEL,"更换酒店重新加载购物车"),
@@ -30,8 +27,6 @@ public enum DpClientPath {
 	BOOKING(Path.BOOKING, "预定"),
 	RECORD_BOOKING_LOG_NO_LOGIN(Path.RECORD_BOOKING_LOG_NO_LOGIN,"用户点击预订下一步前预定前记录用户请求信息"),
 	REDUCTION_SEARCH_REQUEST(Path.REDUCTION_SEARCH_REQUEST, "还原搜索条件"),
-	//public final static String RE_GET_SHOPPING_BY_UUID=basePath+shoppingPath+"reGetShoppingByUUID";
-	RE_GET_SHOPPING_BY_UUID(Path.RE_GET_SHOPPING_BY_UUID,"第一次查不到再查一次"),
 	GET_RECOM_HOTEL_BY_DISTRICT_ID(Path.GET_RECOM_HOTEL_BY_DISTRICT_ID,"根据城市id查找推荐酒店"),
 	GET_SHOPPING_RESULT(Path.GET_SHOPPING_RESULT,"获取产品选择页默认加载的信息"),
 	SEARCH_FIT_RECORD_FROM_SOLR(Path.SEARCH_FIT_RECORD_FROM_SOLR, "从solr中查询机+酒搜索记录"),
@@ -42,7 +37,8 @@ public enum DpClientPath {
     HOTEL_CONDITION(Path.HOTEL_CONDITION,"获取缓存中几点筛选条件"), 
 	GET_FLIGHT_INFOS(Path.GET_FLIGHT_INFOS, "获取机票信息"),
     APP_UPDATE_GOODS_TO_CACHE(Path.APP_UPDATE_GOODS_TO_CACHE,"更新商品信息到缓存"),
-	GET_HOTEL_INFOS(Path.GET_HOTEL_INFOS, "获取酒店信息");
+	GET_HOTEL_INFOS(Path.GET_HOTEL_INFOS, "获取酒店信息"),
+	GET_FLIGHT_INFOS_BY_CONDITION(Path.GET_FLIGHT_INFOS_BY_CONDITION, "根据筛选条件过滤航班");
     
 	public String path;
 	
@@ -66,20 +62,13 @@ public enum DpClientPath {
         public final static String QUERY_COMMENT_PAGE = basePath+"comment/querypage";
         /** 酒店详情查询 **/
         public static final String GET_HOTEL_DETAIL = basePath+"hotel/detail";
-        
-        /**获取更换酒店列表*/
-		public final static String GET_HOTEL_LIST = basePath+"hotel/search";
         /**获取更换酒店列表从缓存*/
 		public final static String GET_HOTEL_LIST_CACHE = basePath+"hotel/search/cache";
-		
 		 /**获取更换航班列表*/
 		public final static String GET_FLIGHT_LIST = basePath+"flight/search/{uuid}/{method}";
 		 /**获取更换航班列表从缓存*/
 		public final static String GET_FLIGHT_LIST_CACHE = basePath+"flight/search/cache";
-				
-		/**获取往返的航班信息*/
-		public final static String GET_FLIGHT_LIST_TO_BACK = basePath+"flights/search/toBack";
-		
+
 		/**
 		 * 选择航班
 		 */
@@ -125,11 +114,7 @@ public enum DpClientPath {
 		
 		/**还原搜索条件***/
 		public final static String REDUCTION_SEARCH_REQUEST = basePath+shoppingPath+"reductionShoppingrequest";
-		
-		/**
-		 * 再次加载购物车
-		 */
-		public final static String RE_GET_SHOPPING_BY_UUID=basePath+shoppingPath+"reGetShoppingByUUID";
+
 		/**根据城市id查找推荐酒店***/
 		public final static String GET_RECOM_HOTEL_BY_DISTRICT_ID = basePath+"hotel/getRecommendHotelsByDistrictId";
 		
@@ -155,6 +140,8 @@ public enum DpClientPath {
 
 		/** 更新商品缓存数据 */
 		public static final String  GET_HOTEL_INFOS = basePath + "getHotelInfos";
+
+		public static final String  GET_FLIGHT_INFOS_BY_CONDITION = basePath + "getFlightInfosByCondition";
 	}
 
 

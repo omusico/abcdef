@@ -23,7 +23,6 @@ import org.codehaus.jackson.type.TypeReference;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
-import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 
 /**
  * 包机切位的航班过滤工具类.

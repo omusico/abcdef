@@ -1,5 +1,6 @@
 package com.lvmama.lvfit.common.dto.sdp.product;
 
+import com.lvmama.lvf.common.dto.Dto;
 import com.lvmama.lvf.common.dto.Entity;
 import com.lvmama.lvfit.common.dto.enums.JudgeType;
 
@@ -8,7 +9,7 @@ import com.lvmama.lvfit.common.dto.enums.JudgeType;
  * @author leizhengwei
  *
  */
-public class FitSdpCityGroupDto extends Entity {
+public class FitSdpCityGroupDto extends Entity implements Dto{
 
 	private static final long serialVersionUID = -1058970218307929353L;
 

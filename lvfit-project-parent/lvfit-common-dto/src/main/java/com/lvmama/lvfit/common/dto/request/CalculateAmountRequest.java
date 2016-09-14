@@ -94,11 +94,14 @@ public class CalculateAmountRequest implements Serializable {
 	public Map<String, Object> getRequestMap(FitShoppingDto selectShoppingDto,BookingSource bookingSource) {
     	
     	Map<String, Object> requestMap = new HashMap<String, Object>();
-    	
-    	List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = selectShoppingDto.getFlightInfos();
-    	FitSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
+
+    	List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
+		selectSearchFlightInfoDtos.add(selectShoppingDto.getToFlightInfos().getResults().get(0));
+		selectSearchFlightInfoDtos.add(selectShoppingDto.getBackFlightInfos().getResults().get(0));
+
+    	FitBaseSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
     	searchRequest.setBookingSource(bookingSource);
-		AmountCalculatorRequest flightPriceRequest = this.getFlightPriceRequest(selectSearchFlightInfoDtos,searchRequest);
+		AmountCalculatorRequest flightPriceRequest = this.getFlightPriceRequest(selectSearchFlightInfoDtos, searchRequest);
 		if(flightPriceRequest!=null){
 			requestMap.put(FitBusinessType.CALCULATE_FLI_PRICE.name(),flightPriceRequest);
 		}
@@ -125,12 +128,11 @@ public class CalculateAmountRequest implements Serializable {
 	 * @return
 	 */
 	@JsonIgnore
-	public AmountCalculatorRequest getFlightPriceRequest(List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos,FitSearchRequest searchRequest) {
+	public AmountCalculatorRequest getFlightPriceRequest(List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos, FitBaseSearchRequest searchRequest) {
 
 		List<BookingDetailDto> amountDetailDtos = new ArrayList<BookingDetailDto>();
-		FitPassengerRequest passengerRequest = searchRequest.getFitPassengerRequest();
-		Integer adultCount = passengerRequest.getAdultCount();
-		Integer childCount = passengerRequest.getChildCount();
+		int adultCount = searchRequest.getAdultsCount();
+		int childCount = searchRequest.getChildCount();
 		List<BookingDetailDto> passengerDetailDtos = new ArrayList<BookingDetailDto>();
 		
 		//按照乘客数和航段来构造最小单元请求对象
@@ -193,20 +195,17 @@ public class CalculateAmountRequest implements Serializable {
 	public FitHotelPriceRequest getHotelPriceRequest(FitShoppingDto selectShoppingDto) {
 		
 		FitHotelPriceRequest hotelPriceRequest = new FitHotelPriceRequest();
-		FitSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
-		List<HotelQueryRequest> hotelSearchRequests = searchRequest.getHotelSearchRequests();
-		HotelQueryRequest hotelQueryRequest = hotelSearchRequests.get(0);
-		Date checkInDate = DateUtils.parseDate(hotelQueryRequest.getDepartureDate());
-		Date checkOutDate = DateUtils.parseDate(hotelQueryRequest.getReturnDate());
-		if(CollectionUtils.isNotEmpty( selectShoppingDto.getHotels())
-			&&CollectionUtils.isNotEmpty( selectShoppingDto.getHotels().get(0).getRooms())
-			&&CollectionUtils.isNotEmpty( selectShoppingDto.getHotels().get(0).getRooms().get(0).getPlans())){
-			BigDecimal roomCount =  new BigDecimal(1);
-			List<HotelSearchRoomDto> roomDtos = selectShoppingDto.getHotels().get(0).getRooms();
+		FitBaseSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
+
+		Date checkInDate = DateUtils.parseDate(searchRequest.getCheckInTime());
+		Date checkOutDate = DateUtils.parseDate(searchRequest.getCheckOutTime());
+		if(CollectionUtils.isNotEmpty(selectShoppingDto.getHotels().getResults())){
+			BigDecimal roomCount =  BigDecimal.ONE;
+			List<HotelSearchRoomDto> roomDtos = selectShoppingDto.getHotels().getResults().get(0).getRooms();
 			HotelSearchPlanDto selectSearchPlanDto = roomDtos.get(0).getPlans().get(0);
 			if(CollectionUtils.isNotEmpty(roomDtos)){
 				for(HotelSearchRoomDto roomDto: roomDtos){
-					if(true == roomDto.getSelectedFlag()){
+					if(roomDto.getSelectedFlag()){
 						if(roomDto.getRoomCounts()!=null){
 							roomCount = new BigDecimal(roomDto.getRoomCounts());
 						}

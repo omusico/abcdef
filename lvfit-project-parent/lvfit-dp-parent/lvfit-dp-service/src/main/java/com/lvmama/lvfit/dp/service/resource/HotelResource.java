@@ -66,15 +66,6 @@ public class HotelResource {
 	}
 	
 	@POST
-	 @Consumes(MediaType.APPLICATION_JSON)
-	 @Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.GET_HOTEL_LIST)
-	public Response searchHotel(FitSearchRequest request) throws JsonGenerationException, JsonMappingException, IOException{
-		 FitSearchResult searchResult =  fitDpService.hotelChangeSearch(request);
-		 return Response.ok(searchResult).build();
-	}
-	
-	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(DpClientPath.Path.GET_HOTEL_DETAIL)

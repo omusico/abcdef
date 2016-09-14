@@ -66,7 +66,6 @@ public class SuppInterfaceAspect {
 		   String errorMsg = null;
 		   try{
 			     returnObj = pjp.proceed();
-			     logger.error("methodName:"+methodName+"-"+JSONMapper.getInstance().writeValueAsString(returnObj));
 				 return returnObj;
 		  }catch(Exception e){
 			  if(e instanceof ExceptionWrapper){

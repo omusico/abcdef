@@ -187,7 +187,8 @@
     		}
     		function oppLink(cellvalue, options, rowObject) 
 			{
-	    		return  "<a href='${request.contextPath}/sdpProduct/searchTrafficIndex?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询索引交通表"+ "</a>";
+	    		return  "<a href='${request.contextPath}/sdpProduct/searchTrafficIndex?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询索引交通表"+ "</a>"+
+	    		" <br/><a href='${request.contextPath}/sdpProduct/departureCity?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>出发城市管理"+ "</a>";
 	    		
     		}
 			/*设置交通规则*/

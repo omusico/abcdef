@@ -22,6 +22,9 @@ public class FitSuppFlightOrderDto extends Entity {
 
 	private static final long serialVersionUID = 3618756156531316060L;
 
+	/**机酒供应商主单Id（适合真往返）*/
+	private Long suppMainOrderId;
+
 	/**机酒供应商订单Id  */
 	private Long suppOrderId;
 	
@@ -118,6 +121,15 @@ public class FitSuppFlightOrderDto extends Entity {
 		return isNeedUpdate;
 		
 	}*/
+
+	public Long getSuppMainOrderId() {
+		return suppMainOrderId;
+	}
+
+	public void setSuppMainOrderId(Long suppMainOrderId) {
+		this.suppMainOrderId = suppMainOrderId;
+	}
+
 	@Override
 	public String getSequence() {
 	    return "s_fitord_supp_fli_order";

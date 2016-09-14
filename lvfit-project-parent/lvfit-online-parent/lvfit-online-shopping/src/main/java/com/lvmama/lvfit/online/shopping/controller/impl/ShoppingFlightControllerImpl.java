@@ -1,53 +1,56 @@
 package com.lvmama.lvfit.online.shopping.controller.impl;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lvmama.lvf.common.dto.BaseResultDto;
+import com.lvmama.lvfit.common.client.FitDpClient;
+import com.lvmama.lvfit.common.dto.enums.FlightTripType;
+import com.lvmama.lvfit.common.dto.request.ChangeFlightRequest;
+import com.lvmama.lvfit.common.dto.request.FitFilterFlightRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.online.exception.BaseExceptionHandler;
+import com.lvmama.lvfit.online.shopping.ShoppingFlightController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.lvmama.lvf.common.dto.BaseResponseDto;
-import com.lvmama.lvf.common.dto.BaseSingleResultDto;
-import com.lvmama.lvf.common.dto.status.ResultStatus;
-import com.lvmama.lvf.common.utils.BeanUtils;
-import com.lvmama.lvfit.common.client.FitDpClient;
-import com.lvmama.lvfit.common.dto.request.ChangeFlightRequest;
-import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
-import com.lvmama.lvfit.online.exception.BaseExceptionHandler;
-import com.lvmama.lvfit.online.shopping.ShoppingFlightController;
-import com.lvmama.lvfit.online.shopping.form.ChangeFlightRequestForm;
+import java.util.List;
 
 
 @Controller
 @RequestMapping("shopping")
 public class ShoppingFlightControllerImpl extends BaseExceptionHandler implements ShoppingFlightController{
-	private static final Logger logger=LoggerFactory.getLogger(ShoppingFlightControllerImpl.class);
 	@Autowired
 	private FitDpClient fitDpClient;
-	
-	@Override
-	@ResponseBody
-	@RequestMapping(value="/changeflight",method={RequestMethod.GET,RequestMethod.POST})
-	public BaseResponseDto  changeFlight(Model model, ChangeFlightRequestForm form) {
-		
-		ChangeFlightRequest request = new ChangeFlightRequest();
-		BaseResponseDto baseResponseDto = new BaseResponseDto();
-		try {
-			BeanUtils.copyProperties(request, form);
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-		BaseSingleResultDto<FitShoppingDto> dto = fitDpClient.changeFlight(request);
-		if(dto.getIsSuccess()){
-			baseResponseDto.setStatus(ResultStatus.SUCCESS);
-		}else{
-			baseResponseDto.setStatus(ResultStatus.FAIL);
-		}
-		return baseResponseDto;
+
+	@RequestMapping(value="/changeFlight" , method={RequestMethod.POST})
+	public String changeFlight(Model model, ChangeFlightRequest request) {
+		List<FlightSearchFlightInfoDto> flightInfos = fitDpClient.changeFlight(request);
+		model.addAttribute("req", request);
+		model.addAttribute("flightInfos", flightInfos);
+		return "flight/change_flight_list";
 	}
 
+	@RequestMapping(value="/changeSeat" , method={RequestMethod.POST})
+	public String changeSeat(Model model, ChangeFlightRequest request) {
+		List<FlightSearchFlightInfoDto> flightInfos = fitDpClient.changeFlight(request);
+		if (request.getFlightType().equals(FlightTripType.DEPARTURE.name())) {
+			model.addAttribute("toFlight", flightInfos.get(0));
+			return "flight/to_flight";
+		}
+		if (request.getFlightType().equals(FlightTripType.RETURN.name())) {
+			model.addAttribute("backFlight", flightInfos.get(0));
+			return "flight/back_flight";
+		}
+		return "error";
+	}
+
+	@RequestMapping(value="/filterFlight" , method={RequestMethod.POST})
+	public String filterFlight(Model model, FitFilterFlightRequest request) {
+		List<FlightSearchFlightInfoDto> flightInfos = fitDpClient.getFlightInfos(request);
+		model.addAttribute("sortField", request.getSortField());
+		model.addAttribute("sortType", request.getSortType());
+		model.addAttribute("flightInfos", flightInfos);
+		return "flight/change_flight_list";
+	}
 }

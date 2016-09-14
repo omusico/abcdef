@@ -26,6 +26,8 @@ public class FitAppInsuranceDto implements Serializable {
     private String suppGoodsName;
 
     private String insuranceDetail;
+    
+    private BigDecimal price;
 
     public Long getProductId() {
         return productId;
@@ -90,4 +92,12 @@ public class FitAppInsuranceDto implements Serializable {
     public void setInsuranceDetail(String insuranceDetail) {
         this.insuranceDetail = insuranceDetail;
     }
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 }

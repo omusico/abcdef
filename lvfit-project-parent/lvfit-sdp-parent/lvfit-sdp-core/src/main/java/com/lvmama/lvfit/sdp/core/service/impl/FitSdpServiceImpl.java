@@ -510,12 +510,9 @@ public class FitSdpServiceImpl implements FitSdpService {
 
        long adultCount = goodsRequest.getAdultQuantity() * goodsRequest.getQuantity();
        long childCount = goodsRequest.getChildQuantity() * goodsRequest.getQuantity();
-       fitPassengerRequest.setAdultCount((int)adultCount);
-       fitPassengerRequest.setChildCount((int)childCount);
-       fitSearchRequest.setFitPassengerRequest(fitPassengerRequest);
 
        for(FlightSearchFlightInfoDto flightInfoDto:searchFlightInfoDtos){
-           flightInfoDto = SearchResultUtil.isAvailableSeat(flightInfoDto, fitSearchRequest);
+           flightInfoDto = SearchResultUtil.isAvailableSeat(flightInfoDto, (int)adultCount, (int)childCount);
            if(CollectionUtils.isEmpty(flightInfoDto.getSeats())){//这里的舱位列表已经进行过处理，没有库存的舱位已经去除
         	   noUsefulFlightInfos.add(flightInfoDto);
            }

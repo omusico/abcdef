@@ -112,24 +112,6 @@ public class FitAppHotelRequest implements Serializable{
 	public void setChildCount(int childCount) {
 		this.childCount = childCount;
 	}
-
-	public static void main(String[] args) {
-		FitAppHotelRequest req = new FitAppHotelRequest();
-		req.setHotelFromRecommendedOnly(false);
-		req.setReturnDate("2016-08-20");
-		req.setQueryId(UUID.randomUUID().toString());
-		req.setAdultCount(1);
-		req.setChildCount(0);
-		req.setCityCode("SHA");
-		req.setDepartureDate("2016-08-17");
-
-		try {
-			String s = JSONMapper.getInstance().writeValueAsString(req);
-			System.out.println(s);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }
 
 

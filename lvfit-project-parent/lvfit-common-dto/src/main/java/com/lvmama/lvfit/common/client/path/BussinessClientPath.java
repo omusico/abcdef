@@ -11,6 +11,7 @@ public enum BussinessClientPath {
 	QUERY_SHOPPING_EXPROT(Path.QUERY_SHOPPING_EXPROT, "查询购物车列表信息"),
 	TO_BOOKING(Path.TO_BOOKING, "去预订"),
 	BOOKING(Path.BOOKING, "预订"),
+	VALIDATE_PASSENGERS(Path.VALIDATE_PASSENGERS, "校验乘客信息"),
 	FLIGHT_CALLBACK_BOOKING(Path.FLIGHT_CALLBACK_BOOKING, " VST测回调机票下单"),
 	GET_RECOMMEND_HOTELS_ALL(Path.GET_RECOMMEND_HOTELS_ALL,"查询所有推荐酒店信息分页"),
 	BATCH_RECOMMEND_HOTELS_ALL(Path.BATCH_RECOMMEND_HOTELS_ALL,"导入所有推荐酒店信息"),
@@ -50,6 +51,8 @@ public enum BussinessClientPath {
 	
 	GET_SDP_PRODUCT_CITY_GROUP_BY_PRODUCT_ID(Path.GET_SDP_PRODUCT_CITY_GROUP_BY_PRODUCT_ID,"根据产品Id获取自主打包产品城市组"),
 	
+	GET_SDP_PRODUCT_CITY_GROUP_BY_ID(Path.GET_SDP_PRODUCT_CITY_GROUP_BY_ID,"根据Id获取自主打包产品城市组"),
+	
 	GET_SDP_PRODUCT_SELECT_CITY_GROUP_BY_PRODUCT_ID(Path.GET_SDP_PRODUCT_SELECT_CITY_GROUP_BY_PRODUCT_ID,"根据产品Id获取已选择的自主打包产品城市组"),
 	
 	SAVE_OR_UPDATE_SDP_PRODUCT_CITY_GROUP(Path.SAVE_OR_UPDATE_SDP_PRODUCT_CITY_GROUP,"新增或者修改自主打包产品城市组"),
@@ -67,7 +70,13 @@ public enum BussinessClientPath {
 	/** 动态打包产品相关报表**/
 	QUERY_SDP_PRODUCT_REPORT(Path.QUERY_SDP_PRODUCT_REPORT,"动态打包产品报表导出"),
 	
-	BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST(Path.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST,"查询同步时间信息");
+	BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST(Path.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST,"查询同步时间信息"),
+	
+	BACK_SDP_PRODUCT_INDEX_TRAFFIC(Path.BACK_SDP_PRODUCT_INDEX_TRAFFIC,"查询产品索引交通"),
+	
+	BACK_SDP_PRODUCT_DEPART_CITY(Path.BACK_SDP_PRODUCT_DEPART_CITY,"出发城市查询"),
+	
+	UPDATE_ONE_CITY_GROUP(Path.UPDATE_ONE_CITY_GROUP,"更新单条城市组信息");
 	
 	public String path;
 	public String cnName;
@@ -92,6 +101,7 @@ public enum BussinessClientPath {
 		public final static String TO_BOOKING = basePath + "toBooking";
 		/** 预订 */
 		public final static String BOOKING = basePath + "booking";
+		public final static String VALIDATE_PASSENGERS  = basePath+"validatePassenagers";
 		public final static String FLIGHT_CALLBACK_BOOKING = basePath + "flightCallBackBooking";
 		/** 订单详情 */
 		public final static String GET_RECOMMEND_HOTELS_ALL = basePath + configPath + "getRecomHotelsAll";
@@ -157,7 +167,15 @@ public enum BussinessClientPath {
         
         public final static String BACK_SDP_PRODUCT_SEARCH_INDEX_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSearchIndex/{productId}";
         
-        public final static String BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST = basePath + sdpproductPath + "querySdpProductsSynInfo/{productId}";
+        public final static String BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSynInfo/{productId}";
+	
+        public final static String BACK_SDP_PRODUCT_INDEX_TRAFFIC = basePath + sdpproductPath + "querySdpProductIndexTraffic/{productId}";
+        /*自主打包产品城市组*/
+        public final static String BACK_SDP_PRODUCT_DEPART_CITY = basePath + sdpproductPath + "querySdpProductCityGroupByDto";
+        
+        public final static String UPDATE_ONE_CITY_GROUP = basePath + sdpproductPath + "saveProductCityGroupByProductId";
+        
+        public final static String GET_SDP_PRODUCT_CITY_GROUP_BY_ID = basePath + sdpproductPath + "saveProductCityGroupById/{id}";
 	}
 	
 	private BussinessClientPath(String path, String cnName) {

@@ -29,6 +29,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
@@ -180,11 +181,28 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.GET_SDP_PRODUCT_CITY_GROUP_BY_PRODUCT_ID)
-	public Response getProductCityGroupByProductId(@PathParam("productId")Long productId) {
+	public Response getProductCityGroupByProductId(Long productId) {
 		List<FitSdpCityGroupDto> cityGroupDtos =  null;
 		cityGroupDtos =	fitSdpProductService.getProductCityGroupByProductId(productId);
 		return Response.ok(cityGroupDtos).build();
 	}
+	
+	/**
+	 * 根据Id获取自主打包城市组信息
+	 * @param productId
+	 * @return
+	 */
+	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.GET_SDP_PRODUCT_CITY_GROUP_BY_ID)
+	public Response getProductCityGroupById(@PathParam("id")Long id) {
+		FitSdpCityGroupDto cityGroupDtos =  null;
+		cityGroupDtos =	fitSdpProductService.getProductCityGroupById(id);
+		return Response.ok(cityGroupDtos).build();
+	}
+	
 	/**
 	 * 根据产品Id获取已选择的自主打包城市组信息
 	 * @param productId
@@ -229,6 +247,20 @@ public class FitSdpProductResource {
 		/*if (CollectionUtils.isNotEmpty(cityGroupDtos)) {
 		    fitSdpProductService.updateSdpProductSearchIndex(cityGroupDtos.get(0).getProductId());
 		}*/
+		return Response.ok(ResultStatus.SUCCESS).build();
+	}
+	
+	/**
+	 * 单条更新自主打包城市组
+	 * @param feeRulesDtos
+	 * @return
+	 */
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.UPDATE_ONE_CITY_GROUP)
+	public Response updateCityGroup(FitSdpCityGroupDto cityGroupDto) {
+		fitSdpProductService.saveEditProductCityGroup(cityGroupDto);
 		return Response.ok(ResultStatus.SUCCESS).build();
 	}
 	
@@ -295,6 +327,44 @@ public class FitSdpProductResource {
 			ObjectMapper objectMapper = JSONMapper.getInstance();
 			List<FitSdpProductSynMsg> synMsgDtos = fitSdpProductService.querySdpProductSynInfoList(productId);
 			BaseResultDto<FitSdpProductSynMsg> baseResultDto = new BaseResultDto<FitSdpProductSynMsg>(synMsgDtos);
+			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
+ 
+			return Response.ok(jsonResult).build();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_INDEX_TRAFFIC)
+	public Response querySdpProductIndexTrafficList(@PathParam("productId")Long productId){
+		try{
+			ObjectMapper objectMapper = JSONMapper.getInstance();
+			List<FitSdpProductSearchIndexTraffic> synMsgDtos = fitSdpProductService.querySdpProductIndexTrafficList(productId);
+			BaseResultDto<FitSdpProductSearchIndexTraffic> baseResultDto = new BaseResultDto<FitSdpProductSearchIndexTraffic>(synMsgDtos);
+			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
+ 
+			return Response.ok(jsonResult).build();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_DEPART_CITY)
+	public Response querySdpProductDepartCityList(BaseQueryDto<FitSdpCityGroupDto> dto){
+		try{
+			ObjectMapper objectMapper = JSONMapper.getInstance();
+			List<FitSdpCityGroupDto> cityGroupDtos = fitSdpProductService.getProductCityGroupByDto(dto);
+			BaseResultDto<FitSdpCityGroupDto> baseResultDto = new BaseResultDto<FitSdpCityGroupDto>(cityGroupDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
  
 			return Response.ok(jsonResult).build();

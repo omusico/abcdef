@@ -40,9 +40,15 @@
 
 			function initGrid() 
 			{
-				var colNames = ['产品ID', '出发地ID','出发地名称','最低市场价','最低销售价','APP最低市场价','APP最低销售价','WAP最低市场价','WAP最低销售价','更新时间'];
+				var colNames = ['ID','产品ID', '目的地','出发地','游玩时间','销量','是否多出发地','更新时间'];
 
-				var cols = [ 
+				var cols = [
+					{
+						name : 'id',  //产品ID
+						index : 'id',
+						align : 'center',
+						sortable:false
+					},
 					{
 						name : 'productId',  //产品ID
 						index : 'productId',
@@ -50,64 +56,45 @@
 						sortable:false
 					},
 					{
-						name : 'startDistrictId',   //出发地ID
-						index : 'startDistrictId',
+						name : 'toTraffic',   //出发地ID
+						index : 'toTraffic',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'startDistrict',   //出发地名称
-						index : 'startDistrict',
+						name : 'backTraffic',   //出发地名称
+						index : 'backTraffic',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'lowestMarketPrice',   //最低市场价
-						index : 'lowestMarketPrice',
+						name : 'depatureTime',   //最低市场价
+						index : 'depatureTime',
 						align : 'center',
 						sortable:false
 					},//--------------
 					{
-						name : 'lowestSaledPrice',   //市场最低销售价
-						index : 'lowestSaledPrice',
+						name : 'salesVolume',   //市场最低销售价
+						index : 'salesVolume',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'appLowestMarketPrice',   //app最低市场价
-						index : 'appLowestMarketPrice',
+						name : 'isMultiDepature',   //app最低市场价
+						index : 'isMultiDepature',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'appLowestSaledPrice',   //app最低销售价
-						index : 'appLowestSaledPrice',
-						align : 'center',
-						sortable:false
-					},
-					//----------------
-					{
-						name : 'wapLowestMarketPrice',  //wap最低市场价
-						index : 'wapLowestMarketPrice',
-						align : 'center',
-						sortable:false
-					},
-					{
-						name : 'wapLowestSaledPrice',//wap最低销售价
-						index : 'wapLowestSaledPrice',
-						align : 'center',
-						sortable:false
-					},
-					{
-						name : 'updateTime', //更新时间
+						name : 'updateTime',   //app最低销售价
 						index : 'updateTime',
-						formatter : dateFormatter,
 						align : 'center',
+						formatter : dateFormatter,
 						sortable:false
 					}];
 					
 				$("#sdpProductList").jqGrid({
-					url : '${request.contextPath}/sdpProduct/querySearchIndexList',
+					url : '${request.contextPath}/sdpProduct/queryTrafficIndexList',
 					datatype : "json",
 					mtype : "POST",
 					height:'auto',//高度，表格高度。可为数值、百分比或'auto'
@@ -158,7 +145,7 @@
 		 <input type="hidden" id="basePath" value="${request.contextPath}">
 		 <input type="hidden" id="productId" value="${productId}">
 	     <input type="hidden" name="search" value="false">
-		 <div class="breadnav">首页->交通+X->产品管理->产品索引列表</div>
+		 <div class="breadnav">首页->交通+X->产品管理->产品索引交通列表</div>
 		 <div class="content content1" style="margin-top:50px;">
 	      <table id="sdpProductList"></table>
 	      <div id="pager"></div>

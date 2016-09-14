@@ -73,11 +73,11 @@ public class ShoppingRepositoryImpl implements ShoppingRepository{
 						detailDto.setArrivalCityName(searchRequest
 								.getArrivalCityName());
 						
-						List<HotelQueryRequest> hotelQueryList = searchRequest.getHotelSearchRequests();
-						if(!CollectionUtils.isEmpty(hotelQueryList)){
-							String cityName = hotelQueryList.get(0).getCityName();
-							detailDto.setHotelCityName(cityName);
-						}
+						HotelQueryRequest hotelQueryRequest = searchRequest.getHotelSearchRequests();
+
+						String cityName = hotelQueryRequest.getCityName();
+						detailDto.setHotelCityName(cityName);
+
 						FitPassengerRequest fitPassengerRequest = searchRequest.getFitPassengerRequest();
 						if(fitPassengerRequest!=null){
 							detailDto.setAdultCount(fitPassengerRequest.getAdultCount()+"");

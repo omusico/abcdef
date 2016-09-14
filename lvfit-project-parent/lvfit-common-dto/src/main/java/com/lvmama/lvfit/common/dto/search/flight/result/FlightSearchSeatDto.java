@@ -285,7 +285,7 @@ public class FlightSearchSeatDto implements Serializable{
 
 	public void setPolicyId(Long policyId) {
 		this.policyId = policyId;
-	} 
+	}
 	
 	public String getSuppPolicyId() {
 		return suppPolicyId;
@@ -294,7 +294,7 @@ public class FlightSearchSeatDto implements Serializable{
 	public void setSuppPolicyId(String suppPolicyId) {
 		this.suppPolicyId = suppPolicyId;
 	}
-
+	
 	public Long getPricePolicyId() {
 		return pricePolicyId;
 	}

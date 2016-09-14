@@ -33,30 +33,5 @@ public interface ShoppingViewService {
 	 * @since JDK 1.6
 	 */
 	public BaseSingleResultDto<FitShoppingDto> getShoppingByShoppingUUID(String shoppingUUID);
-	
-	
-	/**
-	 * 
-	 * putShoppingInfo:根据shoppingId重新还原购物车. <br/>
-	 *
-	 * @author zengzhimin
-	 * @param shoppingId
-	 * @return
-	 * @since JDK 1.6
-	 */
-	public BaseSingleResultDto putShoppingInfo(String shoppingUUID);
-	
-	
-	
-	/**
-	 * 
-	 * getShoppingRequestByShoppingId:根据shoppingId加载查询条件. <br/>
-	 *
-	 * @author 
-	 * @param shoppingId
-	 * @return
-	 * @since JDK 1.6
-	 */
-	public BaseSingleResultDto<FitSearchRequest> getShoppingRequestByShoppingUUID(String shoppingUUID);
 }
 

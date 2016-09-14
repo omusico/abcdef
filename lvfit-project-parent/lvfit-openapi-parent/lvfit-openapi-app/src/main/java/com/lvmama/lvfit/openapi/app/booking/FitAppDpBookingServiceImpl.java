@@ -21,11 +21,9 @@ import com.lvmama.lvfit.common.dto.order.FitOrderAmountDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderDto;
-import com.lvmama.lvfit.common.dto.price.FitHotelPlanPriceDto;
 import com.lvmama.lvfit.common.dto.price.FitTicketAddTimePriceDto;
 import com.lvmama.lvfit.common.dto.request.FitDpUpdateShoppingRequest;
 import com.lvmama.lvfit.common.dto.request.FitOrderBookingRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelSearchResult;
@@ -33,9 +31,6 @@ import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchRoomDto;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceDto;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProduct;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProductBranch;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceSuppGoods;
 import com.lvmama.lvfit.common.dto.search.spot.result.SpotSearchSpotDto;
 import com.lvmama.lvfit.common.dto.search.spot.result.SpotSearchTicketDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
@@ -43,18 +38,17 @@ import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedInsuranceDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedTicketDto;
 import com.lvmama.lvfit.common.dto.shopping.FlightInsuranceDto;
 import com.lvmama.lvfit.openapi.app.search.FitAppDpSearchService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by leizhengwei
@@ -63,6 +57,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
 	private FitDpClient dpClient;
@@ -125,7 +121,7 @@ public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
 			throw new ExceptionWrapper(FitExceptionCode.GET_NO_CACHE_SHOPPING);
 		}
 		//清空已选信息
-		shoppingDto.getHotels().clear();
+		shoppingDto.getHotels().getResults().clear();
 		shoppingDto.getFlightInfos().clear();
 		shoppingDto.getSelectInsuranceInfo().clear();
 		shoppingDto.getSelectTicketInfo().clear();
@@ -137,7 +133,7 @@ public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
 			//酒店
     		if(FitAppGoodsType.valueOf(entry.getKey())==FitAppGoodsType.HOTEL){
     			FitAppGoodsInfo appGoodsInfo = entry.getValue().get(0);
-    			
+
     			FitAppHotelRequest request = new FitAppHotelRequest();
     			request.setAdultCount(appShoppingRequest.getAdultCount());
     			request.setChildCount(appShoppingRequest.getChildCount());
@@ -150,24 +146,55 @@ public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
     			HotelSearchResult<HotelSearchHotelDto> hotelSearchResult = fitAppDpSearchService.changeHotelInfo(request);
     			List<HotelSearchHotelDto> hotels = new ArrayList<HotelSearchHotelDto>();
     			if(CollectionUtils.isNotEmpty(hotelSearchResult.getResults())){
-    				HotelSearchHotelDto selectHotelDto = hotelSearchResult.getResults().get(0);
-    				
-    				for (HotelSearchRoomDto room : selectHotelDto.getRooms()) {
+					boolean isBreak = false;
+					HotelSearchHotelDto selectHotelDto = hotelSearchResult.getResults().get(0);
+					HotelSearchRoomDto firstRoom = new HotelSearchRoomDto();
+					HotelSearchPlanDto firstPlan = new HotelSearchPlanDto();
+					HotelSearchRoomDto needRemove = new HotelSearchRoomDto();
+					for (HotelSearchRoomDto room : selectHotelDto.getRooms()) {
 						for (HotelSearchPlanDto plan : room.getPlans()) {
-							if(appGoodsInfo.getGoodsId()!=null && appGoodsInfo.getGoodsId().equals(plan.getSuppGoodsId())){
-									plan.setSelectedFlag(true);
-									room.setSelectedFlag(true);
-									room.setRoomCounts(appGoodsInfo.getCount());
-							}else{//如果不是计划入住的房型，设置为未选择状态
-								plan.setSelectedFlag(false);room.setSelectedFlag(false);
+							if(StringUtils.isNotBlank(appGoodsInfo.getGoodsId()) && appGoodsInfo.getGoodsId().equals(plan.getSuppGoodsId())){
+								try {
+									BeanUtils.copyProperties(firstPlan,plan);
+									firstPlan.setSelectedFlag(true);
+									BeanUtils.copyProperties(firstRoom,room);
+									firstRoom.setSelectedFlag(true);
+									firstRoom.setRoomCounts(appGoodsInfo.getCount());
+									List<HotelSearchPlanDto> selectPlans = new ArrayList<HotelSearchPlanDto>();
+									selectPlans.add(firstPlan);
+									firstRoom.setPlans(selectPlans);
+									needRemove = room;
+									isBreak = true;
+									break;
+								} catch (Exception e) {
+									logger.error(e.getMessage(),e);
+								}
+							}
+						}
+						if(isBreak){
+							break;
+						}
+					}
+					selectHotelDto.getRooms().remove(needRemove);
+					if (CollectionUtils.isNotEmpty(selectHotelDto.getRooms())){
+						for (HotelSearchRoomDto searchRoomDto : selectHotelDto.getRooms()){
+							searchRoomDto.setSelectedFlag(false);
+							if(CollectionUtils.isNotEmpty(searchRoomDto.getPlans())){
+								for (HotelSearchPlanDto searchPlanDto : searchRoomDto.getPlans()){
+									searchPlanDto.setSelectedFlag(false);
+								}
 							}
 						}
 					}
-    				hotels.add(selectHotelDto);
-    			}else{
+					List<HotelSearchRoomDto> lastRooms = new ArrayList<HotelSearchRoomDto>();
+					lastRooms.add(firstRoom);
+					lastRooms.addAll(selectHotelDto.getRooms());
+					selectHotelDto.setRooms(lastRooms);
+					hotels.add(selectHotelDto);
+				}else{
     				throw new ExceptionWrapper(FitExceptionCode.APP_GOODS_NO_MATCH, appGoodsInfo.getGoodsId());
     			}
-    			shoppingDto.setHotels(hotels);
+    			shoppingDto.setHotels(hotelSearchResult);
     		}
     		//门票
     		else if(FitAppGoodsType.valueOf(entry.getKey())==FitAppGoodsType.TICKET){
@@ -233,45 +260,29 @@ public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
     			List<FitShoppingSelectedInsuranceDto> selectInsurances = new ArrayList<FitShoppingSelectedInsuranceDto>();
     			for(int i=0;entry.getValue()!=null && i<entry.getValue().size();i++){
 					FitAppGoodsInfo appGoodsInfo = entry.getValue().get(i);
-					boolean flag = false;
-					for(int inx=0;shoppingDto.getInsurances()!=null&&inx<shoppingDto.getInsurances().size()&&(!flag);inx++){
-						InsuranceDto insurance = shoppingDto.getInsurances().get(inx);
-						if(insurance.getInsuranceProductList()!=null){
-							for(int j=0;j<insurance.getInsuranceProductList().size()&&(!flag);j++){
-								InsuranceProdProduct prodProduct = insurance.getInsuranceProductList().get(j);
-								if(prodProduct.getInsuranceProductBranchList()!=null){
-									for(InsuranceProdProductBranch productBranch :prodProduct.getInsuranceProductBranchList()){
-										if(productBranch.getInsuranceSuppGoodList()!=null){
-											for(InsuranceSuppGoods suppGoods :productBranch.getInsuranceSuppGoodList()){
-												if(appGoodsInfo.getGoodsId()!=null && appGoodsInfo.getGoodsId().equals(suppGoods.getSuppGoodsId())){
-													if(appGoodsInfo.getPrice().compareTo(new BigDecimal(suppGoods.getInsPrice().getPrice()))==0){
-														FitShoppingSelectedInsuranceDto selectInsurance = new FitShoppingSelectedInsuranceDto();
-														selectInsurance.setProductId(String.valueOf(insurance.getProductId()));
-														selectInsurance.setProductName(prodProduct.getProductName());
-														selectInsurance.setInsuranceCount(appGoodsInfo.getCount());
-														selectInsurance.setInsurancePrice(appGoodsInfo.getPrice());
-														selectInsurance.setSuppGoodsId(String.valueOf(suppGoods.getSuppGoodsId()));
-														selectInsurance.setBranchId(String.valueOf(suppGoods.getInsuranceGoodBranch().getBranchId()));
-														selectInsurance.setBranchName(suppGoods.getInsuranceGoodBranch().getBranchName());
-														selectInsurance.setSuppGoodsName(suppGoods.getGoodsName());
-														selectInsurances.add(selectInsurance);
-														flag = true;
-														break;
-													}else{
-														throw new ExceptionWrapper(FitExceptionCode.SDP_AMOUNT_NOT_MATCH, appGoodsInfo.getGoodsId(),
-															 appGoodsInfo.getPrice(),suppGoods.getSuppGoodsId(),suppGoods.getInsPrice());
+
+					FitShoppingSelectedInsuranceDto selectInsurance = null;
+					for (InsuranceDto suppGoods : shoppingDto.getInsurances()) {
+						if(appGoodsInfo.getGoodsId()!=null && appGoodsInfo.getGoodsId().equals(String.valueOf(suppGoods.getSuppGoodsId()))){
+							if(appGoodsInfo.getPrice().floatValue() == suppGoods.getPrice().floatValue()) {
+								selectInsurance = new FitShoppingSelectedInsuranceDto();
+								selectInsurance.setProductId(String.valueOf(suppGoods.getProductId()));
+								selectInsurance.setProductName(suppGoods.getProductName());
+								selectInsurance.setInsuranceCount(appGoodsInfo.getCount());
+								selectInsurance.setInsurancePrice(appGoodsInfo.getPrice());
+								selectInsurance.setSuppGoodsId(String.valueOf(suppGoods.getSuppGoodsId()));
+								selectInsurance.setBranchId(String.valueOf(suppGoods.getBranchId()));
+								selectInsurance.setBranchName(suppGoods.getBranchName());
+								selectInsurance.setSuppGoodsName(suppGoods.getGoodsName());
+								selectInsurances.add(selectInsurance);
+								break;
+							}else{
+								throw new ExceptionWrapper(FitExceptionCode.SDP_AMOUNT_NOT_MATCH, appGoodsInfo.getGoodsId(),
+									appGoodsInfo.getPrice(),suppGoods.getSuppGoodsId(),suppGoods.getPrice());
 													}
-												}
-											}
-										}
-									}
-								}
-								
-							}
-							
 						}
 					}
-					if(selectInsurances.size() != i+1){
+					if(selectInsurance == null){
 						throw new ExceptionWrapper(FitExceptionCode.APP_GOODS_NO_MATCH,appGoodsInfo.getGoodsId());
 					}
     			}
@@ -351,17 +362,10 @@ public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
 				throw new ExceptionWrapper(FitExceptionCode.APP_FLIGHT_NO_MATCH,entry.getValue().getFlightNo());
 			}
 		}
-		shoppingDto.setFlightInfos(selectFlightInfoDtos);
-		
-		
-		FitSearchRequest  fitSearchRequest= new FitSearchRequest();
-		try {
-			BeanUtils.copyProperties(fitSearchRequest,shoppingDto.getSearchRequest());
-			
-		} catch(Exception e) {
-			throw new RuntimeException(e);
+		shoppingDto.setSelectToFlight(selectFlightInfoDtos.get(0));
+		if (selectFlightInfoDtos.size() == 2) {
+			shoppingDto.setSelectBackFlight(selectFlightInfoDtos.get(1));
 		}
-		shoppingDto.setSearchRequest(fitSearchRequest);
 		
 		FitDpUpdateShoppingRequest shoppingRequest = new FitDpUpdateShoppingRequest();
 		shoppingRequest.setShoppingUuid(appBookingRequest.getAppShoppingRequest().getShoppingUuid());

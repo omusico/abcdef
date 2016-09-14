@@ -3,6 +3,7 @@ package com.lvmama.lvfit.business.shopping.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,23 +224,17 @@ public class FitShoppingServiceImpl implements FitShoppingService{
 	private void saveShoppingHotelInfo(FitShoppingDto dto) {
 
 		Long versionNo = System.currentTimeMillis();
-		    List<HotelSearchHotelDto> hotels =  dto.getHotels();
+		    List<HotelSearchHotelDto> hotels =  dto.getHotels().getResults();
 		    List<ShoppingHotelDto> hotelList = new ArrayList<ShoppingHotelDto>();
 		    ShoppingHotelDto shoppingHotelDto = new ShoppingHotelDto();
 		    shoppingHotelDto.setVersionNo(versionNo);
 		    if(CollectionUtils.isNotEmpty(hotels)){
-		    	for(HotelSearchHotelDto hotelDto:hotels){
-			    	/*shoppingHotelDto.setCheckinTime(hotelDto.getCheckinTime());
-			    	shoppingHotelDto.setCheckoutTime(hotelDto.getCheckoutTime());*/
-		    		FitSearchRequest searchRequest = dto.getSearchRequest();
-		    		List<HotelQueryRequest> listHotelQueryRequest = searchRequest.getHotelSearchRequests();
-		    		if(!CollectionUtils.isEmpty(listHotelQueryRequest)){
-		    			HotelQueryRequest hotelQueryRequest = listHotelQueryRequest.get(0);
-		    			if(hotelQueryRequest!=null){
-		    				shoppingHotelDto.setCheckinTime(hotelQueryRequest.getDepartureDate());
-			    			shoppingHotelDto.setCheckoutTime(hotelQueryRequest.getReturnDate());
-		    			}
-		    		}
+		    	for(HotelSearchHotelDto hotelDto:hotels) {
+		    		FitBaseSearchRequest searchRequest = dto.getSearchRequest();
+
+					shoppingHotelDto.setCheckinTime(searchRequest.getDepartureTime());
+					shoppingHotelDto.setCheckoutTime(searchRequest.getReturnTime());
+
 			    	if(hotelDto.getProductId()!=null){
 				    	shoppingHotelDto.setHotelId(Long.valueOf(hotelDto.getProductId()));
 			    	}
@@ -280,7 +275,7 @@ public class FitShoppingServiceImpl implements FitShoppingService{
 		//操作人
 		FitOrderOperDto operDto = dto.getOper();
 		//搜索条件
-		 FitSearchRequest fitSearchRequest =  dto.getSearchRequest();
+		FitBaseSearchRequest fitSearchRequest =  dto.getSearchRequest();
 		//联系人
 		FitOrderContacterDto contacterDto = dto.getContacter();
 		//下单用户信息

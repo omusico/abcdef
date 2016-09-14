@@ -7,6 +7,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
@@ -119,5 +120,30 @@ public interface FitSdpProductService {
 	 * @return
 	 */
 	List<FitSdpProductSynMsg> querySdpProductSynInfoList(Long productId);
+	
+	/**根据产品Id查询索引交通信息
+	 * @param productId
+	 * @return
+	 */
+	List<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(Long productId);
+	
+	/**编辑单条城市组记录
+	 * @param productId
+	 * @return
+	 */
+	void saveEditProductCityGroup(FitSdpCityGroupDto cityGroupDtos);
+
+	/**查询单条城市组记录
+	 * @param productId
+	 * @return
+	 */
+	FitSdpCityGroupDto getProductCityGroupById(Long id);
+	
+	/**条件查询查询城市组记录
+	 * @param productId
+	 * @return
+	 */
+	List<FitSdpCityGroupDto> getProductCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
+
 
 }

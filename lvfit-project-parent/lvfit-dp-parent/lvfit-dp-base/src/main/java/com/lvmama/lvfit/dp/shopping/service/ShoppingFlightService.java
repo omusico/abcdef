@@ -11,7 +11,10 @@ package com.lvmama.lvfit.dp.shopping.service;
 
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvfit.common.dto.request.ChangeFlightRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
+
+import java.util.List;
 
 /**
  * ClassName:ShoppingController <br/>
@@ -35,9 +38,6 @@ public interface ShoppingFlightService{
 	 * @return
 	 * @since JDK 1.6
 	 */
-	public BaseSingleResultDto<FitShoppingDto> changeFlight(ChangeFlightRequest request);
-	
-	
-	
+	List<FlightSearchFlightInfoDto> changeFlight(ChangeFlightRequest request);
 
 }

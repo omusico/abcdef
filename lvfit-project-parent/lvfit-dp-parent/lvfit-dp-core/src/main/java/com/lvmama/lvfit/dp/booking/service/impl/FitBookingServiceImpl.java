@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
+import com.lvmama.lvfit.common.utils.HotelUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -148,7 +150,7 @@ public class FitBookingServiceImpl implements FitBookingService {
     	
         //1. 根据ShoppingUuid获取shopping信息
         BaseSingleResultDto<FitShoppingDto> shoppingResult = shoppingViewService.getShoppingByShoppingUUID(fit.getShoppingUuid());
-        FitShoppingDto selectShoppingDto = shoppingResult.getResult().getSelectedInfo();
+        FitShoppingDto selectShoppingDto = shoppingResult.getResult();
         if (null == selectShoppingDto) {
             throw new ExceptionWrapper(ExceptionCode.UNDEF_ERROR);
         }
@@ -158,11 +160,6 @@ public class FitBookingServiceImpl implements FitBookingService {
         
         //3. 异步保存shopping信息
         FitShoppingDto oldShoppingDto = shoppingResult.getResult();
-        selectShoppingDto.setBackFlightBasePrice(oldShoppingDto.getBackFlightBasePrice());
-        selectShoppingDto.setHotelBasePrice(oldShoppingDto.getHotelBasePrice());
-        selectShoppingDto.setToFlightBasePrice(oldShoppingDto.getToFlightBasePrice());
-        selectShoppingDto.setFlightCounts(oldShoppingDto.getFlightCounts());
-        selectShoppingDto.setHotelCounts(oldShoppingDto.getHotelCounts());
         selectShoppingDto.setContacter(fit.getFitOrderContacterDto());
         selectShoppingDto.setCustomer(fit.getFitOrderCustomerDto());
         selectShoppingDto.setPassenger(fit.getFitOrderPassengerDtos());
@@ -173,7 +170,7 @@ public class FitBookingServiceImpl implements FitBookingService {
         selectShoppingDto.setAmount(oldShoppingDto.getAmount());
         this.saveShopping(selectShoppingDto);
 
-        FitSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
+        FitBaseSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
         //4. 置入成人数、儿童数信息、出发到达城市等用户访问基本信息
         this.buildFitOrderBasicInfo(fit, searchRequest);
         
@@ -250,24 +247,22 @@ public class FitBookingServiceImpl implements FitBookingService {
     }
 
     private void buildFitOrderBasicInfo(FitOrderBookingRequest fit,
-			FitSearchRequest searchRequest) {
-		FitPassengerRequest fitPassengerRequest = searchRequest.getFitPassengerRequest();
-        
+			FitBaseSearchRequest searchRequest) {
+
         FitOrderBasicInfoDto fitOrderBasicInfoDto = new FitOrderBasicInfoDto();
-        fitOrderBasicInfoDto.setAdultQuantity(fitPassengerRequest.getAdultCount());
-        fitOrderBasicInfoDto.setChildQuantity(fitPassengerRequest.getChildCount());
+        fitOrderBasicInfoDto.setAdultQuantity(searchRequest.getAdultsCount());
+        fitOrderBasicInfoDto.setChildQuantity(searchRequest.getChildCount());
         fitOrderBasicInfoDto.setDepCityCode(VSTDistrictCityEnum.getCodeByCnName(searchRequest.getDepartureCityName()));
         fitOrderBasicInfoDto.setArriCityCode(VSTDistrictCityEnum.getCodeByCnName(searchRequest.getArrivalCityName()));
-        fitOrderBasicInfoDto.setToTime(searchRequest.getFlightSearchRequests().get(0).getDepartureDate());
-        fitOrderBasicInfoDto.setVisitTime(DateUtils.formatDate(searchRequest.getFlightSearchRequests().get(0).getDepartureDate()));
-        if(searchRequest.getFlightSearchRequests().size()>1){
-            fitOrderBasicInfoDto.setReturnTime(searchRequest.getFlightSearchRequests().get(1).getDepartureDate());
+        fitOrderBasicInfoDto.setToTime(DateUtils.parseDate(searchRequest.getDepartureTime(), DateUtils.YYYY_MM_DD));
+        fitOrderBasicInfoDto.setVisitTime(searchRequest.getDepartureTime());
+        if(searchRequest.getTripType().equals(TripeType.WF.name())){
+            fitOrderBasicInfoDto.setReturnTime(DateUtils.parseDate(searchRequest.getReturnTime(), DateUtils.YYYY_MM_DD));
         }
-        if(CollectionUtils.isNotEmpty(searchRequest.getHotelSearchRequests())){
-        	  fitOrderBasicInfoDto.setCheckInCityCode(searchRequest.getHotelSearchRequests().get(0).getCityCode());
-        	  fitOrderBasicInfoDto.setCheckInTime(DateUtils.parseDate(searchRequest.getHotelSearchRequests().get(0).getDepartureDate()));
-        	  fitOrderBasicInfoDto.setCheckOutTime(DateUtils.parseDate(searchRequest.getHotelSearchRequests().get(0).getReturnDate()));
-        }
+        fitOrderBasicInfoDto.setCheckInCityCode(searchRequest.getCityCode());
+        fitOrderBasicInfoDto.setCheckInTime(DateUtils.parseDate(searchRequest.getCheckInTime()));
+        fitOrderBasicInfoDto.setCheckOutTime(DateUtils.parseDate(searchRequest.getCheckOutTime()));
+
         fit.setFitOrderBasicInfoDto(fitOrderBasicInfoDto);
 	}
 
@@ -295,7 +290,7 @@ public class FitBookingServiceImpl implements FitBookingService {
 	}
 
 	private void buildFitOrderFlightInfo(FitOrderBookingRequest fit, FitShoppingDto selectShoppingDto,
-			FitSearchRequest searchRequest) {
+			FitBaseSearchRequest searchRequest) {
 		//构造机酒订单航班信息
         List<FitOrderFlightDto> fitOrderFlightDtos = fit.getFitOrderFlightDtos();
         for (FlightSearchFlightInfoDto searchFlight : selectShoppingDto.getFlightInfos()) {
@@ -320,12 +315,12 @@ public class FitBookingServiceImpl implements FitBookingService {
 	}
 
 	private void buildFitOrderHotelInfo(FitOrderBookingRequest fit, FitShoppingDto selectShoppingDto) {
-		String checkIn = selectShoppingDto.getSearchRequest().getHotelSearchRequests().get(0).getDepartureDate();
-        String checkOut = selectShoppingDto.getSearchRequest().getHotelSearchRequests().get(0).getReturnDate();
+		String checkIn = selectShoppingDto.getSearchRequest().getCheckInTime();
+        String checkOut = selectShoppingDto.getSearchRequest().getCheckOutTime();
 
         //构造机酒订单酒店信息
         List<FitOrderHotelDto> fitOrderHotelDtos = fit.getFitOrderHotelDtos();
-        for (HotelSearchHotelDto searchHotel : selectShoppingDto.getHotels()) {
+        for (HotelSearchHotelDto searchHotel : selectShoppingDto.getHotels().getResults()) {
             for (HotelSearchRoomDto searchRoom : searchHotel.getRooms()) {
                 for (HotelSearchPlanDto searchPlan : searchRoom.getPlans()) {
                 	//构造机酒订单酒店信息
@@ -335,7 +330,7 @@ public class FitBookingServiceImpl implements FitBookingService {
                     fitOrderHotelDto.setCheckin(DateUtils.parseDate(checkIn));
                     fitOrderHotelDto.setCheckout(DateUtils.parseDate(checkOut));
                     fitOrderHotelDto.setProductResource(ProductResource.VST);
-                    fitOrderHotelDto.setCheckInCity(selectShoppingDto.getSearchRequest().getHotelSearchRequests().get(0).getCityCode());
+                    fitOrderHotelDto.setCheckInCity(selectShoppingDto.getSearchRequest().getCityCode());
                     fitOrderHotelDtos.add(fitOrderHotelDto);
                 }
             }
@@ -348,79 +343,82 @@ public class FitBookingServiceImpl implements FitBookingService {
      * @param shoppingDto
      */
 	private void checkHotelInventory(FitShoppingDto shoppingDto) {
-		List<HotelSearchHotelDto> shoppingHotels  = shoppingDto.getSelectedInfo().getHotels();
-		if(CollectionUtils.isNotEmpty(shoppingHotels)){
-			   HotelQueryRequest hotelQueryRequest = new HotelQueryRequest();
-		        FitSearchRequest request = shoppingDto.getSearchRequest();
-		        List<HotelQueryRequest> hotelRequests =  new ArrayList<HotelQueryRequest>();
-		        if(null != request){
-		        	hotelRequests = request.getHotelSearchRequests();
-		        }
-		        if(null != hotelRequests && CollectionUtils.isNotEmpty(hotelRequests)){
-		        	hotelQueryRequest = hotelRequests.get(0);
-		        }
-		        //暂定按照购物车中只有一个酒店来处理
-		        //暂定购物车中只有一个选中地房间
-		        //暂定购物车中只有一个选中地plan
-		        String productId = "";
-		        for(HotelSearchHotelDto dto:shoppingHotels){
-		        	productId = dto.getProductId();
-		        }
-				if( null != hotelQueryRequest && StringUtils.isNotBlank(productId)){
-					hotelQueryRequest.setKeywords(productId);	
-				} 
-				List<HotelSearchHotelDto> resultHotelList = fitDpService.hotelSearch(hotelQueryRequest);
-				//酒店接口返回酒店列表的时候，已经进行了库存判断，返回结果中的酒店以及plan一定是库存充足的酒店，
-				//所以只需要判断列表中是否有购物车中的酒店及酒店的plan即可
-				boolean flag = false;
-				String suppGoodsId = "";
-				for(HotelSearchHotelDto hotel:shoppingHotels){
-					HotelSearchHotelDto hotelDto= shoppingHotels.get(0);
-					if(null != hotelDto){
-						List<HotelSearchRoomDto> rooms =  hotelDto.getRooms();
-						for(HotelSearchRoomDto room:rooms){
-							List<HotelSearchPlanDto> plans = room.getPlans();
-							if(CollectionUtils.isNotEmpty(plans)){
-								suppGoodsId = plans.get(0).getSuppGoodsId();
-							}
-						}
-					}
-				}
-				Long days = DateUtils.getDateDiffByDay(hotelQueryRequest.getDepartureDate(), hotelQueryRequest.getReturnDate());
-				if(CollectionUtils.isNotEmpty(resultHotelList)){
-					HotelSearchHotelDto hotelDto= resultHotelList.get(0);
-					if(null != hotelDto){
-						List<HotelSearchRoomDto> rooms =  hotelDto.getRooms();
-						for(HotelSearchRoomDto room:rooms){
-							List<HotelSearchPlanDto> plans = room.getPlans();
-							for(HotelSearchPlanDto plan : plans){
-								if (null != suppGoodsId || !"".equals(suppGoodsId)){
-									if(suppGoodsId.equals(plan.getSuppGoodsId())){
-										/*if(CollectionUtils.isNotEmpty(plan.getDayPrice())){
-											List<FitHotelPlanPriceDto> dayPrice = plan.getDayPrice();
-											if(CollectionUtils.isNotEmpty(dayPrice) && dayPrice.size() >=days){
-												flag = true;
-											}	
-										}*/
-										return;
-									}
-								}
-							}
-							
-						}
-						if (null == suppGoodsId || "".equals(suppGoodsId)){//说明返回的结果中，没有购物车的那个酒店的plan了，所以报错吧
-							throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
-						}
-					} else {
-						throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
-					}
-					
-				} else {//酒店已售完
-					throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
-				}
-				/*if(!flag){
-					throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
-				}*/
+		List<HotelSearchHotelDto> shoppingHotels  = shoppingDto.getHotels().getResults();
+		if(CollectionUtils.isNotEmpty(shoppingHotels)) {
+            FitBaseSearchRequest request = shoppingDto.getSearchRequest();
+
+            HotelQueryRequest hotelQueryRequest = new HotelQueryRequest();
+            hotelQueryRequest.setCityDistrictId(String.valueOf(VSTDistrictCityEnum.getDistrictId(request.getCityCode())));
+            hotelQueryRequest.setCityCode(request.getCityCode());
+            hotelQueryRequest.setCityName(request.getCityName());
+            hotelQueryRequest.setDepartureDate(request.getCheckInTime());
+            hotelQueryRequest.setReturnDate(request.getCheckOutTime());
+            hotelQueryRequest.setHotelFromRecommendedOnly(false);
+            hotelQueryRequest.setRoomCounts(
+                HotelUtils.getMinRoomCount(request.getAdultsCount(), request.getChildCount()));
+            hotelQueryRequest.setQueryId(request.getShoppingUUID());
+            hotelQueryRequest.setAdultCount(request.getAdultsCount());
+            hotelQueryRequest.setChildCount(request.getChildCount());
+
+            String productId = "";
+            for(HotelSearchHotelDto dto:shoppingHotels){
+                productId = dto.getProductId();
+            }
+            if( null != hotelQueryRequest && StringUtils.isNotBlank(productId)){
+                hotelQueryRequest.setKeywords(productId);
+            }
+            List<HotelSearchHotelDto> resultHotelList = fitDpService.hotelSearch(hotelQueryRequest);
+            //酒店接口返回酒店列表的时候，已经进行了库存判断，返回结果中的酒店以及plan一定是库存充足的酒店，
+            //所以只需要判断列表中是否有购物车中的酒店及酒店的plan即可
+            boolean flag = false;
+            String suppGoodsId = "";
+            for(HotelSearchHotelDto hotel:shoppingHotels){
+                HotelSearchHotelDto hotelDto= shoppingHotels.get(0);
+                if(null != hotelDto){
+                    List<HotelSearchRoomDto> rooms =  hotelDto.getRooms();
+                    for(HotelSearchRoomDto room:rooms){
+                        List<HotelSearchPlanDto> plans = room.getPlans();
+                        if(CollectionUtils.isNotEmpty(plans)){
+                            suppGoodsId = plans.get(0).getSuppGoodsId();
+                        }
+                    }
+                }
+            }
+            Long days = DateUtils.getDateDiffByDay(hotelQueryRequest.getDepartureDate(), hotelQueryRequest.getReturnDate());
+            if(CollectionUtils.isNotEmpty(resultHotelList)){
+                HotelSearchHotelDto hotelDto= resultHotelList.get(0);
+                if(null != hotelDto){
+                    List<HotelSearchRoomDto> rooms =  hotelDto.getRooms();
+                    for(HotelSearchRoomDto room:rooms){
+                        List<HotelSearchPlanDto> plans = room.getPlans();
+                        for(HotelSearchPlanDto plan : plans){
+                            if (null != suppGoodsId || !"".equals(suppGoodsId)){
+                                if(suppGoodsId.equals(plan.getSuppGoodsId())){
+                                    /*if(CollectionUtils.isNotEmpty(plan.getDayPrice())){
+                                        List<FitHotelPlanPriceDto> dayPrice = plan.getDayPrice();
+                                        if(CollectionUtils.isNotEmpty(dayPrice) && dayPrice.size() >=days){
+                                            flag = true;
+                                        }
+                                    }*/
+                                    return;
+                                }
+                            }
+                        }
+
+                    }
+                    if (null == suppGoodsId || "".equals(suppGoodsId)){//说明返回的结果中，没有购物车的那个酒店的plan了，所以报错吧
+                        throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
+                    }
+                } else {
+                    throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
+                }
+
+            } else {//酒店已售完
+                throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
+            }
+            /*if(!flag){
+                throw new ExceptionWrapper(ExceptionCode.GET_HOTEL_PRICE_FAIL);
+            }*/
 		}
 	}
 

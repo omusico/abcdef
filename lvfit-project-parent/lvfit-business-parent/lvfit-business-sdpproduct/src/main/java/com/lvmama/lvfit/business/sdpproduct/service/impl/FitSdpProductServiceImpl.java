@@ -2,7 +2,6 @@ package com.lvmama.lvfit.business.sdpproduct.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -17,6 +16,7 @@ import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpCityGroupRep
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductBasicInfoRepository;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductFeeRulesRepository;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductSearchIndexRepository;
+import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductSearchIndexTrafficRepository;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductSearchSynInfoRepository;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductTrafficRulesRepository;
 import com.lvmama.lvfit.business.sdpproduct.service.FitSdpProductService;
@@ -27,6 +27,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
@@ -46,6 +47,8 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 	private FitSdpProductSearchIndexRepository fitSdpProductSearchIndexRepository;
 	@Autowired
 	private FitSdpProductSearchSynInfoRepository fitSdpProductSearchSynInfoRepository;
+	@Autowired
+	private FitSdpProductSearchIndexTrafficRepository fitSdpProductSearchIndexTrafficRepository;
 	
 	@Autowired
 	private FitBatchClient fitBatchClient;
@@ -219,6 +222,38 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 	@Override
 	public List<FitSdpProductSynMsg> querySdpProductSynInfoList(Long productId) {
 		return fitSdpProductSearchSynInfoRepository.querySynMsgList(productId);
+	}
+
+	@Override
+	public List<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(
+			Long productId) {
+		return fitSdpProductSearchIndexTrafficRepository.queryIndexTrafficList(productId);
+	}
+
+	@Override
+	public void saveEditProductCityGroup(FitSdpCityGroupDto cityGroupDtos){
+		if(cityGroupDtos!=null){
+				fitSdpCityGroupRepository.save(cityGroupDtos);
+		}
+	}
+
+	@Override
+	public FitSdpCityGroupDto getProductCityGroupById(Long id) {
+		if(id!=0){
+			return fitSdpCityGroupRepository.queryOneCityById(id);
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	public List<FitSdpCityGroupDto> getProductCityGroupByDto(
+			BaseQueryDto<FitSdpCityGroupDto> dto) {
+		if(dto!=null){
+			return fitSdpCityGroupRepository.queryCityGroupByDto(dto);
+		}else{
+			return null;
+		}
 	}
 	
 }

@@ -3,6 +3,8 @@ package com.lvmama.lvfit.dp.service;
 import com.lvmama.lvfit.common.dto.app.FitAppHotelRequest;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.TripeType;
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
+import com.lvmama.lvfit.common.dto.request.FitFilterFlightRequest;
 import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
 import com.lvmama.lvfit.common.dto.search.FitSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
@@ -22,29 +24,8 @@ import java.util.Map;
 public interface FitDpService {
 	
 	//查询，调用各个资源聚合服务，筛选后，重新算价，组装返回信息
-	String search(FitSearchRequest request);
-	
-	//searchFlight 更换机票  调用资源聚合服务，筛选后，重新算价，组装返回信息
-	FitSearchResult flightChangeSearch(String uuid,String method);
-	
-	//searchHotel  更换酒店  调用资源聚合服务，筛选后，重新算价，组装返回信息
-	
-	FitSearchResult hotelChangeSearch(FitSearchRequest request);
+	FitShoppingDto search(FitBaseSearchRequest request);
 
-	/**
-	 * 获取往返的航班列表
-	 * */
-	FitSearchResult queryToBackFlights(FitSearchRequest request);
-
-	/**
-	 * 过滤得到可售的酒店信息
-	 * @param hotelList
-	 * @param request
-	 * @return
-	 */
-	List<HotelSearchResult<HotelSearchHotelDto>> getDefaultHotelInfo(List<HotelSearchResult<HotelSearchHotelDto>> hotelList,FitSearchRequest request);
-	
-	FitShoppingDto getShoppingResult(FitSearchRequest request);
 	List<HotelSearchHotelDto> hotelSearch(HotelQueryRequest hotelQueryRequest);
 	
 	/**
@@ -52,16 +33,29 @@ public interface FitDpService {
 	 * 
 	 * */
 	SpotSearchResult<SpotSearchSpotDto> searchSpotTicket(SpotQueryRequest spotQueryRequest);
-	
-	FlightSearchResult<FlightSearchFlightInfoDto> handleFlights(FlightSearchResult<FlightSearchFlightInfoDto> searchResult);
 
+	/**
+	 * 查询航班信息
+	 * @param tripeType
+	 * @param departureDate
+	 * @param returnDate
+	 * @param depCityCode
+	 * @param arvCityCode
+	 * @param bookingSource
+     * @return
+     */
 	Map<String,FlightSearchResult<FlightSearchFlightInfoDto>> getAllFlightInfos(TripeType tripeType,
 		String departureDate, String returnDate, String depCityCode, String arvCityCode, BookingSource bookingSource);
 
 	/**
-	 * 查询酒店列表信息
+	 * 查询酒店列表信息（新）
 	 * @param request
 	 * @return
      */
 	HotelSearchResult<HotelSearchHotelDto> searchHotelInfos(FitAppHotelRequest request);
+
+	/**
+	 * 根据筛选条件对航班信息进行筛选
+	 */
+	List<FlightSearchFlightInfoDto> getFlightInfos(FitFilterFlightRequest request);
 }

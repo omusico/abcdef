@@ -2,6 +2,7 @@ package com.lvmama.lvfit.online.search.form;
 
 import java.io.Serializable;
 
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.lvmama.lvf.common.form.Form;
@@ -14,132 +15,124 @@ import com.lvmama.lvfit.common.dto.enums.BookingSource;
  * @author zhoubinbin
  *
  */
-public class SearchConditionForm implements Serializable,Form{
-	//出发地
-	private String departureCityName;
-	//目的地城市行政id
-	private String arrivalCityDistrictCode;
-	//目的地的三字码
-	private String arrivalCityCode;
-	//出发地的三字码
-	private String departureCityCode;
-	//入住城市三字码
-	private String cityCode;
-	//目的地
-	private String arrivalCityName;
-	//去程时间
-	private String departureTime;
-	//返程时间
-	private String returnTime;
-	//入住城市
-	private String cityName;
-	//入住时间
-	private String checkInTime;
-	//离店时间
-	private String checkOutTime;
-	//成人数
-	private int adultsCount;
-	//儿童数
-	private int childCount;
-	
-	//订单号
-	private String  shoppingUUID;
-	//出行类型
-	private String tripType;//单程 singleTrip-->单程 roundTrip-->往返
-	
-	private BookingSource bookingSource = BookingSource.FIT_FRONT;
-	
-	public BookingSource getBookingSource() {
-		return bookingSource;
+public class SearchConditionForm implements Serializable, Form {
+
+	FitBaseSearchRequest request = new FitBaseSearchRequest();
+
+	public FitBaseSearchRequest getRequest() {
+		return request;
 	}
-	public void setBookingSource(BookingSource bookingSource) {
-		this.bookingSource = bookingSource;
+
+	public void setRequest(FitBaseSearchRequest request) {
+		this.request = request;
 	}
-	public int getAdultsCount() {
-		return adultsCount;
-	}
-	public int getChildCount() {
-		return childCount;
-	}
-	public void setAdultsCount(int adultsCount) {
-		this.adultsCount = adultsCount;
-	}
-	public void setChildCount(int childCount) {
-		this.childCount = childCount;
-	}
-	
-	public String getCityCode() {
-		return cityCode;
-	}
-	public void setCityCode(String cityCode) {
-		this.cityCode = cityCode;
-	}
-	public String getArrivalCityDistrictCode() {
-		return arrivalCityDistrictCode;
-	}
-	public void setArrivalCityDistrictCode(String arrivalCityDistrictCode) {
-		this.arrivalCityDistrictCode = arrivalCityDistrictCode;
-	}
+
 	public String getArrivalCityCode() {
-		return arrivalCityCode;
+		return request.getArrivalCityCode();
 	}
-	public void setArrivalCityCode(String arrivalCityCode) {
-		this.arrivalCityCode = arrivalCityCode;
-	}
-	public String getDepartureCityCode() {
-		return departureCityCode;
-	}
-	public void setDepartureCityCode(String departureCityCode) {
-		this.departureCityCode = departureCityCode;
-	}
-	public String getDepartureCityName() {
-		return departureCityName;
-	}
-	public void setDepartureCityName(String departureCityName) {
-		this.departureCityName = departureCityName;
-	}
-	public String getArrivalCityName() {
-		return arrivalCityName;
-	}
-	public void setArrivalCityName(String arrivalCityName) {
-		this.arrivalCityName = arrivalCityName;
-	}
-	public String getDepartureTime() {
-		return departureTime;
-	}
-	public void setDepartureTime(String departureTime) {
-		this.departureTime = departureTime;
-	}
-	public String getReturnTime() {
-		return returnTime;
-	}
+
 	public void setReturnTime(String returnTime) {
-		this.returnTime = returnTime;
+		request.setReturnTime(returnTime);
 	}
-	public String getCityName() {
-		return cityName;
+
+	public String getCityCode() {
+		return request.getCityCode();
 	}
-	public void setCityName(String cityName) {
-		this.cityName = cityName;
+
+	public String getArrivalCityName() {
+		return request.getArrivalCityName();
 	}
-	public String getCheckInTime() {
-		return checkInTime;
+
+	public void setChildCount(int childCount) {
+		request.setChildCount(childCount);
 	}
-	public void setCheckInTime(String checkInTime) {
-		this.checkInTime = checkInTime;
-	}
-	public String getCheckOutTime() {
-		return checkOutTime;
-	}
-	public void setCheckOutTime(String checkOutTime) {
-		this.checkOutTime = checkOutTime;
-	}
-	
-	public String getShoppingUUID() {
-		return shoppingUUID;
-	}
+
 	public void setShoppingUUID(String shoppingUUID) {
-		this.shoppingUUID = shoppingUUID;
+		request.setShoppingUUID(shoppingUUID);
+	}
+
+	public String getShoppingUUID() {
+		return request.getShoppingUUID();
+	}
+
+	public String getReturnTime() {
+		return request.getReturnTime();
+	}
+
+	public void setCheckInTime(String checkInTime) {
+		request.setCheckInTime(checkInTime);
+	}
+
+	public void setCheckOutTime(String checkOutTime) {
+		request.setCheckOutTime(checkOutTime);
+	}
+
+	public String getDepartureCityCode() {
+		return request.getDepartureCityCode();
+	}
+
+	public void setAdultsCount(int adultsCount) {
+		request.setAdultsCount(adultsCount);
+	}
+
+	public void setArrivalCityCode(String arrivalCityCode) {
+		request.setArrivalCityCode(arrivalCityCode);
+	}
+
+	public int getAdultsCount() {
+		return request.getAdultsCount();
+	}
+
+	public void setTripType(String tripType) {
+		request.setTripType(tripType);
+	}
+
+	public void setCityCode(String cityCode) {
+		request.setCityCode(cityCode);
+	}
+
+	public void setBookingSource(BookingSource bookingSource) {
+		request.setBookingSource(bookingSource);
+	}
+
+	public BookingSource getBookingSource() {
+		return request.getBookingSource();
+	}
+
+	public String getDepartureCityName() {
+		return request.getDepartureCityName();
+	}
+
+	public String getDepartureTime() {
+		return request.getDepartureTime();
+	}
+
+	public void setDepartureCityCode(String departureCityCode) {
+		request.setDepartureCityCode(departureCityCode);
+	}
+
+	public String getCityName() {
+		return request.getCityName();
+	}
+
+	public String getCheckOutTime() {
+		return request.getCheckOutTime();
+	}
+
+	public String getCheckInTime() {
+		return request.getCheckInTime();
+	}
+
+	public String getTripType() {
+		return request.getTripType();
+	}
+
+	public int getChildCount() {
+		return request.getChildCount();
+	}
+
+	public void setDepartureTime(String departureTime) {
+		request.setDepartureTime(departureTime);
 	}
 
 	public boolean isReturnToError(){
@@ -169,12 +162,5 @@ public class SearchConditionForm implements Serializable,Form{
 			return true;
 		}
 	   return isReturnToError;
-	}
-	
-	public String getTripType() {
-		return tripType;
-	}
-	public void setTripType(String tripType) {
-		this.tripType = tripType;
 	}
 }

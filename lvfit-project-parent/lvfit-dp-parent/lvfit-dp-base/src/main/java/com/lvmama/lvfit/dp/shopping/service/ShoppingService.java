@@ -12,9 +12,6 @@ import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 
 public interface ShoppingService{
 
-	
-	public FitSearchRequest getFitSearchRequest(String shoppingUUID);
-	
 	public FitShoppingDto getFitShopping(String shoppingUUID);
 	public boolean putShoppingCache(String shoppingUUID, FitShoppingDto dto);
 	

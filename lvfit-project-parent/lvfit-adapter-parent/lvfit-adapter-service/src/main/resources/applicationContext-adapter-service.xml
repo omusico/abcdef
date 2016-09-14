@@ -42,7 +42,7 @@
 	<import resource="classpath*:applicationContext-adapter-vst-remote.xml" />
 	<import resource="classpath*:applicationContext-adapter-search-dubbo-consumer.xml" />
 	<import resource="classpath*:applicationContext-adapter-search-adapter.xml" />
-	
 	<import resource="classpath*:applicationContext-persistence-all-persistence.xml" />
+	<import resource="classpath*:applicationContext-adapter-service-adapter.xml" />
     
 </beans>

@@ -9,6 +9,7 @@
 
 package com.lvmama.lvfit.online.booking.controller;
 
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import org.codehaus.jackson.type.TypeReference;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,7 +78,7 @@ public class ToBookingControllerImpl extends BaseController implements ToBooking
 	 * @author wanghuihui
 	 * @date:2015年12月16日 下午1:50:36
 	 * @param model
-	 * @param shoppingUUID
+	 * @param
 	 * @return
 	 */
 	@Override
@@ -143,12 +144,11 @@ public class ToBookingControllerImpl extends BaseController implements ToBooking
 		}
 		if(null != shoppingDto){
 			//从选中的信息中获取机票、酒店、门票、保险等相关信息
-			FitShoppingDto selectedShopping = shoppingDto.getSelectedInfo();
 			String productName = "";
 			//机票信息
-			model.addAttribute("flightInfos", selectedShopping.getFlightInfos());
+			model.addAttribute("flightInfos", shoppingDto.getFlightInfos());
 			//酒店信息
-			List<HotelSearchHotelDto> hotels = selectedShopping.getHotels();
+			List<HotelSearchHotelDto> hotels = shoppingDto.getHotels().getResults();
 			if(CollectionUtils.isNotEmpty(hotels)){
 				HotelSearchHotelDto hotel = hotels.get(0);
 				HotelSearchRoomDto room = hotel.getRooms().get(0);
@@ -161,20 +161,18 @@ public class ToBookingControllerImpl extends BaseController implements ToBooking
 				model.addAttribute("hotel", hotel);
 				
 				// 入住天数
-				String depDateStr = shoppingDto.getSearchRequest().getHotelSearchRequests().get(0).getDepartureDate();
-				String reDateStr = shoppingDto.getSearchRequest().getHotelSearchRequests().get(0).getReturnDate();
+				String depDateStr = shoppingDto.getSearchRequest().getCheckInTime();
+				String reDateStr = shoppingDto.getSearchRequest().getCheckOutTime();
 				Date depDate = DateUtils.parseDate(depDateStr);
 				Date reDate = DateUtils.parseDate(reDateStr);
 				model.addAttribute("roomDate", DateUtil.getDaysBetween(depDate, reDate));
-				model.addAttribute("hotelRequest", shoppingDto.getSearchRequest().getHotelSearchRequests().get(0));
+				model.addAttribute("checkInDate", depDateStr);
+				model.addAttribute("checkOutDate", reDateStr);
 			}
 			
 			//成人儿童数
-			if(shoppingDto.getSearchRequest() != null && shoppingDto.getSearchRequest().getFitPassengerRequest() != null){
-				FitPassengerRequest passenger = shoppingDto.getSearchRequest().getFitPassengerRequest();
-				model.addAttribute("adultCount",passenger.getAdultCount());
-				model.addAttribute("childCount",passenger.getChildCount());
-			}
+			model.addAttribute("adultCount", shoppingDto.getSearchRequest().getAdultsCount());
+			model.addAttribute("childCount", shoppingDto.getSearchRequest().getChildCount());
 			
 			//乘客回填
 			if(!CollectionUtils.isEmpty(shoppingDto.getPassenger())){
@@ -200,7 +198,7 @@ public class ToBookingControllerImpl extends BaseController implements ToBooking
 			//航空意外险
 			model.addAttribute("insuranceInfos", shoppingDto.getSelectFlightInsInfo());
 			//产品名称
-			productName = bulidProductName(selectedShopping.getFlightInfos(),shoppingDto.getSearchRequest().getTripType(),shoppingDto.getSearchRequest().getFitPassengerRequest());
+			productName = bulidProductName(shoppingDto.getSearchRequest());
 			model.addAttribute("productName", productName);
 			return "order/fh-order";
 		}else{
@@ -208,23 +206,23 @@ public class ToBookingControllerImpl extends BaseController implements ToBooking
 		}
 	}
 	
-    private String bulidProductName(List<FlightSearchFlightInfoDto> flightInfos, String tripType, FitPassengerRequest fitPassengerRequest) {
-    	String productName = "";
-    	String adultCount = fitPassengerRequest.getAdultCount()==0?"":fitPassengerRequest.getAdultCount()+"成人";
-    	String childCount = fitPassengerRequest.getChildCount()==0?"":fitPassengerRequest.getChildCount()+"儿童";
-		if(tripType.equalsIgnoreCase("WF")){
-			productName = flightInfos.get(0).getDepartureCityName() +" 往返 "+ flightInfos.get(0).getArrivalCityName() +" 自由行（"
-					      +flightInfos.get(0).getDepartureDate() +"至" + flightInfos.get(1).getDepartureDate()+"，"+adultCount+childCount+"）";
-		}else{
-			productName = flightInfos.get(0).getDepartureCityName() + " — " + flightInfos.get(0).getArrivalCityName() +" 自由行（"
-						  +flightInfos.get(0).getDepartureDate() +"，"+adultCount+" "+childCount + "）";
+    private String bulidProductName(FitBaseSearchRequest request) {
+    	String productName;
+    	String adultStr = request.getAdultsCount() == 0 ? "" : request.getAdultsCount() + "成人";
+    	String childStr = request.getChildCount()==0? "" : request.getChildCount() + "儿童";
+		if (request.getTripType().equalsIgnoreCase("WF")) {
+			productName = request.getDepartureCityName() +" 往返 "+ request.getArrivalCityName() +" 自由行（"
+					      + request.getDepartureTime() +"至" + request.getReturnTime() + "，" + adultStr + childStr+"）";
+		} else {
+			productName = request.getDepartureCityName() + " — " + request.getArrivalCityName() +" 自由行（"
+						  + request.getDepartureTime() + "，" + adultStr + " " + childStr + "）";
 		}
     	return productName;
 	}
 
 	/**
 	 * 用户点击预订下一步前预定前记录用户请求信息
-	 * @param model
+	 * @param
 	 * @param request
 	 * @param shopingUUID
 	 */
