@@ -58,12 +58,27 @@ public class TicketDetailQueryResponseForm implements Serializable, Form
 			//航程
 			if(StringUtils.isNotBlank(flightOrderListFlightInfoDto.getDepCode()))
 			{
-				this.flightSegment = flightOrderListFlightInfoDto.getDepCode() + "-" + flightOrderListFlightInfoDto.getArrCode();
+				if(flightOrderListFlightInfoDto.getDepCode().contains(",") && flightOrderListFlightInfoDto.getArrCode().contains(",")){
+					String[] depCodes = flightOrderListFlightInfoDto.getDepCode().split(",");
+					String[] arrCodes = flightOrderListFlightInfoDto.getArrCode().split(",");
+					this.flightSegment = depCodes[0] + "-" + arrCodes[0];
+					this.flightSegment += "," + depCodes[1] + "-" + arrCodes[1];
+				}else{
+					this.flightSegment = flightOrderListFlightInfoDto.getDepCode() + "-" + flightOrderListFlightInfoDto.getArrCode();
+				}
 			}
+			
 			//航班号
 			if(StringUtils.isNotBlank(flightOrderListFlightInfoDto.getFlightNo()))
 			{
-				this.flightNo += flightOrderListFlightInfoDto.getFlightNo() + "(" + flightOrderListFlightInfoDto.getSeatClassCode() + ")";
+				if(flightOrderListFlightInfoDto.getFlightNo().contains(",") && flightOrderListFlightInfoDto.getSeatClassCode().contains(",")){
+					String[] flightNos = flightOrderListFlightInfoDto.getFlightNo().split(",");
+					String[] seatCodes = flightOrderListFlightInfoDto.getSeatClassCode().split(",");
+					this.flightNo = flightNos[0] + "(" + seatCodes[0] + ")";
+					this.flightNo += "," + flightNos[1] + "(" + seatCodes[1] + ")";
+				}else{
+					this.flightNo += flightOrderListFlightInfoDto.getFlightNo() + "(" + flightOrderListFlightInfoDto.getSeatClassCode() + ")";
+				}
 			}
 		}
 		
@@ -243,6 +258,11 @@ public class TicketDetailQueryResponseForm implements Serializable, Form
 		if(this.getFlightOrderListFlightInfoDto() != null && this.getFlightOrderListFlightInfoDto().getDepTime() != null)
 		{
 			this.flightTime += DateUtils.formatDate(this.getFlightOrderListFlightInfoDto().getDepTime(), DateUtils.YYYY_MM_DD_HH_MM);
+			if(this.getFlightOrderListFlightInfoDto().getReturnDepTime() != null 
+					&& !this.getFlightOrderListFlightInfoDto().getReturnDepTime().equals(this.getFlightOrderListFlightInfoDto().getDepTime()))
+			{
+				this.flightTime += "," + DateUtils.formatDate(this.getFlightOrderListFlightInfoDto().getReturnDepTime(), DateUtils.YYYY_MM_DD_HH_MM);
+			}
 		}
 		return flightTime;
 	}

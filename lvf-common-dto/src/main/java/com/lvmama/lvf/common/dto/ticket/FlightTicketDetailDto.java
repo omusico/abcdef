@@ -219,15 +219,34 @@ public class FlightTicketDetailDto implements Dto,Serializable
 		{
 			if(StringUtils.isNotBlank(flightOrderListFlightInfoDto.getDepCode()))
 			{
-				flightSegment = flightOrderListFlightInfoDto.getDepCode() + "-" + flightOrderListFlightInfoDto.getArrCode();
+				if(flightOrderListFlightInfoDto.getDepCode().contains(",") && flightOrderListFlightInfoDto.getArrCode().contains(",")){
+					String[] depCodes = flightOrderListFlightInfoDto.getDepCode().split(",");
+					String[] arrCodes = flightOrderListFlightInfoDto.getArrCode().split(",");
+					flightSegment = depCodes[0] + "-" + arrCodes[0];
+					flightSegment += "~" + depCodes[1] + "-" + arrCodes[1];
+				}else{
+					flightSegment = flightOrderListFlightInfoDto.getDepCode() + "-" + flightOrderListFlightInfoDto.getArrCode();
+				}
 			}
 			if(StringUtils.isNotBlank(flightOrderListFlightInfoDto.getFlightNo()))
 			{
-				flightNo += flightOrderListFlightInfoDto.getFlightNo() + "(" + flightOrderListFlightInfoDto.getSeatClassCode() + ")";
+				if(flightOrderListFlightInfoDto.getFlightNo().contains(",") && flightOrderListFlightInfoDto.getSeatClassCode().contains(",")){
+					String[] flightNos = flightOrderListFlightInfoDto.getFlightNo().split(",");
+					String[] seatCodes = flightOrderListFlightInfoDto.getSeatClassCode().split(",");
+					flightNo = flightNos[0] + "(" + seatCodes[0] + ")";
+					flightNo += "~" + flightNos[1] + "(" + seatCodes[1] + ")";
+				}else{
+					flightNo += flightOrderListFlightInfoDto.getFlightNo() + "(" + flightOrderListFlightInfoDto.getSeatClassCode() + ")";
+				}
 			}
 			if(flightOrderListFlightInfoDto.getDepTime() != null)
 			{
 				flightTime += DateUtils.formatDate(flightOrderListFlightInfoDto.getDepTime(), DateUtils.YYYY_MM_DD_HH_MM);
+				if(this.getFlightOrderListFlightInfoDto().getReturnDepTime() != null 
+						&& !this.getFlightOrderListFlightInfoDto().getReturnDepTime().equals(this.getFlightOrderListFlightInfoDto().getDepTime()))
+				{
+					flightTime += "~" + DateUtils.formatDate(this.getFlightOrderListFlightInfoDto().getReturnDepTime(), DateUtils.YYYY_MM_DD_HH_MM);
+				}
 			}
 		}
 		ticketDetailStr.append(flightSegment).append(",");

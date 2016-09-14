@@ -139,7 +139,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         //构建订单基本信息
         this.buildFitOrderBasicInfo(bookingRequest,shoppingDto);
         
-        //构建订单航班信息
+        //构建订单航班信息:设置bookingRequest里面的fitOrderFlightDtos对象
         this.buildFitOrderFlightInfo(bookingRequest, shoppingDto);
         
         //构造机酒订单酒店信息
@@ -227,7 +227,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 	         FitSdpCalculateAmountRequest calculateAmountRequest = new FitSdpCalculateAmountRequest(); 
 	         List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
 	         fitSdpShoppingRequest.setBookingSource(bookingRequest.getBookingSource());
-	         //如果是包机切位,只计算第一个单程的价格，也就是只计算包机切位的去程的价格.
+	         //如果是包机切位,只计算第一个单程的价格，也就是只计算包机切位的去程的价格.包机切位的返程是通过去程里面的returnFlight出来的，不可以拿到实际的后台去查询价格
 	         if(SuppSaleType.DomesticProduct.name().equals(searchFlight.getSaleType())){
 	        	 selectSearchFlightInfoDtos.add(shoppingDto.getSelectedFlightInfos().get(0));
 	         }
@@ -252,7 +252,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 	        	BigDecimal singlePrice = salesPrice.divide(new BigDecimal(childCount+adultCount));
 	        	//如果是包机切位，成人价，儿童价都是一样的，每个价格一样。所以单价就是总价/总人数.
 	        	fitOrderFlightDto.setAdultPrice(singlePrice);
-	        	fitOrderFlightDto.setAdultPrice(singlePrice);
+	        	fitOrderFlightDto.setChildPrice(singlePrice);
 	         }
 	         //默认的航班
 	         else{  

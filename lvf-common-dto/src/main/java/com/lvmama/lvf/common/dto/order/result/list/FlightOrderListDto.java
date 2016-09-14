@@ -290,6 +290,19 @@ public class FlightOrderListDto implements Serializable, Dto
 				{
 					flightTimes += DateUtils.formatDate(flightInfoDto.getDepTime(), DateUtils.YYYY_MM_DD_HH_MM) + " ";
 				}
+				
+				//返程航程
+				if(StringUtils.isNotBlank(flightInfoDto.getReturnDepAirportCode())){
+					flightSegments += "~" + flightInfoDto.getReturnDepAirportCode() + "-" + flightInfoDto.getReturnArrAirportCode();
+				}
+				//返程航班号
+				if(StringUtils.isNotBlank(flightInfoDto.getReturnFlightNo())){
+					flightNos += "~" + flightInfoDto.getReturnFlightNo() + "(" + flightInfoDto.getReturnSeatClassCode() + ")";
+				}
+				//返程乘机时间
+				if(null != flightInfoDto.getReturnDepTime()){
+					flightTimes += "~" + DateUtils.formatDate(flightInfoDto.getReturnDepTime(), DateUtils.YYYY_MM_DD_HH_MM);
+				}
 			}
 		}
 		orderListStr.append(flightSegments).append(",");

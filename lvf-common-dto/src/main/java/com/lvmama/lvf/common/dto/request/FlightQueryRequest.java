@@ -158,7 +158,7 @@ public class FlightQueryRequest implements Serializable{
 	
 	private Date backDate; //真往返返程日期
 	
-	private String[] saleType = new String[]{"DomesticProduct","NORMAL"}; //政策类型，用于标识普通政策还是包机政策
+	private String[] saleType; //政策类型，用于标识普通政策还是包机政策
 
 	public BookingSource getBookingSource() {
 		return bookingSource;
