@@ -90,7 +90,7 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
         //默认是审批之后下单。
         flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_AFTER_VST_AUDIT);
         //包机切位都是审批前下单
-        if(CharterFlightFilterUtil.isCharsetFlight(fit.getFitOrderFlightDtos())){
+        if(CharterFlightFilterUtil.isCharterFlight(fit.getFitOrderFlightDtos())){
         	 flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT); 
         }
         

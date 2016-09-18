@@ -69,8 +69,14 @@ public class FitSdpCityGroupRepositoryImpl implements FitSdpCityGroupRepository 
 
 	@Override
 	public List<FitSdpCityGroupDto> queryCityGroupByDto(
-			BaseQueryDto<FitSdpCityGroupDto> dto) {
-		return fitSdpCityGroupMapper.queryCityGroupByDto(dto);
+			BaseQueryDto<FitSdpCityGroupDto> baseQueryDto) {
+		return fitSdpCityGroupMapper.queryCityGroupByDto(baseQueryDto);
+	}
+
+	@Override
+	public int countSdpProductDepartCityRecords(
+			BaseQueryDto<FitSdpCityGroupDto> baseQueryDto) {
+		return fitSdpCityGroupMapper.countSdpProductDepartCityRecords(baseQueryDto);
 	}
 
 }

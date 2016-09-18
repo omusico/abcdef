@@ -35,6 +35,7 @@ public class FitSuppOrderForFlightCallBackDto extends Entity {
 	
 	/**回调时间 */
 	private Date callbackTime;
+	
 
 	public Long getSuppOrderId() {
 		return suppOrderId;

@@ -226,7 +226,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 	         List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
 	         fitSdpShoppingRequest.setBookingSource(bookingRequest.getBookingSource());
 	         //如果是包机切位,只计算第一个单程的价格，也就是只计算包机切位的去程的价格.包机切位的返程是通过去程里面的returnFlight出来的，不可以拿到实际的后台去查询价格
-	         if(CharterFlightFilterUtil.isCharset(searchFlight)){
+	         if(CharterFlightFilterUtil.isCharter(searchFlight)){
 	        	 selectSearchFlightInfoDtos.add(shoppingDto.getSelectedFlightInfos().get(0));
 	         }
 	         //以前默认的处理方式，处理往返程.
@@ -240,7 +240,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 	         FitFlightAmountDto flightAmountDto =  fitSdpShopingCalculateService.calculateFlightAmount(calculatorRequest);
 	         
 	         //如果是包机切位
-	         if(CharterFlightFilterUtil.isCharset(searchFlight))){
+	         if(CharterFlightFilterUtil.isCharter(searchFlight)){
 		        int childCount = bookingRequest.getChildQuantity();
          		int adultCount = bookingRequest.getAdultQuantity();
          		BigDecimal salesPrice = flightAmountDto.getTotalSalesAmount();
@@ -370,7 +370,7 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         //计算：机票成人单价、机票儿童单价
         for (FitOrderFlightDto f : bookingRequest.getFitOrderFlightDtos()) {
         	//如果当前是包机切位的航班，就不计算单价了。因为已经在completeBookingRequest()中计算了.
-        	if(CharterFlightFilterUtil.isCharset(f)){
+        	if(CharterFlightFilterUtil.isCharter(f)){
         		continue;
 			}
         	

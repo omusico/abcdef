@@ -246,6 +246,7 @@ $(".select-class-list li").live("click", function(e) {
             if (flightType === "RETURN") {
                 $("#back_flightInfo").html(data);
             }
+            initAjax();
         }
     });
 });
@@ -299,6 +300,7 @@ $(".xuanze").die().live("click",function() {
         success: function(data) {
             $("#hotelInfo").html(data);
             $(".JS_showAllRoom").bind("click", showAllRoom);
+            initAjax();
         },
         error:function(obj) {
             $(".returnAlert").show();

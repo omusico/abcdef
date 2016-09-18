@@ -40,7 +40,7 @@ public class CharterFlightFilterUtil {
      * @param fitOrderFlightDtos
      * @return
      */
-    public static boolean isCharsetFlight(List<FitOrderFlightDto> fitOrderFlightDtos){
+    public static boolean isCharterFlight(List<FitOrderFlightDto> fitOrderFlightDtos){
     	//两个航段类型，并且都是包机类型
     	if(CollectionUtils.isNotEmpty(fitOrderFlightDtos)&&fitOrderFlightDtos.size()==2){
     		if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(0).getSaleType())){
@@ -57,7 +57,7 @@ public class CharterFlightFilterUtil {
      * @param fitOrderFlightDtos
      * @return
      */
-    public static boolean isCharsetFlightDots(List<FlightSearchFlightInfoDto> fitOrderFlightDtos){
+    public static boolean isCharterFlightDots(List<FlightSearchFlightInfoDto> fitOrderFlightDtos){
     	//两个航段类型，并且都是包机类型
     	if(CollectionUtils.isNotEmpty(fitOrderFlightDtos)&&fitOrderFlightDtos.size()==2){
     		if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDtos.get(0).getSaleType())){
@@ -74,7 +74,7 @@ public class CharterFlightFilterUtil {
      * @param flightSearchFlightInfoDto
      * @return
      */
-    public static boolean isCharset(FlightSearchFlightInfoDto flightSearchFlightInfoDto){
+    public static boolean isCharter(FlightSearchFlightInfoDto flightSearchFlightInfoDto){
  		if(SuppSaleType.DomesticProduct.name().equals(flightSearchFlightInfoDto.getSaleType())){
 			return true;
 		} 
@@ -86,7 +86,7 @@ public class CharterFlightFilterUtil {
      * @param fitOrderFlightDto
      * @return
      */
-    public static boolean isCharset(FitOrderFlightDto fitOrderFlightDto){
+    public static boolean isCharter(FitOrderFlightDto fitOrderFlightDto){
  		if(SuppSaleType.DomesticProduct.name().equals(fitOrderFlightDto.getSaleType())){
 			return true;
 		} 
@@ -98,8 +98,8 @@ public class CharterFlightFilterUtil {
 	 * @return
 	 */
 	public static Boolean getQueryCharsetFlight() {
-//		return Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
-		return true;
+		return Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
+//		return true;
     }
 	
 	/**
@@ -600,9 +600,9 @@ public class CharterFlightFilterUtil {
 		}
 		
 		List<FlightSearchFlightInfoDto> resultFlights = new ArrayList<FlightSearchFlightInfoDto>();
-		sumArvFlights.setBackOrTo(FlightTripType.DEPARTURE.name());
+		sumArvFlights.setBackOrTo(FlightTripType.RETURN.name());
+		sumDepFlights.setBackOrTo(FlightTripType.DEPARTURE.name());
 		resultFlights.add(sumDepFlights); 
-		sumDepFlights.setBackOrTo(FlightTripType.RETURN.name());
 		resultFlights.add(sumArvFlights);
 		return resultFlights;
 	}

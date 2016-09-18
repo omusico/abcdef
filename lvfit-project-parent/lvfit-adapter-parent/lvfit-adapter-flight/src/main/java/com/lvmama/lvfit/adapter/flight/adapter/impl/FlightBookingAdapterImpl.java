@@ -20,6 +20,7 @@ import com.lvmama.lvf.common.dto.enums.IDCardType;
 import com.lvmama.lvf.common.dto.enums.PassengerType;
 import com.lvmama.lvf.common.dto.enums.RemarkType;
 import com.lvmama.lvf.common.dto.enums.RouteType;
+import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.dto.order.FlightOrderAmountDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderContacterDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderCustomerDto;
@@ -78,7 +79,7 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 			} 
             List<FitOrderFlightDto> fitOrderFlightDtos = request.getFitOrderFlightDtoList(); 
             //如果下单的航班不是包机航班,就按照以前老的逻辑
-            if(!CharterFlightFilterUtil.isCharsetFlight(fitOrderFlightDtos)){
+            if(!CharterFlightFilterUtil.isCharterFlight(fitOrderFlightDtos)){
 	            for (int i = 0; i < fitOrderFlightDtos.size(); i++) {
 	            	   try {
 	                       tripTypeFlag = fitOrderFlightDtos.get(i).getTripType().name();
@@ -170,12 +171,13 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 						}
 					}
 					
-					SuppResponse suppResponse = fitFlightClient.bookingRebuild(flightOrderBookingRequest);
+					logger.error("调用包机机票下单。flightOrderBookingRequest=="+JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
+                    SuppResponse suppResponse = fitFlightClient.bookingRebuild(flightOrderBookingRequest);
                     //logger.error("[adapter-flight-booking]机票单品下单返回报文SuppResponse：" + JSONMapper.getInstance().writeValueAsString(suppResponse));
                     String json = JSONMapper.getInstance().writeValueAsString(suppResponse);
                     suppResponse = JSONMapper.getInstance().readValue(json, new TypeReference<SuppResponse<OrderMainDto>>() {});
                     OrderMainDto flightOrderMain = (OrderMainDto) suppResponse.getResult();
-                	   logger.error("当前包机切位下单。。。主单号【"+fitSuppMainOrderDto.getVstMainOrderNo()+"】，当前航程类型【"+tripTypeFlag+"】当前子单号【"+fitSuppOrders.get(0).getVstOrderNo()+"】，请求机票单品下单返回flightOrderMain:"+JSONMapper.getInstance().writeValueAsString(flightOrderMain));
+                	logger.error("当前包机切位下单。。。主单号【"+fitSuppMainOrderDto.getVstMainOrderNo()+"】，当前航程类型【"+tripTypeFlag+"】当前子单号【"+fitSuppOrders.get(0).getVstOrderNo()+"】，请求机票单品下单返回flightOrderMain:"+JSONMapper.getInstance().writeValueAsString(flightOrderMain));
                     // 如果预定成功，保存信息
                     if (flightOrderMain != null) {
                     	boolean isBookingSuccess = true;
@@ -197,13 +199,14 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
                     	   FitOrderTraceContext.setOrderMsg(orderMsgDto);
                         
                         //根据机票子单构造机酒供应商航班订单------这里待改.......
-                        for (FlightOrderDto flightOrder : flightOrderMain.getFlightOrders()) {
-                        	String curOrderPassengerType =  flightOrder.getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name();
-                        	FitSuppFlightOrderDto suppFlightOrderDto = fitSuppOrders.get(0).getByPassengerType(com.lvmama.lvfit.common.dto.enums.PassengerType.valueOf(curOrderPassengerType));
-                        	suppFlightOrderDto.setFlightOrderNo(flightOrder.getFlightOrderNo().getOrderNo());
-                        	suppFlightOrderDto.setBookingStatus(com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus.valueOf(flightOrder.getFlightOrderStatus().getOrderBookingStatus().name()));
-                        	suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(flightOrder.getFlightOrderAmount()));
-                        }
+                    	   //如果是包机切位，这里不保存航班信息订单，以后直接进行查询的时候实时查询订单 进行补单！！
+//                        for (FlightOrderDto flightOrder : flightOrderMain.getFlightOrders()) {
+//                        	String curOrderPassengerType =  flightOrder.getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name();
+//                        	FitSuppFlightOrderDto suppFlightOrderDto = fitSuppOrders.get(0).getByPassengerType(com.lvmama.lvfit.common.dto.enums.PassengerType.valueOf(curOrderPassengerType));
+//                        	suppFlightOrderDto.setFlightOrderNo(flightOrder.getFlightOrderNo().getOrderNo());
+//                        	suppFlightOrderDto.setBookingStatus(com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus.valueOf(flightOrder.getFlightOrderStatus().getOrderBookingStatus().name()));
+//                        	suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(flightOrder.getFlightOrderAmount()));
+//                        }
                     }
 					
 				} catch (Exception e) {
@@ -442,12 +445,15 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 
         //6.构造预订请求明细对象参数
         List<FlightOrderBookingDetailRequest> flightList = new ArrayList<FlightOrderBookingDetailRequest>();
+        
         //包机特别处理：添加两个航段的航班.
         for(FitOrderFlightDto fitFlight:fitFlights){
 	        FlightOrderBookingDetailRequest bookingDetail = new FlightOrderBookingDetailRequest();
 	        bookingDetail.setFlightTripType(FlightTripType.getFlightTripTypeByName(fitFlight.getTripType().name()));
 	        bookingDetail.setFlightNo(fitFlight.getFlightNo());
 	        bookingDetail.setDepartureDate(fitFlight.getDepartureDate());
+	        //设置政策类型为包机.
+	        bookingDetail.setSaleType(SuppSaleType.DomesticProduct.name());
 	        bookingDetail.setDepartureAirportCode(fitFlight.getDepartureAirportCode());
 	        bookingDetail.setArrivalAirportCode(fitFlight.getArrivalAirportCode());
 	        bookingDetail.setSeatClassCode(fitFlight.getSeatClassCode());

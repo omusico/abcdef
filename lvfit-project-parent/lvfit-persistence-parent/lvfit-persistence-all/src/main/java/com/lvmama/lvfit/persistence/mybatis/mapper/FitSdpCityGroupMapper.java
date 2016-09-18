@@ -29,4 +29,10 @@ public interface FitSdpCityGroupMapper
 	 * @return
 	 */
 	List<FitSdpCityGroupDto> queryCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
+
+	/**	根据条件查询所有城市组城市总数
+	 * @param list
+	 * @return
+	 */
+	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto);
 }

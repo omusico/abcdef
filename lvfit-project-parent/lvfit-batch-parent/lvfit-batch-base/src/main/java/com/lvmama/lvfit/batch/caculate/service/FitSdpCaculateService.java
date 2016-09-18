@@ -1,9 +1,7 @@
 package com.lvmama.lvfit.batch.caculate.service;
 
-import java.util.List;
-
 import com.lvmama.lvf.common.dto.status.ResultStatus;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 
 /**
  * 自主打包产品计算Service
@@ -40,6 +38,6 @@ public interface FitSdpCaculateService {
 	 *
 	 * @return
 	 */
-	ResultStatus saveSynMsgInfo(FitSdpProductSynMsg request);
+	ResultStatus saveSynMsgInfo(FitSdpProductSyncMsgDto request);
 
 }

@@ -5,9 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpProductSearchIndexDomain;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductSearchIndexRepository;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductSearchIndexMapper;
 
 @Repository
@@ -17,12 +18,12 @@ public class FitSdpProductSearchIndexRepositoryImpl implements FitSdpProductSear
 	private FitSdpProductSearchIndexMapper fitSdpProductSearchIndexMapper;
 	
 	@Override
-	public FitSdpProductSearchIndex load(Long id) {
+	public FitSdpProductSearchIndexDto load(Long id) {
 		return fitSdpProductSearchIndexMapper.getById(id);
 	}
 
 	@Override
-	public FitSdpProductSearchIndexDomain load(FitSdpProductSearchIndex r) {
+	public FitSdpProductSearchIndexDomain load(FitSdpProductSearchIndexDto r) {
 		return new FitSdpProductSearchIndexDomain(r);
 	}
 
@@ -32,7 +33,7 @@ public class FitSdpProductSearchIndexRepositoryImpl implements FitSdpProductSear
 	}
 
 	@Override
-	public FitSdpProductSearchIndex save(FitSdpProductSearchIndex r) {
+	public FitSdpProductSearchIndexDto save(FitSdpProductSearchIndexDto r) {
 		if(r.getId()== null){
 			fitSdpProductSearchIndexMapper.insert(r);
 		}else{
@@ -42,7 +43,7 @@ public class FitSdpProductSearchIndexRepositoryImpl implements FitSdpProductSear
 	}
 
 	@Override
-	public List<FitSdpProductSearchIndex> queryByFkId(Long fkId) {
+	public List<FitSdpProductSearchIndexDto> queryByFkId(Long fkId) {
 		return fitSdpProductSearchIndexMapper.queryByFkId(fkId);
 	}
 
@@ -52,8 +53,8 @@ public class FitSdpProductSearchIndexRepositoryImpl implements FitSdpProductSear
 	}
 
 	@Override
-	public List<FitSdpProductSearchIndex> queryIndexInfoList(Long productId) {
-		return fitSdpProductSearchIndexMapper.getInfoList(productId);
+	public List<FitSdpProductSearchIndexDto> queryIndexInfoList(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexMapper.getInfoList(baseQuery);
 	}
 
 }

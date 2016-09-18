@@ -37,7 +37,6 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpDestDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
-import com.lvmama.lvfit.common.utils.ShortPinYinUtil;
 import com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpCityGroupMapper;
 import com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductBasicInfoMapper;
 import com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductTrafficRulesMapper;

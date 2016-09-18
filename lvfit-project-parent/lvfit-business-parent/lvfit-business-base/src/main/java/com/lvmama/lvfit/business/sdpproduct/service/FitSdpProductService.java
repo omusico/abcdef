@@ -3,14 +3,17 @@ package com.lvmama.lvfit.business.sdpproduct.service;
 import java.util.List;
 
 import com.lvmama.lvf.common.dto.BaseQueryDto;
+import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
+import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 
 public interface FitSdpProductService {
 	
@@ -113,19 +116,19 @@ public interface FitSdpProductService {
 	 * @param productId
 	 * @return
 	 */
-	List<FitSdpProductSearchIndex> querySdpProductSearchIndex(Long productId);
+	List<FitSdpProductSearchIndexDto> querySdpProductSearchIndex(BaseQueryDto<Long> baseQuery);
 
 	/**根据产品Id查询同步时间信息
 	 * @param productId
 	 * @return
 	 */
-	List<FitSdpProductSynMsg> querySdpProductSynInfoList(Long productId);
+	List<FitSdpProductSyncMsgDto> querySdpProductSynInfoList(BaseQueryDto<Long> baseQuery);
 	
 	/**根据产品Id查询索引交通信息
 	 * @param productId
 	 * @return
 	 */
-	List<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(Long productId);
+	List<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(BaseQueryDto<Long> baseQuery);
 	
 	/**编辑单条城市组记录
 	 * @param productId
@@ -144,6 +147,48 @@ public interface FitSdpProductService {
 	 * @return
 	 */
 	List<FitSdpCityGroupDto> getProductCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
+	
+	/**条件查询查询城市组记录总数
+	 * @param productId
+	 * @return
+	 */
+	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto);
 
+	/**查询机票回调信息
+	 * @param productId
+	 * @return
+	 */
+	List<FitSuppOrderForFlightCallBackDto> queryFitSuppOrderFlightCallBack(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> dto);
 
+	/**查询机票回调信息总数
+	 * @param productId
+	 * @return
+	 */
+	int countSuppOrderForFlightCallBackRecords(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery);
+
+	/**根据Id查询产品交通索引
+	 * @param productId
+	 * @return
+	 */
+	FitSdpProductSearchIndexTraffic queryTrafficIndexById(Long id);
+	
+	/**更新产品交通索引记录
+	 * @param productId
+	 * @return
+	 */
+	void updateOneTrafficIndex(FitSdpProductSearchIndexTraffic dto);
+	
+	/**根据vst主订单号获取VST子订单列表
+	 * @param productId
+	 * @return
+	 */
+	List<FitFliBookingCallBackRequest> getFlightCallBackByVstMainNo(
+			BaseQueryDto<FitFliBookingCallBackRequest> baseQuery);
+	
+	/**查询所有同步记录
+	 * @param 
+	 * @return
+	 */
+	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery);
+	
 }

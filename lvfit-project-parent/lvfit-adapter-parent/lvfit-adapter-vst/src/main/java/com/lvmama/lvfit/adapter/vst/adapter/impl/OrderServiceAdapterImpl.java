@@ -11,11 +11,13 @@
 package com.lvmama.lvfit.adapter.vst.adapter.impl;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import com.lvmama.lvfit.common.dto.enums.*;
-import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -25,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.lvmama.lvf.common.dto.enums.InterfaceKey;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
@@ -34,8 +35,20 @@ import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvf.common.utils.StringUtil;
 import com.lvmama.lvfit.adapter.vst.adapter.OrderServiceAdapter;
 import com.lvmama.lvfit.adapter.vst.adapter.VstInterfaceAdapterWrapper;
-import com.lvmama.lvfit.common.aspect.suppinterface.SuppInterfacePoint;
 import com.lvmama.lvfit.common.dto.adapter.request.VstBookingRequest;
+import com.lvmama.lvfit.common.dto.enums.BindingStatus;
+import com.lvmama.lvfit.common.dto.enums.BookingBusinessType;
+import com.lvmama.lvfit.common.dto.enums.BookingSourceType;
+import com.lvmama.lvfit.common.dto.enums.FlightTripType;
+import com.lvmama.lvfit.common.dto.enums.PassengerType;
+import com.lvmama.lvfit.common.dto.enums.Paytarget;
+import com.lvmama.lvfit.common.dto.enums.SuppVstAuditStatus;
+import com.lvmama.lvfit.common.dto.enums.SuppVstInfoAuditStatus;
+import com.lvmama.lvfit.common.dto.enums.SuppVstOrderStatus;
+import com.lvmama.lvfit.common.dto.enums.SuppVstOrderViewStatus;
+import com.lvmama.lvfit.common.dto.enums.SuppVstPaymentStatus;
+import com.lvmama.lvfit.common.dto.enums.SuppVstResAuditStatus;
+import com.lvmama.lvfit.common.dto.enums.VSTDistrictCityEnum;
 import com.lvmama.lvfit.common.dto.order.FitOrderAmountDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderContacterDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderCustomerDto;
@@ -55,6 +68,7 @@ import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderStatusDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderStatusDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.shopping.FlightInsuranceDto;
 import com.lvmama.vst.back.biz.po.BizEnum;
 import com.lvmama.vst.back.order.po.OrdOrder;
@@ -112,7 +126,10 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
 			}
 			Map<String,FitOrderDto> fitOrderMap =vstBookingRequest.getFitOrderMap();
 			Map<String,List<FitOrderPassengerDto>> fitOrderPassengerMap = vstBookingRequest.getFitOrderPassengerMap();
-			return this.generateSuppOrder(resultHandleT,fitOrderMap,fitOrderPassengerMap);
+			List<FitOrderFlightDto> orderFlightDtos = vstBookingRequest.getFitOrderFlightDtoList();
+			//请求是否是包机切位的信息.
+			boolean isCharter = CharterFlightFilterUtil.isCharterFlight(orderFlightDtos);
+			return this.generateSuppOrder(resultHandleT,fitOrderMap,fitOrderPassengerMap,isCharter);
 			
 		} catch (Exception e) {
 			logger.error("调用orderService.createOrder出现异常："+ExceptionUtils.getStackTrace(e));
@@ -126,7 +143,7 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
     }
 
     private FitSuppMainOrderDto generateSuppOrder(ResultHandleT<OrdOrder> resultHandleT,Map<String,FitOrderDto> fitOrderMap,
-    		Map<String,List<FitOrderPassengerDto>> fitOrderPassengerMap) {
+    		Map<String,List<FitOrderPassengerDto>> fitOrderPassengerMap,boolean isCharter) {
     	
         FitSuppMainOrderDto suppMainOrderDto = new FitSuppMainOrderDto();
         OrdOrder ordOrder = resultHandleT.getReturnContent();
@@ -161,26 +178,29 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
-        		for (Entry<String, List<FitOrderPassengerDto>> entry : fitOrderPassengerMap.entrySet()) {
-        			FitSuppFlightOrderDto suppFlightOrderDto = new FitSuppFlightOrderDto();
-        			List<FitSuppFlightOrderDetailDto> suppFlightOrderDetailDtos = new ArrayList<FitSuppFlightOrderDetailDto>();
-                	for (FitOrderPassengerDto fitOrderPassengerDto : entry.getValue()) {
-                		FitSuppFlightOrderDetailDto suppDetailOrderDto = new FitSuppFlightOrderDetailDto();
-                		suppDetailOrderDto.setFitOrderPassenger(fitOrderPassengerDto);
-                		suppFlightOrderDetailDtos.add(suppDetailOrderDto);
-    				}
-                	suppFlightOrderDto.setTripType(fitOrderDto.getTripType());
-                	suppFlightOrderDto.setPassengerType(PassengerType.valueOf(entry.getKey()));
-                	suppFlightOrderDto.setSuppFlightOrderDetailDtos(suppFlightOrderDetailDtos);
-                	suppFlightOrderDtos.add(suppFlightOrderDto);
-				}
-        		try {
-					logger.error("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】,供应商对应的suppFlightOrderDtos【"+JSONMapper.getInstance().writeValueAsString(suppFlightOrderDtos)+"】");
-				} catch (Exception e) {
-					e.printStackTrace();
-				} 
-        		suppOrderDto.setSuppFlightOrderDtos(suppFlightOrderDtos);
-        	 	suppOrderDto.setTripType(fitOrderDto.getTripType());
+        		//如果不是包机切位的订单请求，就创建供应商对应的机票子订单.
+        		if(!isCharter){
+	        		for (Entry<String, List<FitOrderPassengerDto>> entry : fitOrderPassengerMap.entrySet()) {
+	        			FitSuppFlightOrderDto suppFlightOrderDto = new FitSuppFlightOrderDto();
+	        			List<FitSuppFlightOrderDetailDto> suppFlightOrderDetailDtos = new ArrayList<FitSuppFlightOrderDetailDto>();
+	                	for (FitOrderPassengerDto fitOrderPassengerDto : entry.getValue()) {
+	                		FitSuppFlightOrderDetailDto suppDetailOrderDto = new FitSuppFlightOrderDetailDto();
+	                		suppDetailOrderDto.setFitOrderPassenger(fitOrderPassengerDto);
+	                		suppFlightOrderDetailDtos.add(suppDetailOrderDto);
+	    				}
+	                	suppFlightOrderDto.setTripType(fitOrderDto.getTripType());
+	                	suppFlightOrderDto.setPassengerType(PassengerType.valueOf(entry.getKey()));
+	                	suppFlightOrderDto.setSuppFlightOrderDetailDtos(suppFlightOrderDetailDtos);
+	                	suppFlightOrderDtos.add(suppFlightOrderDto);
+					}
+	        		try {
+						logger.error("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】,供应商对应的suppFlightOrderDtos【"+JSONMapper.getInstance().writeValueAsString(suppFlightOrderDtos)+"】");
+					} catch (Exception e) {
+						e.printStackTrace();
+					} 
+	        		suppOrderDto.setSuppFlightOrderDtos(suppFlightOrderDtos);
+	        	 	suppOrderDto.setTripType(fitOrderDto.getTripType());
+        		}
         	}else{
         		fitOrderDto = fitOrderMap.get(String.valueOf(item.getSuppGoodsId()));
         	}

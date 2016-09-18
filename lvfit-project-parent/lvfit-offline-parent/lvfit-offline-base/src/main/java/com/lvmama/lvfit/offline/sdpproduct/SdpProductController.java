@@ -28,4 +28,41 @@ public interface SdpProductController {
 		 * @return
 		 */
 		String showSdpProductSyncList(Model model);
+
+		/**根据产品ID查询索引列表.
+		 * @param model
+		 * @return
+		 */
+		String searchIdIndex(Model model, Long productId);
+
+		/**根据产品ID查询索引同步索引列表.
+		 * @param model
+		 * @return
+		 */
+		String searchSynInfo(Model model, Long productId);
+
+		/**根据产品ID查询交通索引列表.
+		 * @param model
+		 * @return
+		 */
+		String searchTrafficIndex(Model model, Long productId);
+
+		/**根据产品ID查询出发城市列表.
+		 * @param model
+		 * @return
+		 */
+		String searchDepartCity(Model model, Long productId);
+
+		/**查询机票回调信息列表.
+		 * @param model
+		 * @return
+		 */
+		String suppFlightCallBack(Model model);
+
+		/**根据产品ID查询推送信息列表.
+		 * @param model
+		 * @return
+		 */
+		String searchPushInfo(Model model, Long productId);
+		
 }

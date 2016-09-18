@@ -63,10 +63,56 @@
 	</delete>
 	
 	<select id="queryIndexTrafficList" parameterType="java.lang.Long" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
+			SELECT 
+				<include refid="columns" />
+			FROM T_FITSDP_INDEX_TRAFFIC
+			<if test="condition!=null and condition!=''">
+				WHERE PRODUCT_ID=#{condition}
+			</if>
+		<include refid="ORACLE.paginationEnd" />
+	</select>
+	
+	<select id="queryTrafficIndexById" parameterType="java.lang.Long" resultMap="resultMap">
 		SELECT 
 			<include refid="columns" />
 		FROM T_FITSDP_INDEX_TRAFFIC
-		WHERE PRODUCT_ID=#{productId}
+		WHERE ID=#{id}
 	</select>
+	
+	<update id="updateById">
+		update T_FITSDP_INDEX_TRAFFIC
+		<set>
+		<if test="i.toTraffic!=null">
+				TO_TRAFFIC = #{i.toTraffic,jdbcType=VARCHAR},
+		</if>
+		<if test="i.backTraffic!=null">
+				BACK_TRAFFIC = #{i.backTraffic,jdbcType=VARCHAR},
+		</if>
+		<if test="i.salesVolume!=null">
+				SALES_VOLUME = #{i.salesVolume},
+		</if>
+		<if test="i.depatureTime!=null">
+				DEPATURE_TIME = #{i.depatureTime},
+		</if>
+		<if test="i.isMultiDepature!=null and i.isMultiDepature!=''">
+				IS_MULTI_DEPATURE = #{i.isMultiDepature},
+		</if>
+				UPDATE_TIME=(SELECT sysdate from dual),
+		</set>
+		WHERE ID = #{id,jdbcType=DECIMAL}
+	</update>
+	
+	<update id="updateOneTrafficIndex">
+		UPDATE T_FITSDP_INDEX_TRAFFIC
+		SET
+			TO_TRAFFIC = #{toTraffic,jdbcType=VARCAHR},
+			BACK_TRAFFIC = #{backTraffic,jdbcType=VARCHAR},
+			SALES_VOLUME = #{salesVolume,jdbcType=DECIMAL},
+			DEPATURE_TIME = #{depatureTime,jdbcType=DECIMAL},
+			IS_MULTI_DEPATURE = #{isMultiDepature,jdbcType=VARCHAR},
+			UPDATE_TIME = now()
+		WHERE ID = #{id,jdbcType=DECIMAL}
+	</update>
 
 </mapper>

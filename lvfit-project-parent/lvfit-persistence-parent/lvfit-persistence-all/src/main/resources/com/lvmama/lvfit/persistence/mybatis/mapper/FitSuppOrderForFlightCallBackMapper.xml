@@ -15,6 +15,11 @@
     <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   
+  <resultMap id="outMap" type="com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest">
+     <result column="VST_ORDER_MAIN_NO" property="vstOrderMainNo" jdbcType="VARCHAR" />
+     <result column="VST_ORDER_NO" property="vstOrderNo" jdbcType="VARCHAR" />
+  </resultMap>
+  
   
   <insert id="insert" >
     <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
@@ -58,7 +63,7 @@
 		        CALLBACK_TIME =  #{i.callbackTime,jdbcType=TIMESTAMP},
 		      </if>
 		       UPDATE_TIME = SYSDATE
-	       </set>
+	    </set>
 		WHERE ID = #{id}
 		
 	</update>
@@ -70,6 +75,53 @@
             AND A.VST_ORDER_NO = #{vstOrderNo,jdbcType=VARCHAR}
         </if>
     </select>
-	
-
+    
+    
+    <select id="queryAll" resultMap="resultMap">
+    	<include refid="ORACLE.paginationStart" />
+	    	SELECT A.* FROM t_fitord_supp_fli_callback A
+	    	WHERE 1=1
+	    	<if test="condition != null">
+			    <if test="condition.suppOrderId!=null and condition.suppOrderId!=''">
+						AND SUPP_ORDER_ID = #{condition.suppOrderId,jdbcType=VARCHAR}
+				</if>
+				<if test="condition.vstOrderMainNo!=null and condition.vstOrderMainNo!=''">
+						AND VST_ORDER_MAIN_NO = #{condition.vstOrderMainNo,jdbcType=VARCHAR}
+				</if>
+				<if test="condition.vstOrderNo!=null and condition.vstOrderNo!=''">
+						AND VST_ORDER_NO = #{condition.vstOrderNo,jdbcType=VARCHAR}
+				</if>
+			</if>
+			ORDER BY A.ID DESC
+	    <include refid="ORACLE.paginationEnd" />
+    </select>
+    
+    <select id="querySuppOrderForFlightCallBackCounts" resultType="java.lang.Integer">
+    	SELECT COUNT(*) FROM t_fitord_supp_fli_callback
+    	WHERE 1=1
+    	<if test="condition != null">
+			    <if test="condition.suppOrderId!=null and condition.suppOrderId!=''">
+						AND SUPP_ORDER_ID = #{condition.suppOrderId,jdbcType=VARCHAR}
+				</if>
+				<if test="condition.vstOrderMainNo!=null and condition.vstOrderMainNo!=''">
+						AND VST_ORDER_MAIN_NO = #{condition.vstOrderMainNo,jdbcType=VARCHAR}
+				</if>
+				<if test="condition.vstOrderNo!=null and condition.vstOrderNo!=''">
+						AND VST_ORDER_NO = #{condition.vstOrderNo,jdbcType=VARCHAR}
+				</if>
+		</if>
+    </select>
+    
+    <select id="queryByVstMainNo" resultMap="outMap">
+    	SELECT VST_ORDER_MAIN_NO,VST_ORDER_NO FROM T_FITORD_SUPP_FLI_CALLBACK
+    	WHERE 1=1
+    	<if test="condition != null">
+			    <if test="condition.vstOrderMainNo!=null and condition.vstOrderMainNo!=''">
+						AND VST_ORDER_MAIN_NO = #{condition.vstOrderMainNo}
+				</if>
+				<if test="condition.vstOrderNo!=null and condition.vstOrderNo!=''">
+						AND VST_ORDER_NO = #{condition.vstOrderNo}
+				</if>
+		</if>
+    </select>
 </mapper>

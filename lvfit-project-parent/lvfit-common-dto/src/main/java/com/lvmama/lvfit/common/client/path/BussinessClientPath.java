@@ -1,6 +1,7 @@
 package com.lvmama.lvfit.common.client.path;
 
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
+import com.lvmama.lvfit.common.client.path.BatchClientPath.Path;
 
 public enum BussinessClientPath {	
 	SAVE_SHOPPING(Path.SAVE_SHOPPING,"保存购物车信息"),
@@ -13,6 +14,7 @@ public enum BussinessClientPath {
 	BOOKING(Path.BOOKING, "预订"),
 	VALIDATE_PASSENGERS(Path.VALIDATE_PASSENGERS, "校验乘客信息"),
 	FLIGHT_CALLBACK_BOOKING(Path.FLIGHT_CALLBACK_BOOKING, " VST测回调机票下单"),
+	GET_FLIGHT_CALL_BACK_BY_VST_NO(Path.GET_FLIGHT_CALL_BACK_BY_VST_NO,"根据VST主订单获取机票回调信息"),
 	GET_RECOMMEND_HOTELS_ALL(Path.GET_RECOMMEND_HOTELS_ALL,"查询所有推荐酒店信息分页"),
 	BATCH_RECOMMEND_HOTELS_ALL(Path.BATCH_RECOMMEND_HOTELS_ALL,"导入所有推荐酒店信息"),
 	SAVE_RECOMMEND_HOTEL(Path.SAVE_RECOMMEND_HOTEL,"新增默认推荐酒店信息"),
@@ -27,6 +29,7 @@ public enum BussinessClientPath {
     VIEW_OP_LOG(Path.VIEW_OP_LOG, "查询操作日志"),
     GET_SHOPPING_INFO_BY_UUID(Path.GET_SHOPPING_INFO_BY_UUID, "根据UUID获取购物车信息"),
     UPD_SHOPPING_INFO(Path.UPD_SHOPPING_INFO, "更新或保存购物车信息"),
+    SAVE_SYN_TIME_INFO(Path.SAVE_SYN_TIME_INFO,"存储同步时间信息"),
 	
     QUERY_ORDER_MAIN_BY_VST_ORDER_MAIN_NO(Path.QUERY_ORDER_MAIN_BY_VST_ORDER_MAIN_NO,"根据机酒主单号查询订单详情"),
    
@@ -70,13 +73,21 @@ public enum BussinessClientPath {
 	/** 动态打包产品相关报表**/
 	QUERY_SDP_PRODUCT_REPORT(Path.QUERY_SDP_PRODUCT_REPORT,"动态打包产品报表导出"),
 	
-	BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST(Path.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST,"查询同步时间信息"),
+	BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST(Path.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST,"根据产品Id查询同步信息"),
 	
 	BACK_SDP_PRODUCT_INDEX_TRAFFIC(Path.BACK_SDP_PRODUCT_INDEX_TRAFFIC,"查询产品索引交通"),
 	
 	BACK_SDP_PRODUCT_DEPART_CITY(Path.BACK_SDP_PRODUCT_DEPART_CITY,"出发城市查询"),
 	
-	UPDATE_ONE_CITY_GROUP(Path.UPDATE_ONE_CITY_GROUP,"更新单条城市组信息");
+	UPDATE_ONE_CITY_GROUP(Path.UPDATE_ONE_CITY_GROUP,"更新单条城市组信息"),
+	
+	GET_SDP_PRODUCT_TRAFFIC_INDEX_BY_ID(Path.GET_SDP_PRODUCT_TRAFFIC_INDEX_BY_ID,"根据id查询交通索引"),
+	
+	UPDATE_SDP_PRODUCT_TRAFFIC_INDEX(Path.UPDATE_SDP_PRODUCT_TRAFFIC_INDEX,"更新产品交通索引"),
+	
+	BACK_SDP_PRODUCT_ALL_SYN_INFO(Path.BACK_SDP_PRODUCT_ALL_SYN_INFO,"查询所有同步信息"),
+	
+	BACK_SUPP_ORDER_FLIGHT_CALL_BACK(Path.BACK_SUPP_ORDER_FLIGHT_CALL_BACK,"机票回调信息列表");
 	
 	public String path;
 	public String cnName;
@@ -103,6 +114,7 @@ public enum BussinessClientPath {
 		public final static String BOOKING = basePath + "booking";
 		public final static String VALIDATE_PASSENGERS  = basePath+"validatePassenagers";
 		public final static String FLIGHT_CALLBACK_BOOKING = basePath + "flightCallBackBooking";
+		public final static String GET_FLIGHT_CALL_BACK_BY_VST_NO = basePath + "getFlightCallBackBookingByVstMainNo";
 		/** 订单详情 */
 		public final static String GET_RECOMMEND_HOTELS_ALL = basePath + configPath + "getRecomHotelsAll";
 		public final static String BATCH_RECOMMEND_HOTELS_ALL = basePath + configPath + "importRecomAllHotels";
@@ -165,17 +177,27 @@ public enum BussinessClientPath {
         
         public final static String QUERY_SDP_PRODUCT_REPORT = basePath + sdpproductPath + "querySdpProduct";
         
-        public final static String BACK_SDP_PRODUCT_SEARCH_INDEX_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSearchIndex/{productId}";
+        public final static String BACK_SDP_PRODUCT_SEARCH_INDEX_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSearchIndex";
         
-        public final static String BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSynInfo/{productId}";
+        public final static String BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSynInfo";
 	
-        public final static String BACK_SDP_PRODUCT_INDEX_TRAFFIC = basePath + sdpproductPath + "querySdpProductIndexTraffic/{productId}";
+        public final static String BACK_SDP_PRODUCT_INDEX_TRAFFIC = basePath + sdpproductPath + "querySdpProductIndexTraffic";
         /*自主打包产品城市组*/
         public final static String BACK_SDP_PRODUCT_DEPART_CITY = basePath + sdpproductPath + "querySdpProductCityGroupByDto";
         
         public final static String UPDATE_ONE_CITY_GROUP = basePath + sdpproductPath + "saveProductCityGroupByProductId";
         
         public final static String GET_SDP_PRODUCT_CITY_GROUP_BY_ID = basePath + sdpproductPath + "saveProductCityGroupById/{id}";
+        
+        public final static String BACK_SUPP_ORDER_FLIGHT_CALL_BACK = basePath + sdpproductPath + "querySuppFlightCallBack";
+	
+        public final static String GET_SDP_PRODUCT_TRAFFIC_INDEX_BY_ID = basePath + sdpproductPath + "querySdpTrafficIndexById/{id}";
+	
+        public final static String UPDATE_SDP_PRODUCT_TRAFFIC_INDEX = basePath + sdpproductPath + "updateOneTrafficIndex";
+        
+        public final static String BACK_SDP_PRODUCT_ALL_SYN_INFO= basePath  + sdpproductPath +"queryAllSynInfo";
+        
+        public final static String SAVE_SYN_TIME_INFO= basePath  + sdpproductPath +"saveSynTimeInfo";
 	}
 	
 	private BussinessClientPath(String path, String cnName) {

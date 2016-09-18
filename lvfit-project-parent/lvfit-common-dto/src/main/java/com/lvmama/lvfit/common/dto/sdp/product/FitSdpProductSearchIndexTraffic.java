@@ -3,17 +3,20 @@ package com.lvmama.lvfit.common.dto.sdp.product;
 import com.lvmama.lvf.common.dto.Entity;
 import com.lvmama.lvfit.common.dto.enums.JudgeType;
 
-import java.util.Date;
-
 /** 搜索索引交通信息
  * Created by leizhengwei
  * 2016/7/20
  * 13:47
  */
-public class FitSdpProductSearchIndexTraffic extends Entity  {
+public class FitSdpProductSearchIndexTraffic extends Entity{
 
 
-    private Long productId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 499905222550215572L;
+
+	private Long productId;
 
     private String toTraffic;
 

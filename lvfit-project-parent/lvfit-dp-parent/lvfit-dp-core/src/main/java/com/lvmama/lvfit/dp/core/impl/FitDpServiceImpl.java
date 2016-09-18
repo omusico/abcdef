@@ -10,6 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.lvmama.lvf.common.dto.BaseQueryDto;
+import com.lvmama.lvf.common.dto.BaseResultDto;
+import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
+import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
+import com.lvmama.lvfit.common.dto.enums.SymbolType;
+import com.lvmama.lvfit.common.dto.trace.FitOpLogTraceContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -200,10 +206,26 @@ public class FitDpServiceImpl implements FitDpService{
                 flightSearchResult.setResults(this.handleFlights(flightSearchResult.getResults(), adultCount, childCount));
             }
         }
+
+        for (String key : flightMap.keySet()) {
+            if (CollectionUtils.isEmpty(flightMap.get(key).getResults())) {
+                if (key.equals(FlightTripType.DEPARTURE.name())) {
+                    FitOpLogTraceContext
+                        .setExThreadLocal(new ExceptionWrapper(NO_DEP_FLI_RESULT, ExceptionCode.GET_NO_RESULT));
+                } else {
+                    FitOpLogTraceContext
+                        .setExThreadLocal(new ExceptionWrapper(NO_RE_FLI_RESULT, ExceptionCode.GET_NO_RESULT));
+                }
+            }
+        }
+
         // 处理机票航意险数据
         if (CollectionUtils.isNotEmpty(fitSearchResult.getFlightInsuranceResult())) {
             // 过滤非航空意外险，并按默认航意险排序
             fitSearchResult.setFlightInsuranceResult(handleFliInsResult(fitSearchResult.getFlightInsuranceResult()));
+        } else {
+            FitOpLogTraceContext
+                .setExThreadLocal(new ExceptionWrapper(NO_FLIGHT_INSURANCE_RESULT, ExceptionCode.GET_NO_RESULT));
         }
         // 处理酒店数据
         if (fitSearchResult.getHotelSearchResult() != null && CollectionUtils.isNotEmpty(fitSearchResult.getHotelSearchResult().getResults())) {
@@ -217,6 +239,19 @@ public class FitDpServiceImpl implements FitDpService{
                     }
                 }
             }
+        } else {
+            FitOpLogTraceContext
+                .setExThreadLocal(new ExceptionWrapper(NO_HOTEL_RESULT, ExceptionCode.GET_NO_RESULT));
+        }
+
+        if (CollectionUtils.isEmpty(fitSearchResult.getSpotSearchResult())) {
+            FitOpLogTraceContext
+                .setExThreadLocal(new ExceptionWrapper(NO_SPOT_RESULT, ExceptionCode.GET_NO_RESULT));
+        }
+
+        if (CollectionUtils.isEmpty(fitSearchResult.getInsuranceResult())) {
+            FitOpLogTraceContext
+                .setExThreadLocal(new ExceptionWrapper(NO_INSURANCE_RESULT, ExceptionCode.GET_NO_RESULT));
         }
     }
 
@@ -346,28 +381,50 @@ public class FitDpServiceImpl implements FitDpService{
         if(hotelQueryReq.getParams().contains("P1") && StringUtils.isBlank(hotelQueryReq.getKeywords())) {
             try {
                 StringBuilder sb = new StringBuilder();
-                List<FitConRecomHotelDto> recomHotelsAll = fitBusinessClient.getFitConRecomHotelsAll();
-                for (FitConRecomHotelDto recomHotel : recomHotelsAll) {
-                    if (recomHotel.getDistrictCityId() != null
-                        && recomHotel.getDistrictCityId().toString().equals(hotelQueryReq.getCityDistrictId())) {
-                        sb.append(recomHotel.getProductId()).append(",");
-                    }
-                }
-                if (StringUtils.isNotEmpty(sb.toString())) {
-                    String productIds = sb.toString().substring(0, sb.toString().length() - 1);
-                    hotelQueryReq.setKeywords(productIds);
-                    HotelSearchResult<HotelSearchHotelDto> recomHotelResult = fitAggregateClient.searchHotelInfo(hotelQueryReq);
-                    if (recomHotelResult != null && CollectionUtils.isNotEmpty(recomHotelResult.getResults())) {
-                        returnList.addAll(recomHotelResult.getResults()); // 添加推荐酒店信息
-                        for (HotelSearchHotelDto hotelDto : hotelSearchResult.getResults()) { // 添加去掉推荐酒店后的酒店信息
-                            if (!productIds.contains(hotelDto.getProductId())) {
-                                returnList.add(hotelDto);
-                            }
-                        }
-                        hotelSearchResult.setResults(returnList);
-                    }
-                }
+                FitConRecomHotelDto condition = new FitConRecomHotelDto();
+                condition.setDistrictCityId(Long.valueOf(hotelQueryReq.getCityDistrictId()));
+                BaseQueryDto<FitConRecomHotelDto> baseQueryDto = new BaseQueryDto<FitConRecomHotelDto>(condition);
 
+                BaseResultDto<FitConRecomHotelDto> recomHotels = fitBusinessClient.getFitConRecomHotelsAll(baseQueryDto);
+                String defHotelId = "";
+                if (CollectionUtils.isNotEmpty(recomHotels.getResults())) {
+                    for (FitConRecomHotelDto recomHotel : recomHotels.getResults()) {
+                        sb.append(recomHotel.getProductId()).append(",");
+                        if (recomHotel.getIsDefault().equals(SymbolType.Y)) {
+                            defHotelId = recomHotel.getProductId();
+                        }
+                    }
+                    if (StringUtils.isNotEmpty(sb.toString())) {
+                        String productIds = sb.toString().substring(0, sb.toString().length() - 1);
+                        hotelQueryReq.setKeywords(productIds);
+                        HotelSearchResult<HotelSearchHotelDto> recomHotelResult = fitAggregateClient.searchHotelInfo(hotelQueryReq);
+                        if (recomHotelResult != null && CollectionUtils.isNotEmpty(recomHotelResult.getResults())) {
+                            List<HotelSearchHotelDto> recomHotelList = recomHotelResult.getResults();
+                            // 将默认的推荐酒店放在首位
+                            if (StringUtils.isNotEmpty(defHotelId)) {
+                                HotelSearchHotelDto defHotel = null;
+                                for (int i = 0; i < recomHotelList.size(); i++) {
+                                    if (defHotelId.equals(recomHotelList.get(i).getProductId())) {
+                                        defHotel = recomHotelList.get(i);
+                                        recomHotelList.remove(i);
+                                        break;
+                                    }
+                                }
+                                if (defHotel != null) {
+                                    recomHotelList.add(0, defHotel);
+                                }
+                            }
+
+                            returnList.addAll(recomHotelList); // 添加推荐酒店信息
+                            for (HotelSearchHotelDto hotelDto : hotelSearchResult.getResults()) { // 添加去掉推荐酒店后的酒店信息
+                                if (!productIds.contains(hotelDto.getProductId())) {
+                                    returnList.add(hotelDto);
+                                }
+                            }
+                            hotelSearchResult.setResults(returnList);
+                        }
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -552,7 +609,7 @@ public class FitDpServiceImpl implements FitDpService{
                 toflightQuery.setBookingSource(request.getBookingSource());
                 toflightQuery.setFacet(true);
 
-                FlightSearchResult<FlightSearchFlightInfoDto> searchResult = fitAggregateClient.searchFlightInfo(toflightQuery);
+                FlightSearchResult<FlightSearchFlightInfoDto> searchResult = fitAggregateClient.searchFlightInfoWithDP(toflightQuery);
                 context.put(FitBusinessType.FIT_Q_T.name(), searchResult);
                 return true;
             }
@@ -572,7 +629,7 @@ public class FitDpServiceImpl implements FitDpService{
                 backflightQuery.setBookingSource(request.getBookingSource());
                 backflightQuery.setFacet(true);
 
-                FlightSearchResult<FlightSearchFlightInfoDto> searchResult = fitAggregateClient.searchFlightInfo(backflightQuery);
+                FlightSearchResult<FlightSearchFlightInfoDto> searchResult = fitAggregateClient.searchFlightInfoWithDP(backflightQuery);
                 context.put(FitBusinessType.FIT_Q_R.name(), searchResult);
                 return true;
             }

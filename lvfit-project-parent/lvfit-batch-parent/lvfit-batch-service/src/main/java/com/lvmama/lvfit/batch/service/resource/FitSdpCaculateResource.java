@@ -3,6 +3,8 @@ package com.lvmama.lvfit.batch.service.resource;
 import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvfit.batch.caculate.service.FitSdpCaculateService;
 import com.lvmama.lvfit.common.client.path.BatchClientPath;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,4 +76,19 @@ public class FitSdpCaculateResource {
 			return Response.ok(ResultStatus.FAIL).build();
 		}
 	}
+	
+	@GET
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path(BatchClientPath.Path.SAVE_SYN_TIME_INFO)
+	public Response syncSaveSyncTimeInfo(FitSdpProductSyncMsgDto modValue){
+		try {
+			fitSdpCaculateService.saveSynMsgInfo(modValue);
+			return Response.ok(ResultStatus.SUCCESS).build();
+		} catch (Exception e) {
+			return Response.ok(ResultStatus.FAIL).build();
+		}
+	}
+	
 }

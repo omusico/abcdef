@@ -23,7 +23,7 @@ public enum VstServiceClientPath {
 		
         public static final String PUSH_COM_PUSH = basePath + "/pushComPush}";
         
-        public static final String QUERY_COM_PUSH = basePath + "/queryPushList/{productId}";
+        public static final String QUERY_COM_PUSH = basePath + "/queryPushList";
 	}
 
 	private VstServiceClientPath(String path, String cnName) {

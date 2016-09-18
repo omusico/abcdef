@@ -59,7 +59,7 @@ public class SuperCommonHeaderMethod implements TemplateMethodModel {
               commHeaderRequest.setType(String.valueOf(type));
               commHeaderRequest.setIsNew(Boolean.valueOf(String.valueOf(isNew)));
           }
-	        String commHeader = "";//fitVstClient.getCommHeader(commHeaderRequest);
+	        String commHeader = fitVstClient.getCommHeader(commHeaderRequest);
 	        SimpleScalar stringMode = new SimpleScalar(commHeader);
 			return stringMode;
 	}

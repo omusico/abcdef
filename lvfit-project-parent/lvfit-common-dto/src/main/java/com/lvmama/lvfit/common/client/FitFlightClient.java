@@ -242,7 +242,8 @@ public class FitFlightClient {
 	public SuppResponse  bookingRebuild(FlightOrderBookingRequest flightOrderBookingRequest) {
 		FlightClientPath command = FlightClientPath.BOOKING_REBUILD_NEW;
 		String url = command.url(businessBaseUrl);
-		try {
+		try { 
+			logger.error("机票侧下单地址："+url);
 			return restClient.post(url, SuppResponse.class,flightOrderBookingRequest);
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);

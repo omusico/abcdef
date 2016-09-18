@@ -121,7 +121,22 @@
     </delete>
     
     <select id="queryCityGroupByDto" resultMap="resultMap">
-    	SELECT A.* FROM T_FITSDP_CITY_GROUP A WHERE A.PRODUCT_ID = #{condition.productId,jdbcType=DECIMAL} 
+    	<include refid="ORACLE.paginationStart" />
+	    	SELECT A.* FROM T_FITSDP_CITY_GROUP A WHERE A.PRODUCT_ID = #{condition.productId,jdbcType=DECIMAL} 
+		    <if test="condition != null">
+			    <if test="condition.departureCityDistrictId!=null and condition.departureCityDistrictId!=''">
+						AND DEPARTURE_CITY_DISTRICT_ID = #{condition.departureCityDistrictId,jdbcType=VARCHAR}
+				</if>
+				<if test="condition.departureCityName!=null and condition.departureCityName!=''">
+						AND DEPARTURE_CITY_NAME = #{condition.departureCityName,jdbcType=VARCHAR}
+				</if>
+			</if>
+			ORDER BY A.ID ASC
+		<include refid="ORACLE.paginationEnd" />
+    </select>
+    
+    <select id="countSdpProductDepartCityRecords" resultType="java.lang.Integer">
+    	SELECT COUNT(*) FROM T_FITSDP_CITY_GROUP A WHERE A.PRODUCT_ID = #{condition.productId,jdbcType=DECIMAL} 
 	    <if test="condition != null">
 		    <if test="condition.departureCityDistrictId!=null and condition.departureCityDistrictId!=''">
 					AND DEPARTURE_CITY_DISTRICT_ID = #{condition.departureCityDistrictId,jdbcType=VARCHAR}
@@ -130,7 +145,6 @@
 					AND DEPARTURE_CITY_NAME = #{condition.departureCityName,jdbcType=VARCHAR}
 			</if>
 		</if>
-		ORDER BY A.ID ASC
     </select>
     
 </mapper>

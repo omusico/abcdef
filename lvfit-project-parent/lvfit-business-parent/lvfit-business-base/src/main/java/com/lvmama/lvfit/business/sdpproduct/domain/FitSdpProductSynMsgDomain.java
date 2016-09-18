@@ -1,7 +1,7 @@
 package com.lvmama.lvfit.business.sdpproduct.domain;
 
 import com.lvmama.lvf.common.domain.Domain;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 
 
 /**
@@ -9,16 +9,16 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
  * @author leizhengwei
  *
  */
-public class FitSdpProductSynMsgDomain implements Domain<FitSdpProductSynMsg> {
+public class FitSdpProductSynMsgDomain implements Domain<FitSdpProductSyncMsgDto> {
 
-private FitSdpProductSynMsg self;
+private FitSdpProductSyncMsgDto self;
 	
 	@Override
-	public FitSdpProductSynMsg self() {
+	public FitSdpProductSyncMsgDto self() {
 		return self;
 	}
 
-	public FitSdpProductSynMsgDomain(FitSdpProductSynMsg self) {
+	public FitSdpProductSynMsgDomain(FitSdpProductSyncMsgDto self) {
 		super();
 		this.self = self;
 	}

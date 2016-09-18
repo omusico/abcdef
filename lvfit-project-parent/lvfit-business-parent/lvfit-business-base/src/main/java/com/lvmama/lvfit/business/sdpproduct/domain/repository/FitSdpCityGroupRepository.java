@@ -26,6 +26,8 @@ public interface FitSdpCityGroupRepository extends DomainBaseRepository<FitSdpCi
 	FitSdpCityGroupDto queryOneCityById(Long id);
 
 	List<FitSdpCityGroupDto> queryCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
+
+	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto);
 	
 	/** DomainBaseRepository.save()  */ 
 	

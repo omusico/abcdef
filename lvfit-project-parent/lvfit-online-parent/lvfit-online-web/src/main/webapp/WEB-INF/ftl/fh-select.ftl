@@ -613,7 +613,7 @@
         <div class="prompt">提示</div>
         <div class="sorryWarp">
             <div class="sorryImg"></div>
-            <p id ='errorMsgOutTime'>该机票在您所选的日期已内售完，请返回重新查询</p>
+            <p id ='errorMsgOutTime'>航班已售完，请重新查询</p>
         </div>
         <div class="sorryBtn">
             <input id="reloadUrl" type="hidden" value=""/>

@@ -12,7 +12,11 @@ public class HotelUtils {
 	 * @return
 	 */
 	public static int getMinRoomCount(int adultNum, int childNum, int maxVisitorNum) {
-		int count = (adultNum + childNum / 2) / maxVisitorNum;
-		return count == 0 ? 1 : count;
+		double count = (double) (adultNum + childNum / 2) / maxVisitorNum;
+		return (int) Math.ceil(count);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(getMinRoomCount(2, 0, 3));
 	}
 }

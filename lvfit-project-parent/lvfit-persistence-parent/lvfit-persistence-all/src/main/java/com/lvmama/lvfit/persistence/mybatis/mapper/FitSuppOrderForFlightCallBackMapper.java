@@ -5,6 +5,10 @@ import com.lvmama.lvf.common.domain.DomainEntityByNoMapper;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.Dto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
+import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,5 +24,11 @@ public interface FitSuppOrderForFlightCallBackMapper extends DomainEntityBaseMap
 	   FitSuppOrderForFlightCallBackDto  loadByVstNos(@Param("vstOrderMainNo") String vstOrderMainNo,@Param("vstOrderNo") String vstOrderNo);
 
 	   List<String>  loadCallRequestStrByVstNo(@Param("vstOrderMainNo") String vstOrderMainNo, @Param("vstOrderNo") String vstOrderNo);
+
+	   List<FitSuppOrderForFlightCallBackDto> queryAll(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> dto);
+
+	   int querySuppOrderForFlightCallBackCounts(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery);
+
+	   List<FitFliBookingCallBackRequest> queryByVstMainNo(BaseQueryDto<FitFliBookingCallBackRequest> baseQuery);
 
 }

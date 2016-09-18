@@ -117,7 +117,7 @@
 						sortable:false
 					}];
 					
-				$("#sdpProductList").jqGrid({
+				$("#sdpDataList").jqGrid({
 					url : '${request.contextPath}/sdpProduct/queryDepartureCityList',
 					datatype : "json",
 					mtype : "POST",
@@ -143,7 +143,7 @@
 						repeatitems : false
 					},
 					onPaging : function(pgButton) {
-						$("#sdpProductList").jqGrid('setGridParam', {
+						$("#sdpDataList").jqGrid('setGridParam', {
 							postData : getQueryParams()
 						});
 					}
@@ -181,11 +181,15 @@
 							$("#depId").val(data.departureCityDistrictId);
 							$("#depPingYin").val(data.departureCityShortPinYin);
 							$("#depCode").val(data.departureCityCode);
-							$("#depCity").val(data.departureCityDistrictId);
+							<#--
+								$("#depCity").val(data.departureCityDistrictId);
+								-->
 							$("#arrId").val(data.arrivalCityDistrictId);
 							$("#arrPingYin").val(data.arrivalCityShortPinYin);
 							$("#arrCode").val(data.arrivalCityCode);
-							$("#arrCity").val(data.arrivalCityDistrictId);
+							<#--
+								$("#arrCity").val(data.arrivalCityDistrictId);
+								-->
 							$("#isSelected").val(data.isSelectedDeparture);
 						}
 					}
@@ -199,8 +203,8 @@
 			}
 			function operationsLink(cellvalue, options, rowObject) 
 			{
-	    		return  "<a href='javascript:void(0);' onclick='openEditDialog("+rowObject.id+");' style='color:blue;'>编辑"+ "</a>"+
-	    		"  <a href='javascript:void(0);' onclick='deleteProduct("+rowObject.id+");' style='color:blue;'>删除"+ "</a>";
+	    		return  "<a href='javascript:void(0);' onclick='openEditDialog("+rowObject.id+");' style='color:blue;'>编辑"+ "</a>";
+	    		<#-- "<a href='javascript:void(0);' onclick='deleteProduct("+rowObject.id+");' style='color:blue;'>删除"+ "</a>"-->
 	    		
     		}
     		
@@ -217,12 +221,12 @@
 						departureCityDistrictId:$("#depId").val(),
 						departureCityCode:$("#depCode").val(),
 						departureCityShortPinYin:$("#depPingYin").val(),
-						departureCityName:$("#depCity").find("option:selected").text(),
 						arrivalCityDistrictId:$("#arrId").val(),
 						arrivalCityCode:$("#arrCode").val(),
 						arrivalCityShortPinYin:$("#arrPingYin").val(),
-						arrivalCityName:$("#arrCity").find("option:selected").text()
+						isSelectedDeparture:$("#isSelected").val()
 				};
+				console.info(params);
 				$.ajax({
 					url : "${request.contextPath}/sdpProduct/updateCityGroup",
 					type : "post",
@@ -231,7 +235,8 @@
 					success : function(data) {
 						if (data.returnStr == 'SUCCESS') {
 							alert("成功！");
-							$('#EditDialog').dialog('close')
+							$('#EditDialog').dialog('close');
+							window.location.reload();
 						} else {
 							alert("修改失败！");
 						}
@@ -241,13 +246,22 @@
 			  
 			//查询 
 			function query() {
-				$("#sdpProductList").jqGrid('setGridParam', 
+				$("#sdpDataList").jqGrid('setGridParam', 
 				{
 		 			url:"${request.contextPath}/sdpProduct/queryDepartureCityList",
 		 			datatype : "json",
 		 			mtype : "POST",
 			 		postData : getQueryParams()
 				}).trigger("reloadGrid");
+			}
+			
+			function deleteProduct(obj){
+			 var r=confirm("确定要删除吗？")
+			  if (r==false){
+			  	return;
+			  }
+				
+			  
 			}
 		</script>
 	</head>
@@ -276,7 +290,7 @@
 		</div>
 		
 		 <div class="content content1" style="margin-top:50px;">
-	      <table id="sdpProductList"></table>
+	      <table id="sdpDataList"></table>
 	      <div id="pager"></div>
 	     </div>
     </div>
@@ -302,6 +316,7 @@
 									
 						</td>
 				</tr>
+				
 				<tr height="25">	
 						<td align="right">出发城市短拼音：</td>
 						<td>
@@ -314,6 +329,7 @@
 							<input id="depCode" name="depCode">
 						</td>
 				</tr>
+				<#--
 				<tr height="25">	
 						<td align="right">出发城市：</td>
 						<td>
@@ -327,6 +343,7 @@
 							</select>
 						</td>
 				</tr>
+				-->
 				<tr height="25">	
 						<td align="right">到达城市Id：</td>
 						<td>
@@ -345,6 +362,7 @@
 							<input id="arrCode" name="arrCode">
 						</td>
 				</tr>
+				<#--
 				<tr height="25">
 					<td align="right">目的城市：</td>
 					<td>
@@ -358,12 +376,13 @@
 							</select>
 					</td>
 				</tr>
+				-->
 				<tr height="25">
 					<td align="right">是选中出发地：</td>
 					<td>
 						<select type="text" id="isSelected">
-								<option value="1">是</option>
-								<option value="0">否</option>
+								<option value="Y">是</option>
+								<option value="N">否</option>
 						</select>
 					</td>
 				</tr>

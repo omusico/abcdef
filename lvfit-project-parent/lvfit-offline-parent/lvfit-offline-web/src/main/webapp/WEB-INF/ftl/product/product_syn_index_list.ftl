@@ -34,6 +34,7 @@
 						name : 'bizCategoryId',  //品类
 						index : 'bizCategoryId',
 						align : 'center',
+						width:70,
 						sortable:false
 					},
 					{
@@ -41,6 +42,7 @@
 						index : 'productId',
 						//formatter:formatLinkVst,
 						align : 'center',
+						width:70,
 						sortable:false
 					},
 					{
@@ -59,24 +61,28 @@
 						name : 'cancelFlag',   //产品状态（是否有效）
 						index : 'cancelFlag',
 						align : 'center',
+						width:70,
 						sortable:false
 					},
 					{
 						name : 'saleFlag',   //是否可售
 						index : 'saleFlag',
 						align : 'center',
+						width:70,
 						sortable:false
 					},
 					{
 						name : 'auditType',   //审核状态
 						index : 'auditType',
 						align : 'center',
+						width:70,
 						sortable:false
 					},
 					{
 						name : 'curSyncFlag',   //当前同步状态
 						index : 'curSyncFlag',
 						align : 'center',
+						width:70,
 						sortable:false
 					},
 					//----------------
@@ -84,6 +90,7 @@
 						name : 'muiltDpartureFlag',  //是否为多出发地
 						index : 'muiltDpartureFlag',
 						align : 'center',
+						width:70,
 						sortable:false
 					},
 					{
@@ -102,6 +109,7 @@
 						name : 'allOperation', //操作
 						index : 'allOperation',
 						formatter:operationsLink,
+						width:150,
 						align : 'center',
 						sortable:false
 					},
@@ -109,6 +117,7 @@
 						name : 'ballOperation', //操作
 						index : 'ballOperation',
 						formatter:oppLink,
+						width:150,
 						align : 'center',
 						sortable:false
 					}
@@ -180,16 +189,15 @@
 			function operationsLink(cellvalue, options, rowObject) 
 			{
 	    		return  "<a href='javascript:void(0);' onclick='syncSearchIndex("+rowObject.productId+");' style='color:blue;'>同步索引标签"+ "</a>"+
-	    		"  <a href='javascript:void(0);' onclick='deleteProduct("+rowObject.productId+");' style='color:blue;'>删除产品"+ "</a>"+
-	    		"  <br/><a href='${request.contextPath}/sdpProduct/searchIndex?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询索引"+ "</a>"+
-	    		"  <a href='${request.contextPath}/sdpProduct/searchSynInfo?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询同步记录"+ "</a>";
+	    		" | <a href='javascript:void(0);' onclick='deleteProduct("+rowObject.productId+");' style='color:blue;'>删除产品"+ "</a>"+
+				" <br/><a href='${request.contextPath}/sdpProduct/searchTrafficIndex?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询索引交通表"+ "</a>"+
+	    		" | <a href='${request.contextPath}/sdpProduct/departureCity?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>出发城市管理"+ "</a>";
 	    		
     		}
     		function oppLink(cellvalue, options, rowObject) 
 			{
-	    		return  "<a href='${request.contextPath}/sdpProduct/searchTrafficIndex?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询索引交通表"+ "</a>"+
-	    		" <br/><a href='${request.contextPath}/sdpProduct/departureCity?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>出发城市管理"+ "</a>";
-	    		
+	    		return "<a href='${request.contextPath}/sdpProduct/searchIndex?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询索引"+ "</a>"+
+	    		" <br/><a href='${request.contextPath}/sdpProduct/searchPushInfo?productId="+rowObject.productId+"' target='_blank'' style='color:blue;'>查询推送信息列表"+ "</a>";
     		}
 			/*设置交通规则*/
 			function setTrafficRules(productId,routeNum){

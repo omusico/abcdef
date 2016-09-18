@@ -30,13 +30,14 @@ import com.lvmama.lvfit.common.dto.hotel.FitConRecomHotelRequestForm;
 import com.lvmama.lvfit.common.dto.order.FitOrderDetail;
 import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto;
+import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
 import com.lvmama.lvfit.common.dto.request.*;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
@@ -44,6 +45,7 @@ import com.lvmama.lvfit.common.dto.shopping.ShoppingDbDto;
 import com.lvmama.lvfit.common.dto.shopping.ShoppingDetailDto;
 import com.lvmama.lvfit.common.form.booking.BookingInputForm;
 import com.lvmama.lvfit.common.form.order.FitOrderOpLogForm;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 
 /**
  * 业务接口远程调用类
@@ -925,12 +927,12 @@ public class FitBusinessClient {
 	 * @param productId
 	 * @return
 	 */
-	public BaseResultDto<FitSdpProductSearchIndex> querySdpProductSearchIndexList(Long productId) {
+	public BaseResultDto<FitSdpProductSearchIndexDto> querySdpProductSearchIndexList(BaseQueryDto<Long> baseQuery) {
 		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_SEARCH_INDEX_QUERY_LIST;
-		String url = command.url(baseUrl, productId);
+		String url = command.url(baseUrl);
 	    try {
-	           String jsonResult = restClient.post(url, String.class);
-	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSearchIndex>>(){});
+	           String jsonResult = restClient.post(url, String.class,baseQuery);
+	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSearchIndexDto>>(){});
 	    }
 		catch (ExceptionWrapper ew) 
 		{
@@ -955,13 +957,13 @@ public class FitBusinessClient {
 	 * @param productId
 	 * @return
 	 */
-	public BaseResultDto<FitSdpProductSynMsg> querySdpProductSynInfoList(
-			Long productId) {
+	public BaseResultDto<FitSdpProductSyncMsgDto> querySdpProductSynInfoList(
+			BaseQueryDto<Long> baseQuery) {
 		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST;
-		String url = command.url(baseUrl, productId);
+		String url = command.url(baseUrl);
 	    try {
-	           String jsonResult = restClient.post(url, String.class);
-	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSynMsg>>(){});
+	           String jsonResult = restClient.post(url, String.class,baseQuery);
+	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSyncMsgDto>>(){});
 	    }
 		catch (ExceptionWrapper ew) 
 		{
@@ -979,11 +981,11 @@ public class FitBusinessClient {
 	}
 
 	public BaseResultDto<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(
-			Long productId) {
+			BaseQueryDto<Long> baseQuery) {
 		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_INDEX_TRAFFIC;
-		String url = command.url(baseUrl, productId);
+		String url = command.url(baseUrl);
 	    try {
-	           String jsonResult = restClient.post(url, String.class);
+	           String jsonResult = restClient.post(url, String.class,baseQuery);
 	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSearchIndexTraffic>>(){});
 	    }
 		catch (ExceptionWrapper ew) 
@@ -1024,6 +1026,132 @@ public class FitBusinessClient {
 	        throw ew;
 		}
 	}
+
+	public BaseResultDto<FitSuppOrderForFlightCallBackDto> getSuppOrderForFlightCallBack(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery) {
+		BussinessClientPath command = BussinessClientPath.BACK_SUPP_ORDER_FLIGHT_CALL_BACK;
+		String url = command.url(baseUrl);
+	    try {
+	    	ObjectMapper objectMapper = JSONMapper.getInstance();
+			String jsonRequest = objectMapper.writeValueAsString(baseQuery);
+			String jsonResult = restClient.post(url, String.class, jsonRequest);
+	        return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSuppOrderForFlightCallBackDto>>(){});
+	    }
+		catch (ExceptionWrapper ew) 
+		{
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} 
+		catch (Exception e) 
+		{
+			ExceptionWrapper ew = new ExceptionWrapper();
+	        ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+	        ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+	        logger.error(ew.getErrMessage(), ew);
+	        throw ew;
+		}
+	}
+
+	public FitSdpProductSearchIndexTraffic getTrafficIndexById(Long id) {
+		  BussinessClientPath command = BussinessClientPath.GET_SDP_PRODUCT_TRAFFIC_INDEX_BY_ID;
+	       String url = command.url(baseUrl, id);
+	       try {
+	           String jsonResult = restClient.get(url, String.class);
+	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<FitSdpProductSearchIndexTraffic>(){});
+	       } catch (ExceptionWrapper ew) {
+	           logger.error(ew.getErrMessage(), ew);
+	           throw ew;
+	       } catch (Exception e) {
+	           ExceptionWrapper ew = new ExceptionWrapper();
+	           ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+	           ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+	           logger.error(ew.getErrMessage(), ew);
+	           throw ew;
+	       }
+	}
+	
+	public ResultStatus updateTrafficIndex(FitSdpProductSearchIndexTraffic dto){
+		    BussinessClientPath command = BussinessClientPath.UPDATE_SDP_PRODUCT_TRAFFIC_INDEX;
+			String url = command.url(baseUrl);
+			try{
+				return restClient.post(url, ResultStatus.class, dto);
+			} catch (ExceptionWrapper ew) {
+				logger.error(ew.getErrMessage(), ew);
+				throw ew;
+			}catch (Exception e) {
+		           ExceptionWrapper ew = new ExceptionWrapper();
+		           ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+		           ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+		           logger.error(ew.getErrMessage(), ew);
+		           throw ew;
+		    }
+		}
+
+	public String getFitFliBookingCallBackByVstMainNo(
+			BaseQueryDto<FitFliBookingCallBackRequest> baseQuery) {
+		BussinessClientPath command = BussinessClientPath.GET_FLIGHT_CALL_BACK_BY_VST_NO;
+		String url = command.url(baseUrl);
+	    try {
+	           String jsonResult = restClient.post(url, String.class,baseQuery);
+	           return jsonResult;
+	    }
+		catch (ExceptionWrapper ew) 
+		{
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} 
+		catch (Exception e) 
+		{
+			ExceptionWrapper ew = new ExceptionWrapper();
+	        ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+	        ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+	        logger.error(ew.getErrMessage(), ew);
+	        throw ew;
+		}
+	}
+
+	public BaseResultDto<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery) {
+		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_ALL_SYN_INFO;
+		String url = command.url(baseUrl);
+	    try {
+	           String jsonResult = restClient.post(url, String.class,baseQuery);
+	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSyncMsgDto>>(){});
+	    }
+		catch (ExceptionWrapper ew) 
+		{
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} 
+		catch (Exception e) 
+		{
+			ExceptionWrapper ew = new ExceptionWrapper();
+	        ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+	        ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+	        logger.error(ew.getErrMessage(), ew);
+	        throw ew;
+		}
+	}
+	
+	/**
+	 * 存储同步时间信息到数据库
+	 * @return
+	 */
+/*	public ResultStatus saveSynTimeInfo(FitSdpProductSyncMsgDto request){
+		BussinessClientPath command = BussinessClientPath.SAVE_SYN_TIME_INFO;
+		String url = command.url(baseUrl);
+		try {
+			return restClient.post(url, ResultStatus.class, request);
+		} catch (ExceptionWrapper ew) {
+			logger.error(ew.getErrMessage(), ew);
+			throw ew;
+		} catch (Exception e) {
+			ExceptionWrapper ew = new ExceptionWrapper();
+			ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
+			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
+			logger.error(ew.getErrMessage(), ew);
+			throw ew;
+		}
+	}*/
+	
 }
 
 

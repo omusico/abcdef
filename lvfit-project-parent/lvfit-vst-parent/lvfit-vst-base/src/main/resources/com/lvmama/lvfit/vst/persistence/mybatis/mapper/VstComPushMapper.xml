@@ -2,9 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lvmama.lvfit.vst.persistence.mybatis.mapper.VstComPushMapper" >
 
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.vst.VstPushRecord" >
+	    <result column="ID" property="id"/>
+	    <result column="OBJECT_ID" property="objectId" jdbcType="DECIMAL"/>
+	    <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
+	    <result column="OBJECT_TYPE" property="objectType" jdbcType="DECIMAL"/>
+	    <result column="PUSH_FLAG" property="pushFlag" jdbcType="VARCHAR" />
+	    <result column="PUSH_COUNT" property="pushCount" jdbcType="VARCHAR"/>
+	    <result column="PUSH_CONTENT" property="pushContent" jdbcType="DECIMAL"/>
+	    <result column="DATA_TYPE" property="dataType" jdbcType="DECIMAL"/>
+	    <result column="OPERATE_TYPE" property="operateType" jdbcType="VARCHAR"/>
+	</resultMap>
+	
 	<sql id="columns">
 			id,object_id,create_time,object_type,push_flag,push_count,push_content,data_type,operate_type
-		</sql>
+	</sql>
 
 	<insert id="insert">
 		<selectKey keyProperty="id" resultType="Long" order="BEFORE">
@@ -34,5 +46,16 @@
 		#{operateType,jdbcType=VARCHAR}
 		)
 	</insert>
+	
+	<select id="queryPushList" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
+		SELECT 
+		<include refid="columns" />
+		FROM lvmama_ver.com_push
+		<if test="condition!=null and condition!=''">
+			WHERE OBJECT_ID=#{condition}
+		</if>
+		<include refid="ORACLE.paginationEnd" />
+	</select>
 
 </mapper>

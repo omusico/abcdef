@@ -75,7 +75,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 		AmountCalculatorRequest flightPriceRequest = this.getFlightPriceRequest(selectSearchFlightInfoDtos,fitSdpShoppingRequest);
 		if(flightPriceRequest!=null){ 
 			//如果当前是包机航班，就修改里面的乘客的航意险的数量为原有的两倍.
-			if(CharterFlightFilterUtil.isCharsetFlightDots(selectSearchFlightInfoDtos)){
+			if(CharterFlightFilterUtil.isCharterFlightDots(selectSearchFlightInfoDtos)){
 				 List<BookingDetailDto>  bookingDetails = flightPriceRequest.getPassengerDetailDtos();
 				 for(BookingDetailDto bkdetail:bookingDetails){
 					 List<InsuranceCalculatRequest> insRequests =  bkdetail.getInsuranceCalculatRequests();
@@ -134,7 +134,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				FlightTicketPriceDto flightTicketPriceDto = new FlightTicketPriceDto();
 				FitFlightTicketPriceDto fitFlightTicketPriceDto = new FitFlightTicketPriceDto(); 
 				//如果不是包机切位，就考虑儿童舱的问题
-				if(!CharterFlightFilterUtil.isCharset(selectSearchFlightInfoDto)){
+				if(!CharterFlightFilterUtil.isCharter(selectSearchFlightInfoDto)){
 					if(passengerDetailDto.getPassengerType()==PassengerType.CHILDREN){
 						fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassType()).getFlightTicketPriceDto();
 					}else{
@@ -156,7 +156,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				amountDetailDtos.add(amountDetailDto);
 			}
 			//如果是包机切位，只计算一个航程的价格.
-			if(CharterFlightFilterUtil.isCharset(selectSearchFlightInfoDto)){
+			if(CharterFlightFilterUtil.isCharter(selectSearchFlightInfoDto)){
 				break;
 			}
 		}

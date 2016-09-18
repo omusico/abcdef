@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.lvmama.lvf.common.dto.BaseQueryDto;
+import com.lvmama.lvfit.business.order.domain.repository.FitSuppOrderForFlightCallBackRepository;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpCityGroupRepository;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductBasicInfoRepository;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductFeeRulesRepository;
@@ -23,14 +24,17 @@ import com.lvmama.lvfit.business.sdpproduct.service.FitSdpProductService;
 import com.lvmama.lvfit.common.client.FitBatchClient;
 import com.lvmama.lvfit.common.dto.enums.BizEnum.BIZ_CATEGORY_TYPE;
 import com.lvmama.lvfit.common.dto.enums.JudgeType;
+import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
+import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 
 @Service
 public class FitSdpProductServiceImpl implements FitSdpProductService {
@@ -49,6 +53,8 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 	private FitSdpProductSearchSynInfoRepository fitSdpProductSearchSynInfoRepository;
 	@Autowired
 	private FitSdpProductSearchIndexTrafficRepository fitSdpProductSearchIndexTrafficRepository;
+	@Autowired
+	private FitSuppOrderForFlightCallBackRepository fitSuppOrderForFlightCallBackRepository;
 	
 	@Autowired
 	private FitBatchClient fitBatchClient;
@@ -215,19 +221,19 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 	}
 
 	@Override
-	public List<FitSdpProductSearchIndex> querySdpProductSearchIndex(Long productId) {
-		return fitSdpProductSearchIndexRepository.queryIndexInfoList(productId);
+	public List<FitSdpProductSearchIndexDto> querySdpProductSearchIndex(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexRepository.queryIndexInfoList(baseQuery);
 	}
 
 	@Override
-	public List<FitSdpProductSynMsg> querySdpProductSynInfoList(Long productId) {
-		return fitSdpProductSearchSynInfoRepository.querySynMsgList(productId);
+	public List<FitSdpProductSyncMsgDto> querySdpProductSynInfoList(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchSynInfoRepository.querySynMsgList(baseQuery);
 	}
 
 	@Override
 	public List<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(
-			Long productId) {
-		return fitSdpProductSearchIndexTrafficRepository.queryIndexTrafficList(productId);
+			BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexTrafficRepository.queryIndexTrafficList(baseQuery);
 	}
 
 	@Override
@@ -255,5 +261,46 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 			return null;
 		}
 	}
-	
+
+	@Override
+	public List<FitSuppOrderForFlightCallBackDto> queryFitSuppOrderFlightCallBack(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> request) {
+		return fitSuppOrderForFlightCallBackRepository.queryAll(request);
+	}
+
+	@Override
+	public int countSuppOrderForFlightCallBackRecords(
+			BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery) {
+		return fitSuppOrderForFlightCallBackRepository.querySuppOrderForFlightCallBackCounts(baseQuery);
+	}
+
+	@Override
+	public int countSdpProductDepartCityRecords(
+			BaseQueryDto<FitSdpCityGroupDto> baseQueryDto) {
+		return fitSdpCityGroupRepository.countSdpProductDepartCityRecords(baseQueryDto);
+	}
+
+	@Override
+	public FitSdpProductSearchIndexTraffic queryTrafficIndexById(Long id) {
+		return fitSdpProductSearchIndexTrafficRepository.queryTrafficIndexById(id);
+	}
+
+	@Override
+	@Async
+	public void updateOneTrafficIndex(FitSdpProductSearchIndexTraffic dto) {
+		if(dto!=null){
+			fitSdpProductSearchIndexTrafficRepository.save(dto);
+		}
+	}
+
+	@Override
+	public List<FitFliBookingCallBackRequest> getFlightCallBackByVstMainNo(
+			BaseQueryDto<FitFliBookingCallBackRequest> baseQuery) {
+		return fitSuppOrderForFlightCallBackRepository.queryByVstMainNo(baseQuery);
+	}
+
+	@Override
+	public List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchSynInfoRepository.querySdpProductSynMsgInfo(baseQuery);
+	}
+
 }

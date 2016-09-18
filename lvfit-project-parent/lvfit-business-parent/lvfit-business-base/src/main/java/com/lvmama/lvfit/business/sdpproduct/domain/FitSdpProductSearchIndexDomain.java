@@ -1,7 +1,7 @@
 package com.lvmama.lvfit.business.sdpproduct.domain;
 
 import com.lvmama.lvf.common.domain.Domain;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 
 
 /**
@@ -9,16 +9,16 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
  * @author leizhengwei
  *
  */
-public class FitSdpProductSearchIndexDomain implements Domain<FitSdpProductSearchIndex> {
+public class FitSdpProductSearchIndexDomain implements Domain<FitSdpProductSearchIndexDto> {
 
-private FitSdpProductSearchIndex self;
+private FitSdpProductSearchIndexDto self;
 	
 	@Override
-	public FitSdpProductSearchIndex self() {
+	public FitSdpProductSearchIndexDto self() {
 		return self;
 	}
 
-	public FitSdpProductSearchIndexDomain(FitSdpProductSearchIndex self) {
+	public FitSdpProductSearchIndexDomain(FitSdpProductSearchIndexDto self) {
 		super();
 		this.self = self;
 	}

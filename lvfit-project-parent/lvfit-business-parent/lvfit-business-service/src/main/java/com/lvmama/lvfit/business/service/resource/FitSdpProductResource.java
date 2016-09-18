@@ -11,7 +11,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +24,17 @@ import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.business.sdpproduct.service.FitSdpProductService;
 import com.lvmama.lvfit.common.client.path.BussinessClientPath;
+import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
+import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndex;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 
 @Component
 @Path("")
@@ -303,11 +305,30 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_SEARCH_INDEX_QUERY_LIST)
-	public Response querySdpProductIdIndex(@PathParam("productId")Long productId){
+	public Response querySdpProductIdIndex(BaseQueryDto<Long> baseQuery){
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
-			List<FitSdpProductSearchIndex> flightOrderListResultDtos = fitSdpProductService.querySdpProductSearchIndex(productId);
-			BaseResultDto<FitSdpProductSearchIndex> baseResultDto = new BaseResultDto<FitSdpProductSearchIndex>(flightOrderListResultDtos);
+			List<FitSdpProductSearchIndexDto> flightOrderListResultDtos = fitSdpProductService.querySdpProductSearchIndex(baseQuery);
+			BaseResultDto<FitSdpProductSearchIndexDto> baseResultDto = new BaseResultDto<FitSdpProductSearchIndexDto>(flightOrderListResultDtos);
+			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
+ 
+			return Response.ok(jsonResult).build();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_ALL_SYN_INFO)
+	public Response querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery){
+		try{
+			ObjectMapper objectMapper = JSONMapper.getInstance();
+			List<FitSdpProductSyncMsgDto> synMsgDtos = fitSdpProductService.querySdpProductSynMsgInfo(baseQuery);
+			BaseResultDto<FitSdpProductSyncMsgDto> baseResultDto = new BaseResultDto<FitSdpProductSyncMsgDto>(synMsgDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
  
 			return Response.ok(jsonResult).build();
@@ -322,11 +343,11 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST)
-	public Response querySdpProductSynInfoList(@PathParam("productId")Long productId){
+	public Response querySdpProductSynInfoList(BaseQueryDto<Long> baseQuery){
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
-			List<FitSdpProductSynMsg> synMsgDtos = fitSdpProductService.querySdpProductSynInfoList(productId);
-			BaseResultDto<FitSdpProductSynMsg> baseResultDto = new BaseResultDto<FitSdpProductSynMsg>(synMsgDtos);
+			List<FitSdpProductSyncMsgDto> synMsgDtos = fitSdpProductService.querySdpProductSynInfoList(baseQuery);
+			BaseResultDto<FitSdpProductSyncMsgDto> baseResultDto = new BaseResultDto<FitSdpProductSyncMsgDto>(synMsgDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
  
 			return Response.ok(jsonResult).build();
@@ -341,10 +362,10 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_INDEX_TRAFFIC)
-	public Response querySdpProductIndexTrafficList(@PathParam("productId")Long productId){
+	public Response querySdpProductIndexTrafficList(BaseQueryDto<Long> baseQuery){
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
-			List<FitSdpProductSearchIndexTraffic> synMsgDtos = fitSdpProductService.querySdpProductIndexTrafficList(productId);
+			List<FitSdpProductSearchIndexTraffic> synMsgDtos = fitSdpProductService.querySdpProductIndexTrafficList(baseQuery);
 			BaseResultDto<FitSdpProductSearchIndexTraffic> baseResultDto = new BaseResultDto<FitSdpProductSearchIndexTraffic>(synMsgDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
  
@@ -360,11 +381,15 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_DEPART_CITY)
-	public Response querySdpProductDepartCityList(BaseQueryDto<FitSdpCityGroupDto> dto){
+	public Response querySdpProductDepartCityList(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto){
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
-			List<FitSdpCityGroupDto> cityGroupDtos = fitSdpProductService.getProductCityGroupByDto(dto);
-			BaseResultDto<FitSdpCityGroupDto> baseResultDto = new BaseResultDto<FitSdpCityGroupDto>(cityGroupDtos);
+			List<FitSdpCityGroupDto> cityGroupDtos = fitSdpProductService.getProductCityGroupByDto(baseQueryDto);
+			int records = fitSdpProductService.countSdpProductDepartCityRecords(baseQueryDto);
+			Pagination pagination = baseQueryDto.getPagination();
+			pagination.setRecords(records);
+			pagination.countRecords(records);
+			BaseResultDto<FitSdpCityGroupDto> baseResultDto = new BaseResultDto<FitSdpCityGroupDto>(pagination,cityGroupDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
  
 			return Response.ok(jsonResult).build();
@@ -374,6 +399,87 @@ public class FitSdpProductResource {
 		return null;
 	}
 	
+	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.BACK_SUPP_ORDER_FLIGHT_CALL_BACK)
+	public Response querySuppOrderFlightCallBack(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery){
+		try{
+			ObjectMapper objectMapper = JSONMapper.getInstance();
+			List<FitSuppOrderForFlightCallBackDto> sofDtos = fitSdpProductService.queryFitSuppOrderFlightCallBack(baseQuery);
+			int records = fitSdpProductService.countSuppOrderForFlightCallBackRecords(baseQuery);
+			Pagination pagination = baseQuery.getPagination();
+			pagination.setRecords(records);
+			pagination.countRecords(records);
+			BaseResultDto<FitSuppOrderForFlightCallBackDto> baseResultDto = new BaseResultDto<FitSuppOrderForFlightCallBackDto>(pagination,sofDtos);
+			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
+			return Response.ok(jsonResult).build();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据Id获取产品交通索引
+	 * @param productId
+	 * @return
+	 */
+	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.GET_SDP_PRODUCT_TRAFFIC_INDEX_BY_ID)
+	public Response getProductTrafficIndexById(@PathParam("id")Long id) {
+		FitSdpProductSearchIndexTraffic trafficIndexDto =  null;
+		trafficIndexDto =	fitSdpProductService.queryTrafficIndexById(id);
+		return Response.ok(trafficIndexDto).build();
+	}
+	
+	/**
+	 * 根据Id获取产品交通索引
+	 * @param productId
+	 * @return
+	 */
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.UPDATE_SDP_PRODUCT_TRAFFIC_INDEX)
+	public Response updateOneTrafficIndex(FitSdpProductSearchIndexTraffic dto) {
+		fitSdpProductService.updateOneTrafficIndex(dto);
+		return Response.ok(ResultStatus.SUCCESS).build();
+	}
+	
+	/**
+	 * 根据Id获取产品交通索引
+	 * @param productId
+	 * @return
+	 */
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.GET_FLIGHT_CALL_BACK_BY_VST_NO)
+	public Response getFlightCallBackByVstMainNo(BaseQueryDto<FitFliBookingCallBackRequest> baseQuery) {
+		List<FitFliBookingCallBackRequest> flightCallBack = fitSdpProductService.getFlightCallBackByVstMainNo(baseQuery);
+		return Response.ok(flightCallBack).build();
+	}
+	
+	
+/*	*//**
+	 * 新增或者修改自主打包城市组信息
+	 * @param feeRulesDtos
+	 * @return
+	 *//*
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(BussinessClientPath.Path.SAVE_SYN_TIME_INFO)
+	public Response saveSyncTimeInfo(FitSdpProductSyncMsgDto syncMsgDto) {
+		fitSdpProductService.saveSdpProductSyncMsg(syncMsgDto);
+		return Response.ok(ResultStatus.SUCCESS).build();
+	}
+	*/
 	
 	
 }

@@ -109,10 +109,13 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 		FitSdpShoppingResponseForm resultForm = new FitSdpShoppingResponseForm(fitSdpShoppingDto);
 		FlightSearchFlightInfoDto firstFlight = fitSdpShoppingDto.getSelectedFlightInfos().get(0);
 		// 如果是包机航班，查询库存，判断舱位是否足够.
-		if (CharterFlightFilterUtil.isCharset(firstFlight)) {
+		if (CharterFlightFilterUtil.isCharter(firstFlight)) {
 			if (!chargeCharsetFlight(BookingSource.FIT_FRONT,resultForm.getFitSdpShoppingRequest().getFitPassengerRequest(), firstFlight)) {
 				logger.error("下单之前进行包机航班复查时舱位不足，提示舱位不够.");
-				throw new ExceptionWrapper(ExceptionCode.GET_FLIGHT_PRICE_FAIL);
+			 	ExceptionWrapper e1 = new ExceptionWrapper();
+				model.addAttribute("errorMsgOutTime",e1.getErrMessage());
+				model.addAttribute("shoppingUUID",shoppingUUID); 
+				return "redirect:/"+redirectPath; 
 			}
 		}
 	        

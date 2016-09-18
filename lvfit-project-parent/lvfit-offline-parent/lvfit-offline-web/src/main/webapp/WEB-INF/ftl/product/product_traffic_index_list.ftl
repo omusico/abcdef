@@ -40,7 +40,7 @@
 
 			function initGrid() 
 			{
-				var colNames = ['ID','产品ID', '目的地','出发地','游玩时间','销量','是否多出发地','更新时间'];
+				var colNames = ['ID','产品ID', '去程','返程','游玩时间','销量','是否多出发地','更新时间','操作'];
 
 				var cols = [
 					{
@@ -56,40 +56,47 @@
 						sortable:false
 					},
 					{
-						name : 'toTraffic',   //出发地ID
+						name : 'toTraffic',
 						index : 'toTraffic',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'backTraffic',   //出发地名称
+						name : 'backTraffic',
 						index : 'backTraffic',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'depatureTime',   //最低市场价
+						name : 'depatureTime',
 						index : 'depatureTime',
 						align : 'center',
 						sortable:false
 					},//--------------
 					{
-						name : 'salesVolume',   //市场最低销售价
+						name : 'salesVolume',
 						index : 'salesVolume',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'isMultiDepature',   //app最低市场价
+						name : 'isMultiDepature',   
 						index : 'isMultiDepature',
 						align : 'center',
 						sortable:false
 					},
 					{
-						name : 'updateTime',   //app最低销售价
+						name : 'updateTime',   
 						index : 'updateTime',
 						align : 'center',
 						formatter : dateFormatter,
+						sortable:false
+					},
+					{
+						name : 'allOperation', //操作
+						index : 'allOperation',
+						formatter:operationsLink,
+						align : 'center',
 						sortable:false
 					}];
 					
@@ -130,13 +137,80 @@
 				var queryData = {
 					'productId':$("#productId").val(),
 				};
-				console.info(queryData);
 				return queryData;
 			}
+			
+			function operationsLink(cellvalue, options, rowObject) 
+			{
+	    		return  "<a href='javascript:void(0);' onclick='toEdit("+rowObject.id+");' style='color:blue;'>编辑"+ "</a>";
+	    		
+    		}
 			
 			function dateFormatter (cellvalue, options, rowObject)  
 			{  
 				   return new Date(cellvalue).format("yyyy-MM-dd hh:mm:ss");
+			}
+			
+			function toEdit(obj){
+				$('#EditDialog').dialog({
+				    title:'打包产品城市组编辑',
+				    width:350,
+					height:400,
+					modal:'true'
+				});
+				$.ajax({	
+					url: "${request.contextPath}/sdpProduct/queryOneTrafficIndex",
+					type: "post",
+					data: {
+						'id':obj
+					},
+					dataType: 'json',
+					success: function (data) {
+						if(data!=null){
+						console.info(data);
+							$("#idInput").val(data.id);
+							$("#productIdInput").val(data.productId);
+							$("#toTraffic").val(data.toTraffic);
+							$("#backTraffic").val(data.backTraffic);
+							$("#playTime").val(data.depatureTime);
+							$("#volume").val(data.salesVolume);
+							$("#isMulti").val(data.isMultiDepature);
+						}
+					}
+				});
+			}
+			
+			function saveEdit(){
+				var id = $("#idInput").val();
+				var toTraffic = $("#toTraffic").val();
+				var backTraffic = $("#backTraffic").val();
+				if(id==''||toTraffic==''||backTraffic==''){
+					alert("数据不能为空!");
+					return;
+				}
+				var params = {
+					    id:id,
+						toTraffic:toTraffic,
+						backTraffic:backTraffic,
+						depatureTime:$("#playTime").val(),
+						salesVolume:$("#volume").val(),
+						isMultiDepature:$("#isMulti").val()
+				};
+				$.ajax({
+					url : "${request.contextPath}/sdpProduct/updateTrafficIndex",
+					type : "post",
+					data: params,
+					dataType: 'json',
+					success : function(data) {
+						if (data.returnStr == 'SUCCESS') {
+							alert("成功！");
+							$('#EditDialog').dialog('close');
+							window.location.reload();
+						} else {
+							alert("修改失败！");
+						}
+					}
+				}); // ajax-end
 			}
 		</script>
 	</head>
@@ -151,5 +225,63 @@
 	      <div id="pager"></div>
 	     </div>
     </div>
+    
+    <div id="EditDialog" style="display:none;">
+			<table>
+				<tr height="25">	
+					<td align="right">ID：</td>
+					<td>
+						<input type="text" id="idInput" readonly="readonly" />
+					</td>
+				</tr>
+				<tr height="25">	
+					<td align="right">产品ID：</td>
+					<td>
+						<input type="text" id="productIdInput" readonly="readonly" />
+					</td>
+				</tr>
+				<tr height="25">	
+						<td align="right">去程：</td>
+						<td>
+							<textarea type="text" id="toTraffic" style="height:50px" name="toTraffic"></textarea>
+						</td>
+				</tr>
+				<tr height="25">	
+						<td align="right">返程：</td>
+						<td>
+							<textarea type="text" id="backTraffic" style="height:50px" name="backTraffic"></textarea>
+						</td>
+				</tr>
+				<tr height="25">	
+						<td align="right">游玩时间：</td>
+						<td>
+							<textarea style="height:50px" id="playTime" name="playTime"></textarea>
+						</td>
+				</tr>
+				<tr height="25">	
+						<td align="right">销量：</td>
+						<td>
+							<input id="volume" name="volume">
+						</td>
+				</tr>
+				<tr height="25">	
+						<td align="right">是否多出发地：</td>
+						<td>
+							<select id="isMulti" name="isMulti">
+								<option value="Y">是</option>
+								<option value="N">否</option>
+							</select>
+						</td>
+				</tr>
+				<tr height="45">
+					<td align="right">
+						<button class="button" onclick="saveEdit()">保存</button>
+					</td>
+					<td align="center">
+						<button class="button" onclick="javaScript:$('#EditDialog').dialog('close')">取消</button>
+					</td>
+				</tr>
+			</table>
+		</div>
 </body>
 </html>

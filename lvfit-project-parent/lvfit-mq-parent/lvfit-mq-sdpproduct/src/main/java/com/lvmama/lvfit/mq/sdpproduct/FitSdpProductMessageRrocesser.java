@@ -1,25 +1,23 @@
 package com.lvmama.lvfit.mq.sdpproduct;
 
-import java.util.Date;
 import java.util.UUID;
 
-import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
-import com.lvmama.lvfit.common.client.FitSearchClient;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.lvmama.comm.jms.Message;
 import com.lvmama.comm.jms.MessageProcesser;
 import com.lvmama.lvf.common.dto.status.ResultStatus;
+import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvf.common.utils.MemcachedUtil;
 import com.lvmama.lvfit.common.client.FitBatchClient;
+import com.lvmama.lvfit.common.client.FitSearchClient;
 import com.lvmama.lvfit.common.dto.enums.JudgeType;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
-
-import org.springframework.beans.factory.annotation.Value;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 
 public class FitSdpProductMessageRrocesser implements MessageProcesser{
 	
@@ -72,22 +70,22 @@ public class FitSdpProductMessageRrocesser implements MessageProcesser{
 		    logger.error("产品【"+productId+"】消息处理产品基本信息结束，耗时【"+(end1-beg)+"】状态无需处理gid【"+gid+"】");
 		}else{
 			//同步时间信息存到数据库
-			FitSdpProductSynMsg ssm = new FitSdpProductSynMsg();
-			ssm.setSynBasicinfoStart(new Date(System.currentTimeMillis()));
+			FitSdpProductSyncMsgDto syncMsgDto = new FitSdpProductSyncMsgDto();
+			syncMsgDto.setProductId(productId);
 			ResultStatus syncSdpProductResultStatus = fitBatchClient.syncSdpProductBasicInfo(productId);
 			long end1 =System.currentTimeMillis();
-			ssm.setSynBasicinfoEnd(new Date(System.currentTimeMillis()));
 		    logger.error("产品【"+productId+"】消息处理产品基本信息结束，耗时【"+(end1-beg)+"】状态【"+syncSdpProductResultStatus.name()+"】gid【"+gid+"】");
-		    ssm.setSynBasicinfoStatus(syncSdpProductResultStatus.name());
+		    syncMsgDto.setProductSyncTime(end1-beg);
+		    syncMsgDto.setProductSyncStatus(syncSdpProductResultStatus);
 		    if(syncSdpProductResultStatus==ResultStatus.SUCCESS){
-		    	ssm.setSynSearchindexStart(new Date(System.currentTimeMillis()));
+		    	long beg2 =System.currentTimeMillis();
 		    	ResultStatus syncSdpProductIndexResultStatus = 	fitBatchClient.syncSdpProductSearchIndex(productId);
 				long end2 =System.currentTimeMillis();
-				ssm.setSynSearchindexStart(new Date(end2));
+				syncMsgDto.setIndexSyncTime(end2-beg2);
 			    logger.error("产品【"+productId+"】消息处理产品索引结束，耗时【"+(end2-beg)+"】状态【"+syncSdpProductIndexResultStatus.name()+"】gid【"+gid+"】");
-			    ssm.setSynSearchindexStatus(syncSdpProductIndexResultStatus.name());
+			    syncMsgDto.setIndexSyncStatus(syncSdpProductIndexResultStatus);
 		    }
-		    fitBatchClient.saveSynTimeInfo(ssm);
+		    fitBatchClient.saveSynTimeInfo(syncMsgDto);
 		}
 		
 	}

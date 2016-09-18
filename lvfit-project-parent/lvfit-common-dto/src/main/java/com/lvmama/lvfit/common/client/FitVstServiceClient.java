@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.lvmama.lvf.common.client.RestClient;
+import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvf.common.exception.ExceptionCode;
@@ -59,11 +60,11 @@ public class FitVstServiceClient {
 		}
 	}
 	
-	public BaseResultDto<VstPushRecord> queryPushInfoList(Long productId) {
+	public BaseResultDto<VstPushRecord> queryPushInfoList(BaseQueryDto<Long> baseQuery) {
 		VstServiceClientPath command = VstServiceClientPath.QUERY_COM_PUSH;
-		String url = command.url(baseUrl, productId);
+		String url = command.url(baseUrl);
 	    try {
-	           String jsonResult = restClient.post(url, String.class);
+	           String jsonResult = restClient.post(url, String.class,baseQuery);
 	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<VstPushRecord>>(){});
 	    }
 		catch (ExceptionWrapper ew) 

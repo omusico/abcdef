@@ -18,6 +18,10 @@ public interface FitSdpProductSearchIndexTrafficMapper extends DomainEntityBaseM
         DomainByFkIdRepository<FitSdpProductSearchIndexTraffic>
 {
 
-	List<FitSdpProductSearchIndexTraffic> queryIndexTrafficList(Long productId);
+	List<FitSdpProductSearchIndexTraffic> queryIndexTrafficList(BaseQueryDto<Long> baseQuery);
+	
+	FitSdpProductSearchIndexTraffic queryTrafficIndexById(Long id);
+
+	void updateOneTrafficIndex(FitSdpProductSearchIndexTraffic dto);
 	
 }

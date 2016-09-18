@@ -178,7 +178,7 @@ public class FitSdpCaculateServiceImpl implements FitSdpCaculateService{
 					&& dbProductBasicInfoDto.getAuditType()==ProductAuditType.AUDITTYPE_PASS)){
 				//调用vst侧推送接口推送到 com_push 表中，新增，修改，删除以便搜索方及时同步
 				Map<Long, List<FitSdpProductCalendarDto>> allCityCalendarInfo = fitSdpCalculateUtils.getAllCityCalendarInfo(productId);
-				List<FitSdpProductSearchIndex> syncProductSearchIndexs = this.generateProductSearchIndexs(productId, allCityCalendarInfo);
+				List<FitSdpProductSearchIndexDto> syncProductSearchIndexs = this.generateProductSearchIndexs(productId, allCityCalendarInfo);
 				if(CollectionUtils.isNotEmpty(syncProductSearchIndexs)){
 					if(count>=1){
 						operateType = FitSdpComPushDto.OPERATE_TYPE.UP.name();
@@ -245,15 +245,15 @@ public class FitSdpCaculateServiceImpl implements FitSdpCaculateService{
 		}
 	}
 
-	private List<FitSdpProductSearchIndex> generateProductSearchIndexs(Long productId, Map<Long, List<FitSdpProductCalendarDto>> allCityCalendarInfo) {
+	private List<FitSdpProductSearchIndexDto> generateProductSearchIndexs(Long productId, Map<Long, List<FitSdpProductCalendarDto>> allCityCalendarInfo) {
 
-		List<FitSdpProductSearchIndex> sdpProductSearchIndexs = new ArrayList<FitSdpProductSearchIndex>();
+		List<FitSdpProductSearchIndexDto> sdpProductSearchIndexs = new ArrayList<FitSdpProductSearchIndexDto>();
 		if (MapUtils.isNotEmpty(allCityCalendarInfo)) {
 			for (Entry<Long, List<FitSdpProductCalendarDto>> entry : allCityCalendarInfo.entrySet()) {
 			    if(entry.getKey()==null) {
 				    continue;
 			    }
-				FitSdpProductSearchIndex productSearchIndex = new FitSdpProductSearchIndex();
+				FitSdpProductSearchIndexDto productSearchIndex = new FitSdpProductSearchIndexDto();
 				productSearchIndex.setProductId(productId);
 				productSearchIndex.setStartDistrictId(entry.getKey());
 				BigDecimal startingPrice = fitSdpCalculateUtils.getStartingPrice(entry.getValue());
@@ -285,15 +285,11 @@ public class FitSdpCaculateServiceImpl implements FitSdpCaculateService{
 			this.syncSdpProductSearchIndex(productId, true);
 		}
 	}
-
+	
 	@Override
-	public ResultStatus saveSynMsgInfo(FitSdpProductSynMsg request) {
-		int suc = fitSdpProductSynMsgMapper.saveSynMsgInfo(request);
-		if(suc>0){
-			return ResultStatus.SUCCESS;
-		}else{
-			return ResultStatus.FAIL;
-		}
+	public ResultStatus saveSynMsgInfo(FitSdpProductSyncMsgDto request) {
+		fitSdpProductSynMsgMapper.insert(request);
+		return ResultStatus.SUCCESS;
 	}
 
 }

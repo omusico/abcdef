@@ -4,8 +4,9 @@ import java.util.List;
 
 import com.lvmama.lvf.common.domain.DomainBaseRepository;
 import com.lvmama.lvf.common.domain.DomainByFkIdRepository;
+import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpProductSynMsgDomain;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 
 
 /**
@@ -13,11 +14,15 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
  * @author leizhengwei
  *
  */
-public interface FitSdpProductSearchSynInfoRepository extends DomainBaseRepository<FitSdpProductSynMsgDomain, FitSdpProductSynMsg>,
-DomainByFkIdRepository<FitSdpProductSynMsg>{
+public interface FitSdpProductSearchSynInfoRepository extends DomainBaseRepository<FitSdpProductSynMsgDomain, FitSdpProductSyncMsgDto>,
+DomainByFkIdRepository<FitSdpProductSyncMsgDto>{
 	/**
 	 * 根据产品Id查询索引信息
 	 * @return
 	 */
-	List<FitSdpProductSynMsg> querySynMsgList(Long productId);
+	List<FitSdpProductSyncMsgDto> querySynMsgList(BaseQueryDto<Long> baseQuery);
+
+	void saveSyncMsgDto(FitSdpProductSyncMsgDto syncMsgDto);
+
+	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery);
 }

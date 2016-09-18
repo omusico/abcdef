@@ -5,14 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpProductSearchIndexTrafficDomain;
-import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpProductSynMsgDomain;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductSearchIndexTrafficRepository;
-import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpProductSearchSynInfoRepository;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
 import com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductSearchIndexTrafficMapper;
-import com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductSynMsgMapper;
 
 @Repository
 public class FitSdpProductSearchIndexTrafficRepositoryImpl implements FitSdpProductSearchIndexTrafficRepository {
@@ -42,8 +39,8 @@ public class FitSdpProductSearchIndexTrafficRepositoryImpl implements FitSdpProd
 	@Override
 	public FitSdpProductSearchIndexTraffic save(
 			FitSdpProductSearchIndexTraffic r) {
-		// TODO Auto-generated method stub
-		return null;
+		 fitSdpProductSearchIndexTrafficMapper.updateById(r.getId(), r);
+		 return r;
 	}
 
 	@Override
@@ -60,8 +57,18 @@ public class FitSdpProductSearchIndexTrafficRepositoryImpl implements FitSdpProd
 
 	@Override
 	public List<FitSdpProductSearchIndexTraffic> queryIndexTrafficList(
-			Long productId) {
-		return fitSdpProductSearchIndexTrafficMapper.queryIndexTrafficList(productId);
+			BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexTrafficMapper.queryIndexTrafficList(baseQuery);
 	}
-	
+
+	@Override
+	public FitSdpProductSearchIndexTraffic queryTrafficIndexById(Long id) {
+		return fitSdpProductSearchIndexTrafficMapper.queryTrafficIndexById(id);
+	}
+
+	@Override
+	public void updateOneTrafficIndex(FitSdpProductSearchIndexTraffic dto) {
+		fitSdpProductSearchIndexTrafficMapper.updateOneTrafficIndex(dto);
+	}
+
 }

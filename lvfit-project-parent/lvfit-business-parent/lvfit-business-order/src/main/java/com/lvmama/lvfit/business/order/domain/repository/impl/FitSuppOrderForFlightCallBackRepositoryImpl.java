@@ -1,9 +1,13 @@
 package com.lvmama.lvfit.business.order.domain.repository.impl;
 
+import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.utils.ZipUnZipUtils;
 import com.lvmama.lvfit.business.order.domain.FitSuppOrderForFlightCallBack;
 import com.lvmama.lvfit.business.order.domain.repository.FitSuppOrderForFlightCallBackRepository;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
+import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 import com.lvmama.lvfit.persistence.mybatis.mapper.FitSuppOrderForFlightCallBackMapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -79,6 +83,23 @@ public class FitSuppOrderForFlightCallBackRepositoryImpl implements FitSuppOrder
 	@Override
 	public List<String> loadCallRequestStrByVstNo(String vstOrderMainNo, String vstOrderNo) {
 		return fitSuppOrderForFlightCallBackMapper.loadCallRequestStrByVstNo(vstOrderMainNo,vstOrderNo);
+	}
+
+	@Override
+	public List<FitSuppOrderForFlightCallBackDto> queryAll(BaseQueryDto<FitSuppOrderForFlightCallBackRequest> request) {
+		return fitSuppOrderForFlightCallBackMapper.queryAll(request);
+	}
+
+	@Override
+	public int querySuppOrderForFlightCallBackCounts(
+			BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery) {
+		return fitSuppOrderForFlightCallBackMapper.querySuppOrderForFlightCallBackCounts(baseQuery);
+	}
+
+	@Override
+	public List<FitFliBookingCallBackRequest> queryByVstMainNo(
+			BaseQueryDto<FitFliBookingCallBackRequest> baseQuery) {
+		return fitSuppOrderForFlightCallBackMapper.queryByVstMainNo(baseQuery);
 	}
 
 }

@@ -499,9 +499,10 @@
 
             $(".search_kind:not(:first)").find("dd").removeClass("active");
 			$(".search_subCon_list dd").removeClass("active");
+			$(".search_subCon").hide();
+			$(".kind_hotel_location").removeClass("active");
 
             $(".kind_buxian").addClass("active");
-
 			searchHotels();
         }
 

@@ -12,7 +12,7 @@ import com.lvmama.lvf.common.dto.Entity;
  *
  */
 
-public class FitSdpProductSearchIndex  extends  Entity implements Serializable{
+public class FitSdpProductSearchIndexDto  extends  Entity implements Serializable{
 
 	/**
 	 * 

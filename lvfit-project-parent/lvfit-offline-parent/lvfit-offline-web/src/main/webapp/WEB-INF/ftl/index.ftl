@@ -79,7 +79,8 @@ top.location = "${request.contextPath}/userLogin";
             <ul class="ul_oper_list">
                 <li class="oper_item"><a target="iframeMain" href="${request.contextPath}/online_index"><span class="icon-tag_1"></span>后台下单</a></li>
 	            <li class="oper_item"><a target="iframeMain" href="${request.contextPath}/order/toOrderQuery"><span class="icon-tag_1"></span>订单列表查询</a></li>
-	             </ul>
+	            <li class="oper_item"><a target="iframeMain" href="${request.contextPath}/sdpProduct/suppCallBack"><span class="icon-tag_1"></span>机票回调</a></li>
+	            </ul>
 			</li>
 			<li class="oper_item"><a target="iframeMain" ><span class="icon-tag_2"></span>报表管理</a>
             <ul class="ul_oper_list">
@@ -100,7 +101,8 @@ top.location = "${request.contextPath}/userLogin";
 			<li class="oper_item"><a target="iframeMain" ><span class="icon-tag_2"></span>产品管理</a>
             <ul class="ul_oper_list">
                <li class="oper_item"><a target="iframeMain" href="${request.contextPath}/sdpProduct/query"><span class="icon-tag_1"></span>产品列表</a></li>
-               <li class="oper_item"><a target="iframeMain" href="${request.contextPath}/sdpProduct/syncQuery"><span class="icon-tag_1"></span>产品同步管理</a></li>    
+               <li class="oper_item"><a target="iframeMain" href="${request.contextPath}/sdpProduct/syncQuery"><span class="icon-tag_1"></span>产品同步管理</a></li>
+               <li class="oper_item"><a target="iframeMain" href="${request.contextPath}/sdpProduct/searchSynInfo"><span class="icon-tag_1"></span>查询同步记录</a></li>    
 	        </ul>
 			</li>
 		</ul>

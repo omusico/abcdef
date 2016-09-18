@@ -17,7 +17,7 @@ import com.lvmama.lvfit.common.client.path.BatchClientPath;
 import com.lvmama.lvfit.common.client.path.BussinessClientPath;
 import com.lvmama.lvfit.common.client.path.VstClientPath;
 import com.lvmama.lvfit.common.dto.request.FitOrderPassengerRequest;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 
 /**
@@ -108,7 +108,7 @@ public class FitBatchClient {
 	 * 存储同步时间信息到数据库
 	 * @return
 	 */
-	public ResultStatus saveSynTimeInfo(FitSdpProductSynMsg request){
+	public ResultStatus saveSynTimeInfo(FitSdpProductSyncMsgDto request){
 		BatchClientPath command = BatchClientPath.SAVE_SYN_TIME_INFO;
 		String url = command.url(baseUrl);
 		try {

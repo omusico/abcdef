@@ -2,7 +2,7 @@ package com.lvmama.lvfit.business.sdpproduct.domain;
 
 import com.lvmama.lvf.common.domain.Domain;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 
 
 /**

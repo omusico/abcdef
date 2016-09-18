@@ -2,47 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductSynMsgMapper">
-	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg" >
+	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto" >
 	    <result column="PRODUCT_ID" property="productId"/>
-	    <result column="SYN_BASICINFO_START" property="synBasicinfoStart" jdbcType="TIMESTAMP"/>
-	    <result column="SYN_BASICINFO_END" property="synBasicinfoEnd" jdbcType="TIMESTAMP" />
-	    <result column="SYN_BASICINFO_STATUS" property="synBasicinfoStatus" />
-	    <result column="SYN_SEARCHINDEX_START" property="synSearchindexStart" jdbcType="TIMESTAMP" />
-	    <result column="SYN_SEARCHINDEX_END" property="synSearchindexEnd" jdbcType="TIMESTAMP" />
-	    <result column="SYN_SEARCHINDEX_STATUS" property="synSearchindexStatus"/>
+	    <result column="PRODUCT_SYNC_TIME" property="productSyncTime" jdbcType="TIMESTAMP"/>
+	    <result column="INDEX_SYNC_TIME" property="indexSyncTime" jdbcType="TIMESTAMP" />
+	    <result column="PRODUCT_SYNC_STATUS" property="productSyncStatus" jdbcType="VARCHAR" />
+	    <result column="INDEX_SYNC_STATUS" property="indexSyncStatus" jdbcType="VARCHAR" />
+	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<!-- 数据项 -->
 	<sql id="columns">
 	  PRODUCT_ID,
-	  SYN_BASICINFO_START,
-	  SYN_BASICINFO_END,
-	  SYN_BASICINFO_STATUS,
-	  SYN_SEARCHINDEX_START,
-	  SYN_SEARCHINDEX_END,
-	  SYN_SEARCHINDEX_STATUS
+	  PRODUCT_SYNC_TIME,
+	  INDEX_SYNC_TIME,
+	  PRODUCT_SYNC_STATUS,
+	  INDEX_SYNC_STATUS,
+	  CREATE_TIME
 	</sql>
 	
 	<!-- 数据插入 -->
-	<insert id="saveSynMsgInfo" parameterType="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSynMsg">
+	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto">
 		INSERT INTO
 		T_FITSDP_PRODUCT_SYN_MESSAGE
 		(<include refid="columns" />)
 		VALUES(
 		    #{productId,jdbcType=DECIMAL},
-			#{synBasicinfoStart,jdbcType=TIMESTAMP},
-			#{synBasicinfoEnd,jdbcType=TIMESTAMP},
-			#{synBasicinfoStatus,jdbcType=VARCHAR},
-			#{synSearchindexStart,jdbcType=TIMESTAMP},
-			#{synSearchindexEnd,jdbcType=TIMESTAMP},
-		    #{synSearchindexStatus,jdbcType=VARCHAR}
+			#{productSyncTime},
+			#{indexSyncTime},
+			#{productSyncStatus,jdbcType=VARCHAR},
+			#{indexSyncStatus,jdbcType=VARCHAR},
+			(SELECT sysdate FROM dual)
 		)
 	</insert>
 	
-	<select id="querySynMsgList" parameterType="java.lang.Long" resultMap="resultMap">
+	<select id="querySynMsgList" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
 		SELECT 
 		<include refid="columns" />
 		FROM T_FITSDP_PRODUCT_SYN_MESSAGE
-		WHERE PRODUCT_ID = #{productId}
+		<if test="condition!=null and condition!=''">
+				WHERE PRODUCT_ID = #{condition}
+		</if>
+		<include refid="ORACLE.paginationEnd" />
+	</select>
+	
+	<select id="querySdpProductSynMsgInfo" resultMap="resultMap">
+		<include refid="ORACLE.paginationStart" />
+			SELECT 
+			<include refid="columns" />
+			FROM T_FITSDP_PRODUCT_SYN_MESSAGE
+			<if test="condition!=null and condition!=''">
+					WHERE PRODUCT_ID = #{condition}
+			</if>
+		<include refid="ORACLE.paginationEnd" />
 	</select>
 
 </mapper>
