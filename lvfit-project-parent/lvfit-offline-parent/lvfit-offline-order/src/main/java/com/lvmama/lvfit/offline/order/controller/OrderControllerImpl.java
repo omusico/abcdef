@@ -25,6 +25,8 @@ import com.lvmama.lvf.common.utils.StringUtil;
 import com.lvmama.lvfit.common.client.FitBusinessClient;
 import com.lvmama.lvfit.common.client.FitVstClient;
 import com.lvmama.lvfit.common.dto.enums.BizEnum;
+import com.lvmama.lvfit.common.dto.enums.BizEnum.BIZ_CATEGORY_TYPE;
+import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.BookingSourceOffline;
 import com.lvmama.lvfit.common.dto.enums.FlightTripType;
 import com.lvmama.lvfit.common.dto.enums.IDCardType;
@@ -33,17 +35,14 @@ import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.enums.SuppVstAuditStatus;
 import com.lvmama.lvfit.common.dto.enums.SuppVstOrderStatus;
 import com.lvmama.lvfit.common.dto.enums.SuppVstPaymentStatus;
-import com.lvmama.lvfit.common.dto.enums.BizEnum.BIZ_CATEGORY_TYPE;
-import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.order.FitOrderFlightDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderHotelDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto;
+import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.request.FitOrderQueryRequest;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.form.order.FitOrderOpLogForm;
 import com.lvmama.lvfit.common.form.order.FitOrderQueryListForm;
-import com.lvmama.lvfit.common.form.product.FitSdpProductBasicInfoForm;
 
 @Controller
 public class OrderControllerImpl implements OrderController{
@@ -124,6 +123,13 @@ public class OrderControllerImpl implements OrderController{
 		
 		try {
 			FitOrderMainDto baseResultDto = fitBusinessClient.queryOrderMainByVstOrderMainNo(vstOrderId);
+			FitSuppMainOrderDto fitSuppMainOrderDto= baseResultDto.getFitSuppMainOrderDto();
+			//通过是否有“(真往返)子单关联信息 ”判断是不是包机补全信息.
+			if(CollectionUtils.isEmpty(fitSuppMainOrderDto.getSuppFlightOrderDtos())){
+				model.addAttribute("isCharter", "false"); 
+			}else{
+				model.addAttribute("isCharter", "true"); 
+			}
 			baseResultDto.setBookingSource(BookingSource.getBookingSourceName(baseResultDto.getBookingSource().getParentSource().name()));
 			model.addAttribute("base", baseResultDto);
 			//3：构建飞机快照信息

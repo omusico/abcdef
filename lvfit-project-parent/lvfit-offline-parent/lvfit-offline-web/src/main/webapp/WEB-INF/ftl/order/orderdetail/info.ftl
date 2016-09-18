@@ -23,6 +23,7 @@
 			</tr>
 			
 			<!-- 去程信息 -->
+			<#if isCharter=='false'><!-- 如果是普通航班. -->
 			<#list base.fitSuppMainOrderDto.fitSuppOrderDtos  as suppOrder>
 			<#if suppOrder.categoryId == 21>
 			<#list suppOrder.suppFlightOrderDtos as flightOrder>
@@ -99,6 +100,84 @@
 			</#list>
 			</#if>
 			</#list>
+			</#else><!-- 如果是包机. -->
+					<#list base.fitSuppMainOrderDto.suppFlightOrderDtos  as suppOrder>
+						<#if suppOrder.categoryId == 21>
+							<#list suppOrder.suppFlightOrderDtos as flightOrder>
+								<tr>	
+									<td><#if flightOrder.tripType == "DEPARTURE">去程<#else>返程</#if></td>
+									<td><#if flightOrder.passengerType == "ADULT">成人<#else>儿童</#if></td>
+									<td>
+										<a target='_blank' href="http://super.lvmama.com/vst_order/order/orderManage/showChildOrderStatusManage.do?orderItemId=${suppOrder.vstOrderNo }">${suppOrder.vstOrderNo }</a>
+										&nbsp;
+									</td>
+									<td>
+										<!-- <a target='_blank' href="http://super.lvmama.com/offline-web/order/queryOrderDetailByVstOrderId/${suppOrder.vstOrderNo ? trim}/${flightOrder.flightOrderNo ? trim}">${flightOrder.flightOrderNo ? trim}</a> -->
+										<a target='_blank' href="http://super.lvmama.com/vst_order/order/orderManage/showChildOrderStatusManage.do?orderItemId=${suppOrder.vstOrderNo }">${flightOrder.flightOrderNo ? trim }</a>
+										&nbsp;
+									</td>
+									
+									<#if flightOrder.tripType != "NULL" && flightOrder.tripType != '' && flightOrder.tripType == "DEPARTURE">
+									<td>${flight0.departureDate }</td>
+									<td>${flight0.carrierName } <br/>${flight0.flightNo } ${flight0.airplane.code }</td>
+									<td>${flight0.departureCityName }${flight0.departureAirportName }${flight0.departureTermainalBuilding } ---
+											${flight0.arrivalCityName }${flight0.arrivalAirportName }${flight0.arrivalTerminalBuilding }
+									</td><!-- 上海虹桥机场T2—三亚凤凰国际机场T1 -->
+									<td >
+										${flight0.departureTime }<br/>${flight0.arrivalTime }&nbsp;
+									</td>
+									<td >
+										${flight0.flyTimeMins }&nbsp;
+									</td>
+									<td>
+									&nbsp;${flight0.seatClassTypeName }
+									<#if flightOrder.passengerType == "ADULT">${flight0.seatClassCode }<#else>${flight0.seatClassType }</#if>
+									</td>
+									<#else>
+									<td>${flight1.departureDate }</td>
+									<td>${flight1.carrierName } <br/>${flight1.flightNo } ${flight1.airplane.code }</td>
+									<td>${flight1.departureCityName }${flight1.departureAirportName }${flight1.departureTermainalBuilding } ---
+											${flight1.arrivalCityName }${flight1.arrivalAirportName }${flight1.arrivalTerminalBuilding }
+									</td><!-- 上海虹桥机场T2—三亚凤凰国际机场T1 -->
+									<td >
+										${flight1.departureTime }<br/>${flight1.arrivalTime }&nbsp;
+									</td>
+									<td >
+										${flight1.flyTimeMins }&nbsp;
+									</td>
+									<td>&nbsp;${flight1.seatClassTypeName }
+									<#if flightOrder.passengerType == "ADULT">${flight1.seatClassCode }<#else>${flight1.seatClassType }</#if>
+									</td>
+									</#if>
+									
+									<td>
+									<#if flightOrder.orderAmount?? && flightOrder.orderAmount.totalSalesAmount ??>
+										${flightOrder.orderAmount.totalSalesAmount ? trim}
+										&nbsp;
+									</#if>
+									</td>
+									<td>
+										<#if flightOrder.bookingStatus ??>
+											${ flightOrder.bookingStatus.cnName  }
+										<#else>
+											预订失败
+										</#if>
+										&nbsp;
+									</td>
+									<td>
+									     ${suppOrder.fitSuppOrderStatusDto.orderItemStatus.cnName }
+					                         <br>
+					                                  资源审核 （${suppOrder.fitSuppOrderStatusDto.resAuditStatus.cnName }）
+					                         <br>
+					                                 信息审核（${suppOrder.fitSuppOrderStatusDto.infoAuditStatus.cnName }）
+									</td>
+									
+									
+								</tr>
+							</#list>
+						</#if>
+					</#list>
+			</#if>
 		</table>
 		
 		<br/>

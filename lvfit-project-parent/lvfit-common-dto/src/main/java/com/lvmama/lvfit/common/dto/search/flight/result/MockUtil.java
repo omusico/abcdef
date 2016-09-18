@@ -241,10 +241,11 @@ public class MockUtil {
 	public static void main(String[] aegs) throws Exception {
 		Long a = 1476288000000L; 
 		
-		String inputStr = readFile("d:\\zipstr.txt");
-		String callRequestStr = ZipUnZipUtils.getInstance().unzipBase642String(inputStr,"UTF-8");
-		System.out.println(callRequestStr);
+//		String inputStr = readFile("d:\\zipstr.txt");
+//		String callRequestStr = ZipUnZipUtils.getInstance().unzipBase642String(inputStr,"UTF-8");
+//		System.out.println(callRequestStr);
 		 
+		System.out.println(System.currentTimeMillis());
 //		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = MockUtil
 //				.createFromJsonFile(
 //						"d:\\new_flight.txt",

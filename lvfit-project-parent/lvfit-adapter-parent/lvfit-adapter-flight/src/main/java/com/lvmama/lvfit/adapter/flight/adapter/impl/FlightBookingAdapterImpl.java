@@ -24,6 +24,7 @@ import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.dto.order.FlightOrderAmountDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderContacterDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderCustomerDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderDetailDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderInsuranceDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderPassengerDto;
@@ -155,7 +156,10 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 				// 对于包机，每个子单都生成对应的一样的请求
 				try {
 					List<FitSuppOrderDto> fitSuppOrders = fitSuppMainOrderDto.getFitSuppOrderDtos();
-					//请求串.
+					if(CollectionUtils.isNotEmpty(fitSuppOrders)){
+						logger.error("调用包机机票下单。fitSuppOrders=="+JSONMapper.getInstance().writeValueAsString(fitSuppOrders));
+					}
+                    //请求串.
 					FlightOrderBookingRequest flightOrderBookingRequest = this.buildCharterFlightOrderBookingRequest(request,fitOrderFlightDtos,fitSuppMainOrderDto.getVstMainOrderNo(),fitSuppMainOrderDto);
 					// 去程，返程都一样的处理,设置回调dto
 					for (FitSuppOrderDto fitSuppOrderDto : fitSuppOrders) { 
@@ -198,15 +202,26 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
                     	   FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, isBookingSuccess?FitOrderResultStatus.SUCCESS:FitOrderResultStatus.FAIL, isBookingSuccess?"":"供应商下单失败");
                     	   FitOrderTraceContext.setOrderMsg(orderMsgDto);
                         
-                        //根据机票子单构造机酒供应商航班订单------这里待改.......
-                    	   //如果是包机切位，这里不保存航班信息订单，以后直接进行查询的时候实时查询订单 进行补单！！
+//                    	   List<FitSuppFlightOrderDto> suppFlightOrderDtos = new ArrayList<FitSuppFlightOrderDto>();
+//                        //根据机票子单构造机酒供应商航班订单------这里待改.......
+//                    	//如果是包机切位，这里不保存航班信息订单，以后直接进行查询的时候实时查询订单 进行补单！！
 //                        for (FlightOrderDto flightOrder : flightOrderMain.getFlightOrders()) {
-//                        	String curOrderPassengerType =  flightOrder.getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name();
-//                        	FitSuppFlightOrderDto suppFlightOrderDto = fitSuppOrders.get(0).getByPassengerType(com.lvmama.lvfit.common.dto.enums.PassengerType.valueOf(curOrderPassengerType));
-//                        	suppFlightOrderDto.setFlightOrderNo(flightOrder.getFlightOrderNo().getOrderNo());
-//                        	suppFlightOrderDto.setBookingStatus(com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus.valueOf(flightOrder.getFlightOrderStatus().getOrderBookingStatus().name()));
-//                        	suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(flightOrder.getFlightOrderAmount()));
+//                        	List<FlightOrderDetailDto>  orderDetails = flightOrder.getFlightOrderDetails();
+//                        	for(FlightOrderDetailDto detailDto:orderDetails){
+//                        		String curOrderPassengerType =  detailDto.getFlightOrderPassenger().getPassengerType().name();
+//                            	FitSuppFlightOrderDto suppFlightOrderDto = flightOrder.getFlightOrderSuppOrders()
+//                            	//机票单品子订单No
+//                            	suppFlightOrderDto.setFlightOrderNo(flightOrder.getFlightOrderNo().getOrderNo()); 
+//                            	// 机票订单预订状态 
+//                            	suppFlightOrderDto.setBookingStatus(com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus.valueOf(flightOrder.getFlightOrderStatus().getOrderBookingStatus().name()));
+//                            	//订单金额信息
+//                            	suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(flightOrder.getFlightOrderAmount()));
+//                            	suppFlightOrderDtos.add(suppFlightOrderDto);
+//                        	} 
 //                        }
+//                    	   
+//                    	   //直接设置真往返的航班信息dto.
+//                    	   fitSuppMainOrderDto.setSuppFlightOrderDtos(suppFlightOrderDtos);
                     }
 					
 				} catch (Exception e) {

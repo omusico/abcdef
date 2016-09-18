@@ -149,10 +149,19 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 			 }
 		 }*/
 		
+		//是否包机
+		boolean isCharter = false;
 		try {
 			suppMainOrderDto = fitVstClient.completeSuppFlightInfo(flightOrderQueryRequest);
 			orderMainDto.setFitSuppMainOrderDto(suppMainOrderDto);
-			// 根据从机票端返回的保险单号信息，设置在fitOrderMainDto中
+			if(CollectionUtils.isEmpty(suppMainOrderDto.getSuppFlightOrderDtos())){
+				isCharter = false;
+			}else{
+				isCharter = true;
+			}
+			 
+		 	// 根据从机票端返回的保险单号信息，设置在fitOrderMainDto中
+			// 处理航意险的信息.
 			if (CollectionUtils.isNotEmpty(orderMainDto.getFlightInsuranceDtos()) 
 			        && CollectionUtils.isNotEmpty(suppMainOrderDto.getFlightInsDtos())) {
     			for (FitOrderFliInsuranceDto orderInsDto : orderMainDto.getFlightInsuranceDtos()) {
@@ -167,24 +176,32 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         			    }
          			}
     			}
-			}
-			
+			} 
 		} catch (Exception e1) {
 			logger.error(ExceptionUtils.getFullStackTrace(e1));
 		}
-		 List<FitSuppOrderDto> fitSuppOrderDtos = suppMainOrderDto.getFitSuppOrderDtos();
-		 if(CollectionUtils.isNotEmpty(fitSuppOrderDtos)){
-			 for (FitSuppOrderDto suppOrderDto : fitSuppOrderDtos) {
-					if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(suppOrderDto.getCategoryId())){
-						List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppOrderDto.getSuppFlightOrderDtos();
-						for (FitSuppFlightOrderDto fitSuppFlightOrderDto : suppFlightOrderDtos) {
-							//if(isNeedUpdateMap.get(fitSuppFlightOrderDto.getId().toString()).booleanValue()){
-								fitSuppFlightOrderRepository.save(fitSuppFlightOrderDto);
-							//}
+		//不是包机，以前的逻辑处理方式.
+		if(!isCharter){
+			 List<FitSuppOrderDto> fitSuppOrderDtos = suppMainOrderDto.getFitSuppOrderDtos();
+			 if(CollectionUtils.isNotEmpty(fitSuppOrderDtos)){
+				 for (FitSuppOrderDto suppOrderDto : fitSuppOrderDtos) {
+						if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(suppOrderDto.getCategoryId())){
+							List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppOrderDto.getSuppFlightOrderDtos();
+							for (FitSuppFlightOrderDto fitSuppFlightOrderDto : suppFlightOrderDtos) {
+									fitSuppFlightOrderRepository.save(fitSuppFlightOrderDto);
+							}
 						}
-					}
+				 }
 			 }
-		 }
+		}
+		//是包机
+		else{
+			//保存包机的航班子单信息到数据库
+			List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppMainOrderDto.getSuppFlightOrderDtos();
+			for (FitSuppFlightOrderDto fitSuppFlightOrderDto : suppFlightOrderDtos) { 
+					fitSuppFlightOrderRepository.save(fitSuppFlightOrderDto); 
+			}
+		}
 		 
 	   try {
 			FitSuppMainOrderStatusDto  suppMainOrderStatusDto = orderSyncService.syncSuppMainOrderStatus(suppMainOrderDto.getFitSuppMainOrderStatus().getVstMainOrderNo());

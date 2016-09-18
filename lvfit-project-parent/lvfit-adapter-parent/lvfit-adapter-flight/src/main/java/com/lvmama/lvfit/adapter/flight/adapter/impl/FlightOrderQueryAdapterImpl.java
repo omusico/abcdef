@@ -47,6 +47,20 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
     @Autowired
     private BusinessClient businessClient;
 
+    /**
+     * 判断是不是包机的请求信息.
+     * @param queryRequest
+     * @return
+     */
+    private boolean isCharterFlight(FlightOrderQueryRequest queryRequest){
+    	FitSuppMainOrderDto suppMainOrderDto = queryRequest.getFitSuppMainOrderDto();
+    	//判断主单里面的航班子单中是否有订单信息
+    	if(CollectionUtils.isEmpty(suppMainOrderDto.getFitSuppOrderDtos().get(0).getSuppFlightOrderDtos())){
+    		return true;
+    	}
+    	return false;
+    }
+    
     @Override
     public FitSuppMainOrderDto completeSuppFlightInfo(FlightOrderQueryRequest queryRequest) {
 
@@ -56,52 +70,109 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
             logger.info("查询机票单品请求参数：" + JSONMapper.getInstance().writeValueAsString(queryRequest));
             Map<String,String> tickeNoMap = new HashMap<String, String>();
             List<FitSuppFlightOrderDetailDto> suppFlightOrderDetailDtos = new ArrayList<FitSuppFlightOrderDetailDto>();
-            //获取乘客key对应的票号信息
-            for (FitSuppOrderDto suppOrder : suppMainOrderDto.getFitSuppOrderDtos()) {
-            	if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(suppOrder.getCategoryId())){
-            		//1. 获取乘客key对应的票号信息
-            		FlightOrderSalesOrderRelationDto salesOrderRelation = new FlightOrderSalesOrderRelationDto();
-                    salesOrderRelation.setSalesMainOrderId(Long.valueOf(suppMainOrderDto.getVstMainOrderNo()));
-                    salesOrderRelation.setSalesOrderId(Long.valueOf(suppOrder.getVstOrderNo()));
-                    BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
-                       
-                    for (FlightOrderDetailViewDto viewDto : lvfResultDto.getResults()) {
-                	    FitSuppFlightOrderDto suppFlightOrderDto = suppOrder.getByPassengerType(PassengerType.valueOf(
-                	    viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name()));
-                	    suppFlightOrderDto.setFlightOrderNo(viewDto.getFlightOrderDetailInfo().getOrderNo());
-                	    suppFlightOrderDto.setBookingStatus(OrderBookingStatus.valueOf(viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getDetailBookingStatus().name()));
-                	    suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(viewDto.getFlightOrderDetailInfo().getFlightOrderAmount()));
-                        for (FlightOrderDetailDto flightOrderDetail : viewDto.getFlightOrderDetailInfo().getFlightOrderDetails()) {
-                            FlightOrderTicketInfoDto flightTicket = flightOrderDetail.getFlightOrderTicketInfo();
-                            if(null != flightTicket && StringUtils.isNotBlank(flightTicket.getTicketNo())){
-                        	    tickeNoMap.put(this.passengerKey(flightOrderDetail.getFlightOrderPassenger(),flightOrderDetail.getCombinationDetail().getFlightTripType()), flightTicket.getTicketNo());
-                            }
-                            // 取得保险保单号信息
-                            FlightOrderPassengerDto passenger = flightOrderDetail.getFlightOrderPassenger();
-                            flightInsDtos.addAll(passenger.getFlightOrderInsurances());
-                        }
-                    }
-                    //2.  获取供应商订单航班信息详情信息
-                    List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppOrder.getSuppFlightOrderDtos();
-                    for (FitSuppFlightOrderDto suppFlightOrderDto : suppFlightOrderDtos) {
-                        if(CollectionUtils.isNotEmpty(suppFlightOrderDto.getSuppFlightOrderDetailDtos())){
-                            for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : suppFlightOrderDto.getSuppFlightOrderDetailDtos()) {
-                                suppFlightOrderDetailDto.setTripType(suppFlightOrderDto.getTripType());
-							}
-                    		suppFlightOrderDetailDtos.addAll(suppFlightOrderDto.getSuppFlightOrderDetailDtos());
-                    	}	
-					}
-                    
-            	}
+            if(!isCharterFlight(queryRequest)){
+            	//以前默认的情况.
+	            //获取乘客key对应的票号信息
+	            for (FitSuppOrderDto suppOrder : suppMainOrderDto.getFitSuppOrderDtos()) {
+	            	if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(suppOrder.getCategoryId())){
+	            		//1. 获取乘客key对应的票号信息
+	            		FlightOrderSalesOrderRelationDto salesOrderRelation = new FlightOrderSalesOrderRelationDto();
+	                    salesOrderRelation.setSalesMainOrderId(Long.valueOf(suppMainOrderDto.getVstMainOrderNo()));
+	                    salesOrderRelation.setSalesOrderId(Long.valueOf(suppOrder.getVstOrderNo()));
+	                    logger.info("查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
+	                    //根据主单号，子单号，查询对应的“航班订单详情视图对象信息”.
+	                    BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
+	                       
+	                    for (FlightOrderDetailViewDto viewDto : lvfResultDto.getResults()) {
+	                    	//找到当前用户类型对应的子单.
+	                	    FitSuppFlightOrderDto suppFlightOrderDto = suppOrder.getByPassengerType(PassengerType.valueOf(
+	                	    viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name()));
+	                	    suppFlightOrderDto.setFlightOrderNo(viewDto.getFlightOrderDetailInfo().getOrderNo());
+	                	    suppFlightOrderDto.setBookingStatus(OrderBookingStatus.valueOf(viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getDetailBookingStatus().name()));
+	                	    suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(viewDto.getFlightOrderDetailInfo().getFlightOrderAmount()));
+	                        for (FlightOrderDetailDto flightOrderDetail : viewDto.getFlightOrderDetailInfo().getFlightOrderDetails()) {
+	                            FlightOrderTicketInfoDto flightTicket = flightOrderDetail.getFlightOrderTicketInfo();
+	                            if(null != flightTicket && StringUtils.isNotBlank(flightTicket.getTicketNo())){
+	                        	    tickeNoMap.put(this.passengerKey(flightOrderDetail.getFlightOrderPassenger(),flightOrderDetail.getCombinationDetail().getFlightTripType()), flightTicket.getTicketNo());
+	                            }
+	                            // 取得保险保单号信息
+	                            FlightOrderPassengerDto passenger = flightOrderDetail.getFlightOrderPassenger();
+	                            flightInsDtos.addAll(passenger.getFlightOrderInsurances());
+	                        }
+	                    }
+	                    //2.  获取供应商订单航班信息详情信息
+	                    List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppOrder.getSuppFlightOrderDtos();
+	                    for (FitSuppFlightOrderDto suppFlightOrderDto : suppFlightOrderDtos) {
+	                        if(CollectionUtils.isNotEmpty(suppFlightOrderDto.getSuppFlightOrderDetailDtos())){
+	                            for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : suppFlightOrderDto.getSuppFlightOrderDetailDtos()) {
+	                                suppFlightOrderDetailDto.setTripType(suppFlightOrderDto.getTripType());
+								}
+	                    		suppFlightOrderDetailDtos.addAll(suppFlightOrderDto.getSuppFlightOrderDetailDtos());
+	                    	}	
+						}
+	                    
+	            	}
+	            }
+	            
+	            //补全供应商订单航班信息详情信息中的票号信息
+	            for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : suppFlightOrderDetailDtos) {
+	            	FitSuppOrderTicketInfoDto suppOrderTicketInfoDto = new FitSuppOrderTicketInfoDto(); 
+	            	String passengerKey = suppFlightOrderDetailDto.getFitOrderPassenger().passengerKey(suppFlightOrderDetailDto.getTripType());
+	            	suppOrderTicketInfoDto.setTicketNo(tickeNoMap.get(passengerKey));
+	            	suppFlightOrderDetailDto.setFitSuppOrderTicketInfoDto(suppOrderTicketInfoDto);
+				}
             }
-            
-            //补全供应商订单航班信息详情信息中的票号信息
-            for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : suppFlightOrderDetailDtos) {
-            	FitSuppOrderTicketInfoDto suppOrderTicketInfoDto = new FitSuppOrderTicketInfoDto(); 
-            	String passengerKey = suppFlightOrderDetailDto.getFitOrderPassenger().passengerKey(suppFlightOrderDetailDto.getTripType());
-            	suppOrderTicketInfoDto.setTicketNo(tickeNoMap.get(passengerKey));
-            	suppFlightOrderDetailDto.setFitSuppOrderTicketInfoDto(suppOrderTicketInfoDto);
-			}
+            //包机的处理方式，补全订单.
+            else{
+            	//获取乘客key对应的票号信息
+	            for (FitSuppOrderDto suppOrder : suppMainOrderDto.getFitSuppOrderDtos()) {
+	            	if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(suppOrder.getCategoryId())){
+	            		//1. 获取乘客key对应的票号信息
+	            		FlightOrderSalesOrderRelationDto salesOrderRelation = new FlightOrderSalesOrderRelationDto();
+	                    salesOrderRelation.setSalesMainOrderId(Long.valueOf(suppMainOrderDto.getVstMainOrderNo()));
+//	                    salesOrderRelation.setSalesOrderId(Long.valueOf(suppOrder.getVstOrderNo()));
+	                    logger.info("包机。。查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
+	                    BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
+	                       
+	                    for (FlightOrderDetailViewDto viewDto : lvfResultDto.getResults()) {
+	                	    FitSuppFlightOrderDto suppFlightOrderDto = suppOrder.getByPassengerType(PassengerType.valueOf(
+	                	    viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name()));
+	                	    suppFlightOrderDto.setFlightOrderNo(viewDto.getFlightOrderDetailInfo().getOrderNo());
+	                	    suppFlightOrderDto.setBookingStatus(OrderBookingStatus.valueOf(viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getDetailBookingStatus().name()));
+	                	    suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(viewDto.getFlightOrderDetailInfo().getFlightOrderAmount()));
+	                        for (FlightOrderDetailDto flightOrderDetail : viewDto.getFlightOrderDetailInfo().getFlightOrderDetails()) {
+	                            FlightOrderTicketInfoDto flightTicket = flightOrderDetail.getFlightOrderTicketInfo();
+	                            if(null != flightTicket && StringUtils.isNotBlank(flightTicket.getTicketNo())){
+	                        	    tickeNoMap.put(this.passengerKey(flightOrderDetail.getFlightOrderPassenger(),flightOrderDetail.getCombinationDetail().getFlightTripType()), flightTicket.getTicketNo());
+	                            }
+	                            // 取得保险保单号信息
+	                            FlightOrderPassengerDto passenger = flightOrderDetail.getFlightOrderPassenger();
+	                            flightInsDtos.addAll(passenger.getFlightOrderInsurances());
+	                        }
+	                    }
+	                    //2.  获取供应商订单航班信息详情信息
+	                    List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppOrder.getSuppFlightOrderDtos();
+	                    for (FitSuppFlightOrderDto suppFlightOrderDto : suppFlightOrderDtos) {
+	                        if(CollectionUtils.isNotEmpty(suppFlightOrderDto.getSuppFlightOrderDetailDtos())){
+	                            for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : suppFlightOrderDto.getSuppFlightOrderDetailDtos()) {
+	                                suppFlightOrderDetailDto.setTripType(suppFlightOrderDto.getTripType());
+								}
+	                    		suppFlightOrderDetailDtos.addAll(suppFlightOrderDto.getSuppFlightOrderDetailDtos());
+	                    	}	
+						}
+	                    
+	                    break;//包机的话，只需要查询一次就可以了。
+	            	}
+	            }
+	            
+	          //补全供应商订单航班信息详情信息中的票号信息
+	            for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : suppFlightOrderDetailDtos) {
+	            	FitSuppOrderTicketInfoDto suppOrderTicketInfoDto = new FitSuppOrderTicketInfoDto(); 
+	            	String passengerKey = suppFlightOrderDetailDto.getFitOrderPassenger().passengerKey(suppFlightOrderDetailDto.getTripType());
+	            	suppOrderTicketInfoDto.setTicketNo(tickeNoMap.get(passengerKey));
+	            	suppFlightOrderDetailDto.setFitSuppOrderTicketInfoDto(suppOrderTicketInfoDto);
+				}
+            }
         } catch (Exception e) {
             logger.error("查询机票单品详情异常：", e);
         }
