@@ -3,9 +3,12 @@ package com.lvmama.lvfit.common.client;
 import java.io.IOException;
 import java.util.List;
 
+import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
 import com.lvmama.lvfit.common.cache.CacheBoxConvert;
 import com.lvmama.lvfit.common.cache.CacheKey;
 import com.lvmama.lvfit.common.cache.CachePoint;
+import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
+import com.lvmama.lvfit.common.dto.enums.FitBusinessType;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpInsuranceDto;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -94,9 +97,17 @@ public class FitAggregateClient {
 			logger.error(ew.getErrMessage(), ew);
 			throw ew;
 		}
-    	
-    	
     }
+
+	/**
+	 * 机票查询
+	 * @param request 机票请求参数
+	 * @Param type 业务类型，供ExceptionAspect分辨请求来源
+	 * */
+	@ExceptionPoint(value = FitBusinessExceptionType.FIT_Q_E)
+	public FlightSearchResult<FlightSearchFlightInfoDto> searchFlightInfoWithDP(FlightQueryRequest request) {
+		return this.searchFlightInfo(request);
+	}
     
     /**
      * 酒店查询
@@ -105,7 +116,7 @@ public class FitAggregateClient {
      * @throws JsonParseException 
      * 
      * **/
-    
+    @ExceptionPoint(FitBusinessExceptionType.FIT_Q_H_E)
     public HotelSearchResult<HotelSearchHotelDto> searchHotelInfo(HotelQueryRequest request){
     	AggregateClientPath command = AggregateClientPath.HOTEL_SEARCH;
     	String url = StringUtils.EMPTY;
@@ -142,7 +153,7 @@ public class FitAggregateClient {
      * @throws JsonParseException 
      * 
      * **/
-    
+    @ExceptionPoint(FitBusinessExceptionType.FIT_QUERY_FLIGHT_INSURANCE_E)
     public List<InsuranceInfoDto> searchFlightInsurance() throws JsonParseException, JsonMappingException, IOException{
     	AggregateClientPath command = AggregateClientPath.FLIGHT_INSURANCE_SEARCH;
     	String url = StringUtils.EMPTY;
@@ -219,6 +230,7 @@ public class FitAggregateClient {
      * @param request
      * @return
      */
+	@ExceptionPoint(FitBusinessExceptionType.FIT_Q_S_E)
     public SpotSearchResult<SpotSearchSpotDto> searchSpot(SpotQueryRequest request){
     	AggregateClientPath command = AggregateClientPath.SPOT_SEARCH;
     	String url = StringUtils.EMPTY;
@@ -254,6 +266,7 @@ public class FitAggregateClient {
      * @param request
      * @return
      */
+	@ExceptionPoint(FitBusinessExceptionType.FIT_QUERY_INSURANCE_E)
 	public List<InsuranceDto> searchInsuranceFromVst(InsuranceQueryRequest request) {
 		AggregateClientPath command = AggregateClientPath.INSURANCE_SEARCH;
 		String url = command.url(lvfitaggregateBaseurl);

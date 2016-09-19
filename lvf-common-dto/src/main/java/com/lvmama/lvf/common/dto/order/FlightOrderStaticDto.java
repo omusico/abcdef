@@ -83,8 +83,8 @@ public class FlightOrderStaticDto extends Entity implements Serializable {
     
     /**Y舱票面价**/
     private BigDecimal yparPrice;
-    
-    /**返程相关航班信息*/
+	
+	/**返程相关航班信息*/
     private String returnFlightNo;
     private String returnDepAirportCode;
     private String returnDepAirportName;
@@ -98,7 +98,6 @@ public class FlightOrderStaticDto extends Entity implements Serializable {
     private Date returnArrTime;
     private String returnSeatClassCode;
     private SeatClassType returnSeatClassType;
-	
 	
 	
 	/** 客户ID */
@@ -141,8 +140,8 @@ public class FlightOrderStaticDto extends Entity implements Serializable {
     private BigDecimal airportFee;
     /**燃油**/
     private BigDecimal fuelsurTax;
-    
-    /** 销售类型 */
+
+	/** 销售类型 */
 	private  String saleType;
     
 	public Long getOrderMainId() {
@@ -701,173 +700,115 @@ public class FlightOrderStaticDto extends Entity implements Serializable {
         return "S_FORD_ORDER_STATIC";
     }
 
-
-
 	public String getSaleType() {
 		return saleType;
 	}
 
-
-
 	public void setSaleType(String saleType) {
 		this.saleType = saleType;
 	}
-
-
-
+	
 	public String getReturnFlightNo() {
 		return returnFlightNo;
 	}
-
-
 
 	public void setReturnFlightNo(String returnFlightNo) {
 		this.returnFlightNo = returnFlightNo;
 	}
 
-
-
 	public String getReturnDepAirportCode() {
 		return returnDepAirportCode;
 	}
-
-
 
 	public void setReturnDepAirportCode(String returnDepAirportCode) {
 		this.returnDepAirportCode = returnDepAirportCode;
 	}
 
-
-
 	public String getReturnDepAirportName() {
 		return returnDepAirportName;
 	}
-
-
 
 	public void setReturnDepAirportName(String returnDepAirportName) {
 		this.returnDepAirportName = returnDepAirportName;
 	}
 
-
-
 	public String getReturnArrAirportCode() {
 		return returnArrAirportCode;
 	}
-
-
 
 	public void setReturnArrAirportCode(String returnArrAirportCode) {
 		this.returnArrAirportCode = returnArrAirportCode;
 	}
 
-
-
 	public String getReturnArrAirportName() {
 		return returnArrAirportName;
 	}
-
-
 
 	public void setReturnArrAirportName(String returnArrAirportName) {
 		this.returnArrAirportName = returnArrAirportName;
 	}
 
-
-
 	public String getReturnDepCityCode() {
 		return returnDepCityCode;
 	}
-
-
 
 	public void setReturnDepCityCode(String returnDepCityCode) {
 		this.returnDepCityCode = returnDepCityCode;
 	}
 
-
-
 	public String getReturnDepCityName() {
 		return returnDepCityName;
 	}
-
-
 
 	public void setReturnDepCityName(String returnDepCityName) {
 		this.returnDepCityName = returnDepCityName;
 	}
 
-
-
 	public String getReturnArrCityCode() {
 		return returnArrCityCode;
 	}
-
-
 
 	public void setReturnArrCityCode(String returnArrCityCode) {
 		this.returnArrCityCode = returnArrCityCode;
 	}
 
-
-
 	public String getReturnArrCityName() {
 		return returnArrCityName;
 	}
-
-
 
 	public void setReturnArrCityName(String returnArrCityName) {
 		this.returnArrCityName = returnArrCityName;
 	}
 
-
-
 	public Date getReturnDepTime() {
 		return returnDepTime;
 	}
-
-
 
 	public void setReturnDepTime(Date returnDepTime) {
 		this.returnDepTime = returnDepTime;
 	}
 
-
-
 	public Date getReturnArrTime() {
 		return returnArrTime;
 	}
-
-
 
 	public void setReturnArrTime(Date returnArrTime) {
 		this.returnArrTime = returnArrTime;
 	}
 
-
-
 	public String getReturnSeatClassCode() {
 		return returnSeatClassCode;
 	}
-
-
 
 	public void setReturnSeatClassCode(String returnSeatClassCode) {
 		this.returnSeatClassCode = returnSeatClassCode;
 	}
 
-
-
 	public SeatClassType getReturnSeatClassType() {
 		return returnSeatClassType;
 	}
 
-
-
 	public void setReturnSeatClassType(SeatClassType returnSeatClassType) {
 		this.returnSeatClassType = returnSeatClassType;
 	}
-
-	
 }

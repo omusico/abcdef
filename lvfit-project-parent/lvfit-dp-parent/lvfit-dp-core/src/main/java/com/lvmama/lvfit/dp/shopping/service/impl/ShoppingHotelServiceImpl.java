@@ -70,7 +70,7 @@ public class ShoppingHotelServiceImpl implements ShoppingHotelService {
 					if (request.getHotelId().equals(hotel.getProductId())
 						&& request.getRoomId().equals(room.getBranchId())
 						&& request.getPlanId().equals(plan.getSuppGoodsId())) {
-						room.setRoomCounts(request.getRoomCount());
+						plan.setPlanCounts(request.getRoomCount());
 						hotelBasePrice = plan.getPrice().multiply(BigDecimal.valueOf(request.getRoomCount()));
 						break;
 					}
@@ -81,7 +81,7 @@ public class ShoppingHotelServiceImpl implements ShoppingHotelService {
 		for (HotelSearchHotelDto hotel : hotelList) {
 			for (HotelSearchRoomDto room : hotel.getRooms()) {
 				for (HotelSearchPlanDto plan : room.getPlans()) {
-					plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(room.getRoomCounts())).subtract(hotelBasePrice));
+					plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(plan.getPlanCounts())).subtract(hotelBasePrice));
 				}
 			}
 		}

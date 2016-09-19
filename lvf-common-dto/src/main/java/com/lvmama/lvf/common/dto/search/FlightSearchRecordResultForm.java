@@ -96,5 +96,17 @@ public class FlightSearchRecordResultForm implements Serializable,Form{
 			FlightSearchRecordIndex flightSearchRecordIndex) {
 		this.flightSearchRecordIndex = flightSearchRecordIndex;
 	}
+
+	public void setCustomerIp(String customerIp) {
+		flightSearchRecordIndex.setCustomerIp(customerIp);
+	}
+
+//	public String getCustomerEquipmentNo() {
+//		return flightSearchRecordIndex.getCustomerEquipmentNo();
+//	}
+//
+//	public void setCustomerEquipmentNo(String customerEquipmentNo) {
+//		flightSearchRecordIndex.setCustomerEquipmentNo(customerEquipmentNo);
+//	}
 	
 }

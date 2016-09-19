@@ -6,6 +6,7 @@ public class BaseTraceRequest  implements BaseTraceInfo {
 
 	private String ip;
 	private String customer;
+	private String equipmentNo;
 	
 	@Override
 	public String getIp() {
@@ -24,5 +25,17 @@ public class BaseTraceRequest  implements BaseTraceInfo {
 	public void setCustomer(String customer) {
 		this.customer = customer;
 	}
+	
+	@Override
+	public String getEquipmentNo() {
+		return equipmentNo;
+	}
+
+	public void setEquipmentNo(String equipmentNo) {
+		this.equipmentNo = equipmentNo;
+	}
+	
+	
+	
 
 }

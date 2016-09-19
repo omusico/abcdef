@@ -100,8 +100,8 @@
 			</#list>
 			</#if>
 			</#list>
-			</#else><!-- 如果是包机. -->
-					<#list base.fitSuppMainOrderDto.suppFlightOrderDtos  as suppOrder>
+			<#else><!-- 如果是包机. -->
+					<#list base.fitSuppMainOrderDto.fitSuppOrderDtos  as suppOrder>
 						<#if suppOrder.categoryId == 21>
 							<#list suppOrder.suppFlightOrderDtos as flightOrder>
 								<tr>	

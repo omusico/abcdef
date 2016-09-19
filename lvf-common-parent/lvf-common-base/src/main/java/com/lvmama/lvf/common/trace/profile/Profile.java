@@ -14,6 +14,10 @@ public enum Profile {
 	SELECT_WITH_GROUP_FROM_SOLR_CLIENT("从SELECT_WITH_GROUP查总数"),
 	SEARCH_FLIGHT_INFO_FROM_CLIENT("从client获取航班信息"),
 	GET_DAILYMINPRICE_FROM_CLIENT("从client低价日历"),
+	GET_FLIGHTINFODAILY_FROM_CLIENT("从client根据城市对获取信息"),
+	GET_FLIGHTINFODAILYBYFLIGHTNO_FROM_CLIENT("从client根据航班号获取信息"),
+	GET_FLIGHTINFOAIRLINEBYCARRIER_FROM_CLIENT("从client根据航司获取航线数据"),
+
 
 	/** Ctrip同步 --start */
 	FLIGHT_PRICE_INFO_CTRIP_SYNC("Ctrip航班运价基本信息同步"),

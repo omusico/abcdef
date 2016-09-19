@@ -36,7 +36,8 @@ public enum BusinessType {
 	FLIGHT_ORDER("机票子单"),
 	FLIGHT_ORDER_DETAIL("机票订单明细"),
 	NOTICE("通知规则"),
-	BLACK_ID("黑名单操作");
+	BLACK_ID("黑名单操作"),
+	BATCH_GENERATE_ORDER("批量制单");
 	
 	private String cnName;
 

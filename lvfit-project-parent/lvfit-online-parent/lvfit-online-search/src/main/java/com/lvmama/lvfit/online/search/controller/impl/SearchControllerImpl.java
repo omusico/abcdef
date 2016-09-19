@@ -158,7 +158,9 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		}
 		
 		model.addAttribute("toFlight", shoppingDto.getToFlightInfos().getResults().get(0));
-		model.addAttribute("backFlight", shoppingDto.getBackFlightInfos().getResults().get(0));
+		if (searchRequest.getTripType().equals(TripeType.WF.name())) {
+			model.addAttribute("backFlight", shoppingDto.getBackFlightInfos().getResults().get(0));
+		}
 		if (shoppingDto.getHotels() != null && CollectionUtils.isNotEmpty(shoppingDto.getHotels().getResults())) {
 			model.addAttribute("hotel", shoppingDto.getHotels().getResults().get(0));
 		}

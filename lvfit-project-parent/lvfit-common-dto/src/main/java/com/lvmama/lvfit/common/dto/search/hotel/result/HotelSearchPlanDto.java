@@ -8,15 +8,11 @@ import com.lvmama.lvfit.common.dto.price.FitHotelPlanPriceDto;
 import com.lvmama.lvfit.common.dto.vst.VstGoods;
 
 public class HotelSearchPlanDto implements Serializable{
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 5598664714659389580L;
 	// 商品时间价格表
 	private List<FitHotelPlanPriceDto> dayPrice;
 
-	
 	// VstGoods
 	private VstGoods goods;
 		
@@ -55,11 +51,61 @@ public class HotelSearchPlanDto implements Serializable{
 	private String cancelFlag;
 	
 	/**最小房间数 用于前台页面下拉框控制展现*/
-	private Integer minRoomCounts;
+	private int minPlanCounts;
 
 	/**最大房间数 用于前台页面下拉框控制展现*/
-	private Integer maxRoomCounts;
+	private int maxPlanCounts;
+	/**推荐间数 */
+	private int planCounts;
+
+	// 提前预定时间
+	private String aheadBookTime;
+	// 是否期票
+	private String aperiodicFlag;
+	// 买赠标志
+    private String buyPresentFlag;
+
+	// 市场价格
+	private Double marketPrice;
+	// 销售价格
+	private Double sellPrice;
+
+	// 标签名称
+	private String tagName;
+	// 标签描述
+	private String tagMemo;
+
+	// 促销标示
+	private String promotionFlag;
+
+	// 促销标签
+	private String promotionType;
+
+	// 返现金额(PC)
+	private String rebatePc;
 	
+	// 返现金额(MOBILE)
+	private String rebateMobile;
+
+	// 团购结束时间
+	private String specDate;
+
+	// 产品图片URL
+	private String photoUrl;
+	// 退改类型
+	private String cancelStrategy;
+
+	// 产品名称
+	private String productName;
+	
+	private Integer minStayDay;//最小连住天数
+	
+	private Integer maxStayDay;//最大连住天数
+	//** 最少起订量**/
+	private Integer minQuantity;
+	/** 最大起订量**/
+	private Integer maxQuantity;
+
 	public VstGoods getGoods() {
 		return goods;
 	}
@@ -220,53 +266,6 @@ public class HotelSearchPlanDto implements Serializable{
 		this.productName = productName;
 	}
 
-	// 提前预定时间
-	private String aheadBookTime;
-	// 是否期票
-	private String aperiodicFlag;
-	// 买赠标志
-    private String buyPresentFlag;
-
-	// 市场价格
-	private Double marketPrice;
-	// 销售价格
-	private Double sellPrice;
-
-	// 标签名称
-	private String tagName;
-	// 标签描述
-	private String tagMemo;
-
-	// 促销标示
-	private String promotionFlag;
-
-	// 促销标签
-	private String promotionType;
-
-	// 返现金额(PC)
-	private String rebatePc;
-	
-	// 返现金额(MOBILE)
-	private String rebateMobile;
-
-	// 团购结束时间
-	private String specDate;
-
-	// 产品图片URL
-	private String photoUrl;
-	// 退改类型
-	private String cancelStrategy;
-
-	// 产品名称
-	private String productName;
-	
-	private Integer minStayDay;//最小连住天数
-	
-	private Integer maxStayDay;//最大连住天数
-	//** 最少起订量**/
-	private Integer minQuantity;
-	/** 最大起订量**/
-	private Integer maxQuantity;
 	//最大预定量
 	public String getProductId() {
 		return productId;
@@ -380,22 +379,6 @@ public class HotelSearchPlanDto implements Serializable{
 		this.maxStayDay = maxStayDay;
 	}
 
-	public Integer getMinRoomCounts() {
-		return minRoomCounts;
-	}
-
-	public void setMinRoomCounts(Integer minRoomCounts) {
-		this.minRoomCounts = minRoomCounts;
-	}
-
-	public Integer getMaxRoomCounts() {
-		return maxRoomCounts;
-	}
-
-	public void setMaxRoomCounts(Integer maxRoomCounts) {
-		this.maxRoomCounts = maxRoomCounts;
-	}
-
 	public Integer getMinQuantity() {
 		return minQuantity;
 	}
@@ -410,5 +393,29 @@ public class HotelSearchPlanDto implements Serializable{
 
 	public void setMaxQuantity(Integer maxQuantity) {
 		this.maxQuantity = maxQuantity;
+	}
+
+	public int getMinPlanCounts() {
+		return minPlanCounts;
+	}
+
+	public void setMinPlanCounts(int minPlanCounts) {
+		this.minPlanCounts = minPlanCounts;
+	}
+
+	public int getMaxPlanCounts() {
+		return maxPlanCounts;
+	}
+
+	public void setMaxPlanCounts(int maxPlanCounts) {
+		this.maxPlanCounts = maxPlanCounts;
+	}
+
+	public int getPlanCounts() {
+		return planCounts;
+	}
+
+	public void setPlanCounts(int planCounts) {
+		this.planCounts = planCounts;
 	}
 }

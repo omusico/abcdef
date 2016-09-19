@@ -18,11 +18,11 @@ public class VstPushRecord implements Serializable {
 	private BigDecimal id;
 	private BigDecimal objectId;
 	private Date createTime;
-	private BigDecimal objectType;
+	private String objectType;
 	private String pushFlag;
-	private String pushCount;
-	private BigDecimal pushContent;
-	private BigDecimal dataType;
+	private BigDecimal pushCount;
+	private String pushContent;
+	private String dataType;
 	private String operateType;
 	public BigDecimal getId() {
 		return id;
@@ -42,10 +42,10 @@ public class VstPushRecord implements Serializable {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	public BigDecimal getObjectType() {
+	public String getObjectType() {
 		return objectType;
 	}
-	public void setObjectType(BigDecimal objectType) {
+	public void setObjectType(String objectType) {
 		this.objectType = objectType;
 	}
 	public String getPushFlag() {
@@ -54,22 +54,22 @@ public class VstPushRecord implements Serializable {
 	public void setPushFlag(String pushFlag) {
 		this.pushFlag = pushFlag;
 	}
-	public String getPushCount() {
+	public BigDecimal getPushCount() {
 		return pushCount;
 	}
-	public void setPushCount(String pushCount) {
+	public void setPushCount(BigDecimal pushCount) {
 		this.pushCount = pushCount;
 	}
-	public BigDecimal getPushContent() {
+	public String getPushContent() {
 		return pushContent;
 	}
-	public void setPushContent(BigDecimal pushContent) {
+	public void setPushContent(String pushContent) {
 		this.pushContent = pushContent;
 	}
-	public BigDecimal getDataType() {
+	public String getDataType() {
 		return dataType;
 	}
-	public void setDataType(BigDecimal dataType) {
+	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
 	public String getOperateType() {
@@ -78,5 +78,6 @@ public class VstPushRecord implements Serializable {
 	public void setOperateType(String operateType) {
 		this.operateType = operateType;
 	}
+	
 	
 }

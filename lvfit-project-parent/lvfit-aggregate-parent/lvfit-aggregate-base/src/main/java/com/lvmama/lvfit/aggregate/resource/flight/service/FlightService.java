@@ -11,7 +11,7 @@ import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDt
 public interface FlightService {
 
 	//flightSearch 直接调用机票接口，查询机票数据--原始数据
-	public FlightSearchResult<FlightSearchFlightInfoDto> searchFlightInfo(FlightQueryRequest request,boolean lowprice);
+	FlightSearchResult<FlightSearchFlightInfoDto> searchFlightInfo(FlightQueryRequest request,boolean lowprice);
 
-	public List<InsuranceInfoDto> viewValidFlightInsurances(FlightInsuranceRequest req);
+	List<InsuranceInfoDto> viewValidFlightInsurances(FlightInsuranceRequest req);
 }

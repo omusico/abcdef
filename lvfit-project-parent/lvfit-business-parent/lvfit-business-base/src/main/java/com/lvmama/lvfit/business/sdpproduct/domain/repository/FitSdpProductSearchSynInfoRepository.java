@@ -16,13 +16,10 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
  */
 public interface FitSdpProductSearchSynInfoRepository extends DomainBaseRepository<FitSdpProductSynMsgDomain, FitSdpProductSyncMsgDto>,
 DomainByFkIdRepository<FitSdpProductSyncMsgDto>{
-	/**
-	 * 根据产品Id查询索引信息
-	 * @return
-	 */
-	List<FitSdpProductSyncMsgDto> querySynMsgList(BaseQueryDto<Long> baseQuery);
 
 	void saveSyncMsgDto(FitSdpProductSyncMsgDto syncMsgDto);
 
-	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery);
+	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery);
+
+	int countSdpProductSynMsg(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery);
 }

@@ -1,6 +1,7 @@
 <!-- 搜索无结果 -->
 <!--无结果模块--开始-->
 <#if !(hotelLists?? && hotelLists?size gt 0)>
+<input type="hidden" id="hotelCounts" name="hotelCounts" value="0">
 <div class="fh-no-result clearfix">
     <i></i>
     <div class="fh-nr-text">
@@ -15,6 +16,7 @@
 
 <!-- 搜索结果开始 listMain-->
 <#if hotelLists?? && hotelLists?size gt 0>
+    <input type="hidden" id="hotelCounts" name="hotelCounts" value="${hotelLists?size}">
     <#list hotelLists as hotel>
         <#assign showFlag = false>
     <div class="listMain mt10 bd_ddd">
@@ -176,12 +178,12 @@
                                 <dd class="roomTable-td roomTable-td4">
                                     <div class="select-div">
                                     <span>
-                                    ${room.roomCounts}
+                                    ${plan.planCounts}
                                     </span>
                                         <i class="arrow"></i>
                                     </div>
                                     <ol class="select-div-list">
-                                        <#list plan.minQuantity..plan.maxQuantity as roomNum>
+                                        <#list plan.minPlanCounts..plan.maxPlanCounts as roomNum>
                                             <li data-num="${roomNum}">${roomNum}</li>
                                         </#list>
                                     </ol>

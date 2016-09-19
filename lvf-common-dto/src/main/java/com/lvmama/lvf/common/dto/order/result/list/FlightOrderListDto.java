@@ -43,6 +43,8 @@ public class FlightOrderListDto implements Serializable, Dto
 
 	/**订单号 */
     private String orderNo;
+    /**主订单号 */
+    private String orderMainNo;
 
     /** 订单类型 */
     private OrderType orderType;
@@ -111,6 +113,8 @@ public class FlightOrderListDto implements Serializable, Dto
 
 	private String saleType;
 
+    private String cpsId;
+    
     private List<FlightOrderDetailDto> orderDetailDtos;
     
 	public Long getOrderMainId() {
@@ -242,6 +246,7 @@ public class FlightOrderListDto implements Serializable, Dto
     {
     	StringBuffer orderListStr = new StringBuffer();
     	orderListStr.append("\t").append(this.getOrderNo()).append(",");
+//    	orderListStr.append("\t").append(this.getOrderMainNo()).append(",");
     	orderListStr.append("\t").append(this.getSalesMainOrderId()==null?"":this.getSalesMainOrderId()).append(",");
     	orderListStr.append("\t").append(this.getSalesOrderId()==null?"":this.getSalesOrderId()).append(",");
     	orderListStr.append(this.getOrderType().getCnName()).append(",");
@@ -359,7 +364,7 @@ public class FlightOrderListDto implements Serializable, Dto
 		
 		orderListStr.append(this.getContactName()).append(",");
 		if(!StringUtils.isEmpty(this.getCustomerName())){
-			orderListStr.append(this.getCustomerName().replaceAll("[,]", "")).append(",");
+			orderListStr.append("\"").append(this.getCustomerName()).append("\"").append(",");
 		}else{
 			orderListStr.append(",");
 		}
@@ -384,7 +389,8 @@ public class FlightOrderListDto implements Serializable, Dto
 				statusStr.append(this.getFlightOrderStatus().getOrderPayStatus().getCnName()).append("|");
 			}
 		}
-		orderListStr.append(statusStr.toString().substring(0, statusStr.length() - 1));
+		orderListStr.append(statusStr.toString().substring(0, statusStr.length() - 1)).append(",");
+		orderListStr.append(this.getCpsId() == null ? "" : this.getCpsId() );
 		return orderListStr.toString();
     }
 
@@ -492,4 +498,22 @@ public class FlightOrderListDto implements Serializable, Dto
 	public void setSaleType(String saleType) {
 		this.saleType = saleType;
 	}
+
+	public String getCpsId() {
+		return cpsId;
+	}
+
+	public void setCpsId(String cpsId) {
+		this.cpsId = cpsId;
+	}
+
+	public String getOrderMainNo() {
+		return orderMainNo;
+	}
+
+	public void setOrderMainNo(String orderMainNo) {
+		this.orderMainNo = orderMainNo;
+	}
+	
+	
 }

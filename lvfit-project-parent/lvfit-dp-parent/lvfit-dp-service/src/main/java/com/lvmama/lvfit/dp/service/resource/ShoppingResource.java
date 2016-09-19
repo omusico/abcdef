@@ -307,13 +307,4 @@ public class ShoppingResource {
         boolean result = shoppingService.putShoppingCache(shoppingUuid, fitShoppingDto);
         return Response.ok(result).build();
     }
-    
-    @POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.HOTEL_CONDITION)
-	public Response getHotelCondition(String shoppingUUID){
-		Map<String, Object> hotelCondition = shoppingService.getHotelCondition(shoppingUUID);
-		return Response.ok(hotelCondition).build();
-	}
 }

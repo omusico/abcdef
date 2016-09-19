@@ -40,7 +40,7 @@
 
 			function initGrid() 
 			{
-				var colNames = ['ID', '产品ID','创建时间','产品类型','推送标志','推送数量','推送内容','数据类型','操作类型'];
+				var colNames = ['ID', '产品ID','创建时间','类型(订单/产品)','推送标识(Y:已推送)','推送次数','变更内容','数据类型','数据操作类型'];
 
 				var cols = [ 
 					{
@@ -59,6 +59,7 @@
 						name : 'createTime', 
 						index : 'createTime',
 						align : 'center',
+						formatter:dateFormatter,
 						sortable:false
 					},//--------------
 					{

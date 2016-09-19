@@ -71,4 +71,9 @@ public class FitSdpProductSearchIndexTrafficRepositoryImpl implements FitSdpProd
 		fitSdpProductSearchIndexTrafficMapper.updateOneTrafficIndex(dto);
 	}
 
+	@Override
+	public int countIndexTraffic(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexTrafficMapper.countIndexTraffic(baseQuery);
+	}
+
 }

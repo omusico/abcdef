@@ -194,13 +194,13 @@
 	            	<dl class="clearfix js_fuxuan" id="hotelStarCondition">
 	                	<dt>酒店星级</dt>
 	                	<dd class="kind_buxian active"><a class="search_arrow_1" href="javascript:;">不限</a></dd>
-	                    <#if hotelStar?? && hotelStar?size gt 0>
+	                    <#if hotelStar??>
 	                    	<!-- 后台再次筛选时，直接在前面加个R -->
 	                    	<#list hotelStar?sort_by("id") as stars>
-	                    		<#if stars.id==101><dd data-code='100,101' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>五星级/豪华型</a></dd></#if>
-	                    		<#if stars.id==103><dd data-code='102,103' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>四星级/品质型</a></dd></#if>
-	                    		<#if stars.id==105><dd data-code='104,105' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>三星级/舒适型</a></dd></#if>
-	                    		<#if stars.id==107><dd data-code='106,107' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>二星级/简约型</a></dd></#if>
+	                    		<#if stars.id==100 || stars.id==101><dd data-code='100,101' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>五星级/豪华型</a></dd></#if>
+	                    		<#if stars.id==102 || stars.id==103><dd data-code='102,103' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>四星级/品质型</a></dd></#if>
+	                    		<#if stars.id==104 || stars.id==105><dd data-code='104,105' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>三星级/舒适型</a></dd></#if>
+	                    		<#if stars.id==106 || stars.id==107><dd data-code='106,107' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>二星级/简约型</a></dd></#if>
 	                    		<#if stars.id==109><dd data-code='109,109' data-type="R"><a href="javascript:;"><i class="ph_icon hotel_ck"></i>其他/其他</a></dd></#if>
 	                    	</#list>
 	                    </#if>
@@ -242,7 +242,7 @@
 	            		<#if hotelLists?size lte 0>
 	            		<p class="result c9"><dfn class="f16 cf60 bold pr5">0</dfn>家酒店</p>
 	            		<#else>
-	            		<p class="result c9"><dfn class="f16 cf60 bold pr5">${pagination.records}</dfn>家酒店</p>
+	            		<p class="result c9"><dfn class="f16 cf60 bold pr5">${hotelLists?size}</dfn>家酒店</p>
 	            		</#if>
 	                 <dl class="request_list" style="display:none;">
                          <dt>您已选择：</dt>
@@ -540,6 +540,7 @@
                 success: function(data) {
                     //$(".fh-overlay, .fh-dialog-loading").hide();
                     $("#hotel_list").html(data);
+                    $(".result dfn").text($("#hotelCounts").val());
                     $(".JS_showAllRoom").die().bind("click", showAllRoom);
                     $(".roomName").die().bind("click", showRoomDetail);
                 }
@@ -585,7 +586,7 @@
             });
 			// 构建排序信息
 			var pageNum = $("#page").val();
-			if (pageNum !== "") {
+			if (!isNaN(pageNum)) {
 				str += "P" + pageNum;
 			} else {
 				str += "P1";

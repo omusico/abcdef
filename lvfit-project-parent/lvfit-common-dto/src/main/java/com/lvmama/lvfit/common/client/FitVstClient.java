@@ -13,6 +13,7 @@ package com.lvmama.lvfit.common.client;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -451,14 +452,15 @@ public class FitVstClient {
 			return jsonResult;
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);
-			throw ew;
+			//throw ew;
 		} catch (Exception e) {
 			ExceptionWrapper ew = new ExceptionWrapper();
 			ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
 			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
 			logger.error(ew.getErrMessage(), ew);
-			throw ew;
+			//throw ew;
 		}
+		return StringUtils.EMPTY;
 	}
 	
 	/**
@@ -471,17 +473,22 @@ public class FitVstClient {
 		String url = command.url(baseUrl);
 		try {
 			String jsonResult = restClient.post(url, String.class, ip);
-			return objectMapper.readValue(jsonResult, new TypeReference<ComIps>(){});
+
+			if(StringUtils.isNotBlank(jsonResult)){
+				return objectMapper.readValue(jsonResult, new TypeReference<ComIps>(){});
+			}
+			return null;
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(), ew);
-			throw ew;
+			//throw ew;
 		} catch (Exception e) {
 			ExceptionWrapper ew = new ExceptionWrapper();
 			ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
 			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
 			logger.error(ew.getErrMessage(), ew);
-			throw ew;
+			//throw ew;
 		}
+		return null;
 	}
 	
 	/**

@@ -16,6 +16,7 @@ public enum BookingSource
 	LVMAMA_WAP("机票WAP",BookingSourceType.WAP),
 	LAMAMA_BACK("机票后台",BookingSourceType.BACK),
 	LAMAMA_DISTRIBUTION("机票分销",BookingSourceType.SALES),
+	LAMAMA_IMPORT("订单导入",BookingSourceType.DEFAULT),
 	VST_PACKAGE_FRONT("VST打包前台",BookingSourceType.VST),
 	VST_PACKAGE_ANDROID("VST打包Android",BookingSourceType.VST),
 	VST_PACKAGE_IOS("VST打包IOS",BookingSourceType.VST),

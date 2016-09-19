@@ -2,6 +2,7 @@ package com.lvmama.lvf.common.client;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -111,7 +112,8 @@ public class AdapterClient {
         String url = command.url(baseUrl);
         try {
             String resultJson = client.post(url, String.class, flightQueryRequest);
-            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<SuppResponse<FlightBookingVerifyInfosDto>>() {});
+            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<SuppResponse<FlightBookingVerifyInfosDto>>() {
+            });
         } catch (ExceptionWrapper ew) {
         	
 			logger.error(ew.getErrMessage(),ew);
@@ -131,7 +133,8 @@ public class AdapterClient {
         try 
         {
         	String resultJson = client.post(url, String.class, flightOrderSuppOrder);
-        	return new ObjectMapper().readValue(resultJson, new TypeReference<SuppResponse<FlightOrderSuppOrderDto>>() {});
+        	return new ObjectMapper().readValue(resultJson, new TypeReference<SuppResponse<FlightOrderSuppOrderDto>>() {
+            });
         }
         catch(Exception e)
         {
@@ -169,7 +172,8 @@ public class AdapterClient {
         try {
             String url = command.url(baseUrl, page);
             String resultJson = client.get(url, String.class);
-            return JSONMapper.getInstance().readValue(resultJson,new TypeReference<SuppResponse<FlightPolicyDtos>>() {});
+            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<SuppResponse<FlightPolicyDtos>>() {
+            });
         } catch (ExceptionWrapper ew) {
         	ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, command.url(baseUrl))+ew.getErrMessage());
 			logger.error(ew.getErrMessage(),ew);
@@ -279,7 +283,7 @@ public class AdapterClient {
     public FlightTicketRuleInfo getFlightTicketRuleByCondition(FlightQueryRequest request) {
         AdapterClientPath command = AdapterClientPath.GET_TICKET_RULE_BY_CONDITION;
         try {
-            return client.post(command.url(baseUrl),FlightTicketRuleInfo.class,request);
+            return client.post(command.url(baseUrl), FlightTicketRuleInfo.class, request);
         } catch (ExceptionWrapper ew) {
         	ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, command.url(baseUrl))+ew.getErrMessage());
 			logger.error(ew.getErrMessage(),ew);
@@ -302,7 +306,8 @@ public class AdapterClient {
 		try {
 			String url = command.url(baseUrl, suppOrderNo);
 			String resultJson = client.get(url, String.class);
-			return JSONMapper.getInstance().readValue(resultJson,new TypeReference<SuppResponse<FlightOrderSuppOrderDto>>() {});
+			return JSONMapper.getInstance().readValue(resultJson, new TypeReference<SuppResponse<FlightOrderSuppOrderDto>>() {
+            });
 		} catch (ExceptionWrapper ew) {
 			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, command.url(baseUrl)) + ew.getErrMessage());
 			logger.error(ew.getErrMessage(), ew);
@@ -405,7 +410,8 @@ public class AdapterClient {
         try 
         {
         	String json = client.post(url, String.class, request);
-            return new ObjectMapper().readValue(json, new TypeReference<BaseResponseDto<FlightOrderSuppOrderRefundDto>>() {});
+            return new ObjectMapper().readValue(json, new TypeReference<BaseResponseDto<FlightOrderSuppOrderRefundDto>>() {
+            });
         }
         catch (ExceptionWrapper ew) 
         {
@@ -431,7 +437,8 @@ public class AdapterClient {
         try {
             String url = command.url(baseUrl, suppOrderLvNo, suppOrderNo);
             String resultJson = client.get(url, String.class);
-            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<SuppResponse<FlightOrderSuppOrderDto>>() {});
+            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<SuppResponse<FlightOrderSuppOrderDto>>() {
+            });
         } catch (ExceptionWrapper ew) {
             logger.error(ew.getErrMessage(), ew);
             throw ew;
@@ -788,7 +795,8 @@ public class AdapterClient {
             if(StringUtils.isEmpty(resultJson)){
 	    		return null;
 	    	}
-            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<List<FlightPriceInventoryDto>>() {});
+            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<List<FlightPriceInventoryDto>>() {
+            });
         } catch (ExceptionWrapper ew) {
         	 ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, command.url(baseUrl)) + ew.getErrMessage());
             logger.error(ew.getErrMessage(), ew);
@@ -918,5 +926,51 @@ public class AdapterClient {
              logger.error(ew.getErrMessage(), ew);
              throw ew;
          }
+    }
+
+    /**
+     * 路由解析PNR
+     * @param suppCode
+     * @param pnr
+     * @return
+     * @throws Exception
+     */
+    public SuppResponse<FlightOrderSuppOrderMainDto> rtPnrRoute(String suppCode, String pnr) throws Exception{
+        AdapterClientPath command = AdapterClientPath.ROUTE_RT_PNR;
+        try {
+            String url = command.url(baseUrl, suppCode);
+            String resultJson = client.post(url, String.class, pnr);
+            if(StringUtils.isEmpty(resultJson)){
+                return null;
+            }
+            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<SuppResponse<FlightOrderSuppOrderMainDto>>() {});
+        } catch (ExceptionWrapper ew) {
+            ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, command.url(baseUrl, suppCode)) + ew.getErrMessage());
+            logger.error(ew.getErrMessage(), ew);
+            throw ew;
+        }
+    }
+
+    /**
+     * 路由批量解析PNR
+     * @param suppCode
+     * @param pnr
+     * @return
+     * @throws Exception
+     */
+    public Map<String, SuppResponse<FlightOrderSuppOrderMainDto>> rtPnrBatchRoute(String suppCode, String[] pnr) throws Exception{
+        AdapterClientPath command = AdapterClientPath.ROUTE_RT_PNR_BATCH;
+        try {
+            String url = command.url(baseUrl, suppCode);
+            String resultJson = client.post(url, String.class, pnr);
+            if(StringUtils.isEmpty(resultJson)){
+                return null;
+            }
+            return JSONMapper.getInstance().readValue(resultJson, new TypeReference<Map<String, SuppResponse<FlightOrderSuppOrderMainDto>>>() {});
+        } catch (ExceptionWrapper ew) {
+            ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, command.url(baseUrl, suppCode)) + ew.getErrMessage());
+            logger.error(ew.getErrMessage(), ew);
+            throw ew;
+        }
     }
 }

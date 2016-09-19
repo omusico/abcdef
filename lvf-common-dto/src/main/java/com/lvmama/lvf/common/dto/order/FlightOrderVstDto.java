@@ -36,6 +36,11 @@ public class FlightOrderVstDto extends Entity implements Serializable {
 	 * 是否绑定
 	 */
 	private BindingStatus bindingStatus;
+	
+	/**
+	 * vst机票子订单Id(用于往返)
+	 */
+	private String lockSeatOrderId;
 
 	public Long getVstFlightOrderId() {
 		return vstFlightOrderId;
@@ -75,6 +80,14 @@ public class FlightOrderVstDto extends Entity implements Serializable {
 
 	public void setBindingStatus(BindingStatus bindingStatus) {
 		this.bindingStatus = bindingStatus;
+	}
+
+	public String getLockSeatOrderId() {
+		return lockSeatOrderId;
+	}
+
+	public void setLockSeatOrderId(String lockSeatOrderId) {
+		this.lockSeatOrderId = lockSeatOrderId;
 	}
 
 

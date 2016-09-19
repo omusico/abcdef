@@ -16,6 +16,7 @@ import com.lvmama.lvfit.common.dto.enums.*;
 import com.lvmama.lvfit.common.dto.order.*;
 import com.lvmama.lvfit.common.dto.request.FitFlightOrderQueryRequest;
 import com.lvmama.lvfit.common.dto.request.FitOrderQueryRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus;
 import com.lvmama.lvfit.common.form.order.FitOrderOpLogForm;
 import org.apache.commons.collections.CollectionUtils;
@@ -154,11 +155,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 		try {
 			suppMainOrderDto = fitVstClient.completeSuppFlightInfo(flightOrderQueryRequest);
 			orderMainDto.setFitSuppMainOrderDto(suppMainOrderDto);
-			if(CollectionUtils.isEmpty(suppMainOrderDto.getSuppFlightOrderDtos())){
-				isCharter = false;
-			}else{
-				isCharter = true;
-			}
+			//如果打开的包机查询的开关，就进行下面的判断处理.否则默认前台不显示包机的相关逻辑.
+			if(CharterFlightFilterUtil.getQueryCharsetFlight()){
+				if(CollectionUtils.isEmpty(suppMainOrderDto.getSuppFlightOrderDtos())){
+					isCharter = false;
+				}else{
+					isCharter = true;
+				}
+			} 
 			 
 		 	// 根据从机票端返回的保险单号信息，设置在fitOrderMainDto中
 			// 处理航意险的信息.

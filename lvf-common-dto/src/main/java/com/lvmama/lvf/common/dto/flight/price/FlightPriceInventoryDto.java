@@ -51,7 +51,9 @@ public class FlightPriceInventoryDto extends Entity implements Dto, Serializable
     
     /** 供应商编码列表，用于查询 */
     private List<String> suppCodes = new ArrayList<String>();
-    
+
+	private FlightPriceTicketRuleDto flightPriceTicketRuleDto;
+
 	public String getFlightNo() {
 		return flightPriceBase.getFlightNo();
 	}
@@ -212,4 +214,19 @@ public class FlightPriceInventoryDto extends Entity implements Dto, Serializable
 		this.suppCodes = suppCodes;
 	}
 
+	public FlightPriceBase getFlightPriceBase() {
+		return flightPriceBase;
+	}
+
+	public void setFlightPriceBase(FlightPriceBase flightPriceBase) {
+		this.flightPriceBase = flightPriceBase;
+	}
+
+	public FlightPriceTicketRuleDto getFlightPriceTicketRuleDto() {
+		return flightPriceTicketRuleDto;
+	}
+
+	public void setFlightPriceTicketRuleDto(FlightPriceTicketRuleDto flightPriceTicketRuleDto) {
+		this.flightPriceTicketRuleDto = flightPriceTicketRuleDto;
+	}
 }

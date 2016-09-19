@@ -57,4 +57,9 @@ public class FitSdpProductSearchIndexRepositoryImpl implements FitSdpProductSear
 		return fitSdpProductSearchIndexMapper.getInfoList(baseQuery);
 	}
 
+	@Override
+	public int countSearchIndex(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexMapper.countSearchIndex(baseQuery);
+	}
+
 }

@@ -75,7 +75,7 @@ public class SuppInterfaceAspect {
 				  errorMsg = ExceptionUtils.getFullStackTrace(e);
 			  }
 			  String curTime = DateUtils.formatDate(new Date(), DateUtils.YYYY_MM_DD_HH_MM_SS);
-			  ExceptionWrapper throwEw = new ExceptionWrapper(ExceptionCode.CALL_INTERFACE_ERROR, curTime,methodName,requestJson,errorMsg);
+			  ExceptionWrapper throwEw = new ExceptionWrapper(ExceptionCode.CALL_INTERFACE_ERROR, curTime,methodName,errorMsg);
 			  logger.error(throwEw.getErrMessage());
 			  throw throwEw;
 		  }finally{

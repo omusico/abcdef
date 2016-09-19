@@ -157,4 +157,11 @@ public class FlightOrderTicketPriceDto implements Serializable
 		this.flightTicketPriceDto = flightTicketPriceDto;
 	}
 
+	public BigDecimal getTradingFee() {
+		return flightTicketPriceDto.getTradingFee();
+	}
+
+	public void setTradingFee(BigDecimal tradingFee) {
+		flightTicketPriceDto.setTradingFee(tradingFee);
+	}
 }

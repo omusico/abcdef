@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
+import com.lvmama.lvf.common.dto.Pagination;
 import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvfit.common.client.path.VstServiceClientPath;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpComPushDto;
@@ -64,8 +65,12 @@ public class FitVstSearchResource {
 	public Response queryPushList(BaseQueryDto<Long> baseQuery) {
 			BaseResultDto<VstPushRecord> baseResult = new BaseResultDto<VstPushRecord>();
 			List<VstPushRecord> results = vstComPushMapper.queryPushList(baseQuery);
-			baseResult.setResults(results);
-			return Response.ok(baseResult).build();
+			int records = vstComPushMapper.countPushRecords(baseQuery);
+			Pagination pagination = baseQuery.getPagination();
+			pagination.setRecords(records);
+			pagination.countRecords(records);
+			BaseResultDto<VstPushRecord> baseResultDto = new BaseResultDto<VstPushRecord>(pagination,results);
+			return Response.ok(baseResultDto).build();
 	}
 	
 }

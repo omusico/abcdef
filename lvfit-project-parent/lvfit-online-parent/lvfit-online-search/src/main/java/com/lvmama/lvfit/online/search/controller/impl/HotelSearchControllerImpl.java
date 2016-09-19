@@ -131,8 +131,9 @@ public class HotelSearchControllerImpl extends BaseController implements HotelSe
 			model.addAttribute("hotelLists", hotelSearchResult.getResults());
 			// 在页面上保存选中的酒店信息，用于筛选和排序后默认酒店的选择和差价计算
 			HotelSearchHotelDto hotelDto = hotelSearchResult.getResults().get(0);
-			int roomCounts = hotelDto.getRooms().get(0).getRoomCounts();
-			BigDecimal price = hotelDto.getRooms().get(0).getPlans().get(0).getPrice();
+			HotelSearchPlanDto planDto = hotelDto.getRooms().get(0).getPlans().get(0);
+			int roomCounts = planDto.getPlanCounts();
+			BigDecimal price = planDto.getPrice();
 			model.addAttribute("hotelBasePrice", price.multiply(BigDecimal.valueOf(roomCounts)));
 			model.addAttribute("selHotelId", hotelDto.getProductId());
 			model.addAttribute("selHotelRoomId", hotelDto.getRooms().get(0).getBranchId());
@@ -159,7 +160,7 @@ public class HotelSearchControllerImpl extends BaseController implements HotelSe
 			for (HotelSearchHotelDto hotel : hotelList) {
 				for (HotelSearchRoomDto room : hotel.getRooms()) {
 					for (HotelSearchPlanDto plan : room.getPlans()) {
-						BigDecimal totalPrice = plan.getPrice().multiply(BigDecimal.valueOf(room.getRoomCounts()));
+						BigDecimal totalPrice = plan.getPrice().multiply(BigDecimal.valueOf(plan.getPlanCounts()));
 						plan.setPriceDifferences(totalPrice.subtract(BigDecimal.valueOf(request.getHotelBasePrice())));
 					}
 				}

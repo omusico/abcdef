@@ -29,8 +29,6 @@ public enum BussinessClientPath {
     VIEW_OP_LOG(Path.VIEW_OP_LOG, "查询操作日志"),
     GET_SHOPPING_INFO_BY_UUID(Path.GET_SHOPPING_INFO_BY_UUID, "根据UUID获取购物车信息"),
     UPD_SHOPPING_INFO(Path.UPD_SHOPPING_INFO, "更新或保存购物车信息"),
-    SAVE_SYN_TIME_INFO(Path.SAVE_SYN_TIME_INFO,"存储同步时间信息"),
-	
     QUERY_ORDER_MAIN_BY_VST_ORDER_MAIN_NO(Path.QUERY_ORDER_MAIN_BY_VST_ORDER_MAIN_NO,"根据机酒主单号查询订单详情"),
    
     QUERY_FLIGHT_ORDER_BY_VST_ORDER_MAIN_NO(Path.QUERY_ORDER_FLIGHT_ORDER_BY_VST_ORDER_MAIN_NO,"根据机酒主单号查询机票订单详情"),
@@ -72,8 +70,6 @@ public enum BussinessClientPath {
 	SET_DEFAULT_HOTEL(Path.SET_DEFAULT_HOTEL,"将酒店配置为默认推荐的酒店"),
 	/** 动态打包产品相关报表**/
 	QUERY_SDP_PRODUCT_REPORT(Path.QUERY_SDP_PRODUCT_REPORT,"动态打包产品报表导出"),
-	
-	BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST(Path.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST,"根据产品Id查询同步信息"),
 	
 	BACK_SDP_PRODUCT_INDEX_TRAFFIC(Path.BACK_SDP_PRODUCT_INDEX_TRAFFIC,"查询产品索引交通"),
 	
@@ -179,8 +175,6 @@ public enum BussinessClientPath {
         
         public final static String BACK_SDP_PRODUCT_SEARCH_INDEX_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSearchIndex";
         
-        public final static String BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST = basePath + sdpproductPath + "querySdpProductSynInfo";
-	
         public final static String BACK_SDP_PRODUCT_INDEX_TRAFFIC = basePath + sdpproductPath + "querySdpProductIndexTraffic";
         /*自主打包产品城市组*/
         public final static String BACK_SDP_PRODUCT_DEPART_CITY = basePath + sdpproductPath + "querySdpProductCityGroupByDto";
@@ -197,7 +191,6 @@ public enum BussinessClientPath {
         
         public final static String BACK_SDP_PRODUCT_ALL_SYN_INFO= basePath  + sdpproductPath +"queryAllSynInfo";
         
-        public final static String SAVE_SYN_TIME_INFO= basePath  + sdpproductPath +"saveSynTimeInfo";
 	}
 	
 	private BussinessClientPath(String path, String cnName) {

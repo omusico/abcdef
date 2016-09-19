@@ -54,6 +54,8 @@ public class FlightSearchRecordIndex  extends  DynamicIndex  implements  Seriali
 	
 	private String customerIp;
 	
+	//private String customerEquipmentNo;
+	
 	private Boolean isHitCache;
 	
 	private Boolean isFlightSearch;
@@ -183,6 +185,16 @@ public class FlightSearchRecordIndex  extends  DynamicIndex  implements  Seriali
 		fields.put("customerIp", customerIp);
 	}
 	
+	
+//	public String getCustomerEquipmentNo() {
+//		return customerEquipmentNo;
+//	}
+//
+//	public void setCustomerEquipmentNo(String customerEquipmentNo) {
+//		this.customerEquipmentNo = customerEquipmentNo;
+//		fields.put("customerEquipmentNo", customerEquipmentNo);
+//	}
+
 	public Boolean getIsHitCache() {
 		return isHitCache;
 	}
@@ -246,6 +258,7 @@ public class FlightSearchRecordIndex  extends  DynamicIndex  implements  Seriali
     		.append(this.getCustomerCode()).append(",")
     		.append(this.getCustomerName()).append(",")
     		.append(this.getCustomerIp());
+    		//.append(",").append(this.getCustomerEquipmentNo());
     	return sb.toString();
     }
     

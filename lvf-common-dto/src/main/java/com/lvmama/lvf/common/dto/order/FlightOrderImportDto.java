@@ -18,6 +18,7 @@ public class FlightOrderImportDto extends Entity implements Serializable {
 	private Long recordId;
 	/** 订单ID **/
 	private Long orderId;
+	private Long orderMainId;
 	/** 订单号 **/
 	private String orderNo;
 	/** PNR **/
@@ -265,4 +266,11 @@ public class FlightOrderImportDto extends Entity implements Serializable {
 		this.companyName = companyName;
 	}
 
+	public Long getOrderMainId() {
+		return orderMainId;
+	}
+
+	public void setOrderMainId(Long orderMainId) {
+		this.orderMainId = orderMainId;
+	}
 }

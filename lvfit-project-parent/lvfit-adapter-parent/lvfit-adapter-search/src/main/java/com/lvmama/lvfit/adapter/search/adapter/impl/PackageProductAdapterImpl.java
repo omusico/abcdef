@@ -1,11 +1,13 @@
 package com.lvmama.lvfit.adapter.search.adapter.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import com.lvmama.vst.back.dujia.group.prod.vo.ProdProductNameVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -248,7 +250,17 @@ public class PackageProductAdapterImpl implements PackageProductAdapter {
         basicInfoDto.setRecommendLevel(product.getRecommendLevel());
         basicInfoDto.setProductType(product.getProductType());
         basicInfoDto.setPackageType(product.getPackageType());
-        
+        try {
+            com.lvmama.vst.comm.vo.ResultHandleT<ProdProductNameVO> productNameVOResultHandleT
+                 = prodProductClientService.findProdProductNameVOByProductId(product.getProductId());
+            if (productNameVOResultHandleT!=null && !productNameVOResultHandleT.hasNull()) {
+                String productShowName = productNameVOResultHandleT.getReturnContent().getMainTitle()+","+productNameVOResultHandleT.getReturnContent().getSubTitle();
+                basicInfoDto.setProductShowName(productShowName);
+            }
+        } catch (Exception e) {
+           LOGGER.error(e.getMessage(),e);
+        }
+
         if(CollectionUtils.isNotEmpty(product.getProdLineRouteList())){
         	basicInfoDto.setLineRouteId(product.getProdLineRouteList().get(0).getLineRouteId());
         }

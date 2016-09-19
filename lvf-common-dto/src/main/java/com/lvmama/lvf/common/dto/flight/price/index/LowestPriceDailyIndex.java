@@ -48,6 +48,8 @@ public class LowestPriceDailyIndex extends  DynamicIndex  implements Serializabl
 	
 	private String flightNo;
 	
+	private boolean isLowestPriceAvailable = true;
+	
 	public void setIndexId(String indexId) {
 		this.indexId = indexId;
 	}
@@ -193,6 +195,15 @@ public class LowestPriceDailyIndex extends  DynamicIndex  implements Serializabl
 	public void setFlightNo(String flightNo) {
 		fields.put("flightNo", flightNo);
 		this.flightNo = flightNo;
+	}
+
+	public boolean isLowestPriceAvailable() {
+		return isLowestPriceAvailable;
+	}
+
+	public void setIsLowestPriceAvailable(boolean isLowestPriceAvailable) {
+		fields.put("isLowestPriceAvailable", isLowestPriceAvailable);
+		this.isLowestPriceAvailable = isLowestPriceAvailable;
 	}
 
 }

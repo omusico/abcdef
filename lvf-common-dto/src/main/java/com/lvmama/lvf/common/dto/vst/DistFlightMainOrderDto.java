@@ -4,7 +4,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.lvmama.lvf.common.dto.order.FlightOrderDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderPassengerDto;
 import com.lvmama.lvf.common.dto.order.OrderMainDto;
 /**
  * 提供给分销的机票主订单
@@ -13,6 +16,7 @@ import com.lvmama.lvf.common.dto.order.OrderMainDto;
  */
 public class DistFlightMainOrderDto {
 
+	private String customerName;
 	private String customerId;
 	private Long mainOrderId;
 	private String flightOrderNumber;
@@ -35,7 +39,12 @@ public class DistFlightMainOrderDto {
 				DistFlightOrderDto sub = new DistFlightOrderDto(fod);
 				this.subOrder.add(sub);
 				this.totalOrderAmount = this.totalOrderAmount.add(sub.getOrderAmount());
-				this.appendPassengerName(sub.getPassengerName());
+			}
+		}
+		
+		if(CollectionUtils.isNotEmpty(mainOrderDto.getFlightOrderPassengers())){
+			for(FlightOrderPassengerDto psg: mainOrderDto.getFlightOrderPassengers()){
+				this.appendPassengerName(psg.getPassengerName());
 			}
 		}
 	}
@@ -106,6 +115,14 @@ public class DistFlightMainOrderDto {
 
 	public void setFlightOrderNumber(String flightOrderNumber) {
 		this.flightOrderNumber = flightOrderNumber;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 	
 	

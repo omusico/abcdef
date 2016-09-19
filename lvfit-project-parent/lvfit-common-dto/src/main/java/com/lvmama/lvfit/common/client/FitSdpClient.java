@@ -20,6 +20,7 @@ import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.trace.profile.Profile;
 import com.lvmama.lvf.common.trace.profile.ProfilePoint;
+import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.common.cache.CacheBoxConvert;
 import com.lvmama.lvfit.common.cache.CacheKey;
@@ -54,8 +55,8 @@ import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDt
 public class FitSdpClient {
 
 	@Value("lvfit.sdp.baseurl")
-	private String baseUrl;
-
+	private String baseUrl; 
+	
 	@Autowired
 	private RestClient restClient;
 

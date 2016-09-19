@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.lvmama.lvf.common.client.path.ReportClientPath;
+import com.lvmama.lvf.common.client.path.RiskClientPath;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.report.FinancialReportDto;
+import com.lvmama.lvf.common.dto.report.PnrIssueRateDto;
 import com.lvmama.lvf.common.dto.report.RevenueReportDto;
 import com.lvmama.lvf.common.dto.report.TicketRemindReportDto;
 import com.lvmama.lvf.common.dto.request.FinancialReportRequest;
@@ -221,4 +223,47 @@ public class ReportClient {
 		}
 		return null;
 	}
+    
+    /**
+     * 查询预定出票列表
+     * @param query
+     * @return
+     * @throws Exception
+     */
+	public BaseResultDto<PnrIssueRateDto> queryPnrIssueRate(BaseQueryDto<PnrIssueRateDto> query) throws Exception {
+		ReportClientPath command = ReportClientPath.QUERY_PNR_ISSUE_RATE;
+		String url = command.url(baseUrl);
+		try {
+			String resultString = restClient.post(url, String.class,query);
+			return JSONMapper.getInstance().readValue(resultString,new TypeReference<BaseResultDto<PnrIssueRateDto>>() {});
+		} catch (ExceptionWrapper ew) {
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw e;
+		}
+		
+	}
+	
+	/**
+	 * 导出预定出票比
+	 * @param query
+	 * @return
+	 */
+	public List<String> queryPnrIssueRateOfExport(BaseQueryDto<PnrIssueRateDto> query) throws Exception{
+		ReportClientPath command = ReportClientPath.QUERY_PNR_ISSUE_RATE_FOR_EXPORT;
+		String url = command.url(baseUrl);
+		try {
+			String resultString = restClient.post(url, String.class,query);
+			return JSONMapper.getInstance().readValue(resultString,new TypeReference<List<String>>() {});
+		} catch (ExceptionWrapper ew) {
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw e;
+		}
+	}
+    
 }

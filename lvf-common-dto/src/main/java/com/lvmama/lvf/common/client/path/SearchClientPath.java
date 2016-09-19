@@ -10,9 +10,9 @@ public enum SearchClientPath {
 
 	FLIGHT_INFO_SEARCH(Path.FLIGHT_INFO_SEARCH,"搜索航班信息"),
 	
-	FLIGHT_LIST_SEARCH(Path.FLIGHT_LIST_SEARCH,"搜索航班列表"),
+//	FLIGHT_LIST_SEARCH(Path.FLIGHT_LIST_SEARCH,"搜索航班列表"),
 
-	FLIGHT_VERIFY(Path.FLIGHT_VERIFY,"航班信息验舱验价"),
+//	FLIGHT_VERIFY(Path.FLIGHT_VERIFY,"航班信息验舱验价"),
 	
 	FLIGHT_TICKET_RULE_SEARCH(Path.FLIGHT_TICKET_RULE_SEARCH_BY_CON,"根据条件查询客规"),
 	
@@ -23,8 +23,13 @@ public enum SearchClientPath {
 	
 	SYNC_TO_SOLR_FROM_DB(Path.SYNC_TO_SOLR_FROM_DB,"从数据库获取数据同步到Solr"),
 	
-	CALCULATOR_FLIGHT_PRICE_FROM_SOLR(Path.CALCULATOR_FLIGHT_PRICE_FROM_SOLR,"从solr计算舱位价格");
+	CALCULATOR_FLIGHT_PRICE_FROM_SOLR(Path.CALCULATOR_FLIGHT_PRICE_FROM_SOLR,"从solr计算舱位价格"),
 	
+	FLIGHT_INFO_DAILY_DEPTCITY_ARRCITY_DEPTDATE_SEARCH(Path.QUERY_FLIGHTDAILY_DEPTCITY_ARRCITY_DEPTDATE,"根据城市对获取FLIGHTDAILY数据"),
+	
+	FLIGHT_INFO_DAILY_FLIGHTNO_DEPTDATE_SEARCH(Path.QUERY_FLIGHTDAILY_FLIGHTNO_DEPTDATE,"根据航班号获取FLIGHTDAILY数据"),
+	
+	FLIGHT_INFO_DAILY_AIRLINE_SEARCH(Path.QUERY_AIRLINEINFO,"根据航班号获取FLIGHTDAILY数据");
 	
 	public String path;
 	
@@ -47,11 +52,11 @@ public enum SearchClientPath {
 		/** 航班搜索 */
         public static final String FLIGHT_INFO_SEARCH = flightPath+"search";
         
-		/** 搜索航班列表 */
-        public static final String FLIGHT_LIST_SEARCH = flightPath+"search/searchFlights";
+//		/** 搜索航班列表 */
+//        public static final String FLIGHT_LIST_SEARCH = flightPath+"search/searchFlights";
 
-		/** 航班搜索 */
-        public static final String FLIGHT_VERIFY = flightPath+"verify";
+//		/** 航班搜索 */
+//        public static final String FLIGHT_VERIFY = flightPath+"verify";
         
     	/** 查询客规 */
         public static final String FLIGHT_TICKET_RULE_SEARCH_BY_CON = flightPath+"search/searchTicketRuleByCon";
@@ -59,6 +64,14 @@ public enum SearchClientPath {
         /** 查询客规 */
         public static final String FLIGHT_TICKET_RULE_SIMPLE_SEARCH_BY_CON = flightPath+"search/searchTicketRuleSimpleByCon";
         
+        /** SEO项目后台接口支持  根据出发城市，到达城市，出发日期查询**/
+		public final static String QUERY_FLIGHTDAILY_DEPTCITY_ARRCITY_DEPTDATE = flightPath + "getFlightDailyByDeptCityArrCityDeptDate";
+
+        /** SEO项目后台接口支持  根据出发城市，到达城市，出发日期查询**/
+		public final static String QUERY_FLIGHTDAILY_FLIGHTNO_DEPTDATE = flightPath + "getFlightDailyByFlightNoDeptDate";
+		
+		/**SEO项目后台接口支持  根据航司查航线 **/
+		public final static String QUERY_AIRLINEINFO = flightPath + "getAirLineInfoByCarrier";
         
         /** ------------------------------------Add------------------------------------------------------*/
         /** 从Solr获取航班数据  */

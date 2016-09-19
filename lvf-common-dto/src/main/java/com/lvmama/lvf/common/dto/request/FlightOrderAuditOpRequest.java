@@ -143,11 +143,11 @@ public class FlightOrderAuditOpRequest implements Serializable, Dto {
 	/** 供应商 */
 	private String suppCode;
 	
-	/**政策类型*/
-	private String saleType;
-	
 	/** 订单取消状态*/
 	private OrderCancelStatus orderCancelStatus;
+
+    /**政策类型*/
+    private String saleType;
 
     public String getOrderMainId() {
         return orderMainId;
@@ -490,13 +490,11 @@ public class FlightOrderAuditOpRequest implements Serializable, Dto {
 		this.orderCancelStatus = orderCancelStatus;
 	}
 
-	public String getSaleType() {
-		return saleType;
-	}
+    public String getSaleType() {
+        return saleType;
+    }
 
-	public void setSaleType(String saleType) {
-		this.saleType = saleType;
-	}
-	
-
+    public void setSaleType(String saleType) {
+        this.saleType = saleType;
+    }
 }

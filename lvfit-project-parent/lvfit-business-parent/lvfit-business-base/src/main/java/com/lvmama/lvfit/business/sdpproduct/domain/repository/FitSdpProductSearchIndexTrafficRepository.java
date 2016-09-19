@@ -35,5 +35,11 @@ DomainByFkIdRepository<FitSdpProductSearchIndexTraffic>{
 	 * @return
 	 */
 	void updateOneTrafficIndex(FitSdpProductSearchIndexTraffic dto);
+
+	/**
+	 * 统计交通索引记录数
+	 * @return
+	 */
+	int countIndexTraffic(BaseQueryDto<Long> baseQuery);
 	
 }

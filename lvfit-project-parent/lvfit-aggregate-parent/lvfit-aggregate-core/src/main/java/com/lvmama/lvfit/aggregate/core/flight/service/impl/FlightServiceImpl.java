@@ -19,24 +19,14 @@ import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 
 @Service
-public class FlightServiceImpl implements FlightService{
+public class FlightServiceImpl implements FlightService {
 	
 	@Autowired
 	private FitFlightClient fitFlightClient;
 
 	@Override
 	public FlightSearchResult<FlightSearchFlightInfoDto> searchFlightInfo(FlightQueryRequest request,boolean lowprice) {
-		// TODO Auto-generated method stub
-		FlightSearchResult<FlightSearchFlightInfoDto> result = null;
-		try {
-			//result = searchClient.getSearchFlightInfo(request);
-			result = fitFlightClient.getSearchFlights(request);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return result;
+		return fitFlightClient.getSearchFlights(request);
 	}
 
     @Override

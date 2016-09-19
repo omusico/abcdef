@@ -950,36 +950,6 @@ public class FitBusinessClient {
 	}
 
 	
-	/**
-	 *  查询产品同步时间信息
-	 * @author dingli
-	 * @date:2016年8月29日 上午10:18:43
-	 * @param productId
-	 * @return
-	 */
-	public BaseResultDto<FitSdpProductSyncMsgDto> querySdpProductSynInfoList(
-			BaseQueryDto<Long> baseQuery) {
-		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST;
-		String url = command.url(baseUrl);
-	    try {
-	           String jsonResult = restClient.post(url, String.class,baseQuery);
-	           return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<BaseResultDto<FitSdpProductSyncMsgDto>>(){});
-	    }
-		catch (ExceptionWrapper ew) 
-		{
-			logger.error(ew.getErrMessage(),ew);
-			throw ew;
-		} 
-		catch (Exception e) 
-		{
-			ExceptionWrapper ew = new ExceptionWrapper();
-	        ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
-	        ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
-	        logger.error(ew.getErrMessage(), ew);
-	        throw ew;
-		}
-	}
-
 	public BaseResultDto<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(
 			BaseQueryDto<Long> baseQuery) {
 		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_INDEX_TRAFFIC;
@@ -1109,7 +1079,7 @@ public class FitBusinessClient {
 		}
 	}
 
-	public BaseResultDto<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery) {
+	public BaseResultDto<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery) {
 		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_ALL_SYN_INFO;
 		String url = command.url(baseUrl);
 	    try {
@@ -1130,28 +1100,6 @@ public class FitBusinessClient {
 	        throw ew;
 		}
 	}
-	
-	/**
-	 * 存储同步时间信息到数据库
-	 * @return
-	 */
-/*	public ResultStatus saveSynTimeInfo(FitSdpProductSyncMsgDto request){
-		BussinessClientPath command = BussinessClientPath.SAVE_SYN_TIME_INFO;
-		String url = command.url(baseUrl);
-		try {
-			return restClient.post(url, ResultStatus.class, request);
-		} catch (ExceptionWrapper ew) {
-			logger.error(ew.getErrMessage(), ew);
-			throw ew;
-		} catch (Exception e) {
-			ExceptionWrapper ew = new ExceptionWrapper();
-			ew.setExceptionCode(ExceptionCode.REMOTE_INVOKE);
-			ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url) + ExceptionUtils.getFullStackTrace(e));
-			logger.error(ew.getErrMessage(), ew);
-			throw ew;
-		}
-	}*/
-	
 }
 
 

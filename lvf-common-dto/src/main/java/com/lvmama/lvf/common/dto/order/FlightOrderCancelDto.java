@@ -3,6 +3,7 @@ package com.lvmama.lvf.common.dto.order;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.lvmama.lvf.common.dto.enums.BookingSource;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.lvmama.lvf.common.dto.Dto;
@@ -34,7 +35,8 @@ public class FlightOrderCancelDto implements Serializable, Dto {
 
 	/** 支付等待时间 */
 	private Date limitTime;
-	
+
+	private BookingSource bookingSource;
 	
 	private  OrderCancelStatus orderCancelStatus;
 
@@ -86,8 +88,14 @@ public class FlightOrderCancelDto implements Serializable, Dto {
 		this.queryTime = queryTime;
 	}
 
-	
-	
+	public BookingSource getBookingSource() {
+		return bookingSource;
+	}
+
+	public void setBookingSource(BookingSource bookingSource) {
+		this.bookingSource = bookingSource;
+	}
+
 	public OrderCancelStatus getOrderCancelStatus() {
 		return orderCancelStatus;
 	}

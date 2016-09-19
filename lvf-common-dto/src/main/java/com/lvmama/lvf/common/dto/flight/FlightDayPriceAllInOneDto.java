@@ -53,6 +53,9 @@ public class FlightDayPriceAllInOneDto extends AEEntity implements Serializable 
 	private String mDay;
 	
 	private boolean lowestFlag;
+	
+	/** 最低价是否有效*/
+	private boolean isLowestPriceAvailable;
 
 	public String getDeptAirportCode() {
 		return deptAirportCode;
@@ -160,4 +163,14 @@ public class FlightDayPriceAllInOneDto extends AEEntity implements Serializable 
 	public void setLowestFlag(boolean lowestFlag) {
 		this.lowestFlag = lowestFlag;
 	}
+
+	public boolean isLowestPriceAvailable() {
+		return isLowestPriceAvailable;
+	}
+
+	public void setLowestPriceAvailable(boolean isLowestPriceAvailable) {
+		this.isLowestPriceAvailable = isLowestPriceAvailable;
+	}
+	
+	
 }

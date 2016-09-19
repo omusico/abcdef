@@ -32,6 +32,7 @@ import com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.request.FitFlightOrderQueryRequest;
 import com.lvmama.lvfit.common.dto.request.FitOrderQueryRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.form.order.FitOrderOpLogForm;
 
 @Component
@@ -94,6 +95,7 @@ public class FitOrderQueryResource {
 	@Path(BussinessClientPath.Path.QUERY_ORDER_MAIN_BY_VST_ORDER_MAIN_NO)
 	public Response queryOrderMainByVstOrderMainNo(@PathParam("vstOrderMainNo")Long vstOrderMainNo) {
 		FitOrderMainDto mainDto = null;
+		System.out.println("getQueryCharsetFlight=0"+CharterFlightFilterUtil.getQueryCharsetFlight());
         try {
         	mainDto = orderQueryService.queryOrderMainByVstOrderMainNo(vstOrderMainNo);
         } catch (Exception e) {

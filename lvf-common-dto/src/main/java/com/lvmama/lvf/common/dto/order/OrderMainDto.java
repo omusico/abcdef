@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.lvmama.lvf.common.dto.Dto;
 import com.lvmama.lvf.common.dto.Entity;
+import com.lvmama.lvf.common.dto.enums.BookingPattern;
 import com.lvmama.lvf.common.dto.enums.BookingSource;
 import com.lvmama.lvf.common.dto.order.pay.FlightOrderPaymentDto;
 import com.lvmama.lvf.common.dto.order.pay.FlightOrderRefundDto;
@@ -80,6 +81,9 @@ public class OrderMainDto extends Entity implements Serializable , Dto
 	private String couponCode;    
 	//优惠券金额
 	private BigDecimal couponPrice;
+
+	/** 产品类型 **/
+	private BookingPattern bookingPattern;
 	
 	public String getCouponCode() {
 		return couponCode;
@@ -254,4 +258,11 @@ public class OrderMainDto extends Entity implements Serializable , Dto
 		this.flightOrderCPSInfoDto = flightOrderCPSInfoDto;
 	}
 
+	public BookingPattern getBookingPattern() {
+		return bookingPattern;
+	}
+
+	public void setBookingPattern(BookingPattern bookingPattern) {
+		this.bookingPattern = bookingPattern;
+	}
 }

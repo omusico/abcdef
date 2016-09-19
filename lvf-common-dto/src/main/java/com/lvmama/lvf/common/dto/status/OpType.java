@@ -13,6 +13,7 @@ public enum OpType {
 	ISSUE("出票"),
 	RTVT("退票"),
 	CTMT("变更"),
+	AUDIT_ISSUE("审核出票"),
 	SUPP_CTMT("供应商变更"),
 	SALES_SETTLMENT("分销渠道结算"),
 	SUPP_SETTLMENT("供应商结算"),

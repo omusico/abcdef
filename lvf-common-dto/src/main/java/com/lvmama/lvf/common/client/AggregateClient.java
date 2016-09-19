@@ -1,7 +1,6 @@
 package com.lvmama.lvf.common.client;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
@@ -15,13 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.lvmama.lvf.common.client.path.AggregateClientPath;
-import com.lvmama.lvf.common.client.path.BussinessClientPath;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResponseDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.booking.FlightBookingVerifySeatAndPriceDto;
 import com.lvmama.lvf.common.dto.request.FlightBookingVerifyRequest;
-import com.lvmama.lvf.common.dto.request.FlightCommonQueryRequest;
 import com.lvmama.lvf.common.dto.request.FlightQueryRequest;
 import com.lvmama.lvf.common.dto.search.FlightSearchRecordIndex;
 import com.lvmama.lvf.common.dto.search.FlightSearchRecordRequest;

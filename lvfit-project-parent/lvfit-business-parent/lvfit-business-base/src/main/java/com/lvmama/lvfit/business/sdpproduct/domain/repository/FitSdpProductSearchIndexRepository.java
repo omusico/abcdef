@@ -21,4 +21,6 @@ public interface FitSdpProductSearchIndexRepository extends DomainBaseRepository
 	 * @return
 	 */
 	List<FitSdpProductSearchIndexDto> queryIndexInfoList(BaseQueryDto<Long> baseQuery);
+
+	int countSearchIndex(BaseQueryDto<Long> baseQuery);
 }

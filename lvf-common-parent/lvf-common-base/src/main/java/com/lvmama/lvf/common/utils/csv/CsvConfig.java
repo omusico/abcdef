@@ -15,6 +15,14 @@ public abstract class CsvConfig{
 		}
 	};
 	
+	public static CsvConfig PNR_ISSUE_RATE_LIST = new CsvConfig("预定出票比列表"){
+		@Override
+		public String getHead() 
+		{
+			return "预定日期,航空公司,订位成功PNR数,出票数,订出比";
+		}
+	};
+	
 	public static CsvConfig REFUND_LIST = new CsvConfig("退款监控列表")
 	{
 		@Override
@@ -31,7 +39,7 @@ public abstract class CsvConfig{
 		public String getHead() 
 		{
 			return "订单号,采购主单号,采购子单号,订单类型,政策类型,供应商,供应商订单号,PNR,航程,航班号,乘机时间,预订人数,乘客类型,直减金额,应收款,支付方式,原始支付方式,联系人,登陆会员,"
-				+ "下单时间,订单来源,当前状态";
+				+ "下单时间,订单来源,当前状态,CPSID";
 		}
 	};
 	public static CsvConfig INSURANCE_ORDER_LIST = new CsvConfig("保单列表")
@@ -61,7 +69,7 @@ public abstract class CsvConfig{
                     + "登录用户,联系人,联系电话,原大编码,原小编码,大编码,小编码,航空公司,航班号,始发地,目的地,"
                     + "始发地代码,目的地代码,起飞时间,到达时间,订单人数,乘客类型,舱位,舱型等级,票面总价,总返点,总返现,"
                     + "优惠总金额,票面总结算价,调控比率,调控金额,平台调控,票面总销售价,总基建燃油,机票总结算价,机票总销售价,机票总利润,"
-                    + "保险总结算价,保险总销售价,保险总利润,行程单配送费,直减金额,调控金额,应收款,应付款,优惠券,总利润,支付方式,产品类型,政策ID,出票速度,是否邮寄,政策来源,达成率,已收客人数,已出票人数";
+                    + "保险总结算价,保险总销售价,保险总利润,行程单配送费,直减金额,调控金额,应收款,实收款,应付款,实付款,优惠券,总利润,支付方式,产品类型,政策ID,出票速度,是否邮寄,政策来源,达成率,已收客人数,已出票人数";
 		}
 	};
 	

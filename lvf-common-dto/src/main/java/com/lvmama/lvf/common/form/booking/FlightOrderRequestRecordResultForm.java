@@ -192,4 +192,21 @@ public class FlightOrderRequestRecordResultForm implements Serializable, Form {
 	public String getOriginFailDesc() {
 		return flightOrderRequestRecordDto.getOriginFailDesc();
 	}
+	
+	
+//	public String getIp() {
+//		return flightOrderRequestRecordDto.getIp();
+//	}
+//	public void setIp(String ip) {
+//		flightOrderRequestRecordDto.setIp(ip);
+//	}
+//	public String getEquipmentNo() {
+//		return flightOrderRequestRecordDto.getEquipmentNo();
+//	}
+//	public void setEquipmentNo(String equipmentNo) {
+//		flightOrderRequestRecordDto.setEquipmentNo(equipmentNo);
+//	}
+//	
+	
+	
 }

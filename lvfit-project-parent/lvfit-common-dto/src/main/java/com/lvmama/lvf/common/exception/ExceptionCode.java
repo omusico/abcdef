@@ -29,7 +29,7 @@ public class ExceptionCode {
 	public final static ExceptionCode GET_NO_SDP_DEP_FLIGHT= new ExceptionCode("SDP_GOODS_003","自主打包产品Id[%s],品类Id[%s],行程开始日期[%s],出发城市[%s],到达城市[%s],未获取到合适的去程航班！");
 	public final static ExceptionCode GET_NO_SDP_ARR_FLIGHT= new ExceptionCode("SDP_GOODS_004","自主打包产品Id[%s],品类Id[%s],行程开始日期[%s],出发城市[%s],到达城市[%s],未获取到合适的返程航班！");
 	public final static ExceptionCode GET_NO_SDP_GOODS= new ExceptionCode("SDP_GOODS","暂时未找到合适的商品！");
-	public final static ExceptionCode CALL_INTERFACE_ERROR= new ExceptionCode("FIT_ERROR","调用外部接口出现异常，调用时间~[%s]~，接口方法~[%s]~，参数字符串~[%s]~！，异常信息~[%s]");
+	public final static ExceptionCode CALL_INTERFACE_ERROR= new ExceptionCode("FIT_ERROR","调用外部接口出现异常，调用时间~[%s]~，接口方法~[%s]~，异常信息~[%s]");
 	public final static ExceptionCode SDP_AMOUNT_NOT_MATCH= new ExceptionCode("SDP_GOODS_005","计算金额时价格不匹配,传入商品id[%s],传入价格[%s]，实际商品Id[%s],实际价格[%s]，请仔细核对！");
 	
 	/*********************************************自主打包产品ExceptionCode*******************************************************************/

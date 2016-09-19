@@ -44,10 +44,14 @@
                         <#if basicInfo.bizCategoryId == 15 || (basicInfo.bizCategoryId == 18 && packagedProdCatId!=17)>
                             <select id="adult-count" class="adult-count selectModel" data-class="selectbox-mini"  name="adultQuantity">
                                 <#list adultMinQuantity..adultMaxQuantity as num>
-                                <option value="${num}">${num}</option>
+                                	<#if num=='2'>
+                                		<option value="${num}" selected="selected">${num}</option>
+                                	<#else>
+                                		<option value="${num}">${num}</option>
+                                	</#if>
                                 </#list>
                             </select>
-                            <input type="hidden" id="adultQuantity" name="adultQuantity" value="${adultMinQuantity}">
+                            <input type="hidden" id="adultQuantity" name="adultQuantity" value="2">
                         </#if>
                         <#if basicInfo.bizCategoryId == 18 && packagedProdCatId==17>  
 							<span id="adult-count-span">${basicInfo.adultQuantity}</span>

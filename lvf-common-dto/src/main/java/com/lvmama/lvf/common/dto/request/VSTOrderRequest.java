@@ -62,13 +62,20 @@ public class VSTOrderRequest implements Serializable{
 		this.flightOrderVstDto = flightOrderVstDto;
 	}
 
-	public BindingStatus getBindingStatus() {
-		return flightOrderVstDto.getBindingStatus();
-	}
-
 	public void setBindingStatus(BindingStatus bindingStatus) {
 		flightOrderVstDto.setBindingStatus(bindingStatus);
 	}
 	
+	public BindingStatus getBindingStatus() {
+		return flightOrderVstDto.getBindingStatus();
+	}
 
+	public String getLockSeatOrderId() {
+		return flightOrderVstDto.getLockSeatOrderId();
+	}
+	
+	public void setLockSeatOrderId(String lockSeatOrderId) {
+		flightOrderVstDto.setLockSeatOrderId(lockSeatOrderId);
+	}
+	
 }

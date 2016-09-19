@@ -98,8 +98,8 @@ public class CharterFlightFilterUtil {
 	 * @return
 	 */
 	public static Boolean getQueryCharsetFlight() {
-		return Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
-//		return true;
+//		return Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
+		return true;
     }
 	
 	/**

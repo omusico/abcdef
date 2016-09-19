@@ -59,15 +59,6 @@ public class HotelResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.GET_HOTEL_LIST_CACHE)
-	public Response searchHotelCache(String uuid) throws JsonGenerationException, JsonMappingException, IOException{
-		 List<HotelSearchHotelDto> hotels =  shoppingService.getHotelSearchResult(uuid);
-		 return Response.ok(hotels).build();
-	}
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
 	@Path(DpClientPath.Path.GET_HOTEL_DETAIL)
 	public Response  queryHotelCommentPageList(FitHotelRequest request) 
 			throws JsonGenerationException, JsonMappingException, IOException{
@@ -82,29 +73,6 @@ public class HotelResource {
 	public Response getRecommendHotelsByDistrictId(Long districtId) {
 		List<FitConRecomHotelDto> list = FitConRecomHotelConfig.dbMaps.get(districtId);
 		return Response.ok(list).build();
-	 }
-	
-	/**
-	 * 每10分钟从数据库里取一次值，更新静态map
-	 * @throws Exception 
-	 * @throws JsonMappingException 
-	 * @throws JsonGenerationException 
-	 */
-	@Scheduled(initialDelay = 2 * 60 * 1000, fixedDelay = 10 * 60 * 1000)
-	//@Scheduled(initialDelay = 30 * 1000, fixedDelay =  60 * 1000)
-	public void loadRecommendHotelFromDB() throws JsonGenerationException, JsonMappingException, Exception {
-		List<FitConRecomHotelDto> recomHotels = new ArrayList<FitConRecomHotelDto>();
-		try {
-			recomHotels = fitBusinessClient.getFitConRecomHotelsAll();
-			//logger.info("更新得到的默认酒店数据:"+ JSONMapper.getInstance().writeValueAsString(recomHotels));
-		} catch (Exception e) {
-			logger.error("加载推荐数据失败:",e);
-		} 
-		//logger.info("默认酒店数据put进map之前"+FitConRecomHotelConfig.dbMaps);
-		FitConRecomHotelConfig.putDbMaps(recomHotels);
-		//System.out.println("上海："+JSONMapper.getInstance().writeValueAsString(FitConRecomHotelConfig.dbMaps.get(Long.valueOf(9))));
-		//System.out.println("黃山："+JSONMapper.getInstance().writeValueAsString(FitConRecomHotelConfig.dbMaps.get(Long.valueOf(88))));
-		//logger.info("默认酒店数据put进map成功");
 	}
 
 	@POST

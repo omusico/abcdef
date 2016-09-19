@@ -1,6 +1,5 @@
 $(function(){ 
-	
-	
+	//付款按钮浮动显示
 	var fixed_box = $('.fk_box_fixed');
 	if(fixed_box.length>0){
 		function fk_scroll(){
@@ -17,16 +16,15 @@ $(function(){
 			fk_scroll();
 		});
 		fk_scroll();
-		
 	}
-	
+	//出生日期控件加载
 	$(".js_birthday").each(function(){
 		$(this).ui("calendar",{
 		   input : this,
 		   parm:{dateFmt:'yyyy-MM-dd'}
 		})
-	})
-	
+	});
+	//证件类型
 	$('.js_zhengjian').change(function(){ 
 		setTimeout(function(){
 			var T = $(document).scrollTop();
@@ -132,9 +130,6 @@ $(function(){
 	})
 	
 	
-	
-
-	
 	$('.js_btn_qita').live('click',function(){ 
 		var pro_info = $(this).siblings('.otherHideDiv');
 		if(pro_info.find('.table_t').eq(0).is(':hidden')){
@@ -157,7 +152,6 @@ $(function(){
 		$(this).parents('.name_list_new_box').height($(this).parent().outerHeight(true));
 		
 	});
-	
 	
 	//直接显示证件类型
 	$('.js_zj_show').live('change',function(){ 
@@ -218,7 +212,7 @@ $(function(){
 	});
 	
 	//复制购买人信息
-	$('.js_btn_copy').live('click',function(){ 
+	$('.js_btn_copy').live('click',function(){
 		var $input1 = $('.js_copy_info').eq(0).find('.js_yz');
 		var $input2 = $(this).parents('.user_info').find('.js_yz');
 		for(var i=0;i<$input1.length;i++){
@@ -358,17 +352,72 @@ $(function(){
 		$('.pro_name_bx').click();
 	});
 	
+	// 更多联系人
+	$(".fit-more-contact").die().live("click",function(e){
+	    var $this = $(this);
+	    var $nameList = $this.parents(".name_list");
+	    var text = $this.html();
+	    if($this.hasClass('fit-more-contact-up')) {
+	        $this.html(text.replace('收起','更多')); 
+	        $this.removeClass('fit-more-contact-up');
+	        $nameList.removeClass('fit-name-more');
+	    } else {
+	        $this.html(text.replace('更多','收起')); 
+	        $this.addClass('fit-more-contact-up');
+	        $nameList.addClass('fit-name-more');
+	    }
+	});
+	
+	
+	//航班详细信息弹出层
+	$(".flight-add-one-day").poptip({
+        offsetX : -29,
+        place: 7
+    });
+    $(".plane-type").hover(function() {
+        var $this = $(this);
+        var $planeInfoDetail = $(".plane-info-detail");
+        var thisL = $this.offset().left,
+        thisT = $this.offset().top,
+        thisH = $this.outerHeight(true);
+
+        $planeInfoDetail.find(".pi-plan").text($this.data("plan"));
+        $planeInfoDetail.find(".pi-name").text($this.data("name"));
+        $planeInfoDetail.find(".pi-type").text($this.data("type"));
+        $planeInfoDetail.find(".pi-min").text($this.data("min"));
+        $planeInfoDetail.find(".pi-max").text($this.data("max"));
+
+        $('.plane-info').show().css({
+            'left': thisL,
+            'top': thisT + thisH + 4
+        });
+    },function () {
+        var timeId = setTimeout(function(){
+            $('.plane-info').hide();
+        },300);
+        $('.plane-info').mouseenter(function(){
+            clearTimeout(timeId);
+        }).mouseleave(function(){
+            $(this).hide();
+        });
+    });
+    
 });
 
 
 //验证姓名，是否符合规范
 function checkUserName(that){
 	var userName = $(that).val();
-	if(!/^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+[\u4e00-\u9fa5]+|[a-zA-Z]+[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+\/[a-zA-Z]+)+$/.test(userName)){
-		$(that).parent().addClass('error_show');
+	if($.trim(userName)==""){
+		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入正确的姓名");
+		$(that).parent().addClass('error_show');return false;
+	}else if(!/^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+[\u4e00-\u9fa5]+|[a-zA-Z]+[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+\/[a-zA-Z]+)+$/.test(userName)||userName.length<2){
+		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请保持姓名与证件上的姓名一致");
+		$(that).parent().addClass('error_show');return false;
 	}else{
 		$(that).parent().removeClass('error_show');
 	}
+	return true;
 }
 
 
@@ -460,13 +509,13 @@ var clickIdCard = function(){
 	});
 }
 //鼠标离开输入框，验证
-$('.js_yz').live('blur',function(){ 
+/*$('.js_yz').live('blur',function(){ 
 	var This = $(this);
 	setTimeout(function(){
 		yanzhengThis(This)
 	},150)
 	
-});
+});*/
 
 //实例合同信息：人员 和 电话
 function initContractData(that){

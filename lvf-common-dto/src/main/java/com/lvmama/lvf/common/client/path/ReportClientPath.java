@@ -10,7 +10,9 @@ public enum ReportClientPath {
     QUERY_SUPPPAYMENT_REPORT(Path.QUERY_SUPPPAYMENT_REPORT,"对账单报表查询"),
     SUPPAYMENT_BATCH_SAVE(Path.SUPPAYMENT_BATCH_SAVE,"对账单数据Excel导入"),
     QUERY_FINANCIAL_REPORT(Path.QUERY_FINANCIAL_REPORT, "财务对账查询报表"),
-    QUERY_FINANCIAL_REPORT_LIST_OF_EXPORT(Path.QUERY_FINANCIAL_REPORT_LIST_OF_EXPORT, "财务对账报表导出");
+    QUERY_FINANCIAL_REPORT_LIST_OF_EXPORT(Path.QUERY_FINANCIAL_REPORT_LIST_OF_EXPORT, "财务对账报表导出"),
+    QUERY_PNR_ISSUE_RATE(Path.QUERY_PNR_ISSUE_RATE,"查询预定出票比列表"),
+    QUERY_PNR_ISSUE_RATE_FOR_EXPORT(Path.QUERY_PNR_ISSUE_RATE_FOR_EXPORT,"导出预定出票比");
 
     public String path;
 
@@ -32,6 +34,8 @@ public enum ReportClientPath {
         public static final String SUPPAYMENT_BATCH_SAVE = reportPath + "batchSaveSupPayment";
         public static final String QUERY_FINANCIAL_REPORT = reportPath + "queryFinancialReportList";
         public static final String QUERY_FINANCIAL_REPORT_LIST_OF_EXPORT = reportPath + "queryFinancialReportListofExport";
+        public static final String QUERY_PNR_ISSUE_RATE = reportPath + "queryPnrIssueRate";
+        public static final String QUERY_PNR_ISSUE_RATE_FOR_EXPORT = reportPath + "queryPnrIssueRateForExport";
     }
 
     public String getPath() {

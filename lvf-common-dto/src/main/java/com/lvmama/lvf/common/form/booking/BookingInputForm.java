@@ -20,7 +20,6 @@ import com.lvmama.lvf.common.dto.order.FlightOrderRemarkDto;
 import com.lvmama.lvf.common.dto.request.FlightOrderBookingDetailRequest;
 import com.lvmama.lvf.common.dto.request.FlightOrderBookingRequest;
 import com.lvmama.lvf.common.dto.request.FlightOrderSalesOrderRelationRequest;
-import com.lvmama.lvf.common.dto.request.VSTOrderRequest;
 import com.lvmama.lvf.common.form.Form;
 
 /**
@@ -283,7 +282,7 @@ public class BookingInputForm implements Form {
 	public void setRelationRequest(FlightOrderSalesOrderRelationRequest relationRequest) {
 		flightOrderBookingRequest.setRelationRequest(relationRequest);
 	}
-	
+
 	public void setRealRT(String realRT) {
 		flightOrderBookingRequest.setRealRT(realRT);
 	}
@@ -299,5 +298,4 @@ public class BookingInputForm implements Form {
 	public String getCouponCode(){
 		return flightOrderBookingRequest.getCouponCode();
 	}
-
 }

@@ -22,7 +22,20 @@ import com.lvmama.lvf.common.dto.status.engine.StatusContext;
  */
 public enum OrderAuditStatus implements GeneratorOp,ProcessOp {
 	
-	NULL("未审核", OrderAuditType.NULL),
+	NULL("未审核", OrderAuditType.NULL){
+		public List<Op> generatorBackOp(OpContext opContext){
+			OpList opList = new OpList(opContext);
+			switch (opContext.getOpType()) {
+				case AUDIT_ISSUE:
+					opList.add(OpCommandBack.AUDIT_REJECT_ISSUE);
+					opList.add(OpCommandBack.AUDIT_PASS_ISSUE);
+					break;
+				default:
+					break;
+			}
+			return opList.list();
+		}
+	},
 	NOT_AUDIT("未审核", OrderAuditType.AUDIT){
 		public boolean vaild(StatusContext statusContext){
 			return OpAction.APPLY.equals(statusContext.getOp().getOpAction()) 

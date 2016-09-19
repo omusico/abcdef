@@ -39,6 +39,7 @@ public class TraceContext {
 	public static void startTrace(BaseTraceInfo object) {
 		try{
 			TraceContext.setIp(object.getIp());
+			TraceContext.setEquipmentNo(object.getEquipmentNo());
 			TraceContext.setServerTrace(null);
 			TraceContext.setServerTraceTime(null);
 			TraceContext.setTraceId(null);
@@ -82,6 +83,10 @@ public class TraceContext {
 	    	if(null!=ip){
 	    		headerMap.putSingle(getHeaderKey(TraceContextKey.IP.name()),ip);
 	    	}
+//	    	String equipmentNo = TraceContext.getEquipmentNo();
+//	    	if(null!=equipmentNo){
+//	    		headerMap.putSingle(getHeaderKey(TraceContextKey.EQUIPMENTNO.name()),equipmentNo);
+//	    	}
 	    	String serverTrace=TraceContext.getServerTrace();
 	    	if(null!=serverTrace){
 	    		headerMap.putSingle(getHeaderKey(TraceContextKey.SERVERIPTRACE.name()),serverTrace);
@@ -115,6 +120,10 @@ public class TraceContext {
 		String ip = headers.getFirst(getHeaderKey(TraceContextKey.IP.name()));
 //		logger.warn("startTrace(MultivaluedMap<String,String> headers):"+ip);
 		TraceContext.setIp(ip);
+		
+		String equipmentNo = headers.getFirst(getHeaderKey(TraceContextKey.EQUIPMENTNO.name()));
+//		logger.warn("startTrace(MultivaluedMap<String,String> headers):"+equipmentNo);
+		TraceContext.setEquipmentNo(equipmentNo);
 		
 		String serverTrace = headers.getFirst(getHeaderKey(TraceContextKey.SERVERIPTRACE.name()));
 //		logger.warn("startTrace(MultivaluedMap<String,String> headers):"+serverTrace);
@@ -154,6 +163,7 @@ public class TraceContext {
 		try{
 			TraceContext.removeCustomer();
 			TraceContext.removeIp();
+			//TraceContext.removeEquipmentNo();
 			TraceContext.removeOper();
 			TraceContext.removeServerTrace();
 			TraceContext.removeServerTraceTime();
@@ -244,6 +254,16 @@ public class TraceContext {
 	}
 	public static void removeIp() {
 		TraceContextKey.IP.remove();
+	}
+	
+	public static void setEquipmentNo(String equipmentNo) {
+		TraceContextKey.EQUIPMENTNO.set(equipmentNo);
+	}
+	public static String getEquipmentNo() {
+		return TraceContextKey.EQUIPMENTNO.get();
+	}
+	public static void removeEquipmentNo() {
+		TraceContextKey.EQUIPMENTNO.remove();
 	}
 	
 	public static void setOper(Oper value) {

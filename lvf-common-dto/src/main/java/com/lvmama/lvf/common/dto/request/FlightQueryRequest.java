@@ -26,139 +26,148 @@ import com.lvmama.lvf.common.dto.md.SeatClass;
 import com.lvmama.lvf.common.dto.supp.SuppFlightProductDto;
 
 @XmlRootElement
-public class FlightQueryRequest implements Serializable{
-	
+public class FlightQueryRequest implements Serializable {
+
 	/** serialVersionUID */
 	private static final long serialVersionUID = -3921306104310769634L;
 
-	
-	/**承运人信息*/
+	/** 承运人信息 */
 	private Carrier carrier;
 
-	/**PNR配置信息*/
+	/** PNR配置信息 */
 	private FlightOfficeDto flightOffice;
-	
-	/**飞机代码*/
+
+	/** 飞机代码 */
 	private String airplaneCode;
-	
-	/**飞机型号*/
+
+	/** 飞机型号 */
 	private String airplaneType;
-	
-	/**航班号*/
+
+	/** 航班号 */
 	private String[] flightNos;
-	
-	/**适用舱位*/
-	private SeatClass[] seatClazz; 
-	
-	/**舱位类型*/
+
+	/** 适用舱位 */
+	private SeatClass[] seatClazz;
+
+	/** 舱位类型 */
 	private SeatClassType[] seatClassType;
-	
-	/**乘客类型枚举*/
+
+	/** 乘客类型枚举 */
 	private PassengerType[] passengerType;
-	
-	/**出发日期*/
+
+	/** 出发日期 */
 	private Date departureDate;
-	
-	/**出发日期日期段*/
+
+	/** 出发日期日期段 */
 	private DateRange departureDateRange;
-	
-	/**出发日期时间段*/
+
+	/** 出发日期时间段 */
 	private TimeSegment departureTimeSegment;
-	
-	/**到达日期*/
+
+	/** 到达日期 */
 	private Date arrivalDate;
-	
-	/**到达日期时间段*/
+
+	/** 到达日期时间段 */
 	private TimeSegment arrivalTimeSegment;
-	
-	/**起飞时间（格式为1245 ： 12点45）*/
+
+	/** 起飞时间（格式为1245 ： 12点45） */
 	private String departureTime;
-	
-	/**直飞或经停*/
+
+	/** 直飞或经停 */
 	private DirectType direct;
-	
-	/**出发机场三字码*/
+
+	/** 出发机场三字码 */
 	private String departureAirportCode;
-	
-	/**抵达机场三字码*/
+
+	/** 抵达机场三字码 */
 	private String arrivalAirportCode;
-	
+
 	/** 出发城市代码 */
 	private String departureCityCode;
-	
+
 	/** 到达城市代码 */
 	private String arrivalCityCode;
-    
-	/**库存信息*/
+
+	/** 库存信息 */
 	private InventoryType inventoryType;
-	
-	/**最小库存*/
+
+	/** 最小库存 */
 	private BigDecimal minInventory;
-	
-	/**PNR出票状态信息*/
+
+	/** PNR出票状态信息 */
 	private OnlySelfPNR onlySelfPNR;
-	
-	/**是否在工作时间内*/
+
+	/** 是否在工作时间内 */
 	private Boolean needSuppOnWorking;
-	
+
 	private Boolean stillShowSeatIfNoPolicy;
 
-	/**政策类型信息*/
+	/** 政策类型信息 */
 	private PolicyType[] policyTypes;
 
-	/**配餐信息*/
+	/** 配餐信息 */
 	private MealType[] mealTypes;
-	
-	/**航程类型信息*/
+
+	/** 航程类型信息 */
 	private RouteType routeType;
-	
-	/**是否共享*/
+
+	/** 是否共享 */
 	private Boolean isShare;
-	
-	/**返程日期*/
+
+	/** 返程日期 */
 	private String returnDate;
-	
-	/**政策适用的航班舱位*/
+
+	/** 政策适用的航班舱位 */
 	private String suppPolicyId;
-	
-	/**政策ID*/
+
+	/** 政策ID */
 	private String policyId;
-	
-	/**运价政策ID*/
+
+	/** 运价政策ID */
 	private Long pricePolicyId;
-	
+
 	private SuppFlightProductDto suppFlightProductDto;
 
-	private Boolean facet=false;
-	private Boolean group=false;
-    private String sortByDepartureTimeDate="ASC";
-    private String sortByParPrice;
+	private Boolean facet = false;
+	private Boolean group = false;
+	private String sortByDepartureTimeDate = "ASC";
+	private String sortByParPrice;
 	private String sortBySettlePrice;
 	private String sortByFlyTimeHours;
-	/**是否开启即时查询*/
-	private Boolean instantaneity=true;
-	
-	private BookingSource bookingSource  = BookingSource.DEFAULT;
-	
+	/** 是否开启即时查询 */
+	private Boolean instantaneity = true;
+
+	private BookingSource bookingSource = BookingSource.DEFAULT;
+
 	private String suppCode;
-	
+
 	private Long versionNo;
-	
-	/**多天出发日期查询*/
+
+	/** 多天出发日期查询 */
 	private List<Date> departureDates;
-	
-	/**屏蔽航司*/
+
+	/** 屏蔽航司 */
 	private String[] carrierCodesInvisible;
-	
-	/**查询航班时使用*/
+
+	/** 查询航班时使用 */
 	private String[] suppCodes;
-	
-	/**PATA时用*/
+
+	/** PATA时用 */
 	private String pnr;
 	
 	private Date backDate; //真往返返程日期
 	
 	private String[] saleType; //政策类型，用于标识普通政策还是包机政策
+
+	private String equipmentNo;
+
+	public String getEquipmentNo() {
+		return equipmentNo;
+	}
+
+	public void setEquipmentNo(String equipmentNo) {
+		this.equipmentNo = equipmentNo;
+	}
 
 	public BookingSource getBookingSource() {
 		return bookingSource;
@@ -206,8 +215,8 @@ public class FlightQueryRequest implements Serializable{
 
 	public void setSortBySettlePrice(String sortBySettlePrice) {
 		this.sortBySettlePrice = sortBySettlePrice;
-	}	
-	
+	}
+
 	public String getSortByFlyTimeHours() {
 		return sortByFlyTimeHours;
 	}
@@ -295,7 +304,7 @@ public class FlightQueryRequest implements Serializable{
 	public void setDepartureDate(Date departureDate) {
 		this.departureDate = departureDate;
 	}
-	
+
 	public TimeSegment getDepartureTimeSegment() {
 		return departureTimeSegment;
 	}
@@ -343,8 +352,9 @@ public class FlightQueryRequest implements Serializable{
 	public void setArrivalAirportCode(String arrivalAirportCode) {
 		this.arrivalAirportCode = arrivalAirportCode;
 	}
+
 	public String getDepartureCityCode() {
-		if(StringUtils.isNotBlank(this.departureAirportCode))
+		if (StringUtils.isNotBlank(this.departureAirportCode))
 			return this.departureAirportCode;
 		return departureCityCode;
 	}
@@ -354,7 +364,7 @@ public class FlightQueryRequest implements Serializable{
 	}
 
 	public String getArrivalCityCode() {
-		if(StringUtils.isNotBlank(this.arrivalAirportCode))
+		if (StringUtils.isNotBlank(this.arrivalAirportCode))
 			return this.arrivalAirportCode;
 		return arrivalCityCode;
 	}
@@ -471,7 +481,8 @@ public class FlightQueryRequest implements Serializable{
 		return suppFlightProductDto;
 	}
 
-	public void setSuppFlightProductDto(SuppFlightProductDto suppFlightProductDto) {
+	public void setSuppFlightProductDto(
+			SuppFlightProductDto suppFlightProductDto) {
 		this.suppFlightProductDto = suppFlightProductDto;
 	}
 
@@ -490,7 +501,7 @@ public class FlightQueryRequest implements Serializable{
 	public void setSuppCode(String suppCode) {
 		this.suppCode = suppCode;
 	}
-	
+
 	public String[] getSuppCodes() {
 		return suppCodes;
 	}
@@ -538,7 +549,7 @@ public class FlightQueryRequest implements Serializable{
 	public void setPnr(String pnr) {
 		this.pnr = pnr;
 	}
-
+	
 	public Date getBackDate() {
 		return backDate;
 	}
@@ -555,5 +566,4 @@ public class FlightQueryRequest implements Serializable{
 		this.saleType = saleType;
 	}
 
-	
 }

@@ -72,9 +72,9 @@ public class SearchForAggregateClient
     	SearchClientPath command = SearchClientPath.SYNC_TO_SOLR_FROM_DB;
     	String url = command.url(baseUrl);
     	try{
-    		System.out.println("syncToSolrFromDB--"+url);
+//    		System.out.println("syncToSolrFromDB--"+url);
     		String resultStr = restClient.post(url, String.class,queryRequest);
-    		System.out.println("queryRequest"+JSONMapper.getInstance().writeValueAsString(queryRequest));
+//    		System.out.println("queryRequest"+JSONMapper.getInstance().writeValueAsString(queryRequest));
     		if(StringUtils.isBlank(resultStr)){
     			return null;
     		}
@@ -97,7 +97,7 @@ public class SearchForAggregateClient
     	String url = command.url(baseUrl);
     	try{
     		String resultStr = restClient.post(url, String.class,queryRequest);
-    		logger.error("queryRequest:"+JSONMapper.getInstance().writeValueAsString(queryRequest));
+//    		logger.error("queryRequest:"+JSONMapper.getInstance().writeValueAsString(queryRequest));
     		if(StringUtils.isBlank(resultStr)){
     			return null;
     		}

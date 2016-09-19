@@ -70,7 +70,7 @@ public class FlightOrderBookingRequest implements Serializable
 	private FlightOrderSalesOrderRelationRequest relationRequest;
 	
 	private BigDecimal orderTotalSalesAmount;
-	
+
 	/** 乘客保险信息*/
 	private List<BookingDetailDto> passengerDetailDtos = new ArrayList<BookingDetailDto>();
 	
@@ -102,6 +102,7 @@ public class FlightOrderBookingRequest implements Serializable
 	public void setCouponCode(String couponCode) {
 		this.couponCode = couponCode;
 	}
+	
 	
 	public List<BookingDetailDto> getPassengerDetailDtos() {
 		return passengerDetailDtos;
@@ -285,7 +286,7 @@ public class FlightOrderBookingRequest implements Serializable
 	public void setFlightOrderCPSInfoDto(FlightOrderCPSInfoDto flightOrderCPSInfoDto) {
 		this.flightOrderCPSInfoDto = flightOrderCPSInfoDto;
 	}
-
+	
 	public String getRealRT() {
 		return realRT;
 	}
@@ -293,5 +294,4 @@ public class FlightOrderBookingRequest implements Serializable
 	public void setRealRT(String realRT) {
 		this.realRT = realRT;
 	}
-
 }

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author majun
  * @date   2015-1-13
  */
-public class FlightOrderSuppOrderAmountDto implements Serializable 
+public class FlightOrderSuppOrderAmountDto implements Serializable
 {
 	private static final long serialVersionUID = -394637358815122035L;
 	
@@ -23,6 +23,9 @@ public class FlightOrderSuppOrderAmountDto implements Serializable
 	
 	/** 供应商总结算价 */
 	private BigDecimal suppSettlePrice;
+
+	/** 供应商支付手续费 */
+	private BigDecimal suppTradingAmount;
 	
 	public BigDecimal getSuppTotalParPrice() {
 		return suppTotalParPrice;
@@ -54,5 +57,13 @@ public class FlightOrderSuppOrderAmountDto implements Serializable
 
 	public void setSuppSettlePrice(BigDecimal suppSettlePrice) {
 		this.suppSettlePrice = suppSettlePrice;
+	}
+
+	public BigDecimal getSuppTradingAmount() {
+		return suppTradingAmount;
+	}
+
+	public void setSuppTradingAmount(BigDecimal suppTradingAmount) {
+		this.suppTradingAmount = suppTradingAmount;
 	}
 }

@@ -141,4 +141,6 @@ public class FlightOrderRequestRecordRequest implements Serializable, Dto {
 	public void setOrderFlag(OrderFlag orderFlag) {
 		this.orderFlag = orderFlag;
 	}
+
+	
 }

@@ -39,5 +39,11 @@ DomainEntityByFkIdMapper<FitSdpProductSearchIndexDto>{
 	 * @return
 	 */
 	public List<FitSdpProductSearchIndexDto> getInfoList(BaseQueryDto<Long> baseQuery);
+
+	/**
+	 * 根据产品Id获取索引列表总数
+	 * @return
+	 */
+	public int countSearchIndex(BaseQueryDto<Long> baseQuery);
 	
 }

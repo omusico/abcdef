@@ -35,26 +35,40 @@
 		)
 	</insert>
 	
-	<select id="querySynMsgList" resultMap="resultMap">
-		<include refid="ORACLE.paginationStart" />
-		SELECT 
-		<include refid="columns" />
-		FROM T_FITSDP_PRODUCT_SYN_MESSAGE
-		<if test="condition!=null and condition!=''">
-				WHERE PRODUCT_ID = #{condition}
-		</if>
-		<include refid="ORACLE.paginationEnd" />
-	</select>
-	
 	<select id="querySdpProductSynMsgInfo" resultMap="resultMap">
 		<include refid="ORACLE.paginationStart" />
 			SELECT 
 			<include refid="columns" />
 			FROM T_FITSDP_PRODUCT_SYN_MESSAGE
-			<if test="condition!=null and condition!=''">
-					WHERE PRODUCT_ID = #{condition}
+			WHERE 1=1
+			<if test="condition != null">
+				<if test="condition.productId!=null and condition.productId!=''">
+						AND PRODUCT_ID = #{condition.productId}
+				</if>
+				<if test="condition.productSyncStatus!=null and condition.productSyncStatus!=''">
+						AND PRODUCT_SYNC_STATUS = #{condition.productSyncStatus}
+				</if>
+				<if test="condition.indexSyncStatus!=null and condition.indexSyncStatus!=''">
+						AND INDEX_SYNC_STATUS = #{condition.indexSyncStatus}
+				</if>
 			</if>
+			ORDER BY CREATE_TIME DESC
 		<include refid="ORACLE.paginationEnd" />
 	</select>
 
+	<select id="countSdpProductSynMsg" resultType="java.lang.Integer">
+    	SELECT COUNT(*) FROM T_FITSDP_PRODUCT_SYN_MESSAGE 
+    	WHERE 1=1
+    	<if test="condition != null">
+				<if test="condition.productId!=null and condition.productId!=''">
+						AND PRODUCT_ID = #{condition.productId}
+				</if>
+				<if test="condition.productSyncStatus!=null and condition.productSyncStatus!=''">
+						AND PRODUCT_SYNC_STATUS = #{condition.productSyncStatus}
+				</if>
+				<if test="condition.indexSyncStatus!=null and condition.indexSyncStatus!=''">
+						AND INDEX_SYNC_STATUS = #{condition.indexSyncStatus}
+				</if>
+		</if>
+	</select>
 </mapper>

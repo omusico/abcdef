@@ -113,7 +113,7 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 									BeanUtils.copyProperties(selectPlan, plan);
 									BeanUtils.copyProperties(selectRoom, roomDto);
 									BeanUtils.copyProperties(selectHotel, hotel);
-									selectRoom.setRoomCounts(appGoodsInfo.getCount());
+									selectPlan.setPlanCounts(appGoodsInfo.getCount());
 								} catch (Exception e) {
 									logger.error(e.getMessage(), e);
 								}

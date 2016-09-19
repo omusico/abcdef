@@ -36,4 +36,9 @@ public class FlightDailyLowestPriceRequest implements Serializable {
 		return DateUtils.formatDate(flightQueryRequest.getDepartureDate());
 	}
 	
+	@SolrField(name = "isLowestPriceAvailable", type=SolrQueryTYPE.NOTEQ)
+	public boolean getIsLowestPriceAvailable(){
+		return false;
+	}
+	
 }

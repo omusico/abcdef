@@ -6,9 +6,9 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\for
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\verify\FlightBookingVerifyDeatilDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\risk\BlackIdDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\search\FlightSearchResult.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\md\NoticeInfoResponseForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\client\path\MaindataClientPath.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightOrderImportRequest.java
-D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\md\NoticeInfoResponseForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\ProductSourceType.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\PolicyBelongTo.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\md\SeatClassCarrierRequestForm.java
@@ -50,6 +50,7 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\risk\RiskLimitBlackDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightOrderRefundInfoRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\calculator\ExpressInfoRequest.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\order\FlightOrderImportAuditResultForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\policy\FlightPolicyTicketRuleDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\config\VSTTaskConfigRequestForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\vst\VSTGoodsResponseForm.java
@@ -71,6 +72,7 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\for
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\booking\BookingInputForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\policy\FlightPolicyExcludeResultForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\FlightOrderPNRXEDto.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\BookingPattern.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\insurance\InsuranceOrderListResultForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightCommonQueryRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\ticket\FlightTicketPriceResponseForm.java
@@ -92,8 +94,8 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\for
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\result\package-info.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\pay\FlightOrderRefundInfoDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\booking\FlightBookingSeatInfoDto.java
-D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\booking\BookingVerifyDetailIForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\ApiCacheConfigRequest.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\booking\BookingVerifyDetailIForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\vst\VSTGoodsRequestForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\BSPRecycleStatus.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\sales\SalesRuleDisableRequestForm.java
@@ -282,6 +284,7 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\adapter\request\vst\VstUserReceiversRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\RemarkType.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\status\PayStatusType.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightInfoDailyQueryRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\InsuranceType.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightOrderProcessChangeRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\AuditStatus.java
@@ -380,9 +383,9 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\BookingSourceType.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\sales\SalesRuleSourceResponseForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\md\AirPlaneForm.java
-D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightOrderAuditRequest.java
-D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\flight\FlightDayPriceDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\PaymentType.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\flight\FlightDayPriceDto.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightOrderAuditRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\vst\VSTProductBranchResponseForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\TimeSegment.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\CityQueryRequest.java
@@ -403,6 +406,7 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\UserMemberGrade.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\TradeType.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\md\DateTimeRange.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightOrderImportAuditRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\PayBalanceType.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\FlightOrderLoscInfoDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\client\AdapterClient.java
@@ -474,12 +478,13 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\for
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\sales\SalesRuleSourceDetailViewForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\FlightOrderRemarkDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\package-info.java
-D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\workflow\FlightOrderProcessInfoDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\md\OpLogViewForm.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\workflow\FlightOrderProcessInfoDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\sms\SmsSendResultForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\booking\BookingVerifyIForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\price\FlightPriceInventoryForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\search\result\FlightSearchTicketRuleSimpleDto.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\report\PnrIssueRateDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\ChannelWap.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\calculator\InsuranceCalculatRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightOrderTicketCTMTAutoRequest.java
@@ -666,6 +671,7 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\result\detail\relation\FlightOrderDetailRelationDetailDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\client\VstClient.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\FlightSuppOrderQueryRequest.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\report\PnrIssueRateForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\SalesRuleDisableRequest.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\report\TicketRemindReportDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\enums\SmsType.java
@@ -698,6 +704,7 @@ D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\order\FlightOrderTicketRuleDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\travel\TravelPassengerDto.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\sales\package-info.java
+D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\order\FlightOrderImportAuditInputForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\form\order\FlightOrderModifyForm.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\client\ScheduleClient.java
 D:\shuiqing_new\workspace\lvf-common-dto\src\main\java\com\lvmama\lvf\common\dto\request\AirPlaneRequest.java

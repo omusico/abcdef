@@ -3,6 +3,7 @@ package com.lvmama.lvfit.adapter.search.adapter.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.lvmama.vst.back.dujia.group.prod.vo.ProdProductNameVO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,11 @@ public class VstSearchInterfaceWrapperImpl implements VstSearchInterfaceWrapper 
 	@SuppInterfacePoint(InterfaceKey.SearchSdpInstalmentFromVst)
 	public List<InstalmentGateWayConfigVO> selectInstalmentBycategory(String category) {
 		return instalmentGatewayConfigServiceAdapter.selectInstalmentBycategory(category);
+	}
+
+	@Override
+	public com.lvmama.vst.comm.vo.ResultHandleT<ProdProductNameVO> findProdProductNameVOByProductId(Long productId) {
+		return prodProductClientService.findProdProductNameVOByProductId(productId);
 	}
 
 }

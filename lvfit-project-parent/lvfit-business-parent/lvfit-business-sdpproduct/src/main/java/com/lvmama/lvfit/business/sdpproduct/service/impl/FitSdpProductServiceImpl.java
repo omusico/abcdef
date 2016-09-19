@@ -226,11 +226,6 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 	}
 
 	@Override
-	public List<FitSdpProductSyncMsgDto> querySdpProductSynInfoList(BaseQueryDto<Long> baseQuery) {
-		return fitSdpProductSearchSynInfoRepository.querySynMsgList(baseQuery);
-	}
-
-	@Override
 	public List<FitSdpProductSearchIndexTraffic> querySdpProductIndexTrafficList(
 			BaseQueryDto<Long> baseQuery) {
 		return fitSdpProductSearchIndexTrafficRepository.queryIndexTrafficList(baseQuery);
@@ -299,8 +294,23 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 	}
 
 	@Override
-	public List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery) {
+	public List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery) {
 		return fitSdpProductSearchSynInfoRepository.querySdpProductSynMsgInfo(baseQuery);
+	}
+
+	@Override
+	public int countSdpProductSearchIndex(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexRepository.countSearchIndex(baseQuery);
+	}
+
+	@Override
+	public int countSdpProductIndexTraffic(BaseQueryDto<Long> baseQuery) {
+		return fitSdpProductSearchIndexTrafficRepository.countIndexTraffic(baseQuery);
+	}
+
+	@Override
+	public int countSdpProductSynMsg(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery) {
+		return fitSdpProductSearchSynInfoRepository.countSdpProductSynMsg(baseQuery);
 	}
 
 }

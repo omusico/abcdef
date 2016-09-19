@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.trace.TraceContext;
+import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
 
 @Component
@@ -116,19 +117,11 @@ public class RestClient {
     	}
     }
 
-    public static String toJsonStr(Object obj) {
-		try {
-			return JSONMapper.getInstance().writeValueAsString(obj);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+
     //post
     public <T> T post(String url, Class<T> responseType, Object formVariables) {
     	Response response = null;
     	try{
-    		System.out.println(url+"---"+toJsonStr(formVariables));
 	        ResteasyWebTarget target = getClient().target(url);
 	        response = target.request().headers(TraceContext.getContext2MultivaluedMap()).post(Entity.entity(formVariables,MediaType.APPLICATION_JSON));
 	        if(Status.OK.getStatusCode()==response.getStatus()){

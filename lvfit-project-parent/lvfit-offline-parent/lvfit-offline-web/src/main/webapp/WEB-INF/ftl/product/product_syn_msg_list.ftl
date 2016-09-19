@@ -40,7 +40,7 @@
 
 			function initGrid() 
 			{
-				var colNames = ['产品ID', '同步产品基本信息消耗时间','同步产品索引消耗时间','同步产品索引状态','同步产品基本信息结果状态','创建时间'];
+				var colNames = ['产品ID', '同步产品基本信息消耗时间','同步产品索引消耗时间','同步产品索引状态','同步产品基本信息状态','创建时间'];
 
 				var cols = [ 
 					{
@@ -117,6 +117,8 @@
 			function getQueryParams(){
 				var queryData = {
 					'productId':$("#productIdInput").val(),
+					'indexSyncStatus':$("#productIndexInput").val(),
+					'productSyncStatus':$("#productBasicInfoInput").val()
 				};
 				return queryData;
 			}
@@ -129,7 +131,7 @@
 			function query(){
 				$("#sdpProductList").jqGrid('setGridParam', 
 				{
-		 			url:"${request.contextPath}/sdpProduct/querySynInfoList",
+		 			url:"${request.contextPath}/sdpProduct/queryAllSynInfo",
 		 			datatype : "json",
 		 			mtype : "POST",
 			 		postData : getQueryParams()
@@ -149,6 +151,22 @@
 					<div class="main">
 						<div class="part">
 							<span>产品ID：</span><input type="text" id="productIdInput" name="productIdInput"/>
+							 同步产品索引状态：<select type="text" id="productIndexInput" name="productIndexInput"/>
+												<option value="">全部</option>
+												<option value="SUCCESS">成功</option>
+												<option value="APPLY">发起</option>
+												<option value="INVALID">无效</option>
+												<option value="FAIL">失败</option>
+												<option value="TIMEOUT">超时</option>
+							 			</select>
+							 同步产品基本信息状态：<select type="text" id="productBasicInfoInput" name="productBasicInfoInput"/>
+							 					<option value="">全部</option>
+							 					<option value="SUCCESS">成功</option>
+												<option value="APPLY">发起</option>
+												<option value="INVALID">无效</option>
+												<option value="FAIL">失败</option>
+												<option value="TIMEOUT">超时</option>
+							 			   </select>
 						</div>
 					</div>
 				</div>
@@ -159,10 +177,10 @@
 				<!--<a href="javascript:void(0);" onclick="clearForm();"><div class="button">清空</div></a>-->
 			</div>
 		</div>
-		 <div class="content content1" style="margin-top:50px;">
+		<div class="content content1" style="margin-top:50px;">
 	      <table id="sdpProductList"></table>
 	      <div id="pager"></div>
-	     </div>
+	    </div>
     </div>
 </body>
 </html>

@@ -18,6 +18,8 @@ extends DomainEntityBaseMapper<FitSdpComPushDto, BaseQueryDto<? extends Dto>> {
 
 
 	List<VstPushRecord> queryPushList(BaseQueryDto<Long> baseQuery);
+
+	int countPushRecords(BaseQueryDto<Long> baseQuery);
 	
 	
 }

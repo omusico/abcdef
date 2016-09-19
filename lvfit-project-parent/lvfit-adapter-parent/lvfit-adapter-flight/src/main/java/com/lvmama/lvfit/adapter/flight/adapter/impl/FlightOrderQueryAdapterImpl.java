@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.lvmama.lvf.common.client.BusinessClient;
@@ -21,7 +22,9 @@ import com.lvmama.lvf.common.dto.order.FlightOrderInsuranceDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderPassengerDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderSalesOrderRelationDto;
 import com.lvmama.lvf.common.dto.order.FlightOrderTicketInfoDto;
+import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderDetailInfoDto;
 import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderDetailViewDto;
+import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvfit.adapter.flight.adapter.FlightOrderQueryAdapter;
 import com.lvmama.lvfit.common.dto.adapter.request.FlightOrderQueryRequest;
@@ -33,6 +36,7 @@ import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppOrderTicketInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus;
 
 /**
@@ -47,6 +51,14 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
     @Autowired
     private BusinessClient businessClient;
 
+    @Value("queryCharsetFlight")
+	private String queryCharsetFlight;
+
+	public Boolean getQueryCharsetFlight() {
+		return Boolean.valueOf(
+			 CustomizedPropertyPlaceholderConfigurer.getContextProperty(queryCharsetFlight)+"");
+	}
+	
     /**
      * 判断是不是包机的请求信息.
      * @param queryRequest
@@ -54,9 +66,12 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
      */
     private boolean isCharterFlight(FlightOrderQueryRequest queryRequest){
     	FitSuppMainOrderDto suppMainOrderDto = queryRequest.getFitSuppMainOrderDto();
-    	//判断主单里面的航班子单中是否有订单信息
-    	if(CollectionUtils.isEmpty(suppMainOrderDto.getFitSuppOrderDtos().get(0).getSuppFlightOrderDtos())){
-    		return true;
+    	//如果打开了包机查询的开关，就进行下面的逻辑判断。否则就默认不是包机查询的代码.
+    	if(getQueryCharsetFlight()){
+	    	//判断主单里面的航班子单中是否有订单信息
+	    	if(CollectionUtils.isEmpty(suppMainOrderDto.getFitSuppOrderDtos().get(0).getSuppFlightOrderDtos())){
+	    		return true;
+	    	}
     	}
     	return false;
     }
@@ -67,7 +82,7 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
         FitSuppMainOrderDto suppMainOrderDto = queryRequest.getFitSuppMainOrderDto();
         List<FlightOrderInsuranceDto> flightInsDtos = new ArrayList<FlightOrderInsuranceDto>();
         try {
-            logger.info("查询机票单品请求参数：" + JSONMapper.getInstance().writeValueAsString(queryRequest));
+            logger.info("查询机票单品请求参数：getQueryCharsetFlight==" + getQueryCharsetFlight());
             Map<String,String> tickeNoMap = new HashMap<String, String>();
             List<FitSuppFlightOrderDetailDto> suppFlightOrderDetailDtos = new ArrayList<FitSuppFlightOrderDetailDto>();
             if(!isCharterFlight(queryRequest)){
@@ -90,7 +105,9 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
 	                	    suppFlightOrderDto.setFlightOrderNo(viewDto.getFlightOrderDetailInfo().getOrderNo());
 	                	    suppFlightOrderDto.setBookingStatus(OrderBookingStatus.valueOf(viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getDetailBookingStatus().name()));
 	                	    suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(viewDto.getFlightOrderDetailInfo().getFlightOrderAmount()));
-	                        for (FlightOrderDetailDto flightOrderDetail : viewDto.getFlightOrderDetailInfo().getFlightOrderDetails()) {
+	                        
+	                	    //设置航意险列表
+	                	    for (FlightOrderDetailDto flightOrderDetail : viewDto.getFlightOrderDetailInfo().getFlightOrderDetails()) {
 	                            FlightOrderTicketInfoDto flightTicket = flightOrderDetail.getFlightOrderTicketInfo();
 	                            if(null != flightTicket && StringUtils.isNotBlank(flightTicket.getTicketNo())){
 	                        	    tickeNoMap.put(this.passengerKey(flightOrderDetail.getFlightOrderPassenger(),flightOrderDetail.getCombinationDetail().getFlightTripType()), flightTicket.getTicketNo());
@@ -100,6 +117,7 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
 	                            flightInsDtos.addAll(passenger.getFlightOrderInsurances());
 	                        }
 	                    }
+	                    
 	                    //2.  获取供应商订单航班信息详情信息
 	                    List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppOrder.getSuppFlightOrderDtos();
 	                    for (FitSuppFlightOrderDto suppFlightOrderDto : suppFlightOrderDtos) {
@@ -124,7 +142,9 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
             }
             //包机的处理方式，补全订单.
             else{
-            	//获取乘客key对应的票号信息
+            	List<FitSuppFlightOrderDto> suppFlightOrderDtos = new ArrayList<FitSuppFlightOrderDto>();
+            	 
+            	//循环主单对应的子单.
 	            for (FitSuppOrderDto suppOrder : suppMainOrderDto.getFitSuppOrderDtos()) {
 	            	if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(suppOrder.getCategoryId())){
 	            		//1. 获取乘客key对应的票号信息
@@ -135,12 +155,23 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
 	                    BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
 	                       
 	                    for (FlightOrderDetailViewDto viewDto : lvfResultDto.getResults()) {
-	                	    FitSuppFlightOrderDto suppFlightOrderDto = suppOrder.getByPassengerType(PassengerType.valueOf(
-	                	    viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name()));
-	                	    suppFlightOrderDto.setFlightOrderNo(viewDto.getFlightOrderDetailInfo().getOrderNo());
-	                	    suppFlightOrderDto.setBookingStatus(OrderBookingStatus.valueOf(viewDto.getFlightOrderDetailInfo().getFlightOrderDetails().get(0).getDetailBookingStatus().name()));
-	                	    suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(viewDto.getFlightOrderDetailInfo().getFlightOrderAmount()));
-	                        for (FlightOrderDetailDto flightOrderDetail : viewDto.getFlightOrderDetailInfo().getFlightOrderDetails()) {
+	                    	FlightOrderDetailInfoDto detailInfoDto = viewDto.getFlightOrderDetailInfo();
+	                    	//直接设置机票子单对象，就设置在去程上面看下.返程的先不设置。
+	                    	FitSuppFlightOrderDto suppFlightOrderDto = new FitSuppFlightOrderDto();
+	                    	suppFlightOrderDto.setSuppMainOrderId(suppMainOrderDto.getVstMainOrderNo());
+	                    	suppFlightOrderDto.setSuppOrderId(Long.valueOf(suppOrder.getVstOrderNo()));
+	                    	suppFlightOrderDto.setTripType(com.lvmama.lvfit.common.dto.enums.FlightTripType.DEPARTURE);
+//	                    	FitSuppFlightOrderDto suppFlightOrderDto = suppOrder.getByPassengerType(PassengerType.valueOf(
+//	                    			detailInfoDto.getFlightOrderDetails().get(0).getFlightOrderPassenger().getPassengerType().name()));
+	                    	//机票订单号
+	                	    suppFlightOrderDto.setFlightOrderNo(detailInfoDto.getOrderNo());
+	                	    //订单支付状态
+	                	    suppFlightOrderDto.setBookingStatus(OrderBookingStatus.valueOf(detailInfoDto.getFlightOrderDetails().get(0).getDetailBookingStatus().name()));
+	                	    //计算订单的金额
+	                	    suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(detailInfoDto.getFlightOrderAmount()));
+	                	    //设置航意险.
+	                        for (FlightOrderDetailDto flightOrderDetail : detailInfoDto.getFlightOrderDetails()) {
+	                        	//机票的出票信息.
 	                            FlightOrderTicketInfoDto flightTicket = flightOrderDetail.getFlightOrderTicketInfo();
 	                            if(null != flightTicket && StringUtils.isNotBlank(flightTicket.getTicketNo())){
 	                        	    tickeNoMap.put(this.passengerKey(flightOrderDetail.getFlightOrderPassenger(),flightOrderDetail.getCombinationDetail().getFlightTripType()), flightTicket.getTicketNo());
@@ -149,9 +180,12 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
 	                            FlightOrderPassengerDto passenger = flightOrderDetail.getFlightOrderPassenger();
 	                            flightInsDtos.addAll(passenger.getFlightOrderInsurances());
 	                        }
+	                        
+	                        suppFlightOrderDtos.add(suppFlightOrderDto);
 	                    }
-	                    //2.  获取供应商订单航班信息详情信息
-	                    List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppOrder.getSuppFlightOrderDtos();
+	                    
+	                    
+	                    //2.  获取供应商订单航班信息详情信息 
 	                    for (FitSuppFlightOrderDto suppFlightOrderDto : suppFlightOrderDtos) {
 	                        if(CollectionUtils.isNotEmpty(suppFlightOrderDto.getSuppFlightOrderDetailDtos())){
 	                            for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : suppFlightOrderDto.getSuppFlightOrderDetailDtos()) {
@@ -172,6 +206,9 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
 	            	suppOrderTicketInfoDto.setTicketNo(tickeNoMap.get(passengerKey));
 	            	suppFlightOrderDetailDto.setFitSuppOrderTicketInfoDto(suppOrderTicketInfoDto);
 				}
+	            
+	            //设置包机的航班信息.一对多。一个主单对应多个机票子单.
+	            suppMainOrderDto.setSuppFlightOrderDtos(suppFlightOrderDtos);
             }
         } catch (Exception e) {
             logger.error("查询机票单品详情异常：", e);

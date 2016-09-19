@@ -322,25 +322,17 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 	public FitFlightAmountDto calculateFlightAmount(AmountCalculatorRequest flightPriceRequest){
 		
 		FitFlightAmountDto flightAmountDto = null;
-		try {
-			AmountCalculatorDto amountCalculatorDto = fitFlightClient.amountCalculate(flightPriceRequest);
-			BigDecimal flightPrice = BigDecimal.ZERO;
-			BigDecimal flightPromotion = BigDecimal.ZERO;
-			flightPrice = flightPrice.add(amountCalculatorDto.getOrderTotalSalesAmount());
-			flightPromotion = flightPromotion.add(amountCalculatorDto.getOrderDiscountTotalAmount());
-			flightAmountDto = new FitFlightAmountDto();
-			flightAmountDto.setTotalAmount(flightPrice.add(flightPromotion).setScale(0, BigDecimal.ROUND_UP));
-			flightAmountDto.setTotalSalesAmount(flightPrice.setScale(0, BigDecimal.ROUND_UP));
-			flightAmountDto.setPromotionAmount(flightPromotion.setScale(0, BigDecimal.ROUND_UP));
-		} catch (Exception e) {
-			if(e instanceof ExceptionWrapper){
-				ExceptionWrapper ew = (ExceptionWrapper)e;
-				if(ew.getExceptionCode()==ExceptionCode.REMOTE_INVOKE){
-					throw ew;
-				}
-				throw new ExceptionWrapper(ExceptionCode.GET_FLIGHT_PRICE_FAIL);
-			}
-		} 
+
+		AmountCalculatorDto amountCalculatorDto = fitFlightClient.amountCalculate(flightPriceRequest);
+		BigDecimal flightPrice = BigDecimal.ZERO;
+		BigDecimal flightPromotion = BigDecimal.ZERO;
+		flightPrice = flightPrice.add(amountCalculatorDto.getOrderTotalSalesAmount());
+		flightPromotion = flightPromotion.add(amountCalculatorDto.getOrderDiscountTotalAmount());
+		flightAmountDto = new FitFlightAmountDto();
+		flightAmountDto.setTotalAmount(flightPrice.add(flightPromotion).setScale(0, BigDecimal.ROUND_UP));
+		flightAmountDto.setTotalSalesAmount(flightPrice.setScale(0, BigDecimal.ROUND_UP));
+		flightAmountDto.setPromotionAmount(flightPromotion.setScale(0, BigDecimal.ROUND_UP));
+
 	    return flightAmountDto;
 	}
 	

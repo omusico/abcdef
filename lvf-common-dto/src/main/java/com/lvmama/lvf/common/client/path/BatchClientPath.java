@@ -210,6 +210,7 @@ public enum BatchClientPath {
 
         /** 订单导入 */
         public final static String SAVE_ORDER_IMPORT = basePath + "/order/import/saveOrders";
+
     }
     
     private BatchClientPath(String path, String cnName) {

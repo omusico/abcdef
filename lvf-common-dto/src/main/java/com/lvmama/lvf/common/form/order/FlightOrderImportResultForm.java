@@ -255,4 +255,11 @@ public class FlightOrderImportResultForm implements Serializable, Form {
 		this.statusCnName = statusCnName;
 	}
 
+	public Long getOrderMainId() {
+		return flightOrderImportDto.getOrderMainId();
+	}
+
+	public void setOrderMainId(Long orderMainId) {
+		flightOrderImportDto.setOrderMainId(orderMainId);
+	}
 }

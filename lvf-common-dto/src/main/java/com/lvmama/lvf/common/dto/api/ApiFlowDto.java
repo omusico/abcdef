@@ -26,6 +26,8 @@ public class ApiFlowDto extends Entity implements Serializable{
 	
 	/**用户ip*/
 	private String ip;
+	//设备号
+	private String equipmentNo;
 	
 	/**地区*/
 	private String location;
@@ -167,4 +169,13 @@ public class ApiFlowDto extends Entity implements Serializable{
 		this.gid = gid;
 	}
 
+	public String getEquipmentNo() {
+		return equipmentNo;
+	}
+
+	public void setEquipmentNo(String equipmentNo) {
+		this.equipmentNo = equipmentNo;
+	}
+	
+	
 }

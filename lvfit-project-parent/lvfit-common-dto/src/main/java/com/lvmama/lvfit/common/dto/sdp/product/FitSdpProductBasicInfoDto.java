@@ -93,6 +93,16 @@ public class FitSdpProductBasicInfoDto  extends Entity {
 		return packCharterFlightFlag;
 	}
 
+	private String productShowName;
+
+	public String getProductShowName() {
+		return productShowName;
+	}
+
+	public void setProductShowName(String productShowName) {
+		this.productShowName = productShowName;
+	}
+
 	public void setPackCharterFlightFlag(JudgeType packCharterFlightFlag) {
 		this.packCharterFlightFlag = packCharterFlightFlag;
 	}

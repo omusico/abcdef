@@ -40,7 +40,7 @@
 
 			function initGrid() 
 			{
-				var colNames = ['ID','UUID', '回调订单ID','VST订单主编号','VST订单编号','CALL请求STR','往返类型','回调结果','回调时间','创建时间','更新时间','CALL请求STR2','操作'];
+				var colNames = ['ID','UUID', '回调订单ID','VST主单号','VST子单号','CALL请求STR','往返类型','回调结果','回调时间','创建时间','更新时间','CALL请求STR2','操作'];
 
 				var cols = [
 					{
@@ -180,7 +180,7 @@
 					return '';
 				}else{
 	    			return  "<a href='javascript:void(0);' onclick='handleFlightBack("+rowObject.vstOrderMainNo+")' style='color:blue;'>手动回调(按主订单)"+ "</a>"+
-	    			" <br><a href='javascript:void(0);' onclick='handleFlightBackDetail("+rowObject.vstOrderMainNo+","+rowObject.vstOrderNo+")' style='color:blue;'>手动回调(按订单)"+ "</a>";
+	    			" <br><a href='javascript:void(0);' onclick='handleFlightBackDetail("+rowObject.vstOrderMainNo+","+rowObject.vstOrderNo+")' style='color:blue;'>手动回调(按子订单)"+ "</a>";
     			}
     		}
     		

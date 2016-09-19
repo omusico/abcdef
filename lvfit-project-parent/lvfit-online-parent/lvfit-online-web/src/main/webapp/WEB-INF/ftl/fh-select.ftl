@@ -159,7 +159,7 @@
                     <div class="fh-input-group fh-input-group-adult">
                         <input type="hidden" class="JS_people_num" name="adultsCount" id="adultsCount" value="${searchform.adultsCount}"><!-- 隐藏域 存储成人人数 -->
                             <div class="select-div select-people">
-                                <span id = "adault">${searchform.adultsCount}</span>
+                                <span id = "adultCountSpan">${searchform.adultsCount}</span>
                                 <em>成人</em>
                                 <i></i>
                             </div>
@@ -178,7 +178,7 @@
                         <div class="fh-input-group fh-input-group-child">
                             <input type="hidden" class="JS_people_num JS_child_num" name="childCount" id="childCount" value="${searchform.childCount}"><!-- 隐藏域 存储儿童人数 -->
                             <div class="select-div select-people">
-                                <span id="childNum">${searchform.childCount}</span>
+                                <span id="childCountSpan">${searchform.childCount}</span>
                                 <em>儿童（2-12岁）</em>
                                 <i></i>
                             </div>
@@ -613,7 +613,7 @@
         <div class="prompt">提示</div>
         <div class="sorryWarp">
             <div class="sorryImg"></div>
-            <p id ='errorMsgOutTime'>航班已售完，请重新查询</p>
+            <p>您选择的航班已售完，请更换条件重新查询</p>
         </div>
         <div class="sorryBtn">
             <input id="reloadUrl" type="hidden" value=""/>
@@ -648,7 +648,7 @@
 
     <input id="_requestPath" type="hidden" value="${request.contextPath}">
     <input id="isBackBooking" type="hidden" value="${isBackBooking}">
-    <input id="errorMsgOutTime" type="hidden" value="${errorMsgOutTime}">
+    <input id="errorMsgOutTime" type="hidden" value="${errorMsg}">
 
     <#include "hotel/hotel_detail.ftl"/>
     <!-- 正在加载弹层 END-->

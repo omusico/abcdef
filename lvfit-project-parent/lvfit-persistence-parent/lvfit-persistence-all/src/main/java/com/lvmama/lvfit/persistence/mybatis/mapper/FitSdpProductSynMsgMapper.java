@@ -14,20 +14,20 @@ public interface FitSdpProductSynMsgMapper{
 	 */
 	void insert(FitSdpProductSyncMsgDto syncMsgDto);
 	
-	/**
-	 * 查询同步信息列表
-	 * @param id
-	 * @param curSyncFlag
-	 * @return
-	 */
-	List<FitSdpProductSyncMsgDto> querySynMsgList(BaseQueryDto<Long> baseQuery);
 	
 	/**
 	 * 查询所有同步信息
 	 * @param 
 	 * @return
 	 */
-	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery);
+	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery);
+
+	/**
+	 * 查询所有同步记录数
+	 * @param 
+	 * @return
+	 */
+	int countSdpProductSynMsg(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery);
 
 	
 }

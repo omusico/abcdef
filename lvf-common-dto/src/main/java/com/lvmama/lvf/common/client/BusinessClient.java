@@ -1,71 +1,13 @@
 package com.lvmama.lvf.common.client;
 
-import com.lvmama.lvf.common.client.path.BussinessClientPath;
-import com.lvmama.lvf.common.dto.*;
-import com.lvmama.lvf.common.dto.adapter.request.insurance.FlightInsuranceRequest;
-import com.lvmama.lvf.common.dto.adapter.request.insurance.InsuranceInfoRequest;
-import com.lvmama.lvf.common.dto.adapter.request.insurance.InsuranceOrderRequest;
-import com.lvmama.lvf.common.dto.adapter.response.FlightSuppOrderChangeInfoDto;
-import com.lvmama.lvf.common.dto.adapter.response.FlightSuppOrderRefundableResponse;
-import com.lvmama.lvf.common.dto.adapter.response.SuppResponse;
-import com.lvmama.lvf.common.dto.api.ApiCacheConfigDto;
-import com.lvmama.lvf.common.dto.api.ApiFlowCountDto;
-import com.lvmama.lvf.common.dto.api.ApiFlowDto;
-import com.lvmama.lvf.common.dto.audit.AuditOpDto;
-import com.lvmama.lvf.common.dto.booking.BookingPassengerTypeAndAmountDto;
-import com.lvmama.lvf.common.dto.booking.FlightOrderIntentionRecordDto;
-import com.lvmama.lvf.common.dto.booking.FlightOrderRequestRecordDto;
-import com.lvmama.lvf.common.dto.calculator.*;
-import com.lvmama.lvf.common.dto.enums.AuditType;
-import com.lvmama.lvf.common.dto.flight.FlightInfoDto;
-import com.lvmama.lvf.common.dto.flight.price.FlightPriceInfoDto;
-import com.lvmama.lvf.common.dto.flight.price.FlightPriceInventoryDto;
-import com.lvmama.lvf.common.dto.flight.price.FlightPricePolicyDto;
-import com.lvmama.lvf.common.dto.insurance.InsuranceInfoDto;
-import com.lvmama.lvf.common.dto.insurance.InsuranceOrderDto;
-import com.lvmama.lvf.common.dto.insurance.InsuranceOrderListDto;
-import com.lvmama.lvf.common.dto.md.*;
-import com.lvmama.lvf.common.dto.notice.NoticeInfoDto;
-import com.lvmama.lvf.common.dto.order.*;
-import com.lvmama.lvf.common.dto.order.pay.FlightOrderPayAmountInfo;
-import com.lvmama.lvf.common.dto.order.pay.FlightOrderPayInfoDto;
-import com.lvmama.lvf.common.dto.order.pay.FlightOrderPaymentDto;
-import com.lvmama.lvf.common.dto.order.pay.FlightOrderRefundDto;
-import com.lvmama.lvf.common.dto.order.result.FlightOrderAuditOpDto;
-import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderDetailInfoDto;
-import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderDetailViewDto;
-import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderPassengerDetailViewDto;
-import com.lvmama.lvf.common.dto.order.result.list.FlightOrderListDto;
-import com.lvmama.lvf.common.dto.order.status.FlightOrderStatusDto;
-import com.lvmama.lvf.common.dto.request.*;
-import com.lvmama.lvf.common.dto.response.FlightSeatPolicyResponse;
-import com.lvmama.lvf.common.dto.sales.Sales;
-import com.lvmama.lvf.common.dto.sales.SalesRuleDisableDto;
-import com.lvmama.lvf.common.dto.sales.SalesRuleSourceDto;
-import com.lvmama.lvf.common.dto.sales.SalesRuleSuppDto;
-import com.lvmama.lvf.common.dto.schedule.TaskConfigDto;
-import com.lvmama.lvf.common.dto.search.result.FlightSearchFlightInfoDto;
-import com.lvmama.lvf.common.dto.search.result.FlightSearchTicketRuleSimpleDto;
-import com.lvmama.lvf.common.dto.settlement.SettlementOrderDto;
-import com.lvmama.lvf.common.dto.sms.SmsSendDto;
-import com.lvmama.lvf.common.dto.status.OpSource;
-import com.lvmama.lvf.common.dto.status.OpType;
-import com.lvmama.lvf.common.dto.status.ResultStatus;
-import com.lvmama.lvf.common.dto.supp.*;
-import com.lvmama.lvf.common.dto.ticket.*;
-import com.lvmama.lvf.common.dto.vst.*;
-import com.lvmama.lvf.common.exception.ExceptionCode;
-import com.lvmama.lvf.common.exception.ExceptionWrapper;
-import com.lvmama.lvf.common.form.config.VSTTaskConfigRequestForm;
-import com.lvmama.lvf.common.form.config.VSTTaskConfigResponseForm;
-import com.lvmama.lvf.common.form.vst.VSTBasicFlightRequestForm;
-import com.lvmama.lvf.common.form.vst.VSTGoodsTimePriceRequestForm;
-import com.lvmama.lvf.common.form.vst.VSTProductBranchRequestForm;
-import com.lvmama.lvf.common.form.vst.VSTTrafficFlightRequestForm;
-import com.lvmama.lvf.common.trace.profile.Profile;
-import com.lvmama.lvf.common.trace.profile.ProfilePoint;
-import com.lvmama.lvf.common.utils.JSONMapper;
-import com.lvmama.lvf.common.utils.StringUtil;
+import static com.lvmama.lvf.common.client.path.BussinessClientPath.PAY_AMOUNT_INFO;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
@@ -80,13 +22,172 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.lvmama.lvf.common.client.path.BussinessClientPath.PAY_AMOUNT_INFO;
+import com.lvmama.lvf.common.client.path.BussinessClientPath;
+import com.lvmama.lvf.common.dto.BaseQueryDto;
+import com.lvmama.lvf.common.dto.BaseReponseHandle;
+import com.lvmama.lvf.common.dto.BaseReponseHandleT;
+import com.lvmama.lvf.common.dto.BaseResponseDto;
+import com.lvmama.lvf.common.dto.BaseResultDto;
+import com.lvmama.lvf.common.dto.BaseSingleResultDto;
+import com.lvmama.lvf.common.dto.BusinessType;
+import com.lvmama.lvf.common.dto.OpLog;
+import com.lvmama.lvf.common.dto.adapter.request.insurance.FlightInsuranceRequest;
+import com.lvmama.lvf.common.dto.adapter.request.insurance.InsuranceInfoRequest;
+import com.lvmama.lvf.common.dto.adapter.request.insurance.InsuranceOrderRequest;
+import com.lvmama.lvf.common.dto.adapter.response.FlightSuppOrderChangeInfoDto;
+import com.lvmama.lvf.common.dto.adapter.response.FlightSuppOrderRefundableResponse;
+import com.lvmama.lvf.common.dto.adapter.response.SuppResponse;
+import com.lvmama.lvf.common.dto.api.ApiCacheConfigDto;
+import com.lvmama.lvf.common.dto.api.ApiFlowCountDto;
+import com.lvmama.lvf.common.dto.api.ApiFlowDto;
+import com.lvmama.lvf.common.dto.audit.AuditOpDto;
+import com.lvmama.lvf.common.dto.booking.BookingPassengerTypeAndAmountDto;
+import com.lvmama.lvf.common.dto.booking.FlightOrderIntentionRecordDto;
+import com.lvmama.lvf.common.dto.booking.FlightOrderRequestRecordDto;
+import com.lvmama.lvf.common.dto.calculator.AmountCalculatorDto;
+import com.lvmama.lvf.common.dto.calculator.AmountCalculatorRequest;
+import com.lvmama.lvf.common.dto.calculator.ChildrenCalculatorRequest;
+import com.lvmama.lvf.common.dto.calculator.ExpressInfoRequest;
+import com.lvmama.lvf.common.dto.calculator.FlightTicketPriceDto;
+import com.lvmama.lvf.common.dto.enums.AuditType;
+import com.lvmama.lvf.common.dto.flight.FlightInfoDto;
+import com.lvmama.lvf.common.dto.flight.price.FlightPriceInfoDto;
+import com.lvmama.lvf.common.dto.flight.price.FlightPriceInventoryDto;
+import com.lvmama.lvf.common.dto.flight.price.FlightPricePolicyDto;
+import com.lvmama.lvf.common.dto.insurance.InsuranceInfoDto;
+import com.lvmama.lvf.common.dto.insurance.InsuranceOrderDto;
+import com.lvmama.lvf.common.dto.insurance.InsuranceOrderListDto;
+import com.lvmama.lvf.common.dto.md.Airport;
+import com.lvmama.lvf.common.dto.md.Carrier;
+import com.lvmama.lvf.common.dto.md.City;
+import com.lvmama.lvf.common.dto.md.ExpressWay;
+import com.lvmama.lvf.common.dto.md.FlightOfficeDto;
+import com.lvmama.lvf.common.dto.md.InsuranceClass;
+import com.lvmama.lvf.common.dto.md.SeatClass;
+import com.lvmama.lvf.common.dto.md.SmsLogDto;
+import com.lvmama.lvf.common.dto.notice.NoticeInfoDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderContacterDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderDetailDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderExpressDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderExpressListDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderFlightChangeInfoDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderImportDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderImportRecordDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderInsuranceDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderLinkInfoDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderPNRInfoDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderRemarkDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderSalesOrderRelationDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderTicketInfoDto;
+import com.lvmama.lvf.common.dto.order.FlightOrderVstDto;
+import com.lvmama.lvf.common.dto.order.OrderMainDto;
+import com.lvmama.lvf.common.dto.order.OrderOpLogDto;
+import com.lvmama.lvf.common.dto.order.pay.FlightOrderPayAmountInfo;
+import com.lvmama.lvf.common.dto.order.pay.FlightOrderPayInfoDto;
+import com.lvmama.lvf.common.dto.order.pay.FlightOrderPaymentDto;
+import com.lvmama.lvf.common.dto.order.pay.FlightOrderRefundDto;
+import com.lvmama.lvf.common.dto.order.result.FlightOrderAuditOpDto;
+import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderDetailInfoDto;
+import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderDetailViewDto;
+import com.lvmama.lvf.common.dto.order.result.detail.FlightOrderPassengerDetailViewDto;
+import com.lvmama.lvf.common.dto.order.result.list.FlightOrderListDto;
+import com.lvmama.lvf.common.dto.order.status.FlightOrderStatusDto;
+import com.lvmama.lvf.common.dto.request.ApiCacheConfigRequest;
+import com.lvmama.lvf.common.dto.request.ApiFlowQueryRequest;
+import com.lvmama.lvf.common.dto.request.FlightCommonQueryRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderAuditOpRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderBookingAgainRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderBookingRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderCancelRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderExpressQueryRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderFlightChangeInfoRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderImportAuditRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderImportRecordRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderImportRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderIntentionRecordRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderModifyRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderOfflinePayRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderOfflineRefundRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderPayInfoRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderPayRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderRefundInfoRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderRefundRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderRequestRecordRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderSalesOrderRelationRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderSettlementRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderTicketCTMTAutoRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderTicketCTMTRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderTicketIssueRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderTicketPrintRequest;
+import com.lvmama.lvf.common.dto.request.FlightOrderTicketRTVTRequest;
+import com.lvmama.lvf.common.dto.request.FlightPriceInfoRequest;
+import com.lvmama.lvf.common.dto.request.FlightPriceInventoryRequest;
+import com.lvmama.lvf.common.dto.request.FlightPricePolicyRequest;
+import com.lvmama.lvf.common.dto.request.FlightSuppOrderQueryRequest;
+import com.lvmama.lvf.common.dto.request.FlightTicketBSPDetailRequest;
+import com.lvmama.lvf.common.dto.request.FlightTicketBSPStatisticsRequest;
+import com.lvmama.lvf.common.dto.request.FlightTicketBSPStoreRequest;
+import com.lvmama.lvf.common.dto.request.FlightTicketBSPStoreSearchRequest;
+import com.lvmama.lvf.common.dto.request.NoticeInfoRequest;
+import com.lvmama.lvf.common.dto.request.OpLogQueryRequest;
+import com.lvmama.lvf.common.dto.request.SalesRuleDisableRequest;
+import com.lvmama.lvf.common.dto.request.SalesRuleSourceRequest;
+import com.lvmama.lvf.common.dto.request.SalesRuleSuppRequest;
+import com.lvmama.lvf.common.dto.request.SettlementOrderRequest;
+import com.lvmama.lvf.common.dto.request.SmsBatchSendRequest;
+import com.lvmama.lvf.common.dto.request.SmsLogQueryRequest;
+import com.lvmama.lvf.common.dto.request.SmsSendRequest;
+import com.lvmama.lvf.common.dto.request.SuppBookingRequest;
+import com.lvmama.lvf.common.dto.request.TaskConfigQueryRequest;
+import com.lvmama.lvf.common.dto.request.ToSuppBookingRequest;
+import com.lvmama.lvf.common.dto.request.VSTOrderRequest;
+import com.lvmama.lvf.common.dto.response.FlightSeatPolicyResponse;
+import com.lvmama.lvf.common.dto.sales.Sales;
+import com.lvmama.lvf.common.dto.sales.SalesRuleDisableDto;
+import com.lvmama.lvf.common.dto.sales.SalesRuleSourceDto;
+import com.lvmama.lvf.common.dto.sales.SalesRuleSuppDto;
+import com.lvmama.lvf.common.dto.schedule.TaskConfigDto;
+import com.lvmama.lvf.common.dto.search.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvf.common.dto.search.result.FlightSearchTicketRuleSimpleDto;
+import com.lvmama.lvf.common.dto.settlement.SettlementOrderDto;
+import com.lvmama.lvf.common.dto.sms.SmsSendDto;
+import com.lvmama.lvf.common.dto.status.OpSource;
+import com.lvmama.lvf.common.dto.status.OpType;
+import com.lvmama.lvf.common.dto.status.ResultStatus;
+import com.lvmama.lvf.common.dto.supp.FlightOrderSuppOrderDto;
+import com.lvmama.lvf.common.dto.supp.FlightOrderSuppOrderMainDto;
+import com.lvmama.lvf.common.dto.supp.FlightOrderSuppOrderRefundDto;
+import com.lvmama.lvf.common.dto.supp.FlightOrderSuppOrderStatusDto;
+import com.lvmama.lvf.common.dto.supp.FlightSupOrderDetailViewDto;
+import com.lvmama.lvf.common.dto.supp.FlightSupOrderDto;
+import com.lvmama.lvf.common.dto.supp.Supp;
+import com.lvmama.lvf.common.dto.ticket.FlightTicketBSPDetailDelegate;
+import com.lvmama.lvf.common.dto.ticket.FlightTicketBSPDetailDto;
+import com.lvmama.lvf.common.dto.ticket.FlightTicketBSPDto;
+import com.lvmama.lvf.common.dto.ticket.FlightTicketBSPStatisticsDto;
+import com.lvmama.lvf.common.dto.ticket.FlightTicketBSPStorageDto;
+import com.lvmama.lvf.common.dto.ticket.FlightTicketDetailDto;
+import com.lvmama.lvf.common.dto.vst.FlightVstBasicFlightDto;
+import com.lvmama.lvf.common.dto.vst.FlightVstGoodsDto;
+import com.lvmama.lvf.common.dto.vst.FlightVstGoodsTimePriceDto;
+import com.lvmama.lvf.common.dto.vst.FlightVstProductBranchDto;
+import com.lvmama.lvf.common.dto.vst.FlightVstProductDto;
+import com.lvmama.lvf.common.dto.vst.FlightVstTrafficFlightDto;
+import com.lvmama.lvf.common.dto.vst.VSTSyncConfigDto;
+import com.lvmama.lvf.common.dto.vst.VstTaskConfigDto;
+import com.lvmama.lvf.common.exception.ExceptionCode;
+import com.lvmama.lvf.common.exception.ExceptionWrapper;
+import com.lvmama.lvf.common.form.config.VSTTaskConfigRequestForm;
+import com.lvmama.lvf.common.form.config.VSTTaskConfigResponseForm;
+import com.lvmama.lvf.common.form.vst.VSTBasicFlightRequestForm;
+import com.lvmama.lvf.common.form.vst.VSTGoodsTimePriceRequestForm;
+import com.lvmama.lvf.common.form.vst.VSTProductBranchRequestForm;
+import com.lvmama.lvf.common.form.vst.VSTTrafficFlightRequestForm;
+import com.lvmama.lvf.common.trace.profile.Profile;
+import com.lvmama.lvf.common.trace.profile.ProfilePoint;
+import com.lvmama.lvf.common.utils.JSONMapper;
+import com.lvmama.lvf.common.utils.StringUtil;
 
 /**
  * 业务接口远程调用类
@@ -3755,6 +3856,29 @@ public class BusinessClient {
 	}
 	
 	/**
+	 * 按条件查询操作黑名单日志List
+	 * @param baseQueryDto
+	 * @return
+	 */
+	public BaseResultDto<OpLog> queryOpBlackLogList(String businessId, String businessNo, Integer page, Integer rows) 
+			throws JsonParseException, JsonMappingException, IOException {
+		BussinessClientPath command = BussinessClientPath.QUERY_OP_BLACK_LOG_LIST;
+		String url = command.url(baseUrl,businessId,businessNo,page,rows);
+		try {
+			String resultString = restClient.get(url, String.class);
+			if(StringUtil.isEmptyString(resultString)) {
+				return null;
+			}
+			return JSONMapper.getInstance().readValue(
+					resultString, new TypeReference<BaseResultDto<OpLog>>() {});
+		} catch (ExceptionWrapper ew) {
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		}
+	}
+	
+	
+	/**
 	 * 查询VST同步信息
 	 * @param baseQueryDto
 	 * @return
@@ -5700,7 +5824,8 @@ public class BusinessClient {
 		try {
 			ObjectMapper objectMapper = JSONMapper.getInstance();
 			String jsonResult = restClient.get(url, String.class);
-			return objectMapper.readValue(jsonResult, new TypeReference<BaseReponseHandleT<Boolean>>(){});
+			return objectMapper.readValue(jsonResult, new TypeReference<BaseReponseHandleT<Boolean>>() {
+			});
 		} catch (ExceptionWrapper ew) {
 			logger.error(ew.getErrMessage(),ew);
 			throw ew;
@@ -5708,5 +5833,62 @@ public class BusinessClient {
 			logger.error(e.getMessage(), e);
 		}
 		return null;
+	}
+	
+	/**
+	 * 导单审核列表
+	 * @param request
+	 * @return
+	 */
+	public BaseResultDto<FlightOrderImportDto> queryOrderImportAuditList(BaseQueryDto<FlightOrderImportAuditRequest> request){
+		BussinessClientPath command = BussinessClientPath.QUERY_ORDER_IMPORT_AUDIT_LIST;
+		String url = command.url(baseUrl);
+		try {
+			ObjectMapper objectMapper = JSONMapper.getInstance();
+			String jsonResult = restClient.post(url, String.class, request);
+			return objectMapper.readValue(jsonResult, new TypeReference<BaseResultDto<FlightOrderImportDto>>(){});
+		} catch (ExceptionWrapper ew) {
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	/**
+	 * 导入订单审核&出票
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public ResultStatus auditIssueImportOrder(
+			AuditOpDto<FlightOrderTicketIssueRequest> request)
+			throws JsonParseException, JsonMappingException, IOException {
+		BussinessClientPath command = BussinessClientPath.AUDIT_ISSUE_IMPORT_ORDER;
+		String url = command.url(baseUrl);
+		try {
+			return restClient.post(url, ResultStatus.class, request);
+		} catch (ExceptionWrapper ew) {
+			//ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url)+ew.getErrMessage());
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		}
+	}
+
+	/**
+	 * 制单
+	 * @param importId
+	 * @return
+	 */
+	public BaseSingleResultDto generateOrderByImportId(Long importId) {
+		BussinessClientPath command = BussinessClientPath.GENERATE_ORDER_IMPORT_BY_IMPORT_ID;
+		String url = command.url(baseUrl, importId);
+		try {
+			return restClient.get(url, BaseSingleResultDto.class);
+		} catch (ExceptionWrapper ew) {
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		}
 	}
 }

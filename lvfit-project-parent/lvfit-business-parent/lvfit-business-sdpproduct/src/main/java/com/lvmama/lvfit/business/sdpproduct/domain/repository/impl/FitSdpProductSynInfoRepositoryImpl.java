@@ -53,10 +53,6 @@ public class FitSdpProductSynInfoRepositoryImpl implements FitSdpProductSearchSy
 		return 0;
 	}
 
-	@Override
-	public List<FitSdpProductSyncMsgDto> querySynMsgList(BaseQueryDto<Long> baseQuery) {
-		return fitSdpProductSynMsgMapper.querySynMsgList(baseQuery);
-	}
 
 	@Override
 	public void saveSyncMsgDto(FitSdpProductSyncMsgDto syncMsgDto) {
@@ -64,8 +60,13 @@ public class FitSdpProductSynInfoRepositoryImpl implements FitSdpProductSearchSy
 	}
 
 	@Override
-	public List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery) {
+	public List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery) {
 		return fitSdpProductSynMsgMapper.querySdpProductSynMsgInfo(baseQuery);
+	}
+
+	@Override
+	public int countSdpProductSynMsg(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery) {
+		return fitSdpProductSynMsgMapper.countSdpProductSynMsg(baseQuery);
 	}
 
 }

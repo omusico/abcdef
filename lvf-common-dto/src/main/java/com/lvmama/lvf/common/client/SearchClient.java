@@ -19,6 +19,8 @@ import com.lvmama.lvf.common.cache.CacheKey;
 import com.lvmama.lvf.common.cache.CachePoint;
 import com.lvmama.lvf.common.client.path.SearchClientPath;
 import com.lvmama.lvf.common.dto.flight.FlightDayPriceAllInOneDto;
+import com.lvmama.lvf.common.dto.flight.FlightInfoDailyDto;
+import com.lvmama.lvf.common.dto.request.FlightInfoDailyQueryRequest;
 import com.lvmama.lvf.common.dto.request.FlightQueryRequest;
 import com.lvmama.lvf.common.dto.request.FlightTicketRequest;
 import com.lvmama.lvf.common.dto.search.FlightSearchResult;
@@ -100,25 +102,25 @@ public class SearchClient extends SolrClient{
      * @throws JsonMappingException
      * @throws IOException
      */
-    public FlightSearchResult<FlightSearchFlightInfoDto> verify(FlightQueryRequest request) throws Exception{
-    	SearchClientPath command = SearchClientPath.FLIGHT_VERIFY;
-    	String url = command.url(baseUrl);
-    	try{
-    		String st = restClient.post(url, String.class,request);
-    		if(st == null || st.equals("")){
-    			return null;
-    		}
-    		FlightSearchResult<FlightSearchFlightInfoDto> results = JSONMapper
-    				.getInstance()
-    				.readValue(
-    						st,
-    						new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
-    						});
-    		return results;
-    	}catch(ExceptionWrapper ew){
-    		throw ew;
-    	}
-    }
+//    public FlightSearchResult<FlightSearchFlightInfoDto> verify(FlightQueryRequest request) throws Exception{
+//    	SearchClientPath command = SearchClientPath.FLIGHT_VERIFY;
+//    	String url = command.url(baseUrl);
+//    	try{
+//    		String st = restClient.post(url, String.class,request);
+//    		if(st == null || st.equals("")){
+//    			return null;
+//    		}
+//    		FlightSearchResult<FlightSearchFlightInfoDto> results = JSONMapper
+//    				.getInstance()
+//    				.readValue(
+//    						st,
+//    						new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
+//    						});
+//    		return results;
+//    	}catch(ExceptionWrapper ew){
+//    		throw ew;
+//    	}
+//    }
 	
 	/**
      * 查询航班及舱位或客票信息
@@ -162,42 +164,42 @@ public class SearchClient extends SolrClient{
     }
     
     
-	/**
-     * 查询航班列表
-     * @param request
-     * @return
-     * @throws JsonParseException
-     * @throws JsonMappingException
-     * @throws IOException
-     */
-    @ProfilePoint(Profile.SEARCH_FLIGHT_INFO_FROM_CLIENT)
+//	/**
+//     * 查询航班列表
+//     * @param request
+//     * @return
+//     * @throws JsonParseException
+//     * @throws JsonMappingException
+//     * @throws IOException
+//     */
+//    @ProfilePoint(Profile.SEARCH_FLIGHT_INFO_FROM_CLIENT)
+////    @CachePoint(CacheBoxConvert.FlightSearchResult)
+//    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlightsNoCache(@CacheKey FlightQueryRequest request) throws Exception{
+//        logger.info("查询航班进入时间点 :SEARCH_FLIGHT_INFO_FROM_CLIENT " + (System.currentTimeMillis()));
+//    	SearchClientPath command = SearchClientPath.FLIGHT_LIST_SEARCH;
+//    	String url = command.url(baseUrl);
+//    	try{
+//    		String st = restClient.post(url, String.class,request);
+//    		if(st == null || st.equals("")){
+//    			return null;
+//    		}
+//    		FlightSearchResult<FlightSearchFlightInfoDto> results = JSONMapper
+//    				.getInstance()
+//    				.readValue(
+//    						st,
+//    						new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
+//    						});
+//    		return results;
+//    	}catch(ExceptionWrapper ew){
+//    		throw ew;
+//    	}
+//    }
+//    
+//    @ProfilePoint(Profile.SEARCH_FLIGHT_INFO_FROM_CLIENT)
 //    @CachePoint(CacheBoxConvert.FlightSearchResult)
-    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlightsNoCache(@CacheKey FlightQueryRequest request) throws Exception{
-        logger.info("查询航班进入时间点 :SEARCH_FLIGHT_INFO_FROM_CLIENT " + (System.currentTimeMillis()));
-    	SearchClientPath command = SearchClientPath.FLIGHT_LIST_SEARCH;
-    	String url = command.url(baseUrl);
-    	try{
-    		String st = restClient.post(url, String.class,request);
-    		if(st == null || st.equals("")){
-    			return null;
-    		}
-    		FlightSearchResult<FlightSearchFlightInfoDto> results = JSONMapper
-    				.getInstance()
-    				.readValue(
-    						st,
-    						new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
-    						});
-    		return results;
-    	}catch(ExceptionWrapper ew){
-    		throw ew;
-    	}
-    }
-    
-    @ProfilePoint(Profile.SEARCH_FLIGHT_INFO_FROM_CLIENT)
-    @CachePoint(CacheBoxConvert.FlightSearchResult)
-    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlights(@CacheKey FlightQueryRequest request) throws Exception{
-    	return getSearchFlightsNoCache(request);
-    }
+//    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlights(@CacheKey FlightQueryRequest request) throws Exception{
+//    	return getSearchFlightsNoCache(request);
+//    }
     
     /**
      * 根据航班查询客规信息
@@ -239,4 +241,90 @@ public class SearchClient extends SolrClient{
     	}
     }
     
+
+    /**
+     * 输入出发城市、到达城市及起飞日期，返回该城市对的航班list及对应的航班信息
+     * @param request
+     * @return
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @ProfilePoint(Profile.GET_FLIGHTINFODAILY_FROM_CLIENT)
+	public List<FlightInfoDailyDto> getFlightInfoDailyByDeptCityArrCityDeptDate(FlightInfoDailyQueryRequest request) throws JsonParseException,
+			JsonMappingException, IOException {
+		SearchClientPath command = SearchClientPath.FLIGHT_INFO_DAILY_DEPTCITY_ARRCITY_DEPTDATE_SEARCH;
+		String url = command.url(baseUrl);
+		try {
+//			url = "http://localhost:8301/flight/getFlightDailyByDeptCityArrCityDeptDate";
+			String st = restClient.post(url, String.class, request);
+			List<FlightInfoDailyDto> dtos = JSONMapper
+					.getInstance()
+					.readValue(
+							st,
+							new TypeReference<List<FlightInfoDailyDto>>() {
+							});
+
+			return dtos;
+		} catch (ExceptionWrapper ew) {
+			//ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url)+ew.getErrMessage());
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		}
+    }
+    
+    /**
+     * 输入航班号及起飞日期，返回该航班的相关信息
+     * @param request
+     * @return
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @ProfilePoint(Profile.GET_FLIGHTINFODAILYBYFLIGHTNO_FROM_CLIENT)
+	public List<FlightInfoDailyDto> getFlightInfoDailyByFlightNoDeptDate(FlightInfoDailyQueryRequest request) throws JsonParseException,
+			JsonMappingException, IOException {
+		SearchClientPath command = SearchClientPath.FLIGHT_INFO_DAILY_FLIGHTNO_DEPTDATE_SEARCH;
+		String url = command.url(baseUrl);
+		try {
+//			url = "http://localhost:8301/flight/getFlightDailyByFlightNoDeptDate";
+			String st = restClient.post(url, String.class, request);
+			List<FlightInfoDailyDto> dtos = JSONMapper
+					.getInstance()
+					.readValue(
+							st,
+							new TypeReference<List<FlightInfoDailyDto>>() {
+							});
+
+			return dtos;
+		} catch (ExceptionWrapper ew) {
+			//ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url)+ew.getErrMessage());
+			logger.error(ew.getErrMessage(),ew);
+			throw ew;
+		}
+    }
+    
+    @ProfilePoint(Profile.GET_FLIGHTINFOAIRLINEBYCARRIER_FROM_CLIENT)
+   	public List<FlightInfoDailyDto> getFlightInfoAirLineByCarrier(FlightInfoDailyQueryRequest request) throws JsonParseException,
+   			JsonMappingException, IOException {
+   		SearchClientPath command = SearchClientPath.FLIGHT_INFO_DAILY_AIRLINE_SEARCH;
+   		String url = command.url(baseUrl);
+   		try {
+//   			url = "http://localhost:8301/flight/getAirLineInfoByCarrier";
+   			String st = restClient.post(url, String.class, request);
+   			List<FlightInfoDailyDto> dtos = JSONMapper
+   					.getInstance()
+   					.readValue(
+   							st,
+   							new TypeReference<List<FlightInfoDailyDto>>() {
+   							});
+
+   			return dtos;
+   		} catch (ExceptionWrapper ew) {
+   			//ew.setErrMessage(ExceptionCode.REMOTE_INVOKE.errMessage(command.cnName, url)+ew.getErrMessage());
+   			logger.error(ew.getErrMessage(),ew);
+   			throw ew;
+   		}
+       }
+
 }

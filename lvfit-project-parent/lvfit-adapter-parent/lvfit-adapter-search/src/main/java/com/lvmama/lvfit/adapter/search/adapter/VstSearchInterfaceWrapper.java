@@ -1,14 +1,15 @@
 package com.lvmama.lvfit.adapter.search.adapter;
 
-import java.util.Date;
-import java.util.List;
-
 import com.lvmama.vst.api.route.prod.vo.RouteProductVo;
 import com.lvmama.vst.api.vo.PageVo;
 import com.lvmama.vst.api.vo.prod.ProdGroupDateVo;
+import com.lvmama.vst.back.dujia.group.prod.vo.ProdProductNameVO;
 import com.lvmama.vst.back.goods.vo.ProdProductParam;
 import com.lvmama.vst.back.order.vo.InstalmentGateWayConfigVO;
 import com.lvmama.vst.back.prod.po.ProdProduct;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Vst接口包装类
@@ -60,6 +61,13 @@ public interface VstSearchInterfaceWrapper {
 	 * @return
 	 */
 	 List<InstalmentGateWayConfigVO> selectInstalmentBycategory(String category);
-	
+
+	/**
+	 * 获取产品结构化信息
+	 * @param productId
+	 * @return
+     */
+	com.lvmama.vst.comm.vo.ResultHandleT<ProdProductNameVO> findProdProductNameVOByProductId(Long productId);
+
 
 }

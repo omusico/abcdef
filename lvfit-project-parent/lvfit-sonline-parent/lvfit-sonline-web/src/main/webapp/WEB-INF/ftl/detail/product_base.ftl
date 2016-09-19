@@ -64,7 +64,15 @@
                     </div><!-- //product_top_cfd -->
                     <i class="product_top_cfd_blank"></i>
 
-                    <h1>${basicInfo.productName}</h1>
+                    <h1>
+
+                    <#if basicInfo.productShowName??>
+                      <b>${mainTitle}</b>&nbsp;&nbsp;${subTitle}
+                    <#else>
+                      ${basicInfo.productName}
+                    </#if>
+
+                    </h1>
                     <#list additional.titleTags as titleTag>
                     <span class="tagsback tagsback-orange" tip-content='${titleTag.tagContent}'><i>${titleTag.tagName}</i></span>
                     </#list>

@@ -1,6 +1,5 @@
 $(function(){ 
-	
-	
+	//付款按钮浮动显示
 	var fixed_box = $('.fk_box_fixed');
 	if(fixed_box.length>0){
 		function fk_scroll(){
@@ -17,16 +16,15 @@ $(function(){
 			fk_scroll();
 		});
 		fk_scroll();
-		
 	}
-	
+	//出生日期控件加载
 	$(".js_birthday").each(function(){
 		$(this).ui("calendar",{
 		   input : this,
 		   parm:{dateFmt:'yyyy-MM-dd'}
 		})
-	})
-	
+	});
+	//证件类型
 	$('.js_zhengjian').change(function(){ 
 		setTimeout(function(){
 			var T = $(document).scrollTop();
@@ -138,6 +136,7 @@ $(function(){
 		});
 	})
 	
+	
 	$('.js_btn_qita').live('click',function(){ 
 		var pro_info = $(this).siblings('.otherHideDiv');
 		if(pro_info.find('.table_t').eq(0).is(':hidden')){
@@ -160,7 +159,6 @@ $(function(){
 		$(this).parents('.name_list_new_box').height($(this).parent().outerHeight(true));
 		
 	});
-	
 	
 	//直接显示证件类型
 	$('.js_zj_show').live('change',function(){ 
@@ -289,7 +287,7 @@ $(function(){
 		},150)
 		
 	});;
-	
+	//联想邮件地址选中其一
 	$('#email_list li').live('click',function(e){ 
 		var ThisLi = $(this),
 			sText = ThisLi.text();
@@ -415,7 +413,22 @@ $(function(){
 		var $yanzheng = $('.js_yz');
 		for(var i=0;i<$yanzheng.length;i++){
 			var This = $yanzheng.eq(i);
-			yanzhengThis(This)
+			var flag1=true,flag2=true;
+			//检查所有人员姓名是否规范填写
+			if(This.attr("type_name")==="text"){
+				flag1 = checkUserName(This);
+			}
+			//检查证件信息是否重复
+			if(This.attr("type_name")==="shenfenzheng"){
+				if(This.siblings('.select').val() == 'ID_CARD'){
+					flag2 = blurIdAndBirthday(This,"ID");
+				}else{
+					flag2 = verifyIDCardRepeat(This);
+				}
+			}
+			if(flag1 && flag2){
+				yanzhengThis(This);
+			}
 		}
 		
 		var _english2 = /^[a-zA-Z\s]+$/;
@@ -474,7 +487,7 @@ $(function(){
 				}else{
 					thisP.removeClass('error_show');
 				}
-			};
+			}
 			//验证邮箱
 			if(This.attr('type_name')=='email'){
 				if(value=='' && optional!="true"){
@@ -484,17 +497,22 @@ $(function(){
 				}else{
 					thisP.removeClass('error_show');
 				}
-			};
+			}
 			//验证身份证
 			if(This.attr('type_name')=='shenfenzheng'){
 				if(value=='' && optional!="true"){
 					thisP.addClass('error_show');
 				}else if(!isIdCardNo(value) && This.siblings('.select').val() == 'ID_CARD' && value!=''){
 					thisP.addClass('error_show');
-				}else{
+				}/*else if(This.siblings('.select').val() == 'ID_CARD'){
 					thisP.removeClass('error_show');
-				}
-			};
+				}*/
+			}
+			//验证生日
+			if(This.attr('type_name')=='birthday'){
+				blurIdAndBirthday(This,"birthday");
+			}
+			
 		}//检测是否可见，只验证可见元素
 	}
 

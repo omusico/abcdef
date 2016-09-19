@@ -11,6 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.OperType;
+import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.StringUtil;
 import com.lvmama.lvfit.common.client.FitBusinessClient;
@@ -53,6 +55,13 @@ public class OrderControllerImpl implements OrderController{
 	@Autowired
 	private FitVstClient fitVstClient;
 
+	@Value("queryCharsetFlight")
+	private String queryCharsetFlight;
+
+	public Boolean getQueryCharsetFlight() {
+		return Boolean.valueOf(
+			 CustomizedPropertyPlaceholderConfigurer.getContextProperty(queryCharsetFlight)+"");
+	}
 	
 	@Override
 	@RequestMapping("order/toOrderQuery")
@@ -124,11 +133,17 @@ public class OrderControllerImpl implements OrderController{
 		try {
 			FitOrderMainDto baseResultDto = fitBusinessClient.queryOrderMainByVstOrderMainNo(vstOrderId);
 			FitSuppMainOrderDto fitSuppMainOrderDto= baseResultDto.getFitSuppMainOrderDto();
-			//通过是否有“(真往返)子单关联信息 ”判断是不是包机补全信息.
-			if(CollectionUtils.isEmpty(fitSuppMainOrderDto.getSuppFlightOrderDtos())){
-				model.addAttribute("isCharter", "false"); 
+			//如果打开了包机开关.
+			if(getQueryCharsetFlight()){
+				//通过是否有“(真往返)子单关联信息 ”判断是不是包机补全信息.
+				if(CollectionUtils.isEmpty(fitSuppMainOrderDto.getSuppFlightOrderDtos())){
+					model.addAttribute("isCharter", "false"); 
+				}else{
+					model.addAttribute("isCharter", "true"); 
+				}
 			}else{
-				model.addAttribute("isCharter", "true"); 
+				//未打开开关，就设置前台不显示包机的东西.
+				model.addAttribute("isCharter", "false"); 
 			}
 			baseResultDto.setBookingSource(BookingSource.getBookingSourceName(baseResultDto.getBookingSource().getParentSource().name()));
 			model.addAttribute("base", baseResultDto);

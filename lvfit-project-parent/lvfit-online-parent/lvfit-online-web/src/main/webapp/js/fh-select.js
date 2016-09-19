@@ -28,7 +28,7 @@ var _shoppingUUID = $("#shoppingUUID").val();
 $(function() {
     var uuid = _shoppingUUID;
     var errorMsgOutTime = $("#errorMsgOutTime").val();
-    if(errorMsgOutTime!=''){
+    if(errorMsgOutTime!='') {
         var searchCondition = window.localStorage.getItem('searchCondition');
         if(searchCondition != null && searchCondition != ''){
             var tripType = searchCondition.split('|')[0];
@@ -43,9 +43,9 @@ $(function() {
             var childCount = searchCondition.split('|')[9];
             $("#tripType").val(tripType);
             if(tripType == 'DC'){
-                $("#dcButton").trigger("click");
+                $("#dcButton").addClass("active");
             }else if(tripType == 'WF'){
-                $("#wfButton").trigger("click");
+                $("#wfButton").addClass("active");
             }
 
             $("#departureCityCode").val(departureCityCode);
@@ -95,9 +95,17 @@ $(function() {
             $("#childCount").val(childCount);
             $("#childCountSpan").text(childCount);
         }
-        $(".returnAlert").show();
-        $('.resortOverlay').stop(true,true).show();
-        $("#errorMsg").html(errorMsgOutTime);
+    } else {
+        initTicket();
+        initInsurance();
+        // 如果为单程，返程日期disable
+        var tripType = $("#tripType").val();
+        if (tripType == "DC") {
+            $(".fh-return-day-group").addClass("fh-input-group-disable");
+        }
+        initAjax();
+        // 初始化购物车中的产品信息，产品选择模块的默认值
+        initProduct();
     }
 });
 
@@ -322,20 +330,6 @@ $('.ph_icon_closeAlert').click(function() {
     $('.resortOverlay').stop(true,true).fadeOut();
     $('body').removeAttr('style');
     $("#myForm").submit();
-});
-
-//加载可选择房间数
-$(function() {
-    initTicket();
-    initInsurance();
-    // 如果为单程，返程日期disable
-    var tripType = $("#tripType").val();
-    if (tripType == "DC") {
-        $(".fh-return-day-group").addClass("fh-input-group-disable");
-    }
-    initAjax();
-    // 初始化购物车中的产品信息，产品选择模块的默认值
-    initProduct();
 });
 
 // 门票详情展示

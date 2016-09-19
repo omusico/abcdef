@@ -57,11 +57,11 @@ public class VstPushRecordForm implements Serializable, Form {
 		VstPushRecord.setCreateTime(createTime);
 	}
 
-	public BigDecimal getObjectType() {
+	public String getObjectType() {
 		return VstPushRecord.getObjectType();
 	}
 
-	public void setObjectType(BigDecimal objectType) {
+	public void setObjectType(String objectType) {
 		VstPushRecord.setObjectType(objectType);
 	}
 
@@ -73,27 +73,27 @@ public class VstPushRecordForm implements Serializable, Form {
 		VstPushRecord.setPushFlag(pushFlag);
 	}
 
-	public String getPushCount() {
+	public BigDecimal getPushCount() {
 		return VstPushRecord.getPushCount();
 	}
 
-	public void setPushCount(String pushCount) {
+	public void setPushCount(BigDecimal pushCount) {
 		VstPushRecord.setPushCount(pushCount);
 	}
 
-	public BigDecimal getPushContent() {
+	public String getPushContent() {
 		return VstPushRecord.getPushContent();
 	}
 
-	public void setPushContent(BigDecimal pushContent) {
+	public void setPushContent(String pushContent) {
 		VstPushRecord.setPushContent(pushContent);
 	}
 
-	public BigDecimal getDataType() {
+	public String getDataType() {
 		return VstPushRecord.getDataType();
 	}
 
-	public void setDataType(BigDecimal dataType) {
+	public void setDataType(String dataType) {
 		VstPushRecord.setDataType(dataType);
 	}
 

@@ -35,6 +35,7 @@ function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
 	if(!checkBooking(_adultCount,_childCount)||!yanzhengOk()){
 		return;
 	}
+	//alert("成功提交了");return;
 	//提交之前记录一下信息，方便失败的时候信息回填
 	if(isWriteInfoRecord){
 		writeInfoRecord();
@@ -347,6 +348,7 @@ function blurIdAndBirthday(that,flag){
 	  var $parent = $(that).parent().parent().parent();
 	  var $people = $parent.find("select[name='peopleType']");
 	  var peopleType = $people.val();
+	  var oldFlag = flag+"";
 	  flag = $parent.find("select[name='cardType']").val();
 	  if(flag =='ID'||flag=='ID_CARD'){
 		  if(isIdCardNo(value)){
@@ -354,43 +356,68 @@ function blurIdAndBirthday(that,flag){
       	     var age = getAgeByBrithday(birthday);
       		  var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
     		  if(_newPeopleType=="CHILDREN" && peopleType == 'ADULT'){
-				  $people.parent().addClass('error_show');
+				  $people.parent().addClass('error_show');return false;
     		  }else if(_newPeopleType=="ADULT" && peopleType == 'CHILDREN'){
-				  $people.parent().addClass('error_show');
+				  $people.parent().addClass('error_show'); return false;
 			  }else if(_newPeopleType=="BABY"){
-				  $people.parent().addClass('error_show');
-				  return false;
-			  }else{
+	               $people.parent().addClass('error_show');
+	               $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持2周岁以下的婴儿购买机票");
+	               $(that).parent().addClass('error_show');
+	               return false;
+	           }else if(_newPeopleType=="OLD"){
+	        	   $people.parent().addClass('error_show');
+	               $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持超过70周岁的乘客购买机票");
+	               $(that).parent().addClass('error_show');
+	               return false;
+	           }else{
 				  $people.parent().removeClass('error_show');
 			  }
 			  $parent.find("select[name='cardType']").parent().removeClass('error_show');
       	  }else{
-  	  		 $parent.find("select[name='cardType']").parent().addClass('error_show');
+  	  		 $parent.find("select[name='cardType']").parent().addClass('error_show'); return false;
       	  }
 	  }else{
-		  birthday = $parent.find("input[type_name='birthday']").val();
-  		  var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
-  		  if(_newPeopleType=="CHILDREN" && peopleType == 'ADULT'){
-			  $people.parent().addClass('error_show');
-  		  }else if(_newPeopleType=="ADULT" && peopleType == 'CHILDREN'){
-			  $people.parent().addClass('error_show');
-		  }else if(_newPeopleType=="BABY"){
-			  $people.parent().addClass('error_show');
-			  return false;
+		  if(oldFlag=="birthday"){
+			  birthday = $parent.find("input[type_name='birthday']").val();
+			  $(that).parent().removeClass('error_show');
+	    	  if(typeof birthday == "undefined" || birthday==""){
+	    		$(that).parent().addClass('error_show');
+	    		return false;
+	    	  }
+	  		  var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
+	  		  if(_newPeopleType=="CHILDREN" && peopleType == 'ADULT'){
+				  $people.parent().addClass('error_show');return false;
+	  		  }else if(_newPeopleType=="ADULT" && peopleType == 'CHILDREN'){
+				  $people.parent().addClass('error_show');return false;
+			  }else if(_newPeopleType=="BABY"){
+				  $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持2周岁以下的婴儿购买机票");
+		          $(that).parent().addClass('error_show');return false;
+			  }else if(_newPeopleType=="OLD"){
+		           $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持超过70周岁的乘客购买机票");
+		           $(that).parent().addClass('error_show'); return false;
+		       }else{
+				  $people.parent().removeClass('error_show');
+			  }
 		  }else{
-			  $people.parent().removeClass('error_show');
-		  }
+	    	   if(value==""){
+	    		   $(that).parent().addClass('error_show');
+	    		   return false;
+	    	   }else{
+	    		   $(that).parent().removeClass('error_show');
+	    	   }
+	       }
 	  }
 	  
 	  //验证证件号码是否重复
-	  var _userInfos = getPassengers();
+	  return verifyIDCardRepeat($parent.find("input[type_name='shenfenzheng']").eq(0));
+	  /*var _userInfos = getPassengers();
 	  if(_userInfos.length<=1){
 	  	return;
 	  }
 	  if(value!=""){
 	  	for(var i=0; i<_userInfos.length; i++){
 	  		if(value==_userInfos[i].passengerIDCardNo&&flag==_userInfos[i].passengerIDCardType&&_userInfos[i].passengerId!=$parent.find("input[name='receiverId']").val()){
-	  			if(flag=='ID'){
+	  			if(flag=='ID' || flag=='ID_CARD'){
 	  				$parent.find("select[name='cardType']").parent().addClass('error_show');
 	  			}else{
 	  				$people.parent().addClass('error_show');
@@ -399,9 +426,44 @@ function blurIdAndBirthday(that,flag){
 	  			return;
 	  		}
 	  	}
-	  }
+	  }*/
 }
- 
+
+//验证证件号码是否重复($This:当前证件号jquery对象)
+function verifyIDCardRepeat($This){
+	var $parent = $This.parent().parent().parent();
+	var IDCardType = $parent.find("select[name='cardType']").val();
+	var IDCardNo = $This.val();
+	var receiverId = $parent.find("input[name='receiverId']").val();
+	var $people = $parent.find("select[name='peopleType']");
+	var _userInfos = getPassengers();
+	if(_userInfos.length<=1){
+		return true;
+	}
+	if(IDCardNo!=""){
+		var count = 0;
+		for(var i=0; i<_userInfos.length; i++){
+			if(IDCardNo==_userInfos[i].passengerIDCardNo && IDCardType==_userInfos[i].passengerIDCardType){
+				if(_userInfos[i].passengerId==receiverId){count++;}else{count+=2;}
+				if(count>1){
+					if(IDCardType=='ID' || IDCardType=='ID_CARD'){
+						$parent.find("select[name='cardType']").parent().addClass('error_show');
+					}else{
+						//$people.parent().addClass('error_show');
+						$parent.find("select[name='cardType']").parent().addClass('error_show');
+					}
+					$This.parent().find(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>证件信息错误或重复，请进行修改");
+					//$This.val("");
+					return false;
+				}
+			}
+		}
+		$parent.find("select[name='cardType']").parent().removeClass('error_show');
+	}
+	return true;
+}
+
+
  
 //记录搜索历史
 function writeInfoRecord(){
@@ -469,7 +531,9 @@ function getDateDiffCardType(departureDateVal,birthDateVal) {
 		intDays++;
 	}
 	var cardTypeVal;
-	if(intDays>=12){
+	if(intDays>70){
+		 cardTypeVal="OLD";
+	 }else if(intDays>=12){
        cardTypeVal="ADULT";
     }else if(intDays<12 && intDays>=2){
        cardTypeVal="CHILDREN"; 
@@ -528,15 +592,6 @@ var clickIdCard = function(){
 	});
 }
 
-//鼠标离开输入框，验证
-$('.js_yz').live('blur',function(){ 
-	var This = $(this);
-	setTimeout(function(){
-		yanzhengThis(This)
-	},150)
-	
-});
-
 //实例合同信息：人员 和 电话
 function initContractData(that){
 	var value =$(that).val();
@@ -580,11 +635,16 @@ $(".shouqi").click(function() {
 //验证姓名，是否符合规范
 function checkUserName(that){
 	var userName = $(that).val();
-	if(!/^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+[\u4e00-\u9fa5]+|[a-zA-Z]+[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+\/[a-zA-Z]+)+$/.test(userName)||userName.length<2){
-		$(that).parent().addClass('error_show');
+	if($.trim(userName)==""){
+		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入正确的姓名");
+		$(that).parent().addClass('error_show');return false;
+	}else if(!/^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+[\u4e00-\u9fa5]+|[a-zA-Z]+[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+\/[a-zA-Z]+)+$/.test(userName)||userName.length<2){
+		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请保持姓名与证件上的姓名一致");
+		$(that).parent().addClass('error_show');return false;
 	}else{
 		$(that).parent().removeClass('error_show');
 	}
+	return true;
 }
 
 //购买人姓名
@@ -613,7 +673,7 @@ function getPassengers(){
 	    obj.mobile = _mobile;
 	    var value = $userinfos.eq(i).find("select[name='cardType']").find(":selected").val();
 		if(value && value=='ID_CARD'){
-			obj.passengerIDCardType = "ID" ;
+			obj.passengerIDCardType = "ID_CARD" ;
     		obj.passengerBirthday = getBirthdayByIdCard($userinfos.eq(i).find("input[type_name='shenfenzheng']").val()) ;
 		}else{
 			obj.passengerIDCardType = $userinfos.eq(i).find("select[name='cardType']").find(":selected").val(); ;

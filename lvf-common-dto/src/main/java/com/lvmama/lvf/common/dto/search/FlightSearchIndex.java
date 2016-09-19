@@ -1177,7 +1177,19 @@ public class FlightSearchIndex extends DynamicIndex implements Serializable {
 	private static Long getTimeHour(Date date){
 		String HHmmssStr = DateUtils.formatDate(date, DateUtils.HH_mm_ss);
 		return DateUtils.parseDate(DateUtils.INIT_DATE+" "+HHmmssStr, DateUtils.YYYY_MM_DD_HH_MM_SS).getTime();
-	} 
+	}
+
+	public static void main(String[] args){
+		try{
+			File file = new File("C:\\Users\\leizhengwei\\Desktop\\json.txt");
+			String json = FileUtils.readFileToString(file);
+			System.out.println(json);
+			DynamicIndexConverter.ActionType.ADD_BY_DYNAMIC_BASE.converToJsonString((List<FlightSearchIndex>)JSONMapper.getInstance().readValue(json,new TypeReference<List<FlightSearchIndex>>() {
+			}));
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}		
+	}
 
 	@Override
 	public void initDynamicBase(String dynamicBase) {

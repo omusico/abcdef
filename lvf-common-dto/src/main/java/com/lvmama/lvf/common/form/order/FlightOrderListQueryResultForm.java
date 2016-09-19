@@ -1,5 +1,6 @@
 package com.lvmama.lvf.common.form.order;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -9,9 +10,13 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.lvmama.lvf.common.dto.enums.BookingSource;
 import com.lvmama.lvf.common.dto.enums.OrderType;
+import com.lvmama.lvf.common.dto.enums.PassengerType;
 import com.lvmama.lvf.common.dto.enums.PaymentType;
 import com.lvmama.lvf.common.dto.enums.RefundmentType;
 import com.lvmama.lvf.common.dto.order.result.list.FlightOrderListDto;
@@ -22,6 +27,7 @@ import com.lvmama.lvf.common.dto.status.OpCommandBack;
 import com.lvmama.lvf.common.dto.supp.Supp;
 import com.lvmama.lvf.common.form.Form;
 import com.lvmama.lvf.common.utils.DateUtils;
+import com.lvmama.lvf.common.utils.JSONMapper;
 
 public class FlightOrderListQueryResultForm implements Serializable,Form 
 {
@@ -83,7 +89,6 @@ public class FlightOrderListQueryResultForm implements Serializable,Form
 					return 0;
 				}
 			});
-			
 			for(FlightOrderListFlightInfoDto flightInfoDto : flightInfoDtos)
 			{
 				if(StringUtils.isNotBlank(flightInfoDto.getDepCode()))
@@ -116,7 +121,6 @@ public class FlightOrderListQueryResultForm implements Serializable,Form
 				if(null != flightInfoDto.getReturnDepTime()){
 					this.flightTimes += DateUtils.formatDate(flightInfoDto.getReturnDepTime(), DateUtils.YYYY_MM_DD_HH_MM) + ",";
 				}
-				
 				
 			}
 			if(StringUtils.isNotBlank(this.flightSegments))
@@ -260,6 +264,14 @@ public class FlightOrderListQueryResultForm implements Serializable,Form
 		flightOrderListDto.setOrderNo(orderNo);
 	}
 
+	
+	public String getOrderMainNo() {
+		return flightOrderListDto.getOrderMainNo();
+	}
+
+	public void setOrderMainNo(String orderMainNo) {
+		flightOrderListDto.setOrderMainNo(orderMainNo);
+	}
 	public OrderType getOrderType() {
 		return flightOrderListDto.getOrderType();
 	}
@@ -476,4 +488,13 @@ public class FlightOrderListQueryResultForm implements Serializable,Form
 	public void setSaleType(String saleType) {
 		flightOrderListDto.setSaleType(saleType);
 	}
+	
+	public String getCpsId() {
+		return flightOrderListDto.getCpsId();
+	}
+
+	public void setCpsId(String cpsId) {
+		flightOrderListDto.setCpsId(cpsId);
+	}
+		
 }

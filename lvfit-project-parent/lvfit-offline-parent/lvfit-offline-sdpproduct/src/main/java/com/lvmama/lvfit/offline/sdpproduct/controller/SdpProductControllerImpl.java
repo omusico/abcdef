@@ -168,40 +168,12 @@ public class SdpProductControllerImpl  implements SdpProductController{
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "sdpProduct/querySynInfoList", method = { RequestMethod.POST, RequestMethod.GET })
-	public BaseResultDto<FitSdpProductSyncMsgForm> querySynInfoList(Model model,Long productId,Pagination pg) {
-		BaseResultDto<FitSdpProductSyncMsgForm> result = new BaseResultDto<FitSdpProductSyncMsgForm>();
-		try {
-			if(productId!=null){
-				BaseQueryDto<Long> baseQuery = new BaseQueryDto<Long>();
-				baseQuery.setPagination(pg);
-				baseQuery.setCondition(productId);
-				BaseResultDto<FitSdpProductSyncMsgDto> syncMsgDtos = fitBusinessClient.querySdpProductSynInfoList(baseQuery);
-				List<FitSdpProductSyncMsgDto> dtoList = syncMsgDtos.getResults();
-				List<FitSdpProductSyncMsgForm> resultForm = new ArrayList<FitSdpProductSyncMsgForm>();
-				for(int i=0;i<dtoList.size();i++){
-					FitSdpProductSyncMsgForm dtoForm = new FitSdpProductSyncMsgForm();
-					dtoForm.setFitSdpProductSyncMsgDto(dtoList.get(i));
-					resultForm.add(dtoForm);
-				}
-				result.setResults(resultForm);
-				result.setPagination(syncMsgDtos.getPagination());
-				return result;
-			}
-		} catch (Exception e) {
-			logger.error("查询产品同步信息失败！");
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	@ResponseBody
 	@RequestMapping(value = "sdpProduct/queryAllSynInfo", method = { RequestMethod.POST, RequestMethod.GET })
-	public BaseResultDto<FitSdpProductSyncMsgDto> queryAllSynInfo(Model model,Pagination pg,Long productId) {
+	public BaseResultDto<FitSdpProductSyncMsgDto> queryAllSynInfo(Model model,Pagination pg,FitSdpProductSyncMsgDto syncMsgDto) {
 		BaseResultDto<FitSdpProductSyncMsgDto> result = new BaseResultDto<FitSdpProductSyncMsgDto>();
 		try {
-				BaseQueryDto<Long> baseQuery = new BaseQueryDto<Long>();
-				baseQuery.setCondition(productId);
+				BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery = new BaseQueryDto<FitSdpProductSyncMsgDto>();
+				baseQuery.setCondition(syncMsgDto);
 				baseQuery.setPagination(pg);
 				result = fitBusinessClient.querySdpProductSynMsgInfo(baseQuery);
 				return result;

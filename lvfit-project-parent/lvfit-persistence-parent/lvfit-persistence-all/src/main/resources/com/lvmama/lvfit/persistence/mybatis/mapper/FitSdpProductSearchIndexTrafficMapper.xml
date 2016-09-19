@@ -70,6 +70,7 @@
 			<if test="condition!=null and condition!=''">
 				WHERE PRODUCT_ID=#{condition}
 			</if>
+			ORDER BY CREATE_TIME DESC
 		<include refid="ORACLE.paginationEnd" />
 	</select>
 	
@@ -114,5 +115,11 @@
 			UPDATE_TIME = now()
 		WHERE ID = #{id,jdbcType=DECIMAL}
 	</update>
-
+	
+	<select id="countIndexTraffic" resultType="java.lang.Integer">
+    	SELECT COUNT(*) FROM T_FITSDP_INDEX_TRAFFIC 
+    	<if test="condition!=null and condition!=''">
+			WHERE PRODUCT_ID = #{condition,jdbcType=DECIMAL} 
+		</if>
+    </select>
 </mapper>

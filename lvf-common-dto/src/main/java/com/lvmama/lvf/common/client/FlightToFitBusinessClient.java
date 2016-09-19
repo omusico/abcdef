@@ -63,7 +63,6 @@ public class FlightToFitBusinessClient {
 			if (null == jsonResult && "".equals(jsonResult)) {
 				return null;
 			}
-			logger.error(jsonResult);
 			return JSONMapper.getInstance().readValue(jsonResult,new TypeReference<List<FlightOrderBookingRequest>>() {});
 		} catch (ExceptionWrapper ew) {
 			throw ew;

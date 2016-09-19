@@ -126,7 +126,12 @@
 			<if test="condition != null and condition != ''">
 	            AND s.PRODUCT_ID=#{condition}
 	        </if>
+	        ORDER BY CREATE_TIME DESC
 		<include refid="ORACLE.paginationEnd" />
+    </select>
+    
+    <select id="countSearchIndex" resultType="java.lang.Integer">
+    	SELECT COUNT(*) FROM T_FITSDP_PRODUCT_SEARCH_INDEX WHERE PRODUCT_ID = #{condition,jdbcType=DECIMAL} 
     </select>
   	
 </mapper>

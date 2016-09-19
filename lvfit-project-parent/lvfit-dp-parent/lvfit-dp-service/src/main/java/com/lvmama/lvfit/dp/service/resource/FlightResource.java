@@ -49,19 +49,6 @@ public class FlightResource {
 	
 	@Autowired
 	private FitDpService fitDpService;
-	
-	@Autowired
-	private ShoppingService  shoppingService;
-	
-	@POST
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path(DpClientPath.Path.GET_FLIGHT_LIST_CACHE)
-	public Response searchFlightCache(String uuid) throws JsonGenerationException, JsonMappingException, IOException{
-		FitSearchResult fitSearchResult = shoppingService.getFlightSearchResult(uuid);
-		return Response.ok(fitSearchResult).build();
-	}
 
 
 	/**

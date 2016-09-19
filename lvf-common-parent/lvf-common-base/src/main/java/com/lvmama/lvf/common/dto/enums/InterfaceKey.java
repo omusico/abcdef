@@ -77,8 +77,7 @@ public enum InterfaceKey {
 	PayFlightOrder("VST支付通知"),
 	BookingOrderAsync("VST异步锁舱"),
 	
-   /***************火车票LOG******/
-	  //供应商
+   /***************火车票 Interface Key ******start*/
 	  //供应商
     GetTimetable("火车票向赶火车查询时刻表接口"),//供应商时刻表地址-timetableurl
     FindTrainsByCondition("火车票向赶火车查询站站车次(包括余票)"),//供应商站站地址-trainsServiceUrl
@@ -129,7 +128,21 @@ public enum InterfaceKey {
 	SendSettlement("火车票订单结算(技术平台)"),
 	SyncOrderToVst("火车票订单同步到vst状态(技术平台)"),
 	
-
+	QUERYCHEZHANTOCTRIP("火车票查询车站信息接口(携程)"),
+	QUERYYUPIAOTOCTRIP("火车票查询余票信息接口(携程)"),
+	QUERYZHANZHANTOCTRIP("火车票查询站站信息接口(携程)"),
+	QUERYCHECITOCTRIP("火车票查询车次信息接口(携程)"),
+	TRAINBOOKINGORDERCTRIP("火车票预订订单接口(携程)"),
+	TRAINCANCELORDERCTRIP("火车票取消订单接口(携程)"),
+	TRAINPAYORDERCTRIP("火车票支付订单接口(携程)"),
+	TRAINREFUNDTICKETCTRIP("火车票退票接口(携程)"),
+	TRAINTICKETTOCTRIP("火车票有票接口(携程)"),
+	TRAINNOTICKETTOCTRIP("火车票无票接口(携程)"),
+	TRAINLOCKORDERCTRIP("火车票锁单回调接口(携程)"),
+	TRAINREFUNDORDERCTRIP("火车票退款回调接口(携程)"),
+	
+	 /***************火车票 Interface Key ******End*/
+	
 	/**************************************Fit Interface Key*******************************************************/
 	
 	

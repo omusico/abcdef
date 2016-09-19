@@ -118,12 +118,6 @@ public interface FitSdpProductService {
 	 */
 	List<FitSdpProductSearchIndexDto> querySdpProductSearchIndex(BaseQueryDto<Long> baseQuery);
 
-	/**根据产品Id查询同步时间信息
-	 * @param productId
-	 * @return
-	 */
-	List<FitSdpProductSyncMsgDto> querySdpProductSynInfoList(BaseQueryDto<Long> baseQuery);
-	
 	/**根据产品Id查询索引交通信息
 	 * @param productId
 	 * @return
@@ -189,6 +183,24 @@ public interface FitSdpProductService {
 	 * @param 
 	 * @return
 	 */
-	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery);
+	List<FitSdpProductSyncMsgDto> querySdpProductSynMsgInfo(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery);
+
+	/**查询索引记录数
+	 * @param 
+	 * @return
+	 */
+	int countSdpProductSearchIndex(BaseQueryDto<Long> baseQuery);
+	
+	/**查询交通索引记录数
+	 * @param 
+	 * @return
+	 */
+	int countSdpProductIndexTraffic(BaseQueryDto<Long> baseQuery);
+
+	/**查询同步索引记录数
+	 * @param 
+	 * @return
+	 */
+	int countSdpProductSynMsg(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery);
 	
 }

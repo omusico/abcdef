@@ -12,11 +12,16 @@ import java.util.Map;
 
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
+import com.lvmama.lvf.common.dto.status.ResultStatus;
+import com.lvmama.lvf.common.trace.TraceContext;
 import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.enums.SymbolType;
+import com.lvmama.lvfit.common.dto.search.FitRecordSearchIndex;
 import com.lvmama.lvfit.common.dto.trace.FitOpLogTraceContext;
+import com.lvmama.lvfit.solrClient.extend.FitMainSearchSolrClient;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +99,9 @@ public class FitDpServiceImpl implements FitDpService{
 	
 	@Autowired
 	FitAggregateClient fitAggregateClient;
+
+    @Autowired
+    FitMainSearchSolrClient fitMainSearchSolrClient;
 	
 	@Autowired
 	ShoppingService shoppingService;
@@ -106,12 +114,17 @@ public class FitDpServiceImpl implements FitDpService{
 	
 	@Override
 	public FitShoppingDto search(FitBaseSearchRequest request) {
+        long start = System.currentTimeMillis();
+
         // 获取查询结果集
         FitSearchResult fitSearchResult = this.searchResult(request);
         // 处理返回结果集
         this.handleSearchResult(fitSearchResult, request.getAdultsCount(), request.getChildCount());
         // 构造购物车信息
         FitShoppingDto shoppingDto = this.genFitShoppingDto(request, fitSearchResult);
+        // 将搜索记录计入solr
+        long end = System.currentTimeMillis();
+        this.saveIndexToSolr(request, shoppingDto, end - start);
 
         return shoppingDto;
 	}
@@ -134,7 +147,10 @@ public class FitDpServiceImpl implements FitDpService{
             shoppingDto = new FitShoppingDto();
         } else {
             String oldRequestKey = shoppingDto.getRequestKey();
-            if (oldRequestKey != null && requestKey != null && !requestKey.equals(oldRequestKey)) {
+            if (oldRequestKey != null && !requestKey.equals(oldRequestKey)) {
+                shoppingDto.setSelectToFlight(null);
+                shoppingDto.setSelectBackFlight(null);
+                shoppingDto.setSelectHotel(null);
                 shoppingDto.setSelectTicketInfo(new ArrayList<FitShoppingSelectedTicketDto>());
                 shoppingDto.setSelectInsuranceInfo(new ArrayList<FitShoppingSelectedInsuranceDto>());
                 shoppingDto.setSelectFlightInsInfo(new ArrayList<FlightInsuranceDto>());
@@ -142,33 +158,86 @@ public class FitDpServiceImpl implements FitDpService{
             }
         }
         shoppingDto.setRequestKey(requestKey);
+
         FlightSearchResult<FlightSearchFlightInfoDto> toFlightSearchResult = fitSearchResult.getDistinctFlightMap().get(FlightTripType.DEPARTURE.name());
         FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = fitSearchResult.getDistinctFlightMap().get(FlightTripType.RETURN.name());
 
         shoppingDto.setToFlightInfos(toFlightSearchResult);
-        shoppingDto.setSelectToFlight(toFlightSearchResult.getResults().get(0));
+        if (toFlightSearchResult != null && CollectionUtils.isNotEmpty(toFlightSearchResult.getResults())) {
+            shoppingDto.setSelectToFlight(toFlightSearchResult.getResults().get(0));
+        }
         shoppingDto.setBackFlightInfos(backFlightSearchResult);
-        shoppingDto.setSelectBackFlight(backFlightSearchResult.getResults().get(0));
+        if (backFlightSearchResult != null && CollectionUtils.isNotEmpty(backFlightSearchResult.getResults())) {
+            shoppingDto.setSelectBackFlight(backFlightSearchResult.getResults().get(0));
+        }
 
+        shoppingDto.setHotels(fitSearchResult.getHotelSearchResult());
         if (fitSearchResult.getHotelSearchResult() != null && CollectionUtils.isNotEmpty(fitSearchResult.getHotelSearchResult().getResults())) {
-            shoppingDto.setHotels(fitSearchResult.getHotelSearchResult());
             shoppingDto.setSelectHotel(fitSearchResult.getHotelSearchResult().getResults().get(0));
         }
+
         if (CollectionUtils.isNotEmpty(fitSearchResult.getFlightInsuranceResult())) {
+            handleFlightIns(fitSearchResult.getFlightInsuranceResult());
             shoppingDto.setFlightInsuranceInfos(fitSearchResult.getFlightInsuranceResult());
+            // 设置默认航意险信息
+            this.setDefaultfliInsurance(shoppingDto, request);
         }
-        if (CollectionUtils.isNotEmpty(fitSearchResult.getSpotSearchResult())) {
-            shoppingDto.setSpots(fitSearchResult.getSpotSearchResult());
-        }
-        if (CollectionUtils.isNotEmpty(fitSearchResult.getInsuranceResult())) {
-            shoppingDto.setInsurances(fitSearchResult.getInsuranceResult());
-        }
+        shoppingDto.setSpots(fitSearchResult.getSpotSearchResult());
+        shoppingDto.setInsurances(fitSearchResult.getInsuranceResult());
         shoppingDto.setSearchRequest(request);
 
         shoppingService.putShoppingCache(request.getShoppingUUID(), shoppingDto);
 
         return shoppingDto;
     }
+
+    /**
+     * 设置默认选中航意险信息
+     * @param shoppingDto
+     * @param request
+     */
+    private void setDefaultfliInsurance(FitShoppingDto shoppingDto, FitBaseSearchRequest request) {
+        InsuranceInfoDto flightInsDto = shoppingDto.getFlightInsuranceInfos().get(0);
+
+        if (flightInsDto != null) {
+            FlightInsuranceDto fInsDto = new FlightInsuranceDto();
+            fInsDto.setInsuranceId(flightInsDto.getId());
+            fInsDto.setInsuranceName(flightInsDto.getInsuranceClass().getName() + flightInsDto.getInsuranceRemark());
+            fInsDto.setInsurancePrice(flightInsDto.getInsurancePrice());
+            fInsDto.setInsuranceDesc(flightInsDto.getInsuranceDesc());
+            fInsDto.setSuppName(flightInsDto.getSupp().getName());
+            int count = request.getAdultsCount() + request.getChildCount();
+            if (request.getTripType().equals("WF")) {
+                count = count * 2;
+            }
+            fInsDto.setInsuranceCount(count);
+            fInsDto.setInsuranceClassCode(flightInsDto.getInsuranceClass().getCode());
+
+            List<FlightInsuranceDto> flightInsDtos = new ArrayList<FlightInsuranceDto>();
+            flightInsDtos.add(fInsDto);
+            shoppingDto.setSelectFlightInsInfo(flightInsDtos);
+        }
+    }
+
+    /**
+     * 将默认的航意险放在首位
+     * @param flightInsList
+     */
+    private void handleFlightIns(List<InsuranceInfoDto> flightInsList) {
+        Collections.sort(flightInsList, new Comparator<InsuranceInfoDto>() {
+            @Override
+            public int compare(InsuranceInfoDto o1, InsuranceInfoDto o2) {
+                if (DefaultRule.DEFAULT.equals(o1.getDefaultRule())) {
+                    return -1;
+                }
+                if (DefaultRule.DEFAULT.equals(o2.getDefaultRule())) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+    }
+
 
 	/**根据请求参数获取查询结果集
 	 * @param request
@@ -197,25 +266,13 @@ public class FitDpServiceImpl implements FitDpService{
 	 * @param
 	 * @param fitSearchResult
 	 */
-	private void handleSearchResult(FitSearchResult fitSearchResult, int adultCount, int childCount){
+	private void handleSearchResult(FitSearchResult fitSearchResult, int adultCount, int childCount) {
 	    Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> flightMap = fitSearchResult.getDistinctFlightMap();
         // 处理机票数据（过滤，去库存，排序)
         for (String key : flightMap.keySet()) {
             FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = flightMap.get(key);
-            if (CollectionUtils.isNotEmpty(flightSearchResult.getResults())) {
+            if (flightSearchResult!= null && CollectionUtils.isNotEmpty(flightSearchResult.getResults())) {
                 flightSearchResult.setResults(this.handleFlights(flightSearchResult.getResults(), adultCount, childCount));
-            }
-        }
-
-        for (String key : flightMap.keySet()) {
-            if (CollectionUtils.isEmpty(flightMap.get(key).getResults())) {
-                if (key.equals(FlightTripType.DEPARTURE.name())) {
-                    FitOpLogTraceContext
-                        .setExThreadLocal(new ExceptionWrapper(NO_DEP_FLI_RESULT, ExceptionCode.GET_NO_RESULT));
-                } else {
-                    FitOpLogTraceContext
-                        .setExThreadLocal(new ExceptionWrapper(NO_RE_FLI_RESULT, ExceptionCode.GET_NO_RESULT));
-                }
             }
         }
 
@@ -223,35 +280,80 @@ public class FitDpServiceImpl implements FitDpService{
         if (CollectionUtils.isNotEmpty(fitSearchResult.getFlightInsuranceResult())) {
             // 过滤非航空意外险，并按默认航意险排序
             fitSearchResult.setFlightInsuranceResult(handleFliInsResult(fitSearchResult.getFlightInsuranceResult()));
-        } else {
-            FitOpLogTraceContext
-                .setExThreadLocal(new ExceptionWrapper(NO_FLIGHT_INSURANCE_RESULT, ExceptionCode.GET_NO_RESULT));
         }
-        // 处理酒店数据
+        // 处理酒店数据, 酒店差价计算
         if (fitSearchResult.getHotelSearchResult() != null && CollectionUtils.isNotEmpty(fitSearchResult.getHotelSearchResult().getResults())) {
             List<HotelSearchHotelDto> hotelList = fitSearchResult.getHotelSearchResult().getResults();
             HotelSearchPlanDto planDto = hotelList.get(0).getRooms().get(0).getPlans().get(0);
-            BigDecimal hotelBasePrice = planDto.getPrice().multiply(BigDecimal.valueOf(hotelList.get(0).getRooms().get(0).getRoomCounts()));
+            BigDecimal hotelBasePrice = planDto.getPrice().multiply(BigDecimal.valueOf(planDto.getPlanCounts()));
             for (HotelSearchHotelDto hotel : hotelList) {
                 for (HotelSearchRoomDto room : hotel.getRooms()) {
                     for (HotelSearchPlanDto plan : room.getPlans()) {
-                        plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(room.getRoomCounts())).subtract(hotelBasePrice));
+                        plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(plan.getPlanCounts())).subtract(hotelBasePrice));
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 构造index信息，将搜索记录放入solr
+     * @return
+     */
+    private void saveIndexToSolr(FitBaseSearchRequest fitSearchRequest, FitShoppingDto shoppingDto, long usedTime) {
+        StringBuilder errMsg = new StringBuilder();
+        String SPLIT = "~~~~";
+        if (shoppingDto.getToFlightInfos() == null || CollectionUtils.isEmpty(shoppingDto.getToFlightInfos().getResults())) {
+            errMsg.append(NO_DEP_FLI_RESULT ).append(SPLIT);
+        }
+        if (fitSearchRequest.getTripType().equals(TripeType.WF.name())) {
+            if (shoppingDto.getBackFlightInfos() == null || CollectionUtils.isEmpty(shoppingDto.getBackFlightInfos().getResults())) {
+                errMsg.append(NO_RE_FLI_RESULT ).append(SPLIT);
+            }
+        }
+        if (shoppingDto.getHotels() == null || CollectionUtils.isEmpty(shoppingDto.getHotels().getResults())) {
+            errMsg.append(NO_HOTEL_RESULT).append(SPLIT);
+        }
+        if (CollectionUtils.isEmpty(shoppingDto.getFlightInsuranceInfos())) {
+            errMsg.append(NO_FLIGHT_INSURANCE_RESULT).append(SPLIT);
+        }
+        if (CollectionUtils.isEmpty(shoppingDto.getSpots())) {
+            errMsg.append(NO_SPOT_RESULT).append(SPLIT);
+        }
+        if (CollectionUtils.isEmpty(shoppingDto.getInsurances())) {
+            errMsg.append(NO_INSURANCE_RESULT).append(SPLIT);
+        }
+
+        FitRecordSearchIndex recordIndex = new FitRecordSearchIndex();
+        recordIndex.setQueryDate(DateUtils.formatDate(new Date()));
+        recordIndex.setQueryTime(System.currentTimeMillis());
+        recordIndex.setDepartureCityCode(fitSearchRequest.getDepartureCityCode());
+        recordIndex.setArrivalCityCode(fitSearchRequest.getArrivalCityCode());
+        recordIndex.setDepartureDate(fitSearchRequest.getDepartureTime());
+        if (fitSearchRequest.getTripType().equals(TripeType.WF.name())) {
+            recordIndex.setReturnDate(fitSearchRequest.getReturnTime());
+        }
+        recordIndex.setStayCityCode(fitSearchRequest.getCityCode());
+        recordIndex.setCheckInDate(fitSearchRequest.getCheckInTime());
+        recordIndex.setCheckOutDate(fitSearchRequest.getCheckOutTime());
+        recordIndex.setIndexId(recordIndex.getDepartureCityCode()+ "_"+recordIndex.getArrivalCityCode()+ "_" + System.nanoTime());
+        recordIndex.setAdultCount(fitSearchRequest.getAdultsCount());
+        recordIndex.setChildrenCount(fitSearchRequest.getChildCount());
+        recordIndex.setErrMsg(errMsg.toString());
+        if (StringUtils.isNotEmpty(errMsg.toString())) {
+            recordIndex.setResultStatus(ResultStatus.FAIL);
         } else {
-            FitOpLogTraceContext
-                .setExThreadLocal(new ExceptionWrapper(NO_HOTEL_RESULT, ExceptionCode.GET_NO_RESULT));
+            recordIndex.setResultStatus(ResultStatus.SUCCESS);
         }
-
-        if (CollectionUtils.isEmpty(fitSearchResult.getSpotSearchResult())) {
-            FitOpLogTraceContext
-                .setExThreadLocal(new ExceptionWrapper(NO_SPOT_RESULT, ExceptionCode.GET_NO_RESULT));
-        }
-
-        if (CollectionUtils.isEmpty(fitSearchResult.getInsuranceResult())) {
-            FitOpLogTraceContext
-                .setExThreadLocal(new ExceptionWrapper(NO_INSURANCE_RESULT, ExceptionCode.GET_NO_RESULT));
+        recordIndex.setUsedTime(usedTime);
+        recordIndex.setTraceId(TraceContext.getTraceId());
+        recordIndex.setIp(TraceContext.getIp());
+        List<FitRecordSearchIndex> indexs = new ArrayList<FitRecordSearchIndex>();
+        indexs.add(recordIndex);
+        try {
+            fitMainSearchSolrClient.add(indexs, FitRecordSearchIndex.class);
+        } catch (Exception e) {
+            logger.error("将搜索记录保存到solr失败", e);
         }
     }
 
@@ -500,8 +602,7 @@ public class FitDpServiceImpl implements FitDpService{
     private void setHotelRoomCount(List<HotelSearchHotelDto> hotels, int adultCount, int childCount) {
         for (HotelSearchHotelDto hotel : hotels) {
             for (HotelSearchRoomDto room : hotel.getRooms()) {
-                int roomcount = HotelUtils.getMinRoomCount(adultCount, childCount, Integer.parseInt(room.getMaxVisitor()));
-                room.setRoomCounts(roomcount);
+                int roomCount = HotelUtils.getMinRoomCount(adultCount, childCount, Integer.parseInt(room.getMaxVisitor()));
                 for (HotelSearchPlanDto plan : room.getPlans()) {
                     int maxQuantity = plan.getMaxQuantity();
                     List<FitHotelPlanPriceDto> dayPrice = plan.getDayPrice();
@@ -513,7 +614,10 @@ public class FitDpServiceImpl implements FitDpService{
                     }
                     int maxCount = minInventory < maxQuantity ? minInventory : maxQuantity;
                     maxCount = maxCount < adultCount ? maxCount : adultCount;
-                    plan.setMaxQuantity(maxCount);
+                    plan.setMaxPlanCounts(maxCount);
+                    int minCount = roomCount < plan.getMinQuantity() ? plan.getMinQuantity() : roomCount;
+                    plan.setMinPlanCounts(minCount);
+                    plan.setPlanCounts(minCount);
                 }
             }
         }
@@ -742,6 +846,10 @@ public class FitDpServiceImpl implements FitDpService{
         this.filterFlight(list);
 		// 结果集中，每个航班只留一个YFC舱
 		this.getYCFLowPriceSeats(list);
+        // 过滤儿童舱
+        if (childCount > 0) {
+            filterNoChildFlight(list);
+        }
 		// 默认价格为最低价排序，如存在多组往返航班价格相同，按起飞时间排序
 		this.sortFlight(list);
         // 判断是否为隔夜航班
@@ -760,6 +868,32 @@ public class FitDpServiceImpl implements FitDpService{
 
         return list;
 	}
+
+    /**
+     * 如果有儿童过滤掉没有儿童舱位的航班以及舱位
+     * @param flightInfoDtos
+     */
+    private void filterNoChildFlight(List<FlightSearchFlightInfoDto> flightInfoDtos) {
+        List<FlightSearchFlightInfoDto> noUsefulFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
+        for (FlightSearchFlightInfoDto searchFlightInfoDto : flightInfoDtos) {
+            Map<String,FlightSearchSeatDto> childrenSeats = searchFlightInfoDto.getChildrenSeats();
+            List<FlightSearchSeatDto> usefulSeats = new ArrayList<FlightSearchSeatDto>();
+            if(null !=searchFlightInfoDto.getSeats()&&CollectionUtils.isNotEmpty(searchFlightInfoDto.getSeats())&& MapUtils
+                .isNotEmpty(childrenSeats)){
+                for (FlightSearchSeatDto seatDto : searchFlightInfoDto.getSeats()) {
+                    if(childrenSeats.containsKey(seatDto.getSeatClassCode())&&childrenSeats.get(seatDto.getSeatClassCode())!=null) {
+                        usefulSeats.add(seatDto);
+                    }
+                }
+                if(CollectionUtils.isNotEmpty(usefulSeats)) {
+                    searchFlightInfoDto.setSeats(usefulSeats);
+                }else{
+                    noUsefulFlightInfoDtos.add(searchFlightInfoDto);
+                }
+            }
+        }
+        flightInfoDtos.removeAll(noUsefulFlightInfoDtos);
+    }
 
     /**
      * 判断是否为隔夜航班

@@ -98,6 +98,11 @@ public class FlightOrderRequestRecordDto extends Entity implements Serializable 
 	private String originSuppCode;
 	/**原始报错信息*/
 	private String originFailDesc;
+	//ip
+//	private String ip;
+	//设备号
+//	private String equipmentNo;
+	
 	/***
 	 * 构造下单请求记录Dto字符串
 	 */
@@ -125,13 +130,13 @@ public class FlightOrderRequestRecordDto extends Entity implements Serializable 
 		flightReqRecordStr.append("\t"+this.getOriginSuppCode()).append(",");
 		/**原始信息*/
 		if(this.getOriginFailDesc()!=null){
-			flightReqRecordStr.append("\t"+this.getOriginFailDesc().replaceAll("\r", "").replaceAll("\n", "").replaceAll("\t", "").replaceAll(",", " ")).append(",");
+			flightReqRecordStr.append("\"").append("\t"+this.getOriginFailDesc().replaceAll("\r", "").replaceAll("\n", "").replaceAll("\t", "")).append("\"").append(",");
 		}else {
 			flightReqRecordStr.append("").append(",");
 		}
 		/**信息*/
 		if(this.getFailDesc()!=null){
-			flightReqRecordStr.append("\t"+this.getFailDesc().replaceAll("\r", "").replaceAll("\n", "").replaceAll("\t", "").replaceAll(",", " ")).append(",");
+			flightReqRecordStr.append("\"").append("\t"+this.getFailDesc().replaceAll("\r", "").replaceAll("\n", "").replaceAll("\t", "")).append("\"").append(",");
 		}else {
 			flightReqRecordStr.append("").append(",");
 		}
@@ -183,7 +188,7 @@ public class FlightOrderRequestRecordDto extends Entity implements Serializable 
 		if(this.getLvmamaAccount()==null){
 			flightReqRecordStr.append("").append(",");
 		}else{
-			flightReqRecordStr.append("\t" + this.getLvmamaAccount().replaceAll("\t", "").replaceAll(",", " ")).append(",");
+			flightReqRecordStr.append("\"").append("\t" + this.getLvmamaAccount().replaceAll("\t", "")).append("\"").append(",");
 		}
 		/**帐号类型*/
 		OrderFlag orderFlag = this.getOrderFlag();
@@ -196,11 +201,20 @@ public class FlightOrderRequestRecordDto extends Entity implements Serializable 
 		if(this.getContactName()==null){
 			flightReqRecordStr.append("").append(",");
 		}else{
-			flightReqRecordStr.append("\t" + this.getContactName().replaceAll("\t", "").replaceAll(",", " ")).append(",");
+			flightReqRecordStr.append("\"").append("\t" + this.getContactName().replaceAll("\t", "")).append("\"").append(",");
 		}
 		/**联系人手机号*/
 		flightReqRecordStr.append("\t" + this.getContactCellphone()).append(",");
-		
+//		//ip
+//		if(StringUtils.isNotBlank(this.getIp())){
+//			flightReqRecordStr.append(this.getIp()).append(",");
+//		}else{
+//			flightReqRecordStr.append(",");
+//		}
+//		//设备号
+//		if(StringUtils.isNotBlank(this.getEquipmentNo())){
+//			flightReqRecordStr.append(this.getEquipmentNo());
+//		}
 		return flightReqRecordStr.toString().replaceAll("null", "");
 	}
 
@@ -506,4 +520,20 @@ public class FlightOrderRequestRecordDto extends Entity implements Serializable 
 	public void setOriginFailDesc(String originFailDesc) {
 		this.originFailDesc = originFailDesc;
 	}
+	
+//	public String getIp() {
+//		return ip;
+//	}
+//
+//	public void setIp(String ip) {
+//		this.ip = ip;
+//	}
+//
+//	public String getEquipmentNo() {
+//		return equipmentNo;
+//	}
+//
+//	public void setEquipmentNo(String equipmentNo) {
+//		this.equipmentNo = equipmentNo;
+//	}
 }

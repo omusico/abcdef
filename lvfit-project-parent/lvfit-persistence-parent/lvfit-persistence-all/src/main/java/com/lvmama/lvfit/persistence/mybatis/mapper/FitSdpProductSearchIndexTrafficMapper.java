@@ -23,5 +23,7 @@ public interface FitSdpProductSearchIndexTrafficMapper extends DomainEntityBaseM
 	FitSdpProductSearchIndexTraffic queryTrafficIndexById(Long id);
 
 	void updateOneTrafficIndex(FitSdpProductSearchIndexTraffic dto);
+
+	int countIndexTraffic(BaseQueryDto<Long> baseQuery);
 	
 }

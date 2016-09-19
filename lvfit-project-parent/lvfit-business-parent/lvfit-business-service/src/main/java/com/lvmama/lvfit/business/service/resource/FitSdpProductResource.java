@@ -309,9 +309,12 @@ public class FitSdpProductResource {
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
 			List<FitSdpProductSearchIndexDto> flightOrderListResultDtos = fitSdpProductService.querySdpProductSearchIndex(baseQuery);
-			BaseResultDto<FitSdpProductSearchIndexDto> baseResultDto = new BaseResultDto<FitSdpProductSearchIndexDto>(flightOrderListResultDtos);
+			int records = fitSdpProductService.countSdpProductSearchIndex(baseQuery);
+			Pagination pagination = baseQuery.getPagination();
+			pagination.setRecords(records);
+			pagination.countRecords(records);
+			BaseResultDto<FitSdpProductSearchIndexDto> baseResultDto = new BaseResultDto<FitSdpProductSearchIndexDto>(pagination,flightOrderListResultDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
- 
 			return Response.ok(jsonResult).build();
 		} catch(Exception e){
 			e.printStackTrace();
@@ -324,32 +327,16 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_ALL_SYN_INFO)
-	public Response querySdpProductSynMsgInfo(BaseQueryDto<Long> baseQuery){
+	public Response querySdpProductSynMsgInfo(BaseQueryDto<FitSdpProductSyncMsgDto> baseQuery){
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
 			List<FitSdpProductSyncMsgDto> synMsgDtos = fitSdpProductService.querySdpProductSynMsgInfo(baseQuery);
-			BaseResultDto<FitSdpProductSyncMsgDto> baseResultDto = new BaseResultDto<FitSdpProductSyncMsgDto>(synMsgDtos);
+			int records = fitSdpProductService.countSdpProductSynMsg(baseQuery);
+			Pagination pagination = baseQuery.getPagination();
+			pagination.setRecords(records);
+			pagination.countRecords(records);
+			BaseResultDto<FitSdpProductSyncMsgDto> baseResultDto = new BaseResultDto<FitSdpProductSyncMsgDto>(pagination,synMsgDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
- 
-			return Response.ok(jsonResult).build();
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	@POST
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_SYN_INFO_QUERY_LIST)
-	public Response querySdpProductSynInfoList(BaseQueryDto<Long> baseQuery){
-		try{
-			ObjectMapper objectMapper = JSONMapper.getInstance();
-			List<FitSdpProductSyncMsgDto> synMsgDtos = fitSdpProductService.querySdpProductSynInfoList(baseQuery);
-			BaseResultDto<FitSdpProductSyncMsgDto> baseResultDto = new BaseResultDto<FitSdpProductSyncMsgDto>(synMsgDtos);
-			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
- 
 			return Response.ok(jsonResult).build();
 		} catch(Exception e){
 			e.printStackTrace();
@@ -365,10 +352,13 @@ public class FitSdpProductResource {
 	public Response querySdpProductIndexTrafficList(BaseQueryDto<Long> baseQuery){
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
-			List<FitSdpProductSearchIndexTraffic> synMsgDtos = fitSdpProductService.querySdpProductIndexTrafficList(baseQuery);
-			BaseResultDto<FitSdpProductSearchIndexTraffic> baseResultDto = new BaseResultDto<FitSdpProductSearchIndexTraffic>(synMsgDtos);
+			List<FitSdpProductSearchIndexTraffic> indexTrafficDtos = fitSdpProductService.querySdpProductIndexTrafficList(baseQuery);
+			int records = fitSdpProductService.countSdpProductIndexTraffic(baseQuery);
+			Pagination pagination = baseQuery.getPagination();
+			pagination.setRecords(records);
+			pagination.countRecords(records);
+			BaseResultDto<FitSdpProductSearchIndexTraffic> baseResultDto = new BaseResultDto<FitSdpProductSearchIndexTraffic>(pagination,indexTrafficDtos);
 			String jsonResult = objectMapper.writeValueAsString(baseResultDto);
- 
 			return Response.ok(jsonResult).build();
 		} catch(Exception e){
 			e.printStackTrace();
@@ -464,22 +454,6 @@ public class FitSdpProductResource {
 		List<FitFliBookingCallBackRequest> flightCallBack = fitSdpProductService.getFlightCallBackByVstMainNo(baseQuery);
 		return Response.ok(flightCallBack).build();
 	}
-	
-	
-/*	*//**
-	 * 新增或者修改自主打包城市组信息
-	 * @param feeRulesDtos
-	 * @return
-	 *//*
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path(BussinessClientPath.Path.SAVE_SYN_TIME_INFO)
-	public Response saveSyncTimeInfo(FitSdpProductSyncMsgDto syncMsgDto) {
-		fitSdpProductService.saveSdpProductSyncMsg(syncMsgDto);
-		return Response.ok(ResultStatus.SUCCESS).build();
-	}
-	*/
 	
 	
 }

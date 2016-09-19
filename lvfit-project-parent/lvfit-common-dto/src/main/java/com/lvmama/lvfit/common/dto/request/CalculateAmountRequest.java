@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.lvmama.lvfit.common.dto.enums.TripeType;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -87,33 +88,36 @@ public class CalculateAmountRequest implements Serializable {
 	
     /**
      * 构造算价请求Map
-     * @param selectShoppingDto
+     * @param
      * @return
      */
     @JsonIgnore
-	public Map<String, Object> getRequestMap(FitShoppingDto selectShoppingDto,BookingSource bookingSource) {
-    	
+	public Map<String, Object> getRequestMap(FitShoppingDto shoppingDto, BookingSource bookingSource) {
+		FitBaseSearchRequest searchRequest = shoppingDto.getSearchRequest();
+
     	Map<String, Object> requestMap = new HashMap<String, Object>();
 
     	List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
-		selectSearchFlightInfoDtos.add(selectShoppingDto.getToFlightInfos().getResults().get(0));
-		selectSearchFlightInfoDtos.add(selectShoppingDto.getBackFlightInfos().getResults().get(0));
+		selectSearchFlightInfoDtos.add(shoppingDto.getToFlightInfos().getResults().get(0));
+		if (searchRequest.getTripType().equals(TripeType.WF.name())) {
+			selectSearchFlightInfoDtos.add(shoppingDto.getBackFlightInfos().getResults().get(0));
+		}
 
-    	FitBaseSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
+
     	searchRequest.setBookingSource(bookingSource);
 		AmountCalculatorRequest flightPriceRequest = this.getFlightPriceRequest(selectSearchFlightInfoDtos, searchRequest);
 		if(flightPriceRequest!=null){
 			requestMap.put(FitBusinessType.CALCULATE_FLI_PRICE.name(),flightPriceRequest);
 		}
-		FitHotelPriceRequest  hotelPriceRequest = this.getHotelPriceRequest(selectShoppingDto);
+		FitHotelPriceRequest  hotelPriceRequest = this.getHotelPriceRequest(shoppingDto);
 		if(hotelPriceRequest!=null){
 			requestMap.put(FitBusinessType.CALCULATE_HOTEL_PRICE.name(),hotelPriceRequest);
 		}
-		FitSpotTicketPriceRequest  spotTicketPriceRequest = this.getSpotTicketPriceRequest(selectShoppingDto);
+		FitSpotTicketPriceRequest  spotTicketPriceRequest = this.getSpotTicketPriceRequest(shoppingDto);
 		if(spotTicketPriceRequest!=null){
 			requestMap.put(FitBusinessType.CALCULATE_SPOT_TICKET_PRICE.name(),spotTicketPriceRequest);
 		}
-		FitInsurancePriceRequest fitInsurancePriceRequest = this.getFitInsurancePriceRequest(selectShoppingDto);
+		FitInsurancePriceRequest fitInsurancePriceRequest = this.getFitInsurancePriceRequest(shoppingDto);
 		if (fitInsurancePriceRequest != null) {
 		    requestMap.put(FitBusinessType.CALCULATE_INSURANCE_PRICE.name(), fitInsurancePriceRequest);
 		}
@@ -188,37 +192,24 @@ public class CalculateAmountRequest implements Serializable {
 	
 	/**
 	 * 构造酒店价格计算请求对象
-	 * @param selectShoppingDto
+	 * @param
 	 * @return
 	 */
 	@JsonIgnore
-	public FitHotelPriceRequest getHotelPriceRequest(FitShoppingDto selectShoppingDto) {
+	public FitHotelPriceRequest getHotelPriceRequest(FitShoppingDto shoppingDto) {
 		
 		FitHotelPriceRequest hotelPriceRequest = new FitHotelPriceRequest();
-		FitBaseSearchRequest searchRequest = selectShoppingDto.getSearchRequest();
+		FitBaseSearchRequest searchRequest = shoppingDto.getSearchRequest();
 
 		Date checkInDate = DateUtils.parseDate(searchRequest.getCheckInTime());
 		Date checkOutDate = DateUtils.parseDate(searchRequest.getCheckOutTime());
-		if(CollectionUtils.isNotEmpty(selectShoppingDto.getHotels().getResults())){
-			BigDecimal roomCount =  BigDecimal.ONE;
-			List<HotelSearchRoomDto> roomDtos = selectShoppingDto.getHotels().getResults().get(0).getRooms();
-			HotelSearchPlanDto selectSearchPlanDto = roomDtos.get(0).getPlans().get(0);
-			if(CollectionUtils.isNotEmpty(roomDtos)){
-				for(HotelSearchRoomDto roomDto: roomDtos){
-					if(roomDto.getSelectedFlag()){
-						if(roomDto.getRoomCounts()!=null){
-							roomCount = new BigDecimal(roomDto.getRoomCounts());
-						}
-						selectSearchPlanDto = roomDto.getPlans().get(0);
-						break;
-					}
-				}
-			}
-			Long planId = Long.valueOf(selectSearchPlanDto.getSuppGoodsId());
+		if(CollectionUtils.isNotEmpty(shoppingDto.getHotels().getResults())){
+			HotelSearchPlanDto planDto = shoppingDto.getHotels().getResults().get(0).getRooms().get(0).getPlans().get(0);
+			Long planId = Long.valueOf(planDto.getSuppGoodsId());
 			hotelPriceRequest.setPricePlanId(planId);
 			hotelPriceRequest.setStartDate(checkInDate);
 			hotelPriceRequest.setEndDate(checkOutDate);
-			hotelPriceRequest.setRoomCount(roomCount);
+			hotelPriceRequest.setRoomCount(BigDecimal.valueOf(planDto.getPlanCounts()));
 			return hotelPriceRequest;
 		}
 		return null;

@@ -51,7 +51,9 @@ public enum AdapterClientPath {
     ROUTE_PATA(Path.ROUTE_PATA,"路由PATA"),
     ROUTE_FD(Path.ROUTE_FD,"查询普通运价信息"),
     ROUTE_FDBATCH(Path.ROUTE_FDBATCH, "ftp批量获取普通运价信息"),
-    ROUTE_AUTO_CHANGE_APPLY(Path.ROUTE_AUTO_CHANGE_APPLY,"向供应商申请改签");
+    ROUTE_AUTO_CHANGE_APPLY(Path.ROUTE_AUTO_CHANGE_APPLY,"向供应商申请改签"),
+	ROUTE_RT_PNR(Path.ROUTE_RT_PNR, "路由解析PNR"),
+	ROUTE_RT_PNR_BATCH(Path.ROUTE_RT_PNR_BATCH, "路由批量解析PNR");
  
 	/** Adapter路由Resource对应枚举(以ROUTE开头)END **/
 	
@@ -113,7 +115,9 @@ public enum AdapterClientPath {
         public final static String ROUTE_PATA = basePath + routePath + "pata";
         public final static String ROUTE_FD = basePath + routePath + "fd";
         public final static String ROUTE_FDBATCH = basePath + routePath + "fdbatch";
-      
+		public final static String ROUTE_RT_PNR = basePath + routePath + "rtPnr/{suppCode}";
+		public final static String ROUTE_RT_PNR_BATCH = basePath + routePath + "rtPnrBatch/{suppCode}";
+
 		/** Adapter路由Resource路径(以ROUTE开头)END **/
 	}
 

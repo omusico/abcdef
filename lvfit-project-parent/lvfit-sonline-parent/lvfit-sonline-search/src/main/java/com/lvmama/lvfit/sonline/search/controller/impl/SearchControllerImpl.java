@@ -199,6 +199,11 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 
 		//1. 产品基本信息
 		model.addAttribute("basicInfo", respForm.getBasicInfo());
+		if(StringUtils.isNotBlank(respForm.getBasicInfo().getProductShowName())){
+			String[] titles = basicInfo.getProductShowName().split(",");
+			model.addAttribute("mainTitle", titles[0]);
+			model.addAttribute("subTitle", titles[1]);
+		}
 		model.addAttribute("productTypeName", respForm.getProductTypeName());
 		model.addAttribute("packagedProdCatId", packagedProdCatId);
 		model.addAttribute("packagedProductId", basicInfo.getPackagedProductId());

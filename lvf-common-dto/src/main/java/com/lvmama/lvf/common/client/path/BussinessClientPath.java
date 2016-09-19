@@ -228,6 +228,7 @@ public enum BussinessClientPath {
 	QUERY_OP_LOG(Path.QUERY_OP_LOG,"查询操作日志"),
 	QUERY_OP_LOG_LIST(Path.QUERY_OP_LOG_LIST,"查询操作日志"),
 	QUERY_OP_LOG_LIST_BY_CONDITION(Path.QUERY_OP_LOG_LIST_BY_CONDITION,"按条件查询操作日志列表"),
+	QUERY_OP_BLACK_LOG_LIST(Path.QUERY_OP_BLACK_LOG_LIST,"按条件查询黑名单操作日志"),
 	QUERY_SMS_LOG_LIST(Path.QUERY_SMS_LOG_LIST,"查询短信日志列表"),
 	SAVE_SMS(Path.SAVE_SMS,"保存需发送的短信信息"),
 	QUERY_SMSES(Path.QUERY_SMSES,"查询需发送的短信信息"),
@@ -340,7 +341,13 @@ public enum BussinessClientPath {
 
 	/** 订单导入 **/
 	QUERY_ORDER_IMPORT_LIST(Path.QUERY_ORDER_IMPORT_LIST, "已导入订单"),
-	QUERY_ORDER_IMPORT_RECORD_LIST(Path.QUERY_ORDER_IMPORT_RECORD_LIST, "导入记录");
+	QUERY_ORDER_IMPORT_RECORD_LIST(Path.QUERY_ORDER_IMPORT_RECORD_LIST, "导入记录"),
+	/** 订单导入制单 */
+	GENERATE_ORDER_IMPORT(Path.GENERATE_ORDER_IMPORT,"订单导入制单"),
+	GENERATE_ORDER_IMPORT_BY_IMPORT_ID(Path.GENERATE_ORDER_IMPORT_BY_IMPORT_ID,"订单导入制单"),
+
+	QUERY_ORDER_IMPORT_AUDIT_LIST(Path.QUERY_ORDER_IMPORT_AUDIT_LIST, "导单审核列表"),
+	AUDIT_ISSUE_IMPORT_ORDER(Path.AUDIT_ISSUE_IMPORT_ORDER, "导入订单审核&出票");
      
 	public String path;
 	public String cnName;
@@ -831,6 +838,7 @@ public enum BussinessClientPath {
         
         /** 查询操作日志列表 */
         public final static String QUERY_OP_LOG_LIST_BY_CONDITION=basePath+configPath+"queryOpLogListByCondition";
+        public final static String QUERY_OP_BLACK_LOG_LIST=basePath+configPath+"queryOpBlackLogList/{businessId}/{businessNo}/{page}/{rows}";
         
         public final static String QUERY_VST_SYNC_CONFIG_DATAS = basePath+configPath+"queryVSTSyncConfigDatas";
         
@@ -993,11 +1001,15 @@ public enum BussinessClientPath {
         
         public static final String AUTO_XE_PNR = orderPath + "autoXePnr";
 
-        public static final String GET_COUPON_SWITCH = basePath + "getCouponSwitch";
+		public static final String GET_COUPON_SWITCH = basePath + "getCouponSwitch";
 
 		/** 订单导入 **/
-		public static final String QUERY_ORDER_IMPORT_LIST = basePath + orderPath + "importList";
-		public static final String QUERY_ORDER_IMPORT_RECORD_LIST = basePath + orderPath + "importRecordList";
+		public static final String QUERY_ORDER_IMPORT_LIST = basePath + orderPath + "import/queryList";
+		public static final String QUERY_ORDER_IMPORT_RECORD_LIST = basePath + orderPath + "import/queryRecordList";
+		public static final String GENERATE_ORDER_IMPORT = basePath + orderPath + "import/generate";
+		public static final String GENERATE_ORDER_IMPORT_BY_IMPORT_ID = basePath + orderPath + "import/generateByImportId/{importId}";
+		public static final String QUERY_ORDER_IMPORT_AUDIT_LIST = basePath + orderPath + "queryOrderImportAuditList";
+		public static final String AUDIT_ISSUE_IMPORT_ORDER = basePath + ticketPath + "auditIssueImportOrder";
 
 	}
 	

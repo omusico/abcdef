@@ -29,7 +29,7 @@ public class FitOrderHotel implements Domain<FitOrderHotelDto> {
         this.self.setHotelName(searchHotel.getProductName());
         this.self.setRoomId(searchRoom.getBranchId());
         this.self.setRoomName(searchRoom.getBranchName());
-        this.self.setRoomCount(searchRoom.getRoomCounts());
+        this.self.setRoomCount(searchPlan.getPlanCounts());
         this.self.setPlanId(searchPlan.getSuppGoodsId());
         this.self.setPlanName(searchPlan.getGoodsName());
         //this.self.setSalesPrice(new BigDecimal(searchPlan.getSellPrice()));

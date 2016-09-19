@@ -44,6 +44,7 @@ import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.utils.FitLoggerHandler;
 
 @Component
@@ -85,35 +86,31 @@ public class FitFlightClient {
      * @throws IOException
      */
     @ProfilePoint(Profile.SEARCH_FLIGHT_INFO_FROM_CLIENT)
-    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlightInfoNoCache(@CacheKey FlightQueryRequest request) throws Exception
-    {
+    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlightInfoNoCache(@CacheKey FlightQueryRequest request) {
     	//1、根据useAggregate设置不同的Url
     	FlightClientPath command = FlightClientPath.FLIGHT_INFO_SEARCH;
-    	String url = StringUtils.EMPTY;
-    	url = command.url(lvfaggregateBaseurl);
-    	try
-    	{
-    		String result = restClient.post(url, String.class, request);
-    		if(StringUtils.isNotBlank(result))
-    		{
-    			ObjectMapper objectMapper = JSONMapper.getInstance();
-    			FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = objectMapper.readValue(result, 
-    				new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
-    			return flightSearchResult;		
-    		}
-    		return null;
-    	}
-    	catch(ExceptionWrapper ew)
-    	{
-    		throw ew;
-    	}
+		String url = command.url(lvfaggregateBaseurl);
+
+		MockUtil.writeJsonToFile("d:\\flightrequest\\"+System.currentTimeMillis()+".txt", request);
+		String result = restClient.post(url, String.class, request);
+		if(StringUtils.isNotBlank(result)) {
+			try {
+				ObjectMapper objectMapper = JSONMapper.getInstance();
+				FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = objectMapper.readValue(result,
+					new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>() {
+					});
+				return flightSearchResult;
+			} catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return null;
     }
     
     
     @ProfilePoint(Profile.SEARCH_FLIGHT_INFO_FROM_CLIENT)
     @SuppInterfacePoint(InterfaceKey.SearchFlight)
-	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_GO_FLIGHT_QUERY_E)
-    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlights(@CacheKey FlightQueryRequest request) throws Exception{
+    public FlightSearchResult<FlightSearchFlightInfoDto> getSearchFlights(@CacheKey FlightQueryRequest request) {
 	    FlightSearchResult<FlightSearchFlightInfoDto > flightSearchResult =  this.getSearchFlightInfoNoCache(request);
     	return flightSearchResult;
     }

@@ -6,11 +6,11 @@
 	    <result column="ID" property="id"/>
 	    <result column="OBJECT_ID" property="objectId" jdbcType="DECIMAL"/>
 	    <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
-	    <result column="OBJECT_TYPE" property="objectType" jdbcType="DECIMAL"/>
+	    <result column="OBJECT_TYPE" property="objectType" jdbcType="VARCHAR"/>
 	    <result column="PUSH_FLAG" property="pushFlag" jdbcType="VARCHAR" />
-	    <result column="PUSH_COUNT" property="pushCount" jdbcType="VARCHAR"/>
-	    <result column="PUSH_CONTENT" property="pushContent" jdbcType="DECIMAL"/>
-	    <result column="DATA_TYPE" property="dataType" jdbcType="DECIMAL"/>
+	    <result column="PUSH_COUNT" property="pushCount" jdbcType="DECIMAL"/>
+	    <result column="PUSH_CONTENT" property="pushContent" jdbcType="VARCHAR"/>
+	    <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
 	    <result column="OPERATE_TYPE" property="operateType" jdbcType="VARCHAR"/>
 	</resultMap>
 	
@@ -38,11 +38,11 @@
 		#{id,jdbcType=DECIMAL},
 		#{objectId,jdbcType=DECIMAL},
 		#{createTime,jdbcType=VARCHAR},
-		#{objectType,jdbcType=DECIMAL},
+		#{objectType,jdbcType=VARCHAR},
 		#{pushFlag,jdbcType=VARCHAR},
-		#{pushCount,jdbcType=VARCHAR},
-		#{pushContent,jdbcType=DECIMAL},
-		#{dataType,jdbcType=DECIMAL},
+		#{pushCount,jdbcType=DECIMAL},
+		#{pushContent,jdbcType=VARCHAR},
+		#{dataType,jdbcType=VARCHAR},
 		#{operateType,jdbcType=VARCHAR}
 		)
 	</insert>
@@ -56,6 +56,10 @@
 			WHERE OBJECT_ID=#{condition}
 		</if>
 		<include refid="ORACLE.paginationEnd" />
+	</select>
+	
+	<select id="countPushRecords" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM lvmama_ver.com_push WHERE OBJECT_ID = #{condition}
 	</select>
 
 </mapper>

@@ -245,13 +245,13 @@ public class FitShoppingServiceImpl implements FitShoppingService{
 			    			if(roomDto.getSelectedFlag()){
 			    				shoppingHotelDto.setRoomId(roomDto.getBranchId());
 			    				shoppingHotelDto.setRoomName(roomDto.getBranchName());
-			    				shoppingHotelDto.setRoomCount(roomDto.getRoomCounts());
 			    				List<HotelSearchPlanDto> planDto = roomDto.getPlans();
 			    				if(!CollectionUtils.isEmpty(planDto)){
 			    					for(HotelSearchPlanDto plan:planDto){
 				    					if(plan.getSelectedFlag()){			    						
 				    						shoppingHotelDto.setPlanId(Long.valueOf(plan.getSuppGoodsId()));			    						
 				    						shoppingHotelDto.setPlanName(plan.getGoodsName());
+											shoppingHotelDto.setRoomCount(plan.getPlanCounts());
 				    						//目前酒店只能选择一个商品 
 				    						break;
 				    					}

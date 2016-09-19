@@ -2,6 +2,7 @@ package com.lvmama.lvf.common.dto.request.pc;
 
 
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Date;
@@ -9,7 +10,9 @@ import java.util.Locale;
 
 import com.lvmama.lvf.common.dto.vst.UserAddressDto;
 
-public class UserAddressRequest {
+public class UserAddressRequest implements Serializable{
+
+	private static final long serialVersionUID = 7351395760087607283L;
 	
 	private UserAddressDto dto;
 	
@@ -34,11 +37,12 @@ public class UserAddressRequest {
 		return dto.getUserNo().length();
 	}
 
-	public boolean isEmpty() {
+	/*public boolean isEmpty() {
 		return dto.getUserNo().isEmpty();
 	}
-
-	public char charAt(int index) {
+	 */
+	
+	/*public char charAt(int index) {
 		return dto.getUserNo().charAt(index);
 	}
 
@@ -60,9 +64,9 @@ public class UserAddressRequest {
 
 	public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) {
 		dto.getUserNo().getChars(srcBegin, srcEnd, dst, dstBegin);
-	}
+	}*/
 
-	public void getBytes(int srcBegin, int srcEnd, byte[] dst, int dstBegin) {
+	/*public void getBytes(int srcBegin, int srcEnd, byte[] dst, int dstBegin) {
 		dto.getUserNo().getBytes(srcBegin, srcEnd, dst, dstBegin);
 	}
 
@@ -77,9 +81,9 @@ public class UserAddressRequest {
 
 	public byte[] getBytes() {
 		return dto.getUserNo().getBytes();
-	}
+	}*/
 
-	public boolean equals(Object anObject) {
+	/*public boolean equals(Object anObject) {
 		return dto.getUserNo().equals(anObject);
 	}
 
@@ -242,7 +246,7 @@ public class UserAddressRequest {
 
 	public Long getAddressId() {
 		return dto.getAddressId();
-	}
+	}*/
 
 	public String getUserNo() {
 		return dto.getUserNo();

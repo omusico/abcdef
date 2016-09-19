@@ -315,7 +315,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                 <dl class="user_dl">
                     <dt><span class="red">*</span> 中文姓名：</dt>
                     <dd>
-                        <input class="input js_yz js_goumai_name" onblur="checkContactName(this);" type_name="text" type="text" placeholder="姓名" value="${contacter.name}">
+                        <input class="input js_yz js_goumai_name" onblur="checkUserName(this);" type_name="text" type="text" placeholder="姓名" value="${contacter.name}">
                         <input type="hidden" name="receiverId" >
                         <input  type="hidden" name="certType">
 	                	<input  type="hidden" name="certNo">
@@ -329,7 +329,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dd>
                         <input class="input js_yz js_textBig" type_name="mobile" maxlength="11" type="text" value="${contacter.mobile}" placeholder="手机号码"  onblur="initContractData(this)">
                         <span class="ts_text">此手机号为接收短信所用，作为订购与取票凭证，请准确填写。</span>
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>手机号码不正确</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的手机号码</span>
                     </dd>
                 </dl>
                 <dl class="user_dl">
@@ -337,7 +337,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dd>
                         <input class="input js_yz js_email" type_name="email" value="${contacter.email}" type="text" placeholder="邮箱">
                         <span class="ts_text">此邮箱地址为接收邮件所用，作为订购与取票凭证，请准确填写。</span>
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>邮箱地址不正确</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的邮箱地址</span>
                     </dd>
                 </dl>
             </div><!--购买人--结束-->  
@@ -378,7 +378,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dt><span class="red">*</span>手机号码：</dt>
                     <dd>
                         <input class="input js_yz js_textBig" type_name="mobile" maxlength="11" type="text"  placeholder="手机号码" <#if passengers[i-1]??>  value =${passengers[i-1].mobile} </#if> >
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>手机号码不正确</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的手机号码</span>
                     </dd>
                 </dl>
                 <dl class="user_dl">

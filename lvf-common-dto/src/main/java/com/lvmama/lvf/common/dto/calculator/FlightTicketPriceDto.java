@@ -95,7 +95,9 @@ public class FlightTicketPriceDto implements Serializable
 	private BigDecimal subsidy;
 	
 	private String suppCode;
-	
+
+	/** 支付手续费 **/
+	private BigDecimal tradingFee;
 	
 	public BigDecimal getSalesParPrice() {
 		
@@ -296,5 +298,13 @@ public class FlightTicketPriceDto implements Serializable
 
 	public void setSuppCode(String suppCode) {
 		this.suppCode = suppCode;
+	}
+
+	public BigDecimal getTradingFee() {
+		return tradingFee;
+	}
+
+	public void setTradingFee(BigDecimal tradingFee) {
+		this.tradingFee = tradingFee;
 	}
 }
