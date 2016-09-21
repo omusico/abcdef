@@ -43,8 +43,21 @@ public class FitSuppFlightOrderDto extends Entity {
 	/** 供应商航班订单乘客类型 */
 	private PassengerType passengerType;
 	
+	/**
+	 * 销售类型，区别是否是包机
+	 */
+	private String saleType;
+	
 	/** 航程类型(仅针对于机票) */
 	private FlightTripType tripType;
+
+	public String getSaleType() {
+		return saleType;
+	}
+
+	public void setSaleType(String saleType) {
+		this.saleType = saleType;
+	}
 
 	public Long getSuppOrderId() {
 		return suppOrderId;

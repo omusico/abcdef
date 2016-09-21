@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +15,8 @@ import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.status.ResultStatus;
 import com.lvmama.lvf.common.trace.TraceContext;
-import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
-import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.enums.SymbolType;
 import com.lvmama.lvfit.common.dto.search.FitRecordSearchIndex;
-import com.lvmama.lvfit.common.dto.trace.FitOpLogTraceContext;
 import com.lvmama.lvfit.solrClient.extend.FitMainSearchSolrClient;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -118,6 +116,17 @@ public class FitDpServiceImpl implements FitDpService{
 
         // 获取查询结果集
         FitSearchResult fitSearchResult = this.searchResult(request);
+        Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> distinctFlightMap = fitSearchResult.getDistinctFlightMap();
+        FlightSearchResult<FlightSearchFlightInfoDto> toFlightInfos = distinctFlightMap.get(FlightTripType.DEPARTURE.name());
+        if (toFlightInfos == null || CollectionUtils.isEmpty(toFlightInfos.getResults())) {
+            throw new ExceptionWrapper(ExceptionCode.GET_NO_RESULT);
+        }
+        if (request.getTripType().equals(TripeType.WF.name())) {
+            FlightSearchResult<FlightSearchFlightInfoDto> backFlightInfos = distinctFlightMap.get(FlightTripType.RETURN.name());
+            if (backFlightInfos == null || CollectionUtils.isEmpty(backFlightInfos.getResults())) {
+                throw new ExceptionWrapper(ExceptionCode.GET_NO_RESULT);
+            }
+        }
         // 处理返回结果集
         this.handleSearchResult(fitSearchResult, request.getAdultsCount(), request.getChildCount());
         // 构造购物车信息
@@ -148,9 +157,6 @@ public class FitDpServiceImpl implements FitDpService{
         } else {
             String oldRequestKey = shoppingDto.getRequestKey();
             if (oldRequestKey != null && !requestKey.equals(oldRequestKey)) {
-                shoppingDto.setSelectToFlight(null);
-                shoppingDto.setSelectBackFlight(null);
-                shoppingDto.setSelectHotel(null);
                 shoppingDto.setSelectTicketInfo(new ArrayList<FitShoppingSelectedTicketDto>());
                 shoppingDto.setSelectInsuranceInfo(new ArrayList<FitShoppingSelectedInsuranceDto>());
                 shoppingDto.setSelectFlightInsInfo(new ArrayList<FlightInsuranceDto>());
@@ -163,18 +169,9 @@ public class FitDpServiceImpl implements FitDpService{
         FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = fitSearchResult.getDistinctFlightMap().get(FlightTripType.RETURN.name());
 
         shoppingDto.setToFlightInfos(toFlightSearchResult);
-        if (toFlightSearchResult != null && CollectionUtils.isNotEmpty(toFlightSearchResult.getResults())) {
-            shoppingDto.setSelectToFlight(toFlightSearchResult.getResults().get(0));
-        }
         shoppingDto.setBackFlightInfos(backFlightSearchResult);
-        if (backFlightSearchResult != null && CollectionUtils.isNotEmpty(backFlightSearchResult.getResults())) {
-            shoppingDto.setSelectBackFlight(backFlightSearchResult.getResults().get(0));
-        }
 
         shoppingDto.setHotels(fitSearchResult.getHotelSearchResult());
-        if (fitSearchResult.getHotelSearchResult() != null && CollectionUtils.isNotEmpty(fitSearchResult.getHotelSearchResult().getResults())) {
-            shoppingDto.setSelectHotel(fitSearchResult.getHotelSearchResult().getResults().get(0));
-        }
 
         if (CollectionUtils.isNotEmpty(fitSearchResult.getFlightInsuranceResult())) {
             handleFlightIns(fitSearchResult.getFlightInsuranceResult());
@@ -249,6 +246,7 @@ public class FitDpServiceImpl implements FitDpService{
 		//1. 构造任务执行参数以及生成执行组（机票、酒店）
 		TaskContext context = new TaskContext();
         context.put("request", request);
+        context.put("traceId",TraceContext.getTraceId());
 		TaskMainGroup<FitSearchResult> taskMainGroup = this.initTaskGroup(context);
 		
 		//2. 执行并发线程组并获取执行结果
@@ -285,11 +283,11 @@ public class FitDpServiceImpl implements FitDpService{
         if (fitSearchResult.getHotelSearchResult() != null && CollectionUtils.isNotEmpty(fitSearchResult.getHotelSearchResult().getResults())) {
             List<HotelSearchHotelDto> hotelList = fitSearchResult.getHotelSearchResult().getResults();
             HotelSearchPlanDto planDto = hotelList.get(0).getRooms().get(0).getPlans().get(0);
-            BigDecimal hotelBasePrice = planDto.getPrice().multiply(BigDecimal.valueOf(planDto.getPlanCounts()));
+            BigDecimal hotelBasePrice = planDto.getPrice().multiply(BigDecimal.valueOf(planDto.getRoomCounts()));
             for (HotelSearchHotelDto hotel : hotelList) {
                 for (HotelSearchRoomDto room : hotel.getRooms()) {
                     for (HotelSearchPlanDto plan : room.getPlans()) {
-                        plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(plan.getPlanCounts())).subtract(hotelBasePrice));
+                        plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(plan.getRoomCounts())).subtract(hotelBasePrice));
                     }
                 }
             }
@@ -614,11 +612,14 @@ public class FitDpServiceImpl implements FitDpService{
                     }
                     int maxCount = minInventory < maxQuantity ? minInventory : maxQuantity;
                     maxCount = maxCount < adultCount ? maxCount : adultCount;
-                    plan.setMaxPlanCounts(maxCount);
+                    plan.setMaxRoomCounts(maxCount);
                     int minCount = roomCount < plan.getMinQuantity() ? plan.getMinQuantity() : roomCount;
-                    plan.setMinPlanCounts(minCount);
-                    plan.setPlanCounts(minCount);
+                    plan.setMinRoomCounts(minCount);
+                    plan.setRoomCounts(minCount);
                 }
+                // APP房间数适配，待其上线后删除
+                double newRoomCount = (adultCount + childCount / 2) / 2.0;
+                room.setRoomCounts((int)Math.ceil(newRoomCount));
             }
         }
     }
@@ -644,6 +645,7 @@ public class FitDpServiceImpl implements FitDpService{
 	private TaskMainGroup<FitSearchResult> initTaskGroup(TaskContext context) {
 		
 		// 组装查询信息任务组
+
 		TaskGroup queryGroup = this.genTaskGroup(context);
         context.put("taskSize", queryGroup.getTasks().size());
 		// 组装MainGroup
@@ -703,6 +705,8 @@ public class FitDpServiceImpl implements FitDpService{
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
+
+                TraceContext.setTraceId(context.get("traceId").toString());
                 FlightToQueryRequest toflightQuery = new FlightToQueryRequest();
                 toflightQuery.setDepartureDate(DateUtils.parseDate(request.getDepartureTime()));
                 toflightQuery.setReturnDate(request.getReturnTime());
@@ -724,6 +728,8 @@ public class FitDpServiceImpl implements FitDpService{
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
+
+                TraceContext.setTraceId(context.get("traceId").toString());
                 FlightBackQueryRequest backflightQuery = new FlightBackQueryRequest();
                 backflightQuery.setDepartureDate(DateUtils.parseDate(request.getReturnTime()));
                 backflightQuery.setDepartureCityCode(request.getArrivalCityCode());
@@ -744,6 +750,8 @@ public class FitDpServiceImpl implements FitDpService{
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
+
+                TraceContext.setTraceId(context.get("traceId").toString());
                 HotelQueryRequest hotelQueryReq = new HotelQueryRequest();
 
                 hotelQueryReq.setCityCode(request.getCityCode());
@@ -769,6 +777,8 @@ public class FitDpServiceImpl implements FitDpService{
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
+
+                TraceContext.setTraceId(context.get("traceId").toString());
                 List<InsuranceInfoDto> flightInsurances = null;
                 try {
                     flightInsurances = fitAggregateClient.searchFlightInsurance();
@@ -785,6 +795,8 @@ public class FitDpServiceImpl implements FitDpService{
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
+
+                TraceContext.setTraceId(context.get("traceId").toString());
                 SpotQueryRequest spotQueryRequest = new SpotQueryRequest();
                 String cityCode = request.getCityCode();
                 Long districtId = VSTDistrictCityEnum.getDestId(cityCode);
@@ -812,6 +824,8 @@ public class FitDpServiceImpl implements FitDpService{
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
+
+                TraceContext.setTraceId(context.get("traceId").toString());
                 InsuranceQueryRequest insuranceQueryRequest = new InsuranceQueryRequest();
                 insuranceQueryRequest.setCurrentProductId(636165L);
                 insuranceQueryRequest.setDistributorId(3L);
@@ -874,25 +888,18 @@ public class FitDpServiceImpl implements FitDpService{
      * @param flightInfoDtos
      */
     private void filterNoChildFlight(List<FlightSearchFlightInfoDto> flightInfoDtos) {
-        List<FlightSearchFlightInfoDto> noUsefulFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
         for (FlightSearchFlightInfoDto searchFlightInfoDto : flightInfoDtos) {
-            Map<String,FlightSearchSeatDto> childrenSeats = searchFlightInfoDto.getChildrenSeats();
-            List<FlightSearchSeatDto> usefulSeats = new ArrayList<FlightSearchSeatDto>();
-            if(null !=searchFlightInfoDto.getSeats()&&CollectionUtils.isNotEmpty(searchFlightInfoDto.getSeats())&& MapUtils
-                .isNotEmpty(childrenSeats)){
-                for (FlightSearchSeatDto seatDto : searchFlightInfoDto.getSeats()) {
-                    if(childrenSeats.containsKey(seatDto.getSeatClassCode())&&childrenSeats.get(seatDto.getSeatClassCode())!=null) {
-                        usefulSeats.add(seatDto);
+            Map<String, FlightSearchSeatDto> childrenSeats = searchFlightInfoDto.getChildrenSeats();
+            if (null != searchFlightInfoDto.getSeats() && MapUtils.isNotEmpty(childrenSeats)) {
+                List<FlightSearchSeatDto> seats = searchFlightInfoDto.getSeats();
+                Iterator<FlightSearchSeatDto> iterator = seats.iterator();
+                while (iterator.hasNext()) {
+                    if (!childrenSeats.containsKey(iterator.next().getSeatClassType())) {
+                        iterator.remove();
                     }
-                }
-                if(CollectionUtils.isNotEmpty(usefulSeats)) {
-                    searchFlightInfoDto.setSeats(usefulSeats);
-                }else{
-                    noUsefulFlightInfoDtos.add(searchFlightInfoDto);
                 }
             }
         }
-        flightInfoDtos.removeAll(noUsefulFlightInfoDtos);
     }
 
     /**
@@ -1099,15 +1106,15 @@ public class FitDpServiceImpl implements FitDpService{
             }
         });
         // 置顶选中的航班信息
-        topSelectFlight(newFlightInfos, selectFlight);
+        topSelectFlight(newFlightInfos, selectFlight.getFlightNo());
 
         return newFlightInfos;
     }
 
-    private void topSelectFlight(List<FlightSearchFlightInfoDto> flightInfos,
-        FlightSearchFlightInfoDto selectFlight) {
+    private void topSelectFlight(List<FlightSearchFlightInfoDto> flightInfos, String flightNo) {
+        FlightSearchFlightInfoDto selectFlight = null;
         for (int i = 0; i < flightInfos.size(); i++) {
-            if (flightInfos.get(i).getFlightNo().equals(selectFlight.getFlightNo())) {
+            if (flightInfos.get(i).getFlightNo().equals(flightNo)) {
                 selectFlight = flightInfos.get(i);
                 flightInfos.remove(i);
                 break;

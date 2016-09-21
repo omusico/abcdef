@@ -147,7 +147,9 @@ public class FitOrderPassengerDto extends Entity {
 		  passengerStr.append(this.getPassengerType().name());
 		  passengerStr.append(this.getPassengerIDCardType().name());
 		  passengerStr.append(this.getPassengerIDCardNo());
-		  passengerStr.append(flightTripType.name());
+		  if(flightTripType!=null){
+			  passengerStr.append(flightTripType.name());
+		  }
           return passengerStr.toString();
     }
 

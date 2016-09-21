@@ -159,7 +159,7 @@ public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
 									firstPlan.setSelectedFlag(true);
 									BeanUtils.copyProperties(firstRoom,room);
 									firstRoom.setSelectedFlag(true);
-									firstPlan.setPlanCounts(appGoodsInfo.getCount());
+									firstPlan.setRoomCounts(appGoodsInfo.getCount());
 									List<HotelSearchPlanDto> selectPlans = new ArrayList<HotelSearchPlanDto>();
 									selectPlans.add(firstPlan);
 									firstRoom.setPlans(selectPlans);

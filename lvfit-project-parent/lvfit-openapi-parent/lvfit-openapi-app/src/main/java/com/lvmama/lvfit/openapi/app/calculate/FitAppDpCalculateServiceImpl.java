@@ -1,17 +1,12 @@
 package com.lvmama.lvfit.openapi.app.calculate;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.lvmama.lvf.common.utils.BeanUtils;
-import com.lvmama.lvf.common.utils.JSONMapper;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +19,6 @@ import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvfit.common.client.FitDpClient;
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsInfo;
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsType;
-import com.lvmama.lvfit.common.dto.app.FitAppHotelRequest;
 import com.lvmama.lvfit.common.dto.app.FitAppShoppingRequest;
 import com.lvmama.lvfit.common.dto.app.FitAppTrafficInfoDto;
 import com.lvmama.lvfit.common.dto.calculator.request.CalculateAmountDetailRequest;
@@ -39,9 +33,6 @@ import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchRoomDto;
 import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceDto;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProduct;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceProdProductBranch;
-import com.lvmama.lvfit.common.dto.search.insurance.result.InsuranceSuppGoods;
 import com.lvmama.lvfit.common.dto.search.spot.result.SpotSearchSpotDto;
 import com.lvmama.lvfit.common.dto.search.spot.result.SpotSearchTicketDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingAmountDto;
@@ -113,7 +104,7 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 									BeanUtils.copyProperties(selectPlan, plan);
 									BeanUtils.copyProperties(selectRoom, roomDto);
 									BeanUtils.copyProperties(selectHotel, hotel);
-									selectPlan.setPlanCounts(appGoodsInfo.getCount());
+									selectPlan.setRoomCounts(appGoodsInfo.getCount());
 								} catch (Exception e) {
 									logger.error(e.getMessage(), e);
 								}

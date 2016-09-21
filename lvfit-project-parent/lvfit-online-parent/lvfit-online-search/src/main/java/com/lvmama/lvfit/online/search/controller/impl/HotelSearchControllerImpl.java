@@ -5,7 +5,6 @@ import com.lvmama.lvf.common.dto.Pagination;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvfit.common.client.FitDpClient;
-import com.lvmama.lvfit.common.dto.app.FitAppHotelRequest;
 import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.dto.request.FitFilterHotelRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelFacetType;
@@ -132,7 +131,7 @@ public class HotelSearchControllerImpl extends BaseController implements HotelSe
 			// 在页面上保存选中的酒店信息，用于筛选和排序后默认酒店的选择和差价计算
 			HotelSearchHotelDto hotelDto = hotelSearchResult.getResults().get(0);
 			HotelSearchPlanDto planDto = hotelDto.getRooms().get(0).getPlans().get(0);
-			int roomCounts = planDto.getPlanCounts();
+			int roomCounts = planDto.getRoomCounts();
 			BigDecimal price = planDto.getPrice();
 			model.addAttribute("hotelBasePrice", price.multiply(BigDecimal.valueOf(roomCounts)));
 			model.addAttribute("selHotelId", hotelDto.getProductId());
@@ -160,7 +159,7 @@ public class HotelSearchControllerImpl extends BaseController implements HotelSe
 			for (HotelSearchHotelDto hotel : hotelList) {
 				for (HotelSearchRoomDto room : hotel.getRooms()) {
 					for (HotelSearchPlanDto plan : room.getPlans()) {
-						BigDecimal totalPrice = plan.getPrice().multiply(BigDecimal.valueOf(plan.getPlanCounts()));
+						BigDecimal totalPrice = plan.getPrice().multiply(BigDecimal.valueOf(plan.getRoomCounts()));
 						plan.setPriceDifferences(totalPrice.subtract(BigDecimal.valueOf(request.getHotelBasePrice())));
 					}
 				}

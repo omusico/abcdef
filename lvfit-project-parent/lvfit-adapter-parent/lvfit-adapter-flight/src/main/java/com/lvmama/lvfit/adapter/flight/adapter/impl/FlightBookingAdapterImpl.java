@@ -165,6 +165,8 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 					for (FitSuppOrderDto fitSuppOrderDto : fitSuppOrders) { 
 						//如果是往返程子单..
 						if(fitSuppOrderDto.getTripType()!=null){
+							//标明是包机航班.
+							fitSuppOrderDto.setIsCharterFlightSub(true);
 							FitSuppOrderForFlightCallBackDto flightCallBackDto = new FitSuppOrderForFlightCallBackDto();
 							flightCallBackDto.setVstOrderMainNo(String.valueOf(fitSuppMainOrderDto.getVstMainOrderNo()));
 							flightCallBackDto.setVstOrderNo(String.valueOf(fitSuppOrderDto.getVstOrderNo()));
@@ -182,7 +184,8 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
                     suppResponse = JSONMapper.getInstance().readValue(json, new TypeReference<SuppResponse<OrderMainDto>>() {});
                     OrderMainDto flightOrderMain = (OrderMainDto) suppResponse.getResult();
                 	logger.error("当前包机切位下单。。。主单号【"+fitSuppMainOrderDto.getVstMainOrderNo()+"】，当前航程类型【"+tripTypeFlag+"】当前子单号【"+fitSuppOrders.get(0).getVstOrderNo()+"】，请求机票单品下单返回flightOrderMain:"+JSONMapper.getInstance().writeValueAsString(flightOrderMain));
-                    // 如果预定成功，保存信息
+                	logger.error("当前包机切位下单:fitSuppMainOrderDto="+JSONMapper.getInstance().writeValueAsString(fitSuppMainOrderDto));
+                     // 如果预定成功，保存信息
                     if (flightOrderMain != null) {
                     	boolean isBookingSuccess = true;
                     	for(FlightOrderDto flightOrderDto : flightOrderMain.getFlightOrders()){
@@ -199,29 +202,10 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
 	                       if (tripTypeFlag.equals(FlightTripType.RETURN.name())) {
 	                       	   orderStatusType = FitOrderStatusType.ARV_FLI_ORDER_STATUS;
 	                       }
+	                       
+	                       //记录日志？
                     	   FitOrderMsgDto orderMsgDto = new FitOrderMsgDto(orderStatusType, isBookingSuccess?FitOrderResultStatus.SUCCESS:FitOrderResultStatus.FAIL, isBookingSuccess?"":"供应商下单失败");
-                    	   FitOrderTraceContext.setOrderMsg(orderMsgDto);
-                        
-//                    	   List<FitSuppFlightOrderDto> suppFlightOrderDtos = new ArrayList<FitSuppFlightOrderDto>();
-//                        //根据机票子单构造机酒供应商航班订单------这里待改.......
-//                    	//如果是包机切位，这里不保存航班信息订单，以后直接进行查询的时候实时查询订单 进行补单！！
-//                        for (FlightOrderDto flightOrder : flightOrderMain.getFlightOrders()) {
-//                        	List<FlightOrderDetailDto>  orderDetails = flightOrder.getFlightOrderDetails();
-//                        	for(FlightOrderDetailDto detailDto:orderDetails){
-//                        		String curOrderPassengerType =  detailDto.getFlightOrderPassenger().getPassengerType().name();
-//                            	FitSuppFlightOrderDto suppFlightOrderDto = flightOrder.getFlightOrderSuppOrders()
-//                            	//机票单品子订单No
-//                            	suppFlightOrderDto.setFlightOrderNo(flightOrder.getFlightOrderNo().getOrderNo()); 
-//                            	// 机票订单预订状态 
-//                            	suppFlightOrderDto.setBookingStatus(com.lvmama.lvfit.common.dto.status.order.OrderBookingStatus.valueOf(flightOrder.getFlightOrderStatus().getOrderBookingStatus().name()));
-//                            	//订单金额信息
-//                            	suppFlightOrderDto.setOrderAmount(this.getFitOrderAmount(flightOrder.getFlightOrderAmount()));
-//                            	suppFlightOrderDtos.add(suppFlightOrderDto);
-//                        	} 
-//                        }
-//                    	   
-//                    	   //直接设置真往返的航班信息dto.
-//                    	   fitSuppMainOrderDto.setSuppFlightOrderDtos(suppFlightOrderDtos);
+                    	   FitOrderTraceContext.setOrderMsg(orderMsgDto); 
                     }
 					
 				} catch (Exception e) {

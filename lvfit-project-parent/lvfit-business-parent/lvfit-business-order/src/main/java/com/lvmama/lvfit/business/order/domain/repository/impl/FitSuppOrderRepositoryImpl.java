@@ -3,6 +3,8 @@ package com.lvmama.lvfit.business.order.domain.repository.impl;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +25,7 @@ import com.lvmama.lvfit.persistence.mybatis.mapper.FitSuppOrderMapper;
  */
 @Repository
 public class FitSuppOrderRepositoryImpl implements FitSuppOrderRepository {
+	private static final Logger logger = LoggerFactory.getLogger(FitSuppOrderRepositoryImpl.class);
 
     @Autowired
     private FitSuppOrderMapper fitSuppOrderMapper;
@@ -54,7 +57,7 @@ public class FitSuppOrderRepositoryImpl implements FitSuppOrderRepository {
     }
 
     @Override
-    public FitSuppOrderDto save(FitSuppOrderDto fitSuppOrderDto) {
+    public FitSuppOrderDto save(FitSuppOrderDto fitSuppOrderDto) { 
         if (null == fitSuppOrderDto.getId()) {
             fitSuppOrderMapper.insert(fitSuppOrderDto);
         }else {
@@ -77,7 +80,9 @@ public class FitSuppOrderRepositoryImpl implements FitSuppOrderRepository {
         }
         
         FitSuppOrderForFlightCallBackDto flightCallBackDto = fitSuppOrderDto.getFlightCallBackDto();
+        logger.info("84...保存反馈字符串："+fitSuppOrderDto.getIsCharterFlightSub()+",,"+flightCallBackDto);
         if(null!=flightCallBackDto){
+        	logger.info("保存反馈字符串。。。");
         	flightCallBackDto.setSuppOrderId(suppOrderId);
         	fitSuppOrderForFlightCallBackRepository.save(flightCallBackDto);
         }

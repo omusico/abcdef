@@ -199,11 +199,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 			 }
 		}
 		//是包机
-		else{
+		else{ 
 			//保存包机的航班子单信息到数据库
 			List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppMainOrderDto.getSuppFlightOrderDtos();
 			for (FitSuppFlightOrderDto fitSuppFlightOrderDto : suppFlightOrderDtos) { 
-					fitSuppFlightOrderRepository.save(fitSuppFlightOrderDto); 
+				fitSuppFlightOrderDto.setSaleType(SuppSaleType.DomesticProduct.name());
+				fitSuppFlightOrderRepository.save(fitSuppFlightOrderDto); 
 			}
 		}
 		 

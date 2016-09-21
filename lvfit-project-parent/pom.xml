@@ -260,7 +260,9 @@
 					<systemProperties>
 						<systemProperty>
 							<name>FIT_PRO_HOME</name>
+ 
 							<value>file:D:\\shuiqing_new\workspace\lvfit-project-parent\lvfit-project-pros\pros\</value>
+ 
 						</systemProperty>
 						<systemProperty>
 							<name>LOG_HOME</name>

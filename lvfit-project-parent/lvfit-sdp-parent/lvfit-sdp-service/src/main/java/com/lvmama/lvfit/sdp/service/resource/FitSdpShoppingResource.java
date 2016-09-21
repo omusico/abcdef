@@ -6,6 +6,7 @@ import com.lvmama.lvfit.common.dto.sdp.calculator.FitSdpShoppingAmountDto;
 import com.lvmama.lvfit.common.dto.sdp.calculator.request.FitSdpCalculateAmountDetailRequest;
 import com.lvmama.lvfit.common.dto.sdp.calculator.request.FitSdpCalculateAmountRequest;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShopingCalculateService;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShoppingService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -33,6 +33,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 
@@ -249,9 +250,9 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 
 	@Override
 	public List<FitSdpCityGroupDto> getProductCityGroupByDto(
-			BaseQueryDto<FitSdpCityGroupDto> dto) {
-		if(dto!=null){
-			return fitSdpCityGroupRepository.queryCityGroupByDto(dto);
+			BaseQueryDto<FitSdpCityGroupRequest> request) {
+		if(request!=null){
+			return fitSdpCityGroupRepository.queryCityGroupByDto(request);
 		}else{
 			return null;
 		}
@@ -270,7 +271,7 @@ public class FitSdpProductServiceImpl implements FitSdpProductService {
 
 	@Override
 	public int countSdpProductDepartCityRecords(
-			BaseQueryDto<FitSdpCityGroupDto> baseQueryDto) {
+			BaseQueryDto<FitSdpCityGroupRequest> baseQueryDto) {
 		return fitSdpCityGroupRepository.countSdpProductDepartCityRecords(baseQueryDto);
 	}
 

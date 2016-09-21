@@ -317,8 +317,8 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	@Override
 	@RequestMapping(value = "loadsGoods", method = { RequestMethod.POST ,RequestMethod.GET})
 	public String searchGoodsInfo(Model model, FitSdpGoodsRequest req) { 
-		req.setArvCityCode("CAN");//到达：成都
-		req.setDepCityCode("SHA");//出发：天津
+//		req.setArvCityCode("CAN");//到达：成都
+//		req.setDepCityCode("SHA");//出发：天津
 		req.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		req.setDistributorId(3L);
 	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req); 
@@ -339,7 +339,6 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    }
 
 	    model.addAttribute("depFlightInfos", respForm.getDepFlightInfos());
-	    model.addAttribute("queryCharsetFlightFlag", CharterFlightFilterUtil.getQueryCharsetFlight());
 	    model.addAttribute("arvFlightInfos", respForm.getArvFlightInfos());
 	    
 	    model.addAttribute("sumDepFlightInfos", respForm.getSumDepFlightInfos());
@@ -363,6 +362,9 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    model.addAttribute("adultQuantity", req.getAdultQuantity());
 	    model.addAttribute("childQuantity", req.getChildQuantity());
 	    model.addAttribute("totalQuantity", (req.getAdultQuantity().longValue() + req.getChildQuantity().longValue())*req.getQuantity().intValue());
+	    
+	    //设置是否使用包机的开关
+	    model.addAttribute("queryCharsetFlightFlag", CharterFlightFilterUtil.getQueryCharsetFlight());
 	    
 		return "detail/product_goods";
 	}

@@ -41,6 +41,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequestForm;
 import com.lvmama.lvfit.common.dto.vst.VstPushRecord;
@@ -214,13 +215,13 @@ public class SdpProductControllerImpl  implements SdpProductController{
 	
 	@ResponseBody
 	@RequestMapping(value = "sdpProduct/queryDepartureCityList", method = { RequestMethod.POST, RequestMethod.GET })
-	public BaseResultDto<FitSdpCityGroupForm> queryDepartCityList(Model model, FitSdpCityGroupDto dto,Pagination pg) {
+	public BaseResultDto<FitSdpCityGroupForm> queryDepartCityList(Model model, FitSdpCityGroupRequest request) {
 		BaseResultDto<FitSdpCityGroupForm> result = new BaseResultDto<FitSdpCityGroupForm>();
 		try {
-			if(dto!=null){
-				BaseQueryDto<FitSdpCityGroupDto> baseQuery = new BaseQueryDto<FitSdpCityGroupDto>();
-				baseQuery.setPagination(pg);
-				baseQuery.setCondition(dto);
+			if(request!=null){
+				BaseQueryDto<FitSdpCityGroupRequest> baseQuery = new BaseQueryDto<FitSdpCityGroupRequest>();
+				baseQuery.setPagination(request.getPagination());
+				baseQuery.setCondition(request);
 				BaseResultDto<FitSdpCityGroupDto> cityGroupDto = fitBusinessClient.querySdpProductDepartureCityList(baseQuery);
 				List<FitSdpCityGroupDto> dtoList = cityGroupDto.getResults();
 				List<FitSdpCityGroupForm> resultForm = new ArrayList<FitSdpCityGroupForm>();

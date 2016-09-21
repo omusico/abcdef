@@ -40,18 +40,12 @@
 
 			function initGrid() 
 			{
-				var colNames = ['ID','UUID', '回调订单ID','VST主单号','VST子单号','CALL请求STR','往返类型','回调结果','回调时间','创建时间','更新时间','CALL请求STR2','操作'];
+				var colNames = ['ID', '回调订单ID','VST主单号','VST子单号','CALL请求STR','往返类型','回调结果','回调时间','创建时间','更新时间','操作'];
 
 				var cols = [
 					{
 						name : 'id',
 						index : 'id',
-						align : 'center',
-						sortable:false
-					},
-					{
-						name : 'uuid',
-						index : 'uuid',
 						align : 'center',
 						sortable:false
 					},
@@ -111,12 +105,6 @@
 						index : 'updateTime',
 						align : 'center',
 						formatter : dateFormatter,
-						sortable:false
-					},
-					{
-						name : 'callRequestStr2', 
-						index : 'callRequestStr2',
-						align : 'center',
 						sortable:false
 					},
 					{

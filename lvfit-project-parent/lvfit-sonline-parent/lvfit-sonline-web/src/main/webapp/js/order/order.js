@@ -7,7 +7,7 @@ function initPrice(_shopingUUID){
        type: "post",
        async: false,
        dataType: "json",
-       url: "${request.contextPath}/calucateAmount",
+       url: basePath+"/calucateAmount",
        data: {
            shoppingUUID:_shopingUUID
        },
@@ -71,7 +71,7 @@ function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
 	 data.birthday = $(".js_copy_info").find(":hidden[name='birthday']").val();
 	
 	 data.visitTime = $("#departureTime").html();
-	 data.shoppingUUID = '${shoppingUUID}';
+	 data.shoppingUUID = shopingUUID; 
 	 data.totalPrice = totalSalesAmount;
 	 data.productName = $("#fit_productName span").html().trim();
 	
@@ -82,7 +82,7 @@ function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
 	   type: "post",
 	   async: true,
 	   dataType: "json",
-	   url: "${request.contextPath}/order/Booking",
+	   url: basePath+"/order/Booking",
 	   data:data,
 	   success: function(result) {
 	     $(".fh-overlay, .fh-dialog-loading").hide();
@@ -472,7 +472,7 @@ function getContracts(_shoppingUUID){
        type: "post",
        async: true,
        dataType: "json",
-       url: "${request.contextPath}/getContractsHtml",
+       url: basePath+"/getContractsHtml",
        data: {
            shoppingUUID:_shoppingUUID
        },
@@ -491,7 +491,7 @@ function getBookingNotice(){
      type:"post",
      ContentType: "application/json; charset=utf-8",
      dataType:"json",
-     url:"${request.contextPath}/getBookingNotice",
+     url:basePath+"/getBookingNotice",
      data:{
          productId:'${productId}',
          bizCategoryId:'${bizCategoryId}'
@@ -516,7 +516,7 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 	if(bizCategoryId!=18){
 	    pageType="group";
 	}
-	var _ulr = "${request.contextPath}/"+pageType+"-"+"${productId}";
+	var _ulr = basePath+"/"+pageType+"-"+"${productId}";
 	 window.location.href=_ulr;
 });
 

@@ -26,15 +26,12 @@ import com.lvmama.lvfit.common.dto.order.FitOrderCustomerDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderOperDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderPassengerDto;
 import com.lvmama.lvfit.common.dto.request.FitShoppingListRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
-import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchRoomDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
-import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedFlightInsuranceDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedInsuranceDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedTicketDto;
 import com.lvmama.lvfit.common.dto.shopping.FlightInsuranceDto;
@@ -194,19 +191,12 @@ public class FitShoppingServiceImpl implements FitShoppingService{
 		    	if(flight.getFlyTimeMins()!=null){
 		    		flightDto.setFlyTimeMins(flight.getFlyTimeMins().toString());
 		    	}
-		    	//flightDto.setBackOrto(flight.getBackOrto());
 		    	List<FlightSearchSeatDto> seatlist = flight.getSeats();
 		    	FlightSearchSeatDto seatDto =null;
 		    	if(!CollectionUtils.isEmpty(seatlist)){
 		    		//获取选择的航班
-			    	for(FlightSearchSeatDto flightdto:seatlist){
-			    		if(flightdto.getSelectFlag()){
-			    			seatDto = flightdto;
-			    			//目前一个航班只能选择一种舱位
-			    			break;
-			    		}
-			    	}
-			    	if(seatDto!=null){
+					seatDto = seatlist.get(0);
+			    	if(seatDto!=null) {
 			    		flightDto.setSeatClassCode(seatDto.getSeatClassCode());
 				    	flightDto.setSeatClassName(seatDto.getSeatClassName());
 			    	}
@@ -251,7 +241,7 @@ public class FitShoppingServiceImpl implements FitShoppingService{
 				    					if(plan.getSelectedFlag()){			    						
 				    						shoppingHotelDto.setPlanId(Long.valueOf(plan.getSuppGoodsId()));			    						
 				    						shoppingHotelDto.setPlanName(plan.getGoodsName());
-											shoppingHotelDto.setRoomCount(plan.getPlanCounts());
+											shoppingHotelDto.setRoomCount(plan.getRoomCounts());
 				    						//目前酒店只能选择一个商品 
 				    						break;
 				    					}

@@ -10,6 +10,7 @@
 		<script src="${request.contextPath}/js/resources/jquery-ui-1.8.10.custom.min.js"></script>
 		<script src="${request.contextPath}/js/resources/jqGrid/src/i18n/grid.locale-cn.js"></script>
 		<script src="${request.contextPath}/js/resources/jqGrid/js/jquery.jqGrid.src.js"></script>
+		<script src="${request.contextPath}/js/moment.js"></script>
 		<script type="text/javascript" src="${request.contextPath}/js/My97DatePicker/WdatePicker.js"></script> 
 		<script type="text/javascript">
 			Date.prototype.format = function (format) {
@@ -34,6 +35,7 @@
 			}
 
 			$(function (){
+				initDate();
 				initGrid();
 				//初始化交通模态框
 				inItConsoleDlg();
@@ -46,6 +48,19 @@
 					exportCsv();
 				});
 			});
+			
+			var initDate = function() {
+	            var defStartDateTime = moment().format("YYYY-MM-DD 00:00:00");
+	            var defEndDateTime = moment().format("YYYY-MM-DD 23:59:59")
+	            $("#createTimeStart").val(defStartDateTime);
+	            $("#createTimeEnd").val(defEndDateTime);
+        	}
+        	
+        	function clearForm()
+  			{
+	  			$('input[type=text]').val('');
+	  			$('select').val('');
+  			}
 
 			function initGrid() 
 			{
@@ -691,7 +706,7 @@
 		</div>
 		<div class="click">
 			<a href="javascript:void(0);" onclick="query();"><div class="button">查询</div></a>
-			<!--<a href="javascript:void(0);" onclick="clearForm();"><div class="button">清空</div></a>-->
+			<a href="javascript:void(0);" onclick="clearForm();"><div class="button">清空</div></a>
 			<a href="javascript:;"><div id="btnExport" class="button" >导出CSV</div></a>
 		</div>
 	</div>

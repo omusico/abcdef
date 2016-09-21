@@ -36,13 +36,8 @@
     }
 
     </style>
-
-    <script>
-        var baseUrl = '${request.contextPath}';
-    </script>
-
 </head>
-<body class="fh-select flight_fit" >
+<body class="fh-select flight_fit">
 <input type="hidden" id ="basePath" value="${request.contextPath}">
 <!-- 流量埋点 -->
     <script src="http://pic.lvmama.com/min/index.php?f=/js/v5/ibm/eluminate.js"></script>
@@ -53,9 +48,8 @@
     </script>
      <script type="text/javascript" src="http://s2.lvjs.com.cn/js/common/losc.js"></script>
     <#if getSuperCommonHeader ??>
-    	<!--去掉搜索框-->
- 		${getSuperCommonHeader()}
-	</#if>
+        ${getSuperCommonHeader()}
+    </#if>
     <!-- banWrap -->
 
         <#if isBackBooking=='true'>
@@ -541,7 +535,7 @@
                             <div id="insurance_price_list"></div>
                         </dl>
                     </div>
-                    <div class="price-discount">
+                    <div class="price-discount" style="display:none">
                         <span class="price">-<i class="price-rmb">¥</i><em id="promotion"></em></span>
                         <span class="name">
                             <#if hotel != null>套餐优惠：<#else>优惠：</#if>

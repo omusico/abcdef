@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.lvmama.lvfit.business.order.domain.FitSuppMainOrder;
+import com.lvmama.lvfit.business.order.domain.repository.FitOrderPassengerRepository;
 import com.lvmama.lvfit.business.order.domain.repository.FitSuppFlightOrderRepository;
 import com.lvmama.lvfit.business.order.domain.repository.FitSuppMainOrderRepository;
 import com.lvmama.lvfit.business.order.domain.repository.FitSuppMainOrderStatusRepository;
 import com.lvmama.lvfit.business.order.domain.repository.FitSuppOrderRepository;
 import com.lvmama.lvfit.common.client.FitVstClient;
 import com.lvmama.lvfit.common.dto.enums.BizEnum;
+import com.lvmama.lvfit.common.dto.order.FitOrderPassengerDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDetailDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
@@ -46,6 +48,9 @@ public class FitSuppMainOrderRepositoryImpl implements FitSuppMainOrderRepositor
 	@Autowired
     private FitSuppMainOrderStatusRepository fitSuppMainOrderStatusRepository;
 
+	@Autowired
+	private FitOrderPassengerRepository fitOrderPassengerRepository;
+	
     @Autowired
     private FitVstClient fitVstClient; 
     
@@ -70,6 +75,17 @@ public class FitSuppMainOrderRepositoryImpl implements FitSuppMainOrderRepositor
 		List<FitSuppMainOrderStatusDto> suppMainOrderStatusDtos = fitSuppMainOrderStatusRepository.queryByFkId(suppMainOrderDto.getId());
 		if(CollectionUtils.isNotEmpty(suppMainOrderStatusDtos)){
 			suppMainOrderDto.setFitSuppMainOrderStatus(suppMainOrderStatusDtos.get(0));
+		}
+		
+		//对于包机而言，子单是直接关联在主单上面的
+		List<FitOrderPassengerDto> passengers = fitOrderPassengerRepository.queryByFkId(suppMainOrderDto.getFitMainOrderId());
+		List<FitSuppFlightOrderDto>  charsetFlights = fitSuppFlightOrderRepository.queryByFkId(suppMainOrderDto.getId());
+		suppMainOrderDto.setSuppFlightOrderDtos(charsetFlights);
+		suppMainOrderDto.setAllPassengerDtos(passengers);
+		
+		for(FitSuppFlightOrderDto fligthOrderDto : charsetFlights){
+			List<FitSuppFlightOrderDetailDto> suppFlightDetailList = fitSuppFlightOrderDetailRepositoryImpl.queryByFkId(fligthOrderDto.getId());
+			fligthOrderDto.setSuppFlightOrderDetailDtos(suppFlightDetailList);
 		}
 		
 		//获得特殊单 机票相关信息

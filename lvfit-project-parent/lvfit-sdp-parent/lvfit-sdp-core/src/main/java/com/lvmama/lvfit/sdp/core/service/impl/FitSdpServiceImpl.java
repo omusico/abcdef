@@ -278,10 +278,7 @@ public class FitSdpServiceImpl implements FitSdpService {
 					try {
 						// 机票查询
 						if (request instanceof FlightQueryRequest) {
-							//只查询单程的，往返的等查询完毕两个单程之后，再单独查询一次.
-//							if(!FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name().equals(key)){
 								context.put(key, fitAggregateClient.searchFlightInfo((FlightQueryRequest) request));
-//							}
 						}
 						// 商品查询
 						if (request instanceof FitSdpGoodsRequest) {
@@ -315,11 +312,9 @@ public class FitSdpServiceImpl implements FitSdpService {
 		backFlightInfo = this.handleFlightSearchResult(backFlightSearchResult, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
 		
 		//查询完毕两个单程之后，再单独查询包机信息.
-//		FlightSearchResult<FlightSearchFlightInfoDto> goAndBackFlightSearchResult = fitAggregateClient.searchFlightInfo((FlightQueryRequest) reqMap.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name()));
 		FlightSearchResult<FlightSearchFlightInfoDto> goAndBackFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name());
 		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goAndBackFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
 				, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),goodsRequest); 
-		
 		FitSdpGoodsDto goods = null;
 		Object goodsInfoObject = context.get(FitBusinessType.FIT_SDP_SEARCH_GOODS.name());
 		if (goodsInfoObject != null) {
@@ -433,12 +428,12 @@ public class FitSdpServiceImpl implements FitSdpService {
 			if (trafficRule.getTrafficTripeType().equals(TrafficTripeType.GO_WAY)) {
 				//单程
 				reqMap.put(FitBusinessType.FIT_SDP_GO_FLIGHT_QUERY.name(),  queryReq);
-				
+
 				//往返程
 				if(CharterFlightFilterUtil.getQueryCharsetFlight()){
 					FlightQueryRequest queryReq2 = cloneFlightQueryRequest(queryReq);
 					//只查询包机政策的往返程.
-					queryReq2.setSaleType(new SuppSaleType[]{SuppSaleType.DomesticProduct});  
+					queryReq2.setSaleType(new SuppSaleType[]{SuppSaleType.DomesticProduct});
 					reqMap.put(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name(),  queryReq2);
 				}
 			}

@@ -26,76 +26,13 @@ var allCities = ['北京|beijing|bj|PEK', '上海|shanghai|sh|SHA', '重庆|chon
 var _shoppingUUID = $("#shoppingUUID").val();
 
 $(function() {
-    var uuid = _shoppingUUID;
+    if ($("#departureCityName").val() == "" || $("#departureCityName").val() == "请输入出发地") {
+        var cityName = $("#currentCity").text();
+        $("#departureCityName").val(cityName);
+    }
+
     var errorMsgOutTime = $("#errorMsgOutTime").val();
-    if(errorMsgOutTime!='') {
-        var searchCondition = window.localStorage.getItem('searchCondition');
-        if(searchCondition != null && searchCondition != ''){
-            var tripType = searchCondition.split('|')[0];
-            var departureCityCode = searchCondition.split('|')[1];
-            var arrivalCityCode = searchCondition.split('|')[2];
-            var cityCode = searchCondition.split('|')[3];
-            var flightStartDate = searchCondition.split('|')[4];
-            var flightEndDate = searchCondition.split('|')[5];
-            var hotelStartDate = searchCondition.split('|')[6];
-            var hotelEndDate = searchCondition.split('|')[7];
-            var adultsCount = searchCondition.split('|')[8];
-            var childCount = searchCondition.split('|')[9];
-            $("#tripType").val(tripType);
-            if(tripType == 'DC'){
-                $("#dcButton").addClass("active");
-            }else if(tripType == 'WF'){
-                $("#wfButton").addClass("active");
-            }
-
-            $("#departureCityCode").val(departureCityCode);
-            for(var i=0;i<allCities.length;i++){
-                if(allCities[i].indexOf(departureCityCode)!=-1){
-                    var deptCity=allCities[i].split("|")[0];
-                    $("#departureCityName").val(deptCity);
-                    break;
-                }
-            }
-
-            $("#arrivalCityCode").val(arrivalCityCode);
-            for(var i=0;i<allCities.length;i++){
-                if(allCities[i].indexOf(arrivalCityCode)!=-1){
-                    var arrvCity=allCities[i].split("|")[0];
-                    $("#arrivalCityName").val(arrvCity);
-                    break;
-                }
-            }
-
-            $("#cityCode").val(cityCode);
-            for(var i=0;i<allCities.length;i++){
-                if(allCities[i].indexOf(cityCode)!=-1){
-                    var hotelCity=allCities[i].split("|")[0];
-                    $("#hotelCityName").val(hotelCity);
-                    break;
-                }
-            }
-            $("#flightStartDate").val(flightStartDate);
-            var flightGoDayWeek = getDayOfWeek(flightStartDate);
-            $("#flightStartDayOfWeek").text(flightGoDayWeek);
-
-            $("#flightEndDate").val(flightEndDate);
-            var flightBackDayWeek = getDayOfWeek(flightEndDate);
-            $("#flightEndDayOfWeek").text(flightBackDayWeek);
-
-            $("#hotelStartDate").val(hotelStartDate);
-            var hotelGoDayWeek = getDayOfWeek(hotelStartDate);
-            $("#hotelStartDayOfWeek").text(hotelGoDayWeek);
-
-            $("#hotelEndDate").val(hotelEndDate);
-            var hotelBackDayWeek = getDayOfWeek(hotelEndDate);
-            $("#hotelEndDayOfWeek").text(hotelBackDayWeek);
-            $("#adultsCount").val(adultsCount);
-            $("#adultCountSpan").text(adultsCount);
-
-            $("#childCount").val(childCount);
-            $("#childCountSpan").text(childCount);
-        }
-    } else {
+    if(errorMsgOutTime=='') {
         initTicket();
         initInsurance();
         // 如果为单程，返程日期disable
@@ -274,7 +211,10 @@ function initAjax(){
                 var product_price = calProductPrice(); // 选择页面产品价格统一由前台计算
                 $("#productPrice").html(product_price);
                 $("#totalPrice").html(obj.result.comboTotalAmount);
-                $("#promotion").html(obj.result.comboPromotionAmount);
+                if (obj.result.comboPromotionAmount > 0) {
+                    $("#promotion").html(obj.result.comboPromotionAmount);
+                    $(".price-discount").show();
+                }
                 $("#salesPrice").html(obj.result.comboSalesAmount + product_price);
                 $(".fh-overlay, .fh-dialog-loading").hide();
             },
@@ -322,6 +262,7 @@ $('.fh-return-btn').click(function() {
     $('.returnAlert').stop(true,true).fadeOut();
     $('.resortOverlay').stop(true,true).fadeOut();
     $('body').removeAttr('style');
+
     $("#myForm").submit();
 });
 
@@ -329,6 +270,7 @@ $('.ph_icon_closeAlert').click(function() {
     $('.returnAlert').stop(true,true).fadeOut();
     $('.resortOverlay').stop(true,true).fadeOut();
     $('body').removeAttr('style');
+
     $("#myForm").submit();
 });
 

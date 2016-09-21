@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.lvmama.lvf.common.exception.FitExceptionCode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -117,8 +118,8 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 	        //3. 并发执行算价任务组
 	        FitShoppingAmountDto  fitShoppingAmountDto =  taskMainGroup.getResult(requestMap.keySet().size());
 	        
-	        if(fitShoppingAmountDto==null){
-	        	throw new ExceptionWrapper(ExceptionCode.UNDEF_ERROR);
+	        if(fitShoppingAmountDto==null || fitShoppingAmountDto.getFlightAmount() == null){
+	        	throw new ExceptionWrapper(FitExceptionCode.GET_FLIGHT_PRICE_FAIL);
 	        }
 	        List<FlightInsuranceDto> selectFlightInsInfo = fitShopppingDto.getSelectFlightInsInfo();
 	        if (CollectionUtils.isNotEmpty(selectFlightInsInfo)) {

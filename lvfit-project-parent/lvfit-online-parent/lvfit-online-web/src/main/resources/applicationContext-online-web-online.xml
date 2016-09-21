@@ -18,6 +18,6 @@
     http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 	<import resource="classpath*:applicationContext-online-web-freemarker.xml" />
 	<mvc:interceptors>
-        <bean class="com.lvmama.lvf.common.trace.TraceContextInterceptor4SpringMVC" />
+        <bean class="com.lvmama.lvf.common.trace.TraceContextInterceptor4SpringMVC" /> 
     </mvc:interceptors>
 </beans>

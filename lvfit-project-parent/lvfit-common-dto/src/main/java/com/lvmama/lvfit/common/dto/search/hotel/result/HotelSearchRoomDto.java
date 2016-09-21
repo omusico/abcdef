@@ -47,6 +47,8 @@ public class HotelSearchRoomDto implements Serializable{
 	private String maxVisitor;
 	// 窗户
 	private String window;
+	//预定房间数量(新的房间数放入plan中，此处保留字段，仅为适配老的接口)
+	private Integer roomCounts;
 
 	List<HotelSearchPlanDto> plans;
 
@@ -207,5 +209,13 @@ public class HotelSearchRoomDto implements Serializable{
 	public void setSelectedFlag(boolean selectedFlag) {
 		this.selectedFlag = selectedFlag;
 	}
-    
+
+
+	public Integer getRoomCounts() {
+		return roomCounts;
+	}
+
+	public void setRoomCounts(Integer roomCounts) {
+		this.roomCounts = roomCounts;
+	}
 }

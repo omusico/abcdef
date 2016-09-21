@@ -50,14 +50,27 @@ public class FitSuppMainOrderDto extends Entity {
 	/** (真往返)子单关联信息 */
 	private List<FitSuppFlightOrderDto> suppFlightOrderDtos = new ArrayList<FitSuppFlightOrderDto>();
 
+	/**
+	 * 真往返下时，存储全部的乘客信息.
+	 */
+	private List<FitOrderPassengerDto> allPassengerDtos = new ArrayList<FitOrderPassengerDto>();
+
 	public Long getFitMainOrderId() {
 		return fitMainOrderId;
+	}
+
+	public List<FitOrderPassengerDto> getAllPassengerDtos() {
+		return allPassengerDtos;
+	}
+
+	public void setAllPassengerDtos(List<FitOrderPassengerDto> allPassengerDtos) {
+		this.allPassengerDtos = allPassengerDtos;
 	}
 
 	public void setFitMainOrderId(Long fitMainOrderId) {
 		this.fitMainOrderId = fitMainOrderId;
 	}
-
+	 
 	public String getFitMainOrderNo() {
 		return fitMainOrderNo;
 	}

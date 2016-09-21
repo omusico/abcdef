@@ -10,10 +10,11 @@
 		<script src="${request.contextPath}/js/resources/jquery-ui-1.8.10.custom.min.js"></script>
 		<script src="${request.contextPath}/js/resources/jqGrid/src/i18n/grid.locale-cn.js"></script>
 		<script src="${request.contextPath}/js/resources/jqGrid/js/jquery.jqGrid.src.js"></script>
+		<script src="${request.contextPath}/js/moment.js"></script>
 		<script type="text/javascript" src="${request.contextPath}/js/My97DatePicker/WdatePicker.js"></script> 
-		
 		<script type="text/javascript">
 			$(function (){
+				initDate();
 				initGrid();
 				$("#btnExport").click(function(){
 					exportCsv();
@@ -26,6 +27,12 @@
 				});
 			}); 
 
+	   		var initDate = function() {
+	            var defStartDateTime = moment().format("YYYY-MM-DD 00:00:00");
+	            var defEndDateTime = moment().format("YYYY-MM-DD 23:59:59")
+	            $("#mainStartTime").val(defStartDateTime);
+	            $("#mainEndTime").val(defEndDateTime);
+        	}
          	//spinach 
 			function query() {
 				if($('#orderMainNo').val() != '' && isNaN($('#orderMainNo').val()))

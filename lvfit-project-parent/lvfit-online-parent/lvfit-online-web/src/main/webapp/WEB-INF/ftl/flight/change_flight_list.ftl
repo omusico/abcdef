@@ -99,13 +99,10 @@
                             </div>
                         </#if>
 
-                        <#if seatInfo_index == 0 && flo_index == 0>
-                            <a href="javascript:void(0);" class="fh-selected">已选<i
-                                    class="icon icon-selected"></i></a>
-                        <#else>
+                        <div class="chooseBtnDiv">
                             <a href="javascript:void(0);"
                                class="btn btn-sm btn-orange fh-select-btn">选择</a>
-                        </#if>
+                        </div>
                     </li>
                 </#list>
             </ul>

@@ -59,7 +59,9 @@ public class FitSuppFlightOrderDetailRepositoryImpl implements FitSuppFlightOrde
 		List<FitSuppFlightOrderDetailDto> fitSuppFlightOrderDetailDtos = fitSuppFlightOrderDetailMapper.queryByFkId(fkId);
 		if(CollectionUtils.isNotEmpty(fitSuppFlightOrderDetailDtos)){
 			for (FitSuppFlightOrderDetailDto suppFlightOrderDetailDto : fitSuppFlightOrderDetailDtos) {
-				suppFlightOrderDetailDto.setFitOrderPassenger(fitOrderPassengerRepository.load(suppFlightOrderDetailDto.getFitOrderPassenger().getId()));
+				if(suppFlightOrderDetailDto.getFitOrderPassenger()!=null){
+					suppFlightOrderDetailDto.setFitOrderPassenger(fitOrderPassengerRepository.load(suppFlightOrderDetailDto.getFitOrderPassenger().getId()));
+				}
 			}
 		}
 		return fitSuppFlightOrderDetailDtos;

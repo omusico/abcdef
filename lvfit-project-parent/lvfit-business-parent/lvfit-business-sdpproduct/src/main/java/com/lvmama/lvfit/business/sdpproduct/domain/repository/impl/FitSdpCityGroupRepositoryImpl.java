@@ -9,6 +9,7 @@ import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpCityGroup;
 import com.lvmama.lvfit.business.sdpproduct.domain.repository.FitSdpCityGroupRepository;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 import com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpCityGroupMapper;
 
 @Repository
@@ -69,13 +70,13 @@ public class FitSdpCityGroupRepositoryImpl implements FitSdpCityGroupRepository 
 
 	@Override
 	public List<FitSdpCityGroupDto> queryCityGroupByDto(
-			BaseQueryDto<FitSdpCityGroupDto> baseQueryDto) {
+			BaseQueryDto<FitSdpCityGroupRequest> baseQueryDto) {
 		return fitSdpCityGroupMapper.queryCityGroupByDto(baseQueryDto);
 	}
 
 	@Override
 	public int countSdpProductDepartCityRecords(
-			BaseQueryDto<FitSdpCityGroupDto> baseQueryDto) {
+			BaseQueryDto<FitSdpCityGroupRequest> baseQueryDto) {
 		return fitSdpCityGroupMapper.countSdpProductDepartCityRecords(baseQueryDto);
 	}
 

@@ -9,8 +9,6 @@
 
 package com.lvmama.lvfit.dp.shopping.service.impl;
 
-import com.lvmama.lvfit.common.dto.enums.FlightTripType;
-import com.lvmama.lvfit.common.dto.price.FitHotelPlanPriceDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchRoomDto;
@@ -19,16 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lvmama.lvf.common.dto.BaseSingleResultDto;
-import com.lvmama.lvf.common.dto.status.ResultStatus;
-import com.lvmama.lvf.common.exception.ExceptionCode;
-import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvfit.common.client.FitAggregateClient;
 import com.lvmama.lvfit.common.dto.request.ChangeHotelRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
-import com.lvmama.lvfit.common.dto.search.spot.SpotQueryRequest;
-import com.lvmama.lvfit.common.dto.search.spot.SpotSearchResult;
-import com.lvmama.lvfit.common.dto.search.spot.result.SpotSearchSpotDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingHotelService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingService;
@@ -70,7 +60,7 @@ public class ShoppingHotelServiceImpl implements ShoppingHotelService {
 					if (request.getHotelId().equals(hotel.getProductId())
 						&& request.getRoomId().equals(room.getBranchId())
 						&& request.getPlanId().equals(plan.getSuppGoodsId())) {
-						plan.setPlanCounts(request.getRoomCount());
+						plan.setRoomCounts(request.getRoomCount());
 						hotelBasePrice = plan.getPrice().multiply(BigDecimal.valueOf(request.getRoomCount()));
 						break;
 					}
@@ -81,7 +71,7 @@ public class ShoppingHotelServiceImpl implements ShoppingHotelService {
 		for (HotelSearchHotelDto hotel : hotelList) {
 			for (HotelSearchRoomDto room : hotel.getRooms()) {
 				for (HotelSearchPlanDto plan : room.getPlans()) {
-					plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(plan.getPlanCounts())).subtract(hotelBasePrice));
+					plan.setPriceDifferences(plan.getPrice().multiply(BigDecimal.valueOf(plan.getRoomCounts())).subtract(hotelBasePrice));
 				}
 			}
 		}

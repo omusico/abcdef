@@ -9,7 +9,7 @@
 			        <#if baoji!='DomesticProduct'> style="display:none" <#else> <#if arvFlightInfo_index != 0> style="display:none"</#if></#if>    tag='charsetflight'>
 			        <div class="type gray">
 			                    <div class="clearfix">
-			                            <p id="toback" class="shadow">往返${arvFlightInfo_index}</p>
+			                            <p id="toback" class="shadow">往返</p>
 			                    </div> 
 			                    <dl class="ldt_tcil_content clearfix">
 			                        <dt>

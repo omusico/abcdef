@@ -8,6 +8,5 @@
 	<bean id ="traceInterceptor" class="com.lvmama.lvf.common.trace.TraceContextInterceptor4Resteasy"/>
 
 	<import resource="classpath*:applicationContext-persistence-all-persistence.xml" />
-	<import resource="classpath*:applicationContext-cat.xml" />
-	
+
 </beans>

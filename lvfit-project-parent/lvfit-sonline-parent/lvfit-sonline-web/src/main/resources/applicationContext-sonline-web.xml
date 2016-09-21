@@ -43,6 +43,5 @@
 	</bean>
 	
 	<import resource="classpath*:applicationContext-sonline-web-online.xml" />
-	<import resource="classpath*:applicationContext-cat.xml" />
-	
+
 </beans>

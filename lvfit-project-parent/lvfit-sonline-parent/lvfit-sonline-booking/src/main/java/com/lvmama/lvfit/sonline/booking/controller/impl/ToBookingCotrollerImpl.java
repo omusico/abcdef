@@ -109,15 +109,15 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 		FitSdpShoppingResponseForm resultForm = new FitSdpShoppingResponseForm(fitSdpShoppingDto);
 		FlightSearchFlightInfoDto firstFlight = fitSdpShoppingDto.getSelectedFlightInfos().get(0);
 		// 如果是包机航班，查询库存，判断舱位是否足够.
-		if (CharterFlightFilterUtil.isCharter(firstFlight)) {
-			if (!chargeCharsetFlight(BookingSource.FIT_FRONT,resultForm.getFitSdpShoppingRequest().getFitPassengerRequest(), firstFlight)) {
-				logger.error("下单之前进行包机航班复查时舱位不足，提示舱位不够.");
-			 	ExceptionWrapper e1 = new ExceptionWrapper();
-				model.addAttribute("errorMsgOutTime",e1.getErrMessage());
-				model.addAttribute("shoppingUUID",shoppingUUID); 
-				return "redirect:/"+redirectPath; 
-			}
-		}
+//		if (CharterFlightFilterUtil.isCharter(firstFlight)) {
+//			if (!chargeCharsetFlight(BookingSource.FIT_FRONT,resultForm.getFitSdpShoppingRequest().getFitPassengerRequest(), firstFlight)) {
+//				logger.error("下单之前进行包机航班复查时舱位不足，提示舱位不够.");
+//			 	ExceptionWrapper e1 = new ExceptionWrapper();
+//				model.addAttribute("errorMsgOutTime",e1.getErrMessage());
+//				model.addAttribute("shoppingUUID",shoppingUUID); 
+//				return "redirect:/"+redirectPath; 
+//			}
+//		}
 	        
 		//1.航班信息
 		model.addAttribute("flightInfos", resultForm.getSelectedFlightInfos());
@@ -373,27 +373,31 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 		flightReq.setSaleType(new SuppSaleType[]{SuppSaleType.DomesticProduct});
 		flightReq.setBackDate(DateUtils.parseDate(back.getDepartureDate(), "yyyy-MM-dd"));
 		int allCount = passengerRequest.getAdultCount()+passengerRequest.getChildCount();
-		//查询最新的全部的包机航班
-		FlightSearchResult<FlightSearchFlightInfoDto> result = fitAggregateClient.searchFlightInfo(flightReq);
-		List<FlightSearchFlightInfoDto> allFlights = result.getResults();
-		if(CollectionUtils.isNotEmpty(allFlights)){
-			for(FlightSearchFlightInfoDto flight:allFlights){
-				if(flight.getFlightNo().equals(go.getFlightNo())){
-					//得到对应的政策-舱位对应关系					
-					Map<String, List<FlightSearchSeatDto>> policySeatsMap = flight.getReturnFlightMap().get(back.getFlightNo());
-					Entry<String, List<FlightSearchSeatDto>> firstObj = policySeatsMap.entrySet().iterator().next();
-					List<FlightSearchSeatDto> goAndbackSeat = firstObj.getValue();
-					FlightSearchSeatDto goSeat = goAndbackSeat.get(0);
-					FlightSearchSeatDto backSeat = goAndbackSeat.get(1);
-					//新的去程库存，返程
-					int newGoSeatCount = goSeat.getInventoryCount();
-					int newBackSeatCount = backSeat.getInventoryCount();
-					//如果往返程舱位数都满足，就返回true
-					if(allCount<=newGoSeatCount&&allCount<=newBackSeatCount){
-						return true;
+		try{
+			//查询最新的全部的包机航班
+			FlightSearchResult<FlightSearchFlightInfoDto> result = fitAggregateClient.searchFlightInfo(flightReq);
+			List<FlightSearchFlightInfoDto> allFlights = result.getResults();
+			if(CollectionUtils.isNotEmpty(allFlights)){
+				for(FlightSearchFlightInfoDto flight:allFlights){
+					if(flight.getFlightNo().equals(go.getFlightNo())){
+						//得到对应的政策-舱位对应关系					
+						Map<String, List<FlightSearchSeatDto>> policySeatsMap = flight.getReturnFlightMap().get(back.getFlightNo());
+						Entry<String, List<FlightSearchSeatDto>> firstObj = policySeatsMap.entrySet().iterator().next();
+						List<FlightSearchSeatDto> goAndbackSeat = firstObj.getValue();
+						FlightSearchSeatDto goSeat = goAndbackSeat.get(0);
+						FlightSearchSeatDto backSeat = goAndbackSeat.get(1);
+						//新的去程库存，返程
+						int newGoSeatCount = goSeat.getInventoryCount();
+						int newBackSeatCount = backSeat.getInventoryCount();
+						//如果往返程舱位数都满足，就返回true
+						if(allCount<=newGoSeatCount&&allCount<=newBackSeatCount){
+							return true;
+						}
 					}
 				}
 			}
+		}catch(Exception e){ 
+			logger.error("包机航班进行校验价格舱位出现异常.",e);
 		}
 		return false;
 	}

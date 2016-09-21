@@ -34,5 +34,4 @@
 
 	<import resource="classpath*:applicationContext-mq-base.xml" />
 	<import resource="classpath*:applicationContext-mq-sdpproduct.xml" />
-	<import resource="classpath*:applicationContext-cat.xml" />
 </beans>

@@ -12,6 +12,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 
@@ -140,13 +141,13 @@ public interface FitSdpProductService {
 	 * @param productId
 	 * @return
 	 */
-	List<FitSdpCityGroupDto> getProductCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
+	List<FitSdpCityGroupDto> getProductCityGroupByDto(BaseQueryDto<FitSdpCityGroupRequest> dto);
 	
 	/**条件查询查询城市组记录总数
 	 * @param productId
 	 * @return
 	 */
-	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto);
+	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupRequest> baseQueryDto);
 
 	/**查询机票回调信息
 	 * @param productId

@@ -493,7 +493,7 @@
                     <dt><span class="red">*</span>证件类型：</dt>
                     <dd>
                         <select class="select js_zhengjian" name="cardType">
-                            <option value="ID_CARD"  selected="selected" >身份证</option>
+                            <option value="ID"  selected="selected" >身份证</option>
                             <option value="PASSPORT" >护照</option>
                         </select>
                         <input class="input js_yz" type_name="shenfenzheng" type="text"  value="" placeholder="证件号码"  onblur="blurIdAndBirthday(this,'ID')">

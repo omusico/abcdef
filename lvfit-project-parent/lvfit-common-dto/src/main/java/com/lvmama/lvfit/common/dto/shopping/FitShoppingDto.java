@@ -244,9 +244,9 @@ public class FitShoppingDto extends Entity {
 
 	public List<FlightSearchFlightInfoDto> getFlightInfos() {
 		List<FlightSearchFlightInfoDto> flightInfoList = new ArrayList<FlightSearchFlightInfoDto>();
-		flightInfoList.add(0, selectToFlight);
+		flightInfoList.add(0, toFlightInfos.getResults().get(0));
 		if (request.getTripType().equals(TripeType.WF.name())) {
-			flightInfoList.add(1, selectBackFlight);
+			flightInfoList.add(1, backFlightInfos.getResults().get(0));
 		}
 		return flightInfoList;
 	}

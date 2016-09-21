@@ -33,6 +33,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 
@@ -371,7 +372,7 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.BACK_SDP_PRODUCT_DEPART_CITY)
-	public Response querySdpProductDepartCityList(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto){
+	public Response querySdpProductDepartCityList(BaseQueryDto<FitSdpCityGroupRequest> baseQueryDto){
 		try{
 			ObjectMapper objectMapper = JSONMapper.getInstance();
 			List<FitSdpCityGroupDto> cityGroupDtos = fitSdpProductService.getProductCityGroupByDto(baseQueryDto);

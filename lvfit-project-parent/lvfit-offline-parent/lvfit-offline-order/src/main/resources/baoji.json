@@ -1,0 +1,2872 @@
+{
+    "status": "SUCCESS",
+    "results": [
+        {
+            "flightOrderDetailInfo": {
+                "orderNo": "121609191000003",
+                "flightOrderAmount": {
+                    "orderTotalAmount": 800,
+                    "orderTotalSalesAmount": 800,
+                    "orderOriginalTotalSalesAmount": 800,
+                    "orderTotalSettleAmount": 300,
+                    "orderTicketAmount": 700,
+                    "orderAirportTaxAmount": 100,
+                    "orderFuelTaxAmount": 0,
+                    "orderInsuranceAmount": 0,
+                    "orderExpressAmount": 0,
+                    "orderPlusAmount": 0,
+                    "orderPrepaidAmount": 800,
+                    "orderPayedAmount": 0,
+                    "orderDiscountTotalAmount": 0,
+                    "orderProfitAmount": 500,
+                    "couponPrice": 0,
+                    "profitFormula": {
+                        "scale": 0,
+                        "fixed": 0
+                    },
+                    "flightOrderDiscounts": [],
+                    "orderRTVTAmount": {
+                        "rtvtAmount": 0,
+                        "orderRefundedAmount": 0,
+                        "rtvtTicketAmount": 0,
+                        "rtvtDiscountAmount": 0,
+                        "rtvtAirportTaxAmount": 0,
+                        "rtvtFuelTaxAmount": 0,
+                        "rtvtFeeAmount": 0,
+                        "rtvtSurchargeAmount": 0,
+                        "rtvtInsuranceAmount": 0
+                    },
+                    "orderCTMTAmount": {
+                        "ctmtPrepaidAmount": 0,
+                        "ctmtPayedAmount": 0,
+                        "ctmtOrderTotalSettleAmount": 0,
+                        "ctmtTicketDiffAmount": 0,
+                        "ctmtDiscountDiffAmount": 0,
+                        "ctmtAirportTaxDiffAmount": 0,
+                        "ctmtFuelTaxDiffAmount": 0,
+                        "ctmtFeeAmount": 0,
+                        "ctmtSurchargeAmount": 0
+                    },
+                    "orderDirectReductionAmount": 0,
+                    "orderRefundedAmount": 0
+                },
+                "flightOrderDetails": [
+                    {
+                        "id": 16416,
+                        "createTime": 1474251370073,
+                        "updateTime": 1474251370073,
+                        "orderId": 13368,
+                        "combinationDetail": {
+                            "id": 14739,
+                            "createTime": 1474251363889,
+                            "updateTime": 1474251363889,
+                            "combinationId": 10096,
+                            "flightTripType": "DEPARTURE",
+                            "combinationDetailType": "NORMAL",
+                            "passengerType": "CHILDREN",
+                            "flightOrderFlightInfo": {
+                                "id": 13374,
+                                "createTime": 1474251364028,
+                                "updateTime": 1474251364028,
+                                "flightInfo": {
+                                    "id": 18287,
+                                    "createTime": 1474253333196,
+                                    "updateTime": 1474253333196,
+                                    "fees": [],
+                                    "taxs": [],
+                                    "dailys": [],
+                                    "seats": []
+                                },
+                                "flightInfoDaily": {
+                                    "id": 279669,
+                                    "createTime": 1472706770072,
+                                    "updateTime": 1474250658763,
+                                    "flightInfo": {
+                                        "id": 18287,
+                                        "createTime": 1474253333199,
+                                        "updateTime": 1474253333199,
+                                        "airplane": {
+                                            "id": 537,
+                                            "createTime": 1474253333199,
+                                            "updateTime": 1474253333199,
+                                            "minSeats": 0,
+                                            "maxSeats": 0
+                                        },
+                                        "flightAirportLine": {
+                                            "departureAirport": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "虹桥机场",
+                                                "code": "SHA",
+                                                "city": {
+                                                    "createTime": 1474253333199,
+                                                    "updateTime": 1474253333199,
+                                                    "name": "上海",
+                                                    "code": "SHA",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333199,
+                                                        "updateTime": 1474253333199,
+                                                        "name": "上海",
+                                                        "code": "SHA"
+                                                    }
+                                                },
+                                                "fullName": "上海虹桥国际机场"
+                                            },
+                                            "arrivalAirport": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "新白云机场",
+                                                "code": "CAN",
+                                                "city": {
+                                                    "createTime": 1474253333199,
+                                                    "updateTime": 1474253333199,
+                                                    "name": "广州",
+                                                    "code": "CAN",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333199,
+                                                        "updateTime": 1474253333199,
+                                                        "name": "广州",
+                                                        "code": "CAN"
+                                                    }
+                                                },
+                                                "fullName": "广州新白云国际机场"
+                                            },
+                                            "departureTermainalBuilding": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "二号航站楼",
+                                                "code": "T2"
+                                            },
+                                            "arrivalTerminalBuilding": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": " ",
+                                                "code": " "
+                                            }
+                                        },
+                                        "flightStopInfo": {
+                                            "stopCount": 0,
+                                            "directType": "DIRECT"
+                                        },
+                                        "fees": [],
+                                        "taxs": [],
+                                        "dailys": [],
+                                        "seats": []
+                                    },
+                                    "timeSegmentRange": {
+                                        "departureTime": 1475969400000,
+                                        "arrivalTime": 1475977800000,
+                                        "flytime": "2:20",
+                                        "departureTimeSegment": "MORNING",
+                                        "arrivalTimeSegment": "MORNING",
+                                        "departureDate": 1475942400000
+                                    },
+                                    "dailyInventorys": []
+                                },
+                                "combinationDetailId": 14739,
+                                "carrier": {
+                                    "createTime": 1474253333196,
+                                    "updateTime": 1474253333196,
+                                    "name": "东方航空",
+                                    "code": "MU"
+                                },
+                                "airplane": {
+                                    "createTime": 1474253333196,
+                                    "updateTime": 1474253333196,
+                                    "name": "波音767-300",
+                                    "code": "763",
+                                    "airplaneType": "大",
+                                    "minSeats": 203,
+                                    "maxSeats": 290,
+                                    "airplaneCompany": {
+                                        "createTime": 1474253333196,
+                                        "updateTime": 1474253333196,
+                                        "name": "美国波音公司",
+                                        "code": "Boeing",
+                                        "isForeign": true
+                                    }
+                                },
+                                "flightNo": "MU9301",
+                                "flightTripType": "DEPARTURE",
+                                "flightAirportLine": {
+                                    "departureAirport": {
+                                        "createTime": 1474253333197,
+                                        "updateTime": 1474253333197,
+                                        "name": "虹桥机场",
+                                        "code": "SHA",
+                                        "city": {
+                                            "createTime": 1474253333197,
+                                            "updateTime": 1474253333197,
+                                            "name": "上海",
+                                            "code": "SHA",
+                                            "airportCity": {
+                                                "createTime": 1474253333197,
+                                                "updateTime": 1474253333197,
+                                                "name": "上海",
+                                                "code": "SHA"
+                                            }
+                                        },
+                                        "fullName": "上海虹桥国际机场"
+                                    },
+                                    "arrivalAirport": {
+                                        "createTime": 1474253333197,
+                                        "updateTime": 1474253333197,
+                                        "name": "新白云机场",
+                                        "code": "CAN",
+                                        "city": {
+                                            "createTime": 1474253333197,
+                                            "updateTime": 1474253333197,
+                                            "name": "广州",
+                                            "code": "CAN",
+                                            "airportCity": {
+                                                "createTime": 1474253333197,
+                                                "updateTime": 1474253333197,
+                                                "name": "广州",
+                                                "code": "CAN"
+                                            }
+                                        },
+                                        "fullName": "广州新白云国际机场"
+                                    },
+                                    "departureTermainalBuilding": {
+                                        "createTime": 1474253333197,
+                                        "updateTime": 1474253333197,
+                                        "name": "二号航站楼",
+                                        "code": "T2"
+                                    },
+                                    "arrivalTerminalBuilding": {
+                                        "createTime": 1474253333197,
+                                        "updateTime": 1474253333197,
+                                        "name": " ",
+                                        "code": " "
+                                    }
+                                },
+                                "flightSegmentType": "INTERNAL",
+                                "flightStopInfo": {
+                                    "stopCount": 0,
+                                    "directType": "DIRECT",
+                                    "totalStopTime": "0"
+                                },
+                                "yParPrice": 1350,
+                                "mealType": "HAVE",
+                                "timeSegmentRange": {
+                                    "departureTime": 1475969400000,
+                                    "arrivalTime": 1475977800000,
+                                    "flytime": "2:20",
+                                    "departureTimeSegment": "MORNING",
+                                    "arrivalTimeSegment": "MORNING",
+                                    "departureDate": 1475942400000
+                                },
+                                "isShare": true,
+                                "flightSeat": {
+                                    "createTime": 1474253333197,
+                                    "updateTime": 1474253333197,
+                                    "activeStatus": {
+                                        "activeStatus": "ACTIVE",
+                                        "active": true
+                                    },
+                                    "seatClass": {
+                                        "createTime": 1474253333197,
+                                        "updateTime": 1474253333197,
+                                        "name": "公务舱",
+                                        "code": "C",
+                                        "flightTicketPriceDto": {
+                                            "activeStatus": {
+                                                "activeStatus": "ACTIVE",
+                                                "active": true
+                                            },
+                                            "active": true
+                                        }
+                                    },
+                                    "seatClassType": "C",
+                                    "seatPricesDiscount": "",
+                                    "flightTicketPriceDto": {
+                                        "parPrice": 700,
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "settlePrice": 200,
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "parPrice": 700,
+                                    "fuelsurTax": 0,
+                                    "airportFee": 100,
+                                    "settlePrice": 200
+                                }
+                            },
+                            "flightOrderFlightPolicy": {
+                                "id": 12807,
+                                "createTime": 1474251364028,
+                                "updateTime": 1474251364028,
+                                "combinationDetailId": 14739,
+                                "supp": {
+                                    "id": 45,
+                                    "createTime": 1474253333203,
+                                    "updateTime": 1474253333203,
+                                    "name": "驴妈妈大交通",
+                                    "code": "LVMAMA_TRAFFIC",
+                                    "suppType": "FLIGHT",
+                                    "selfType": "SELF"
+                                },
+                                "suppPolicyNo": "16452033",
+                                "flightPolicyProfitRule": {
+                                    "createTime": 1474253333200,
+                                    "updateTime": 1474253333200,
+                                    "profit": {
+                                        "scale": 0,
+                                        "fixed": 0
+                                    }
+                                },
+                                "saleType": "DomesticProduct",
+                                "flightPricePolicy": {
+                                    "id": 73118630,
+                                    "createTime": 1474250658805,
+                                    "updateTime": 1474250658805,
+                                    "flightPriceBase": {
+                                        "flightNo": "MU9301",
+                                        "seatClassCode": "C",
+                                        "departureAirportCode": "SHA",
+                                        "arrivalAirportCode": "CAN",
+                                        "departureCityCode": "SHA",
+                                        "arrivalCityCode": "CAN",
+                                        "departureDate": 1475942400000,
+                                        "lvSeatClassCode": "C700",
+                                        "versionNo": 1474250652433,
+                                        "md5Sign": "D8ED5081AC294129EB0E3E2B3FD910B7"
+                                    },
+                                    "suppCode": "LVMAMA_TRAFFIC",
+                                    "suppPolicyNo": "16452033",
+                                    "flightTicketPriceDto": {
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "childrenFuelsurTax": 0,
+                                        "childrenAirportFee": 100,
+                                        "settlePrice": 200,
+                                        "profit": {
+                                            "scale": 0,
+                                            "fixed": 0
+                                        },
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "saleType": "DomesticProduct",
+                                    "flightNo": "MU9301",
+                                    "departureAirportCode": "SHA",
+                                    "arrivalAirportCode": "CAN",
+                                    "departureDate": 1475942400000,
+                                    "departureCityCode": "SHA",
+                                    "arrivalCityCode": "CAN",
+                                    "seatClassCode": "C",
+                                    "lvSeatClassCode": "C700",
+                                    "md5Sign": "D8ED5081AC294129EB0E3E2B3FD910B7",
+                                    "versionNo": 1474250652433
+                                },
+                                "policySource": "222"
+                            }
+                        },
+                        "flightOrderPNRInfo": {
+                            "id": 12153,
+                            "createTime": 1474251371005,
+                            "updateTime": 1474251371005,
+                            "orderMainId": 9808,
+                            "flightOrderFlightPolicy": {
+                                "id": 12807,
+                                "createTime": 1474253333277,
+                                "updateTime": 1474253333277
+                            },
+                            "pnr": "666666",
+                            "orderBookingStatus": "BOOKING_SUCC",
+                            "flightOrderTicketInfos": [],
+                            "flightOrderPNRRefunds": []
+                        },
+                        "flightOrderPassenger": {
+                            "id": 13330,
+                            "createTime": 1474251059682,
+                            "updateTime": 1474251059682,
+                            "orderMainId": 9808,
+                            "passengerName": "陈酒",
+                            "passengerType": "CHILDREN",
+                            "gender": "FEMALE",
+                            "passengerIDCardType": "ID",
+                            "passengerIDCardNo": "510304200707025825",
+                            "passengerBirthday": 1183305600000,
+                            "cellphone": "15234242413",
+                            "flightOrderInsurances": [],
+                            "changedName": "陈酒"
+                        },
+                        "flightOrderTicketPrice": {
+                            "flightTicketPriceDto": {
+                                "yParPrice": 1350,
+                                "parPrice": 700,
+                                "fuelsurTax": 0,
+                                "airportFee": 100,
+                                "totalParPrice": 800,
+                                "salesPrice": 800,
+                                "salesParPrice": 700,
+                                "settlePrice": 300,
+                                "discount": 0.52,
+                                "promotion": 0,
+                                "profit": {
+                                    "scale": 0,
+                                    "fixed": 0
+                                },
+                                "profitAmount": 500,
+                                "activeStatus": {
+                                    "activeStatus": "ACTIVE",
+                                    "active": true
+                                },
+                                "active": true,
+                                "yparPrice": 1350
+                            },
+                            "yParPrice": 1350,
+                            "promotion": 0,
+                            "profit": {
+                                "scale": 0,
+                                "fixed": 0
+                            },
+                            "parPrice": 700,
+                            "active": true,
+                            "profitAmount": 500,
+                            "yparPrice": 1350,
+                            "fuelsurTax": 0,
+                            "airportFee": 100,
+                            "totalParPrice": 800,
+                            "salesPrice": 800,
+                            "settlePrice": 300,
+                            "discount": 0.52,
+                            "activeStatus": {
+                                "activeStatus": "ACTIVE",
+                                "active": true
+                            }
+                        },
+                        "detailBookingStatus": "BOOKING_SUCC",
+                        "isCanIssue": false,
+                        "isCanRTVT": true,
+                        "isCanCTMT": true
+                    },
+                    {
+                        "id": 16417,
+                        "createTime": 1474251370121,
+                        "updateTime": 1474251370121,
+                        "orderId": 13368,
+                        "combinationDetail": {
+                            "id": 14741,
+                            "createTime": 1474251369354,
+                            "updateTime": 1474251369354,
+                            "combinationId": 10096,
+                            "flightTripType": "RETURN",
+                            "combinationDetailType": "NORMAL",
+                            "passengerType": "CHILDREN",
+                            "flightOrderFlightInfo": {
+                                "id": 13376,
+                                "createTime": 1474251369408,
+                                "updateTime": 1474251369408,
+                                "flightInfo": {
+                                    "id": 24236,
+                                    "createTime": 1474253333210,
+                                    "updateTime": 1474253333210,
+                                    "fees": [],
+                                    "taxs": [],
+                                    "dailys": [],
+                                    "seats": []
+                                },
+                                "flightInfoDaily": {
+                                    "id": 279682,
+                                    "createTime": 1472788190410,
+                                    "updateTime": 1474250654070,
+                                    "flightInfo": {
+                                        "id": 24236,
+                                        "createTime": 1474253333212,
+                                        "updateTime": 1474253333212,
+                                        "airplane": {
+                                            "id": 518,
+                                            "createTime": 1474253333212,
+                                            "updateTime": 1474253333212,
+                                            "minSeats": 0,
+                                            "maxSeats": 0
+                                        },
+                                        "flightAirportLine": {
+                                            "departureAirport": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "新白云机场",
+                                                "code": "CAN",
+                                                "city": {
+                                                    "createTime": 1474253333212,
+                                                    "updateTime": 1474253333212,
+                                                    "name": "广州",
+                                                    "code": "CAN",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333212,
+                                                        "updateTime": 1474253333212,
+                                                        "name": "广州",
+                                                        "code": "CAN"
+                                                    }
+                                                },
+                                                "fullName": "广州新白云国际机场"
+                                            },
+                                            "arrivalAirport": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "浦东机场",
+                                                "code": "PVG",
+                                                "city": {
+                                                    "createTime": 1474253333212,
+                                                    "updateTime": 1474253333212,
+                                                    "name": "上海",
+                                                    "code": "SHA",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333212,
+                                                        "updateTime": 1474253333212,
+                                                        "name": "上海",
+                                                        "code": "SHA"
+                                                    }
+                                                },
+                                                "fullName": "上海浦东国际机场"
+                                            },
+                                            "departureTermainalBuilding": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": " ",
+                                                "code": " "
+                                            },
+                                            "arrivalTerminalBuilding": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "一号航站楼",
+                                                "code": "T1"
+                                            }
+                                        },
+                                        "flightStopInfo": {
+                                            "stopCount": 0,
+                                            "directType": "DIRECT"
+                                        },
+                                        "fees": [],
+                                        "taxs": [],
+                                        "dailys": [],
+                                        "seats": []
+                                    },
+                                    "timeSegmentRange": {
+                                        "departureTime": 1476315000000,
+                                        "arrivalTime": 1476323700000,
+                                        "flytime": "2:25",
+                                        "departureTimeSegment": "MORNING",
+                                        "arrivalTimeSegment": "MORNING",
+                                        "departureDate": 1476288000000
+                                    },
+                                    "dailyInventorys": []
+                                },
+                                "combinationDetailId": 14741,
+                                "carrier": {
+                                    "createTime": 1474253333210,
+                                    "updateTime": 1474253333210,
+                                    "name": "东方航空",
+                                    "code": "MU"
+                                },
+                                "airplane": {
+                                    "createTime": 1474253333210,
+                                    "updateTime": 1474253333210,
+                                    "name": "波音737-800",
+                                    "code": "73H",
+                                    "airplaneType": "中",
+                                    "minSeats": 149,
+                                    "maxSeats": 149,
+                                    "airplaneCompany": {
+                                        "createTime": 1474253333211,
+                                        "updateTime": 1474253333211,
+                                        "name": "美国波音公司",
+                                        "code": "Boeing",
+                                        "isForeign": true
+                                    }
+                                },
+                                "flightNo": "MU9304",
+                                "flightTripType": "RETURN",
+                                "flightAirportLine": {
+                                    "departureAirport": {
+                                        "createTime": 1474253333211,
+                                        "updateTime": 1474253333211,
+                                        "name": "新白云机场",
+                                        "code": "CAN",
+                                        "city": {
+                                            "createTime": 1474253333211,
+                                            "updateTime": 1474253333211,
+                                            "name": "广州",
+                                            "code": "CAN",
+                                            "airportCity": {
+                                                "createTime": 1474253333211,
+                                                "updateTime": 1474253333211,
+                                                "name": "广州",
+                                                "code": "CAN"
+                                            }
+                                        },
+                                        "fullName": "广州新白云国际机场"
+                                    },
+                                    "arrivalAirport": {
+                                        "createTime": 1474253333211,
+                                        "updateTime": 1474253333211,
+                                        "name": "浦东机场",
+                                        "code": "PVG",
+                                        "city": {
+                                            "createTime": 1474253333211,
+                                            "updateTime": 1474253333211,
+                                            "name": "上海",
+                                            "code": "SHA",
+                                            "airportCity": {
+                                                "createTime": 1474253333211,
+                                                "updateTime": 1474253333211,
+                                                "name": "上海",
+                                                "code": "SHA"
+                                            }
+                                        },
+                                        "fullName": "上海浦东国际机场"
+                                    },
+                                    "departureTermainalBuilding": {
+                                        "createTime": 1474253333211,
+                                        "updateTime": 1474253333211,
+                                        "name": " ",
+                                        "code": " "
+                                    },
+                                    "arrivalTerminalBuilding": {
+                                        "createTime": 1474253333211,
+                                        "updateTime": 1474253333211,
+                                        "name": "一号航站楼",
+                                        "code": "T1"
+                                    }
+                                },
+                                "flightSegmentType": "INTERNAL",
+                                "flightStopInfo": {
+                                    "stopCount": 0,
+                                    "directType": "DIRECT",
+                                    "totalStopTime": "0"
+                                },
+                                "yParPrice": 1350,
+                                "mealType": "HAVE",
+                                "timeSegmentRange": {
+                                    "departureTime": 1476315000000,
+                                    "arrivalTime": 1476323700000,
+                                    "flytime": "2:25",
+                                    "departureTimeSegment": "MORNING",
+                                    "arrivalTimeSegment": "MORNING",
+                                    "departureDate": 1476288000000
+                                },
+                                "isShare": true,
+                                "flightSeat": {
+                                    "createTime": 1474253333211,
+                                    "updateTime": 1474253333211,
+                                    "activeStatus": {
+                                        "activeStatus": "ACTIVE",
+                                        "active": true
+                                    },
+                                    "seatClass": {
+                                        "createTime": 1474253333211,
+                                        "updateTime": 1474253333211,
+                                        "name": "公务舱",
+                                        "code": "C",
+                                        "flightTicketPriceDto": {
+                                            "activeStatus": {
+                                                "activeStatus": "ACTIVE",
+                                                "active": true
+                                            },
+                                            "active": true
+                                        }
+                                    },
+                                    "seatClassType": "C",
+                                    "seatPricesDiscount": "",
+                                    "flightTicketPriceDto": {
+                                        "parPrice": 700,
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "settlePrice": 200,
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "parPrice": 700,
+                                    "fuelsurTax": 0,
+                                    "airportFee": 100,
+                                    "settlePrice": 200
+                                }
+                            },
+                            "flightOrderFlightPolicy": {
+                                "id": 12809,
+                                "createTime": 1474251369408,
+                                "updateTime": 1474251369408,
+                                "combinationDetailId": 14741,
+                                "supp": {
+                                    "id": 45,
+                                    "createTime": 1474253333203,
+                                    "updateTime": 1474253333203,
+                                    "name": "驴妈妈大交通",
+                                    "code": "LVMAMA_TRAFFIC",
+                                    "suppType": "FLIGHT",
+                                    "selfType": "SELF"
+                                },
+                                "suppPolicyNo": "16452033",
+                                "flightPolicyProfitRule": {
+                                    "createTime": 1474253333214,
+                                    "updateTime": 1474253333214,
+                                    "profit": {
+                                        "scale": 0,
+                                        "fixed": 0
+                                    }
+                                },
+                                "saleType": "DomesticProduct",
+                                "flightPricePolicy": {
+                                    "id": 73118073,
+                                    "createTime": 1474250654024,
+                                    "updateTime": 1474250654024,
+                                    "flightPriceBase": {
+                                        "flightNo": "MU9304",
+                                        "seatClassCode": "C",
+                                        "departureAirportCode": "CAN",
+                                        "arrivalAirportCode": "PVG",
+                                        "departureCityCode": "CAN",
+                                        "arrivalCityCode": "SHA",
+                                        "departureDate": 1476288000000,
+                                        "lvSeatClassCode": "C700",
+                                        "versionNo": 1474250652433,
+                                        "md5Sign": "BC956A1CC1B4FA3A8795B8ADBAA5F948"
+                                    },
+                                    "suppCode": "LVMAMA_TRAFFIC",
+                                    "suppPolicyNo": "16452033",
+                                    "flightTicketPriceDto": {
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "childrenFuelsurTax": 0,
+                                        "childrenAirportFee": 100,
+                                        "settlePrice": 200,
+                                        "profit": {
+                                            "scale": 0,
+                                            "fixed": 0
+                                        },
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "saleType": "DomesticProduct",
+                                    "flightNo": "MU9304",
+                                    "departureAirportCode": "CAN",
+                                    "arrivalAirportCode": "PVG",
+                                    "departureDate": 1476288000000,
+                                    "departureCityCode": "CAN",
+                                    "arrivalCityCode": "SHA",
+                                    "seatClassCode": "C",
+                                    "lvSeatClassCode": "C700",
+                                    "md5Sign": "BC956A1CC1B4FA3A8795B8ADBAA5F948",
+                                    "versionNo": 1474250652433
+                                },
+                                "policySource": "222"
+                            }
+                        },
+                        "flightOrderPNRInfo": {
+                            "id": 12153,
+                            "createTime": 1474251371005,
+                            "updateTime": 1474251371005,
+                            "orderMainId": 9808,
+                            "flightOrderFlightPolicy": {
+                                "id": 12807,
+                                "createTime": 1474253333277,
+                                "updateTime": 1474253333277
+                            },
+                            "pnr": "666666",
+                            "orderBookingStatus": "BOOKING_SUCC",
+                            "flightOrderTicketInfos": [],
+                            "flightOrderPNRRefunds": []
+                        },
+                        "flightOrderPassenger": {
+                            "id": 13330,
+                            "createTime": 1474251059682,
+                            "updateTime": 1474251059682,
+                            "orderMainId": 9808,
+                            "passengerName": "陈酒",
+                            "passengerType": "CHILDREN",
+                            "gender": "FEMALE",
+                            "passengerIDCardType": "ID",
+                            "passengerIDCardNo": "510304200707025825",
+                            "passengerBirthday": 1183305600000,
+                            "cellphone": "15234242413",
+                            "flightOrderInsurances": [],
+                            "changedName": "陈酒"
+                        },
+                        "flightOrderTicketPrice": {
+                            "flightTicketPriceDto": {
+                                "yParPrice": 1350,
+                                "parPrice": 700,
+                                "fuelsurTax": 0,
+                                "airportFee": 100,
+                                "totalParPrice": 800,
+                                "salesPrice": 800,
+                                "salesParPrice": 700,
+                                "settlePrice": 300,
+                                "discount": 0.52,
+                                "promotion": 0,
+                                "profit": {
+                                    "scale": 0,
+                                    "fixed": 0
+                                },
+                                "profitAmount": 500,
+                                "activeStatus": {
+                                    "activeStatus": "ACTIVE",
+                                    "active": true
+                                },
+                                "active": true,
+                                "yparPrice": 1350
+                            },
+                            "yParPrice": 1350,
+                            "promotion": 0,
+                            "profit": {
+                                "scale": 0,
+                                "fixed": 0
+                            },
+                            "parPrice": 700,
+                            "active": true,
+                            "profitAmount": 500,
+                            "yparPrice": 1350,
+                            "fuelsurTax": 0,
+                            "airportFee": 100,
+                            "totalParPrice": 800,
+                            "salesPrice": 800,
+                            "settlePrice": 300,
+                            "discount": 0.52,
+                            "activeStatus": {
+                                "activeStatus": "ACTIVE",
+                                "active": true
+                            }
+                        },
+                        "detailBookingStatus": "BOOKING_SUCC",
+                        "isCanIssue": false,
+                        "isCanRTVT": true,
+                        "isCanCTMT": true
+                    }
+                ]
+            }
+        },
+        {
+            "flightOrderDetailInfo": {
+                "orderNo": "121609191000002",
+                "flightOrderAmount": {
+                    "orderTotalAmount": 1600,
+                    "orderTotalSalesAmount": 1600,
+                    "orderOriginalTotalSalesAmount": 1600,
+                    "orderTotalSettleAmount": 600,
+                    "orderTicketAmount": 1400,
+                    "orderAirportTaxAmount": 200,
+                    "orderFuelTaxAmount": 0,
+                    "orderInsuranceAmount": 0,
+                    "orderExpressAmount": 0,
+                    "orderPlusAmount": 0,
+                    "orderPrepaidAmount": 1600,
+                    "orderPayedAmount": 0,
+                    "orderDiscountTotalAmount": 0,
+                    "orderProfitAmount": 1000,
+                    "couponPrice": 0,
+                    "profitFormula": {
+                        "scale": 0,
+                        "fixed": 0
+                    },
+                    "flightOrderDiscounts": [],
+                    "orderRTVTAmount": {
+                        "rtvtAmount": 0,
+                        "orderRefundedAmount": 0,
+                        "rtvtTicketAmount": 0,
+                        "rtvtDiscountAmount": 0,
+                        "rtvtAirportTaxAmount": 0,
+                        "rtvtFuelTaxAmount": 0,
+                        "rtvtFeeAmount": 0,
+                        "rtvtSurchargeAmount": 0,
+                        "rtvtInsuranceAmount": 0
+                    },
+                    "orderCTMTAmount": {
+                        "ctmtPrepaidAmount": 0,
+                        "ctmtPayedAmount": 0,
+                        "ctmtOrderTotalSettleAmount": 0,
+                        "ctmtTicketDiffAmount": 0,
+                        "ctmtDiscountDiffAmount": 0,
+                        "ctmtAirportTaxDiffAmount": 0,
+                        "ctmtFuelTaxDiffAmount": 0,
+                        "ctmtFeeAmount": 0,
+                        "ctmtSurchargeAmount": 0
+                    },
+                    "orderDirectReductionAmount": 0,
+                    "orderRefundedAmount": 0
+                },
+                "flightOrderDetails": [
+                    {
+                        "id": 16412,
+                        "createTime": 1474251369747,
+                        "updateTime": 1474251369747,
+                        "orderId": 13367,
+                        "combinationDetail": {
+                            "id": 14740,
+                            "createTime": 1474251364051,
+                            "updateTime": 1474251364051,
+                            "combinationId": 10096,
+                            "flightTripType": "DEPARTURE",
+                            "combinationDetailType": "NORMAL",
+                            "passengerType": "ADULT",
+                            "flightOrderFlightInfo": {
+                                "id": 13375,
+                                "createTime": 1474251364063,
+                                "updateTime": 1474251364063,
+                                "flightInfo": {
+                                    "id": 18287,
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "fees": [],
+                                    "taxs": [],
+                                    "dailys": [],
+                                    "seats": []
+                                },
+                                "flightInfoDaily": {
+                                    "id": 279669,
+                                    "createTime": 1472706770072,
+                                    "updateTime": 1474250658763,
+                                    "flightInfo": {
+                                        "id": 18287,
+                                        "createTime": 1474253333199,
+                                        "updateTime": 1474253333199,
+                                        "airplane": {
+                                            "id": 537,
+                                            "createTime": 1474253333199,
+                                            "updateTime": 1474253333199,
+                                            "minSeats": 0,
+                                            "maxSeats": 0
+                                        },
+                                        "flightAirportLine": {
+                                            "departureAirport": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "虹桥机场",
+                                                "code": "SHA",
+                                                "city": {
+                                                    "createTime": 1474253333199,
+                                                    "updateTime": 1474253333199,
+                                                    "name": "上海",
+                                                    "code": "SHA",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333199,
+                                                        "updateTime": 1474253333199,
+                                                        "name": "上海",
+                                                        "code": "SHA"
+                                                    }
+                                                },
+                                                "fullName": "上海虹桥国际机场"
+                                            },
+                                            "arrivalAirport": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "新白云机场",
+                                                "code": "CAN",
+                                                "city": {
+                                                    "createTime": 1474253333199,
+                                                    "updateTime": 1474253333199,
+                                                    "name": "广州",
+                                                    "code": "CAN",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333199,
+                                                        "updateTime": 1474253333199,
+                                                        "name": "广州",
+                                                        "code": "CAN"
+                                                    }
+                                                },
+                                                "fullName": "广州新白云国际机场"
+                                            },
+                                            "departureTermainalBuilding": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "二号航站楼",
+                                                "code": "T2"
+                                            },
+                                            "arrivalTerminalBuilding": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": " ",
+                                                "code": " "
+                                            }
+                                        },
+                                        "flightStopInfo": {
+                                            "stopCount": 0,
+                                            "directType": "DIRECT"
+                                        },
+                                        "fees": [],
+                                        "taxs": [],
+                                        "dailys": [],
+                                        "seats": []
+                                    },
+                                    "timeSegmentRange": {
+                                        "departureTime": 1475969400000,
+                                        "arrivalTime": 1475977800000,
+                                        "flytime": "2:20",
+                                        "departureTimeSegment": "MORNING",
+                                        "arrivalTimeSegment": "MORNING",
+                                        "departureDate": 1475942400000
+                                    },
+                                    "dailyInventorys": []
+                                },
+                                "combinationDetailId": 14740,
+                                "carrier": {
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "name": "东方航空",
+                                    "code": "MU"
+                                },
+                                "airplane": {
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "name": "波音767-300",
+                                    "code": "763",
+                                    "airplaneType": "大",
+                                    "minSeats": 203,
+                                    "maxSeats": 290,
+                                    "airplaneCompany": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "美国波音公司",
+                                        "code": "Boeing",
+                                        "isForeign": true
+                                    }
+                                },
+                                "flightNo": "MU9301",
+                                "flightTripType": "DEPARTURE",
+                                "flightAirportLine": {
+                                    "departureAirport": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "虹桥机场",
+                                        "code": "SHA",
+                                        "city": {
+                                            "createTime": 1474253333232,
+                                            "updateTime": 1474253333232,
+                                            "name": "上海",
+                                            "code": "SHA",
+                                            "airportCity": {
+                                                "createTime": 1474253333232,
+                                                "updateTime": 1474253333232,
+                                                "name": "上海",
+                                                "code": "SHA"
+                                            }
+                                        },
+                                        "fullName": "上海虹桥国际机场"
+                                    },
+                                    "arrivalAirport": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "新白云机场",
+                                        "code": "CAN",
+                                        "city": {
+                                            "createTime": 1474253333232,
+                                            "updateTime": 1474253333232,
+                                            "name": "广州",
+                                            "code": "CAN",
+                                            "airportCity": {
+                                                "createTime": 1474253333232,
+                                                "updateTime": 1474253333232,
+                                                "name": "广州",
+                                                "code": "CAN"
+                                            }
+                                        },
+                                        "fullName": "广州新白云国际机场"
+                                    },
+                                    "departureTermainalBuilding": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "二号航站楼",
+                                        "code": "T2"
+                                    },
+                                    "arrivalTerminalBuilding": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": " ",
+                                        "code": " "
+                                    }
+                                },
+                                "flightSegmentType": "INTERNAL",
+                                "flightStopInfo": {
+                                    "stopCount": 0,
+                                    "directType": "DIRECT",
+                                    "totalStopTime": "0"
+                                },
+                                "yParPrice": 1350,
+                                "mealType": "HAVE",
+                                "timeSegmentRange": {
+                                    "departureTime": 1475969400000,
+                                    "arrivalTime": 1475977800000,
+                                    "flytime": "2:20",
+                                    "departureTimeSegment": "MORNING",
+                                    "arrivalTimeSegment": "MORNING",
+                                    "departureDate": 1475942400000
+                                },
+                                "isShare": true,
+                                "flightSeat": {
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "activeStatus": {
+                                        "activeStatus": "ACTIVE",
+                                        "active": true
+                                    },
+                                    "seatClass": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "公务舱",
+                                        "code": "C",
+                                        "flightTicketPriceDto": {
+                                            "activeStatus": {
+                                                "activeStatus": "ACTIVE",
+                                                "active": true
+                                            },
+                                            "active": true
+                                        }
+                                    },
+                                    "seatClassType": "C",
+                                    "seatPricesDiscount": "",
+                                    "flightTicketPriceDto": {
+                                        "parPrice": 700,
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "settlePrice": 200,
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "parPrice": 700,
+                                    "fuelsurTax": 0,
+                                    "airportFee": 100,
+                                    "settlePrice": 200
+                                }
+                            },
+                            "flightOrderFlightPolicy": {
+                                "id": 12808,
+                                "createTime": 1474251364063,
+                                "updateTime": 1474251364063,
+                                "combinationDetailId": 14740,
+                                "supp": {
+                                    "id": 45,
+                                    "createTime": 1474253333203,
+                                    "updateTime": 1474253333203,
+                                    "name": "驴妈妈大交通",
+                                    "code": "LVMAMA_TRAFFIC",
+                                    "suppType": "FLIGHT",
+                                    "selfType": "SELF"
+                                },
+                                "suppPolicyNo": "16452033",
+                                "flightPolicyProfitRule": {
+                                    "createTime": 1474253333234,
+                                    "updateTime": 1474253333234,
+                                    "profit": {
+                                        "scale": 0,
+                                        "fixed": 0
+                                    }
+                                },
+                                "saleType": "DomesticProduct",
+                                "flightPricePolicy": {
+                                    "id": 73118630,
+                                    "createTime": 1474250658805,
+                                    "updateTime": 1474250658805,
+                                    "flightPriceBase": {
+                                        "flightNo": "MU9301",
+                                        "seatClassCode": "C",
+                                        "departureAirportCode": "SHA",
+                                        "arrivalAirportCode": "CAN",
+                                        "departureCityCode": "SHA",
+                                        "arrivalCityCode": "CAN",
+                                        "departureDate": 1475942400000,
+                                        "lvSeatClassCode": "C700",
+                                        "versionNo": 1474250652433,
+                                        "md5Sign": "D8ED5081AC294129EB0E3E2B3FD910B7"
+                                    },
+                                    "suppCode": "LVMAMA_TRAFFIC",
+                                    "suppPolicyNo": "16452033",
+                                    "flightTicketPriceDto": {
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "childrenFuelsurTax": 0,
+                                        "childrenAirportFee": 100,
+                                        "settlePrice": 200,
+                                        "profit": {
+                                            "scale": 0,
+                                            "fixed": 0
+                                        },
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "saleType": "DomesticProduct",
+                                    "flightNo": "MU9301",
+                                    "departureAirportCode": "SHA",
+                                    "arrivalAirportCode": "CAN",
+                                    "departureDate": 1475942400000,
+                                    "departureCityCode": "SHA",
+                                    "arrivalCityCode": "CAN",
+                                    "seatClassCode": "C",
+                                    "lvSeatClassCode": "C700",
+                                    "md5Sign": "D8ED5081AC294129EB0E3E2B3FD910B7",
+                                    "versionNo": 1474250652433
+                                },
+                                "policySource": "222"
+                            },
+                            "flightOrderTicketRule": {
+                                "id": 12038,
+                                "createTime": 1474251369341,
+                                "updateTime": 1474251369341,
+                                "flightOrderTicketAllowRule": {
+                                    "id": 11879,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "includeAirLines": "适用全部航线",
+                                    "includeSeatClasses": "C",
+                                    "orderTicketRuleId": 12038
+                                },
+                                "routeType": "OTHER",
+                                "seatSpecType": "NORMAL",
+                                "seatLevel": "2",
+                                "flightOrderTicketRTRule": {
+                                    "id": 12705,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "rTDesc": "取消座位时间计算手续费;按照当前舱位票面价收取退票费;起飞前2.0小时（含）以外收取当前舱位票面价的20.0%退票费,起飞前2.0小时以内及起飞后收取当前舱位票面价的30.0%退票费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40577,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12705
+                                        },
+                                        {
+                                            "id": 40578,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.3,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12705
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12038
+                                },
+                                "flightOrderTicketMTRule": {
+                                    "id": 12665,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "mTDesc": "不能改签;",
+                                    "flightOrderTicketSegmentRules": [],
+                                    "orderTicketRuleId": 12038
+                                },
+                                "flightOrderTicketCTRule": {
+                                    "id": 13107,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "cTDesc": "按照当前舱位票面价收取变更费;起飞前2.0小时（含）以外收取当前舱位票面价的10.0%改期费,起飞前2.0小时以内及起飞后收取当前舱位票面价的20.0%改期费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40579,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "ruleType": "CT",
+                                            "ruleId": 13107
+                                        },
+                                        {
+                                            "id": 40580,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "CT",
+                                            "ruleId": 13107
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12038
+                                },
+                                "combinationDetailId": 14740
+                            }
+                        },
+                        "flightOrderPNRInfo": {
+                            "id": 12152,
+                            "createTime": 1474251370964,
+                            "updateTime": 1474251370964,
+                            "orderMainId": 9808,
+                            "flightOrderFlightPolicy": {
+                                "id": 12808,
+                                "createTime": 1474253333283,
+                                "updateTime": 1474253333283
+                            },
+                            "pnr": "666666",
+                            "orderBookingStatus": "BOOKING_SUCC",
+                            "flightOrderTicketInfos": [],
+                            "flightOrderPNRRefunds": []
+                        },
+                        "flightOrderPassenger": {
+                            "id": 13328,
+                            "createTime": 1474251059681,
+                            "updateTime": 1474251059681,
+                            "orderMainId": 9808,
+                            "passengerName": "陈坤",
+                            "passengerType": "ADULT",
+                            "gender": "FEMALE",
+                            "passengerIDCardType": "ID",
+                            "passengerIDCardNo": "520402197005162446",
+                            "passengerBirthday": 11635200000,
+                            "cellphone": "15234242413",
+                            "flightOrderInsurances": [],
+                            "changedName": "陈坤"
+                        },
+                        "flightOrderTicketPrice": {
+                            "flightTicketPriceDto": {
+                                "yParPrice": 1350,
+                                "parPrice": 700,
+                                "fuelsurTax": 0,
+                                "airportFee": 100,
+                                "totalParPrice": 800,
+                                "salesPrice": 800,
+                                "salesParPrice": 700,
+                                "settlePrice": 300,
+                                "discount": 0.52,
+                                "promotion": 0,
+                                "profit": {
+                                    "scale": 0,
+                                    "fixed": 0
+                                },
+                                "profitAmount": 500,
+                                "activeStatus": {
+                                    "activeStatus": "ACTIVE",
+                                    "active": true
+                                },
+                                "active": true,
+                                "yparPrice": 1350
+                            },
+                            "yParPrice": 1350,
+                            "promotion": 0,
+                            "profit": {
+                                "scale": 0,
+                                "fixed": 0
+                            },
+                            "parPrice": 700,
+                            "active": true,
+                            "profitAmount": 500,
+                            "yparPrice": 1350,
+                            "fuelsurTax": 0,
+                            "airportFee": 100,
+                            "totalParPrice": 800,
+                            "salesPrice": 800,
+                            "settlePrice": 300,
+                            "discount": 0.52,
+                            "activeStatus": {
+                                "activeStatus": "ACTIVE",
+                                "active": true
+                            }
+                        },
+                        "detailBookingStatus": "BOOKING_SUCC",
+                        "isCanIssue": false,
+                        "isCanRTVT": true,
+                        "isCanCTMT": true
+                    },
+                    {
+                        "id": 16413,
+                        "createTime": 1474251369799,
+                        "updateTime": 1474251369799,
+                        "orderId": 13367,
+                        "combinationDetail": {
+                            "id": 14742,
+                            "createTime": 1474251369423,
+                            "updateTime": 1474251369423,
+                            "combinationId": 10096,
+                            "flightTripType": "RETURN",
+                            "combinationDetailType": "NORMAL",
+                            "passengerType": "ADULT",
+                            "flightOrderFlightInfo": {
+                                "id": 13377,
+                                "createTime": 1474251369434,
+                                "updateTime": 1474251369434,
+                                "flightInfo": {
+                                    "id": 24236,
+                                    "createTime": 1474253333250,
+                                    "updateTime": 1474253333250,
+                                    "fees": [],
+                                    "taxs": [],
+                                    "dailys": [],
+                                    "seats": []
+                                },
+                                "flightInfoDaily": {
+                                    "id": 279682,
+                                    "createTime": 1472788190410,
+                                    "updateTime": 1474250654070,
+                                    "flightInfo": {
+                                        "id": 24236,
+                                        "createTime": 1474253333212,
+                                        "updateTime": 1474253333212,
+                                        "airplane": {
+                                            "id": 518,
+                                            "createTime": 1474253333212,
+                                            "updateTime": 1474253333212,
+                                            "minSeats": 0,
+                                            "maxSeats": 0
+                                        },
+                                        "flightAirportLine": {
+                                            "departureAirport": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "新白云机场",
+                                                "code": "CAN",
+                                                "city": {
+                                                    "createTime": 1474253333212,
+                                                    "updateTime": 1474253333212,
+                                                    "name": "广州",
+                                                    "code": "CAN",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333212,
+                                                        "updateTime": 1474253333212,
+                                                        "name": "广州",
+                                                        "code": "CAN"
+                                                    }
+                                                },
+                                                "fullName": "广州新白云国际机场"
+                                            },
+                                            "arrivalAirport": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "浦东机场",
+                                                "code": "PVG",
+                                                "city": {
+                                                    "createTime": 1474253333212,
+                                                    "updateTime": 1474253333212,
+                                                    "name": "上海",
+                                                    "code": "SHA",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333212,
+                                                        "updateTime": 1474253333212,
+                                                        "name": "上海",
+                                                        "code": "SHA"
+                                                    }
+                                                },
+                                                "fullName": "上海浦东国际机场"
+                                            },
+                                            "departureTermainalBuilding": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": " ",
+                                                "code": " "
+                                            },
+                                            "arrivalTerminalBuilding": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "一号航站楼",
+                                                "code": "T1"
+                                            }
+                                        },
+                                        "flightStopInfo": {
+                                            "stopCount": 0,
+                                            "directType": "DIRECT"
+                                        },
+                                        "fees": [],
+                                        "taxs": [],
+                                        "dailys": [],
+                                        "seats": []
+                                    },
+                                    "timeSegmentRange": {
+                                        "departureTime": 1476315000000,
+                                        "arrivalTime": 1476323700000,
+                                        "flytime": "2:25",
+                                        "departureTimeSegment": "MORNING",
+                                        "arrivalTimeSegment": "MORNING",
+                                        "departureDate": 1476288000000
+                                    },
+                                    "dailyInventorys": []
+                                },
+                                "combinationDetailId": 14742,
+                                "carrier": {
+                                    "createTime": 1474253333251,
+                                    "updateTime": 1474253333251,
+                                    "name": "东方航空",
+                                    "code": "MU"
+                                },
+                                "airplane": {
+                                    "createTime": 1474253333251,
+                                    "updateTime": 1474253333251,
+                                    "name": "波音737-800",
+                                    "code": "73H",
+                                    "airplaneType": "中",
+                                    "minSeats": 149,
+                                    "maxSeats": 149,
+                                    "airplaneCompany": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "美国波音公司",
+                                        "code": "Boeing",
+                                        "isForeign": true
+                                    }
+                                },
+                                "flightNo": "MU9304",
+                                "flightTripType": "RETURN",
+                                "flightAirportLine": {
+                                    "departureAirport": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "新白云机场",
+                                        "code": "CAN",
+                                        "city": {
+                                            "createTime": 1474253333251,
+                                            "updateTime": 1474253333251,
+                                            "name": "广州",
+                                            "code": "CAN",
+                                            "airportCity": {
+                                                "createTime": 1474253333251,
+                                                "updateTime": 1474253333251,
+                                                "name": "广州",
+                                                "code": "CAN"
+                                            }
+                                        },
+                                        "fullName": "广州新白云国际机场"
+                                    },
+                                    "arrivalAirport": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "浦东机场",
+                                        "code": "PVG",
+                                        "city": {
+                                            "createTime": 1474253333251,
+                                            "updateTime": 1474253333251,
+                                            "name": "上海",
+                                            "code": "SHA",
+                                            "airportCity": {
+                                                "createTime": 1474253333251,
+                                                "updateTime": 1474253333251,
+                                                "name": "上海",
+                                                "code": "SHA"
+                                            }
+                                        },
+                                        "fullName": "上海浦东国际机场"
+                                    },
+                                    "departureTermainalBuilding": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": " ",
+                                        "code": " "
+                                    },
+                                    "arrivalTerminalBuilding": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "一号航站楼",
+                                        "code": "T1"
+                                    }
+                                },
+                                "flightSegmentType": "INTERNAL",
+                                "flightStopInfo": {
+                                    "stopCount": 0,
+                                    "directType": "DIRECT",
+                                    "totalStopTime": "0"
+                                },
+                                "yParPrice": 1350,
+                                "mealType": "HAVE",
+                                "timeSegmentRange": {
+                                    "departureTime": 1476315000000,
+                                    "arrivalTime": 1476323700000,
+                                    "flytime": "2:25",
+                                    "departureTimeSegment": "MORNING",
+                                    "arrivalTimeSegment": "MORNING",
+                                    "departureDate": 1476288000000
+                                },
+                                "isShare": true,
+                                "flightSeat": {
+                                    "createTime": 1474253333251,
+                                    "updateTime": 1474253333251,
+                                    "activeStatus": {
+                                        "activeStatus": "ACTIVE",
+                                        "active": true
+                                    },
+                                    "seatClass": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "公务舱",
+                                        "code": "C",
+                                        "flightTicketPriceDto": {
+                                            "activeStatus": {
+                                                "activeStatus": "ACTIVE",
+                                                "active": true
+                                            },
+                                            "active": true
+                                        }
+                                    },
+                                    "seatClassType": "C",
+                                    "seatPricesDiscount": "",
+                                    "flightTicketPriceDto": {
+                                        "parPrice": 700,
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "settlePrice": 200,
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "parPrice": 700,
+                                    "fuelsurTax": 0,
+                                    "airportFee": 100,
+                                    "settlePrice": 200
+                                }
+                            },
+                            "flightOrderFlightPolicy": {
+                                "id": 12810,
+                                "createTime": 1474251369434,
+                                "updateTime": 1474251369434,
+                                "combinationDetailId": 14742,
+                                "supp": {
+                                    "id": 45,
+                                    "createTime": 1474253333203,
+                                    "updateTime": 1474253333203,
+                                    "name": "驴妈妈大交通",
+                                    "code": "LVMAMA_TRAFFIC",
+                                    "suppType": "FLIGHT",
+                                    "selfType": "SELF"
+                                },
+                                "suppPolicyNo": "16452033",
+                                "flightPolicyProfitRule": {
+                                    "createTime": 1474253333252,
+                                    "updateTime": 1474253333252,
+                                    "profit": {
+                                        "scale": 0,
+                                        "fixed": 0
+                                    }
+                                },
+                                "saleType": "DomesticProduct",
+                                "flightPricePolicy": {
+                                    "id": 73118073,
+                                    "createTime": 1474250654024,
+                                    "updateTime": 1474250654024,
+                                    "flightPriceBase": {
+                                        "flightNo": "MU9304",
+                                        "seatClassCode": "C",
+                                        "departureAirportCode": "CAN",
+                                        "arrivalAirportCode": "PVG",
+                                        "departureCityCode": "CAN",
+                                        "arrivalCityCode": "SHA",
+                                        "departureDate": 1476288000000,
+                                        "lvSeatClassCode": "C700",
+                                        "versionNo": 1474250652433,
+                                        "md5Sign": "BC956A1CC1B4FA3A8795B8ADBAA5F948"
+                                    },
+                                    "suppCode": "LVMAMA_TRAFFIC",
+                                    "suppPolicyNo": "16452033",
+                                    "flightTicketPriceDto": {
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "childrenFuelsurTax": 0,
+                                        "childrenAirportFee": 100,
+                                        "settlePrice": 200,
+                                        "profit": {
+                                            "scale": 0,
+                                            "fixed": 0
+                                        },
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "saleType": "DomesticProduct",
+                                    "flightNo": "MU9304",
+                                    "departureAirportCode": "CAN",
+                                    "arrivalAirportCode": "PVG",
+                                    "departureDate": 1476288000000,
+                                    "departureCityCode": "CAN",
+                                    "arrivalCityCode": "SHA",
+                                    "seatClassCode": "C",
+                                    "lvSeatClassCode": "C700",
+                                    "md5Sign": "BC956A1CC1B4FA3A8795B8ADBAA5F948",
+                                    "versionNo": 1474250652433
+                                },
+                                "policySource": "222"
+                            },
+                            "flightOrderTicketRule": {
+                                "id": 12039,
+                                "createTime": 1474251369645,
+                                "updateTime": 1474251369645,
+                                "flightOrderTicketAllowRule": {
+                                    "id": 11880,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "includeAirLines": "适用全部航线",
+                                    "includeSeatClasses": "C",
+                                    "orderTicketRuleId": 12039
+                                },
+                                "routeType": "OTHER",
+                                "seatSpecType": "NORMAL",
+                                "seatLevel": "2",
+                                "flightOrderTicketRTRule": {
+                                    "id": 12706,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "rTDesc": "取消座位时间计算手续费;按照当前舱位票面价收取退票费;起飞前2.0小时（含）以外收取当前舱位票面价的20.0%退票费,起飞前2.0小时以内及起飞后收取当前舱位票面价的30.0%退票费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40581,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12706
+                                        },
+                                        {
+                                            "id": 40582,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.3,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12706
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12039
+                                },
+                                "flightOrderTicketMTRule": {
+                                    "id": 12666,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "mTDesc": "不能改签;",
+                                    "flightOrderTicketSegmentRules": [],
+                                    "orderTicketRuleId": 12039
+                                },
+                                "flightOrderTicketCTRule": {
+                                    "id": 13108,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "cTDesc": "按照当前舱位票面价收取变更费;起飞前2.0小时（含）以外收取当前舱位票面价的10.0%改期费,起飞前2.0小时以内及起飞后收取当前舱位票面价的20.0%改期费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40583,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "ruleType": "CT",
+                                            "ruleId": 13108
+                                        },
+                                        {
+                                            "id": 40584,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "CT",
+                                            "ruleId": 13108
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12039
+                                },
+                                "combinationDetailId": 14742
+                            }
+                        },
+                        "flightOrderPNRInfo": {
+                            "id": 12152,
+                            "createTime": 1474251370964,
+                            "updateTime": 1474251370964,
+                            "orderMainId": 9808,
+                            "flightOrderFlightPolicy": {
+                                "id": 12808,
+                                "createTime": 1474253333283,
+                                "updateTime": 1474253333283
+                            },
+                            "pnr": "666666",
+                            "orderBookingStatus": "BOOKING_SUCC",
+                            "flightOrderTicketInfos": [],
+                            "flightOrderPNRRefunds": []
+                        },
+                        "flightOrderPassenger": {
+                            "id": 13328,
+                            "createTime": 1474251059681,
+                            "updateTime": 1474251059681,
+                            "orderMainId": 9808,
+                            "passengerName": "陈坤",
+                            "passengerType": "ADULT",
+                            "gender": "FEMALE",
+                            "passengerIDCardType": "ID",
+                            "passengerIDCardNo": "520402197005162446",
+                            "passengerBirthday": 11635200000,
+                            "cellphone": "15234242413",
+                            "flightOrderInsurances": [],
+                            "changedName": "陈坤"
+                        },
+                        "flightOrderTicketPrice": {
+                            "flightTicketPriceDto": {
+                                "yParPrice": 1350,
+                                "parPrice": 700,
+                                "fuelsurTax": 0,
+                                "airportFee": 100,
+                                "totalParPrice": 800,
+                                "salesPrice": 800,
+                                "salesParPrice": 700,
+                                "settlePrice": 300,
+                                "discount": 0.52,
+                                "promotion": 0,
+                                "profit": {
+                                    "scale": 0,
+                                    "fixed": 0
+                                },
+                                "profitAmount": 500,
+                                "activeStatus": {
+                                    "activeStatus": "ACTIVE",
+                                    "active": true
+                                },
+                                "active": true,
+                                "yparPrice": 1350
+                            },
+                            "yParPrice": 1350,
+                            "promotion": 0,
+                            "profit": {
+                                "scale": 0,
+                                "fixed": 0
+                            },
+                            "parPrice": 700,
+                            "active": true,
+                            "profitAmount": 500,
+                            "yparPrice": 1350,
+                            "fuelsurTax": 0,
+                            "airportFee": 100,
+                            "totalParPrice": 800,
+                            "salesPrice": 800,
+                            "settlePrice": 300,
+                            "discount": 0.52,
+                            "activeStatus": {
+                                "activeStatus": "ACTIVE",
+                                "active": true
+                            }
+                        },
+                        "detailBookingStatus": "BOOKING_SUCC",
+                        "isCanIssue": false,
+                        "isCanRTVT": true,
+                        "isCanCTMT": true
+                    },
+                    {
+                        "id": 16414,
+                        "createTime": 1474251369838,
+                        "updateTime": 1474251369838,
+                        "orderId": 13367,
+                        "combinationDetail": {
+                            "id": 14740,
+                            "createTime": 1474251364051,
+                            "updateTime": 1474251364051,
+                            "combinationId": 10096,
+                            "flightTripType": "DEPARTURE",
+                            "combinationDetailType": "NORMAL",
+                            "passengerType": "ADULT",
+                            "flightOrderFlightInfo": {
+                                "id": 13375,
+                                "createTime": 1474251364063,
+                                "updateTime": 1474251364063,
+                                "flightInfo": {
+                                    "id": 18287,
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "fees": [],
+                                    "taxs": [],
+                                    "dailys": [],
+                                    "seats": []
+                                },
+                                "flightInfoDaily": {
+                                    "id": 279669,
+                                    "createTime": 1472706770072,
+                                    "updateTime": 1474250658763,
+                                    "flightInfo": {
+                                        "id": 18287,
+                                        "createTime": 1474253333199,
+                                        "updateTime": 1474253333199,
+                                        "airplane": {
+                                            "id": 537,
+                                            "createTime": 1474253333199,
+                                            "updateTime": 1474253333199,
+                                            "minSeats": 0,
+                                            "maxSeats": 0
+                                        },
+                                        "flightAirportLine": {
+                                            "departureAirport": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "虹桥机场",
+                                                "code": "SHA",
+                                                "city": {
+                                                    "createTime": 1474253333199,
+                                                    "updateTime": 1474253333199,
+                                                    "name": "上海",
+                                                    "code": "SHA",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333199,
+                                                        "updateTime": 1474253333199,
+                                                        "name": "上海",
+                                                        "code": "SHA"
+                                                    }
+                                                },
+                                                "fullName": "上海虹桥国际机场"
+                                            },
+                                            "arrivalAirport": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "新白云机场",
+                                                "code": "CAN",
+                                                "city": {
+                                                    "createTime": 1474253333199,
+                                                    "updateTime": 1474253333199,
+                                                    "name": "广州",
+                                                    "code": "CAN",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333199,
+                                                        "updateTime": 1474253333199,
+                                                        "name": "广州",
+                                                        "code": "CAN"
+                                                    }
+                                                },
+                                                "fullName": "广州新白云国际机场"
+                                            },
+                                            "departureTermainalBuilding": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": "二号航站楼",
+                                                "code": "T2"
+                                            },
+                                            "arrivalTerminalBuilding": {
+                                                "createTime": 1474253333199,
+                                                "updateTime": 1474253333199,
+                                                "name": " ",
+                                                "code": " "
+                                            }
+                                        },
+                                        "flightStopInfo": {
+                                            "stopCount": 0,
+                                            "directType": "DIRECT"
+                                        },
+                                        "fees": [],
+                                        "taxs": [],
+                                        "dailys": [],
+                                        "seats": []
+                                    },
+                                    "timeSegmentRange": {
+                                        "departureTime": 1475969400000,
+                                        "arrivalTime": 1475977800000,
+                                        "flytime": "2:20",
+                                        "departureTimeSegment": "MORNING",
+                                        "arrivalTimeSegment": "MORNING",
+                                        "departureDate": 1475942400000
+                                    },
+                                    "dailyInventorys": []
+                                },
+                                "combinationDetailId": 14740,
+                                "carrier": {
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "name": "东方航空",
+                                    "code": "MU"
+                                },
+                                "airplane": {
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "name": "波音767-300",
+                                    "code": "763",
+                                    "airplaneType": "大",
+                                    "minSeats": 203,
+                                    "maxSeats": 290,
+                                    "airplaneCompany": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "美国波音公司",
+                                        "code": "Boeing",
+                                        "isForeign": true
+                                    }
+                                },
+                                "flightNo": "MU9301",
+                                "flightTripType": "DEPARTURE",
+                                "flightAirportLine": {
+                                    "departureAirport": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "虹桥机场",
+                                        "code": "SHA",
+                                        "city": {
+                                            "createTime": 1474253333232,
+                                            "updateTime": 1474253333232,
+                                            "name": "上海",
+                                            "code": "SHA",
+                                            "airportCity": {
+                                                "createTime": 1474253333232,
+                                                "updateTime": 1474253333232,
+                                                "name": "上海",
+                                                "code": "SHA"
+                                            }
+                                        },
+                                        "fullName": "上海虹桥国际机场"
+                                    },
+                                    "arrivalAirport": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "新白云机场",
+                                        "code": "CAN",
+                                        "city": {
+                                            "createTime": 1474253333232,
+                                            "updateTime": 1474253333232,
+                                            "name": "广州",
+                                            "code": "CAN",
+                                            "airportCity": {
+                                                "createTime": 1474253333232,
+                                                "updateTime": 1474253333232,
+                                                "name": "广州",
+                                                "code": "CAN"
+                                            }
+                                        },
+                                        "fullName": "广州新白云国际机场"
+                                    },
+                                    "departureTermainalBuilding": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "二号航站楼",
+                                        "code": "T2"
+                                    },
+                                    "arrivalTerminalBuilding": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": " ",
+                                        "code": " "
+                                    }
+                                },
+                                "flightSegmentType": "INTERNAL",
+                                "flightStopInfo": {
+                                    "stopCount": 0,
+                                    "directType": "DIRECT",
+                                    "totalStopTime": "0"
+                                },
+                                "yParPrice": 1350,
+                                "mealType": "HAVE",
+                                "timeSegmentRange": {
+                                    "departureTime": 1475969400000,
+                                    "arrivalTime": 1475977800000,
+                                    "flytime": "2:20",
+                                    "departureTimeSegment": "MORNING",
+                                    "arrivalTimeSegment": "MORNING",
+                                    "departureDate": 1475942400000
+                                },
+                                "isShare": true,
+                                "flightSeat": {
+                                    "createTime": 1474253333232,
+                                    "updateTime": 1474253333232,
+                                    "activeStatus": {
+                                        "activeStatus": "ACTIVE",
+                                        "active": true
+                                    },
+                                    "seatClass": {
+                                        "createTime": 1474253333232,
+                                        "updateTime": 1474253333232,
+                                        "name": "公务舱",
+                                        "code": "C",
+                                        "flightTicketPriceDto": {
+                                            "activeStatus": {
+                                                "activeStatus": "ACTIVE",
+                                                "active": true
+                                            },
+                                            "active": true
+                                        }
+                                    },
+                                    "seatClassType": "C",
+                                    "seatPricesDiscount": "",
+                                    "flightTicketPriceDto": {
+                                        "parPrice": 700,
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "settlePrice": 200,
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "parPrice": 700,
+                                    "fuelsurTax": 0,
+                                    "airportFee": 100,
+                                    "settlePrice": 200
+                                }
+                            },
+                            "flightOrderFlightPolicy": {
+                                "id": 12808,
+                                "createTime": 1474251364063,
+                                "updateTime": 1474251364063,
+                                "combinationDetailId": 14740,
+                                "supp": {
+                                    "id": 45,
+                                    "createTime": 1474253333203,
+                                    "updateTime": 1474253333203,
+                                    "name": "驴妈妈大交通",
+                                    "code": "LVMAMA_TRAFFIC",
+                                    "suppType": "FLIGHT",
+                                    "selfType": "SELF"
+                                },
+                                "suppPolicyNo": "16452033",
+                                "flightPolicyProfitRule": {
+                                    "createTime": 1474253333234,
+                                    "updateTime": 1474253333234,
+                                    "profit": {
+                                        "scale": 0,
+                                        "fixed": 0
+                                    }
+                                },
+                                "saleType": "DomesticProduct",
+                                "flightPricePolicy": {
+                                    "id": 73118630,
+                                    "createTime": 1474250658805,
+                                    "updateTime": 1474250658805,
+                                    "flightPriceBase": {
+                                        "flightNo": "MU9301",
+                                        "seatClassCode": "C",
+                                        "departureAirportCode": "SHA",
+                                        "arrivalAirportCode": "CAN",
+                                        "departureCityCode": "SHA",
+                                        "arrivalCityCode": "CAN",
+                                        "departureDate": 1475942400000,
+                                        "lvSeatClassCode": "C700",
+                                        "versionNo": 1474250652433,
+                                        "md5Sign": "D8ED5081AC294129EB0E3E2B3FD910B7"
+                                    },
+                                    "suppCode": "LVMAMA_TRAFFIC",
+                                    "suppPolicyNo": "16452033",
+                                    "flightTicketPriceDto": {
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "childrenFuelsurTax": 0,
+                                        "childrenAirportFee": 100,
+                                        "settlePrice": 200,
+                                        "profit": {
+                                            "scale": 0,
+                                            "fixed": 0
+                                        },
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "saleType": "DomesticProduct",
+                                    "flightNo": "MU9301",
+                                    "departureAirportCode": "SHA",
+                                    "arrivalAirportCode": "CAN",
+                                    "departureDate": 1475942400000,
+                                    "departureCityCode": "SHA",
+                                    "arrivalCityCode": "CAN",
+                                    "seatClassCode": "C",
+                                    "lvSeatClassCode": "C700",
+                                    "md5Sign": "D8ED5081AC294129EB0E3E2B3FD910B7",
+                                    "versionNo": 1474250652433
+                                },
+                                "policySource": "222"
+                            },
+                            "flightOrderTicketRule": {
+                                "id": 12038,
+                                "createTime": 1474251369341,
+                                "updateTime": 1474251369341,
+                                "flightOrderTicketAllowRule": {
+                                    "id": 11879,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "includeAirLines": "适用全部航线",
+                                    "includeSeatClasses": "C",
+                                    "orderTicketRuleId": 12038
+                                },
+                                "routeType": "OTHER",
+                                "seatSpecType": "NORMAL",
+                                "seatLevel": "2",
+                                "flightOrderTicketRTRule": {
+                                    "id": 12705,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "rTDesc": "取消座位时间计算手续费;按照当前舱位票面价收取退票费;起飞前2.0小时（含）以外收取当前舱位票面价的20.0%退票费,起飞前2.0小时以内及起飞后收取当前舱位票面价的30.0%退票费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40577,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12705
+                                        },
+                                        {
+                                            "id": 40578,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.3,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12705
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12038
+                                },
+                                "flightOrderTicketMTRule": {
+                                    "id": 12665,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "mTDesc": "不能改签;",
+                                    "flightOrderTicketSegmentRules": [],
+                                    "orderTicketRuleId": 12038
+                                },
+                                "flightOrderTicketCTRule": {
+                                    "id": 13107,
+                                    "createTime": 1474251369341,
+                                    "updateTime": 1474251369341,
+                                    "cTDesc": "按照当前舱位票面价收取变更费;起飞前2.0小时（含）以外收取当前舱位票面价的10.0%改期费,起飞前2.0小时以内及起飞后收取当前舱位票面价的20.0%改期费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40579,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "ruleType": "CT",
+                                            "ruleId": 13107
+                                        },
+                                        {
+                                            "id": 40580,
+                                            "createTime": 1474251369341,
+                                            "updateTime": 1474251369341,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "CT",
+                                            "ruleId": 13107
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12038
+                                },
+                                "combinationDetailId": 14740
+                            }
+                        },
+                        "flightOrderPNRInfo": {
+                            "id": 12152,
+                            "createTime": 1474251370964,
+                            "updateTime": 1474251370964,
+                            "orderMainId": 9808,
+                            "flightOrderFlightPolicy": {
+                                "id": 12808,
+                                "createTime": 1474253333283,
+                                "updateTime": 1474253333283
+                            },
+                            "pnr": "666666",
+                            "orderBookingStatus": "BOOKING_SUCC",
+                            "flightOrderTicketInfos": [],
+                            "flightOrderPNRRefunds": []
+                        },
+                        "flightOrderPassenger": {
+                            "id": 13329,
+                            "createTime": 1474251059681,
+                            "updateTime": 1474251059681,
+                            "orderMainId": 9808,
+                            "passengerName": "陈望",
+                            "passengerType": "ADULT",
+                            "gender": "MALE",
+                            "passengerIDCardType": "ID",
+                            "passengerIDCardNo": "110101197901010038",
+                            "passengerBirthday": 283968000000,
+                            "cellphone": "15234242413",
+                            "flightOrderInsurances": [],
+                            "changedName": "陈望"
+                        },
+                        "flightOrderTicketPrice": {
+                            "flightTicketPriceDto": {
+                                "yParPrice": 1350,
+                                "parPrice": 700,
+                                "fuelsurTax": 0,
+                                "airportFee": 100,
+                                "totalParPrice": 800,
+                                "salesPrice": 800,
+                                "salesParPrice": 700,
+                                "settlePrice": 300,
+                                "discount": 0.52,
+                                "promotion": 0,
+                                "profit": {
+                                    "scale": 0,
+                                    "fixed": 0
+                                },
+                                "profitAmount": 500,
+                                "activeStatus": {
+                                    "activeStatus": "ACTIVE",
+                                    "active": true
+                                },
+                                "active": true,
+                                "yparPrice": 1350
+                            },
+                            "yParPrice": 1350,
+                            "promotion": 0,
+                            "profit": {
+                                "scale": 0,
+                                "fixed": 0
+                            },
+                            "parPrice": 700,
+                            "active": true,
+                            "profitAmount": 500,
+                            "yparPrice": 1350,
+                            "fuelsurTax": 0,
+                            "airportFee": 100,
+                            "totalParPrice": 800,
+                            "salesPrice": 800,
+                            "settlePrice": 300,
+                            "discount": 0.52,
+                            "activeStatus": {
+                                "activeStatus": "ACTIVE",
+                                "active": true
+                            }
+                        },
+                        "detailBookingStatus": "BOOKING_SUCC",
+                        "isCanIssue": false,
+                        "isCanRTVT": true,
+                        "isCanCTMT": true
+                    },
+                    {
+                        "id": 16415,
+                        "createTime": 1474251369877,
+                        "updateTime": 1474251369877,
+                        "orderId": 13367,
+                        "combinationDetail": {
+                            "id": 14742,
+                            "createTime": 1474251369423,
+                            "updateTime": 1474251369423,
+                            "combinationId": 10096,
+                            "flightTripType": "RETURN",
+                            "combinationDetailType": "NORMAL",
+                            "passengerType": "ADULT",
+                            "flightOrderFlightInfo": {
+                                "id": 13377,
+                                "createTime": 1474251369434,
+                                "updateTime": 1474251369434,
+                                "flightInfo": {
+                                    "id": 24236,
+                                    "createTime": 1474253333250,
+                                    "updateTime": 1474253333250,
+                                    "fees": [],
+                                    "taxs": [],
+                                    "dailys": [],
+                                    "seats": []
+                                },
+                                "flightInfoDaily": {
+                                    "id": 279682,
+                                    "createTime": 1472788190410,
+                                    "updateTime": 1474250654070,
+                                    "flightInfo": {
+                                        "id": 24236,
+                                        "createTime": 1474253333212,
+                                        "updateTime": 1474253333212,
+                                        "airplane": {
+                                            "id": 518,
+                                            "createTime": 1474253333212,
+                                            "updateTime": 1474253333212,
+                                            "minSeats": 0,
+                                            "maxSeats": 0
+                                        },
+                                        "flightAirportLine": {
+                                            "departureAirport": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "新白云机场",
+                                                "code": "CAN",
+                                                "city": {
+                                                    "createTime": 1474253333212,
+                                                    "updateTime": 1474253333212,
+                                                    "name": "广州",
+                                                    "code": "CAN",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333212,
+                                                        "updateTime": 1474253333212,
+                                                        "name": "广州",
+                                                        "code": "CAN"
+                                                    }
+                                                },
+                                                "fullName": "广州新白云国际机场"
+                                            },
+                                            "arrivalAirport": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "浦东机场",
+                                                "code": "PVG",
+                                                "city": {
+                                                    "createTime": 1474253333212,
+                                                    "updateTime": 1474253333212,
+                                                    "name": "上海",
+                                                    "code": "SHA",
+                                                    "airportCity": {
+                                                        "createTime": 1474253333212,
+                                                        "updateTime": 1474253333212,
+                                                        "name": "上海",
+                                                        "code": "SHA"
+                                                    }
+                                                },
+                                                "fullName": "上海浦东国际机场"
+                                            },
+                                            "departureTermainalBuilding": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": " ",
+                                                "code": " "
+                                            },
+                                            "arrivalTerminalBuilding": {
+                                                "createTime": 1474253333212,
+                                                "updateTime": 1474253333212,
+                                                "name": "一号航站楼",
+                                                "code": "T1"
+                                            }
+                                        },
+                                        "flightStopInfo": {
+                                            "stopCount": 0,
+                                            "directType": "DIRECT"
+                                        },
+                                        "fees": [],
+                                        "taxs": [],
+                                        "dailys": [],
+                                        "seats": []
+                                    },
+                                    "timeSegmentRange": {
+                                        "departureTime": 1476315000000,
+                                        "arrivalTime": 1476323700000,
+                                        "flytime": "2:25",
+                                        "departureTimeSegment": "MORNING",
+                                        "arrivalTimeSegment": "MORNING",
+                                        "departureDate": 1476288000000
+                                    },
+                                    "dailyInventorys": []
+                                },
+                                "combinationDetailId": 14742,
+                                "carrier": {
+                                    "createTime": 1474253333251,
+                                    "updateTime": 1474253333251,
+                                    "name": "东方航空",
+                                    "code": "MU"
+                                },
+                                "airplane": {
+                                    "createTime": 1474253333251,
+                                    "updateTime": 1474253333251,
+                                    "name": "波音737-800",
+                                    "code": "73H",
+                                    "airplaneType": "中",
+                                    "minSeats": 149,
+                                    "maxSeats": 149,
+                                    "airplaneCompany": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "美国波音公司",
+                                        "code": "Boeing",
+                                        "isForeign": true
+                                    }
+                                },
+                                "flightNo": "MU9304",
+                                "flightTripType": "RETURN",
+                                "flightAirportLine": {
+                                    "departureAirport": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "新白云机场",
+                                        "code": "CAN",
+                                        "city": {
+                                            "createTime": 1474253333251,
+                                            "updateTime": 1474253333251,
+                                            "name": "广州",
+                                            "code": "CAN",
+                                            "airportCity": {
+                                                "createTime": 1474253333251,
+                                                "updateTime": 1474253333251,
+                                                "name": "广州",
+                                                "code": "CAN"
+                                            }
+                                        },
+                                        "fullName": "广州新白云国际机场"
+                                    },
+                                    "arrivalAirport": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "浦东机场",
+                                        "code": "PVG",
+                                        "city": {
+                                            "createTime": 1474253333251,
+                                            "updateTime": 1474253333251,
+                                            "name": "上海",
+                                            "code": "SHA",
+                                            "airportCity": {
+                                                "createTime": 1474253333251,
+                                                "updateTime": 1474253333251,
+                                                "name": "上海",
+                                                "code": "SHA"
+                                            }
+                                        },
+                                        "fullName": "上海浦东国际机场"
+                                    },
+                                    "departureTermainalBuilding": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": " ",
+                                        "code": " "
+                                    },
+                                    "arrivalTerminalBuilding": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "一号航站楼",
+                                        "code": "T1"
+                                    }
+                                },
+                                "flightSegmentType": "INTERNAL",
+                                "flightStopInfo": {
+                                    "stopCount": 0,
+                                    "directType": "DIRECT",
+                                    "totalStopTime": "0"
+                                },
+                                "yParPrice": 1350,
+                                "mealType": "HAVE",
+                                "timeSegmentRange": {
+                                    "departureTime": 1476315000000,
+                                    "arrivalTime": 1476323700000,
+                                    "flytime": "2:25",
+                                    "departureTimeSegment": "MORNING",
+                                    "arrivalTimeSegment": "MORNING",
+                                    "departureDate": 1476288000000
+                                },
+                                "isShare": true,
+                                "flightSeat": {
+                                    "createTime": 1474253333251,
+                                    "updateTime": 1474253333251,
+                                    "activeStatus": {
+                                        "activeStatus": "ACTIVE",
+                                        "active": true
+                                    },
+                                    "seatClass": {
+                                        "createTime": 1474253333251,
+                                        "updateTime": 1474253333251,
+                                        "name": "公务舱",
+                                        "code": "C",
+                                        "flightTicketPriceDto": {
+                                            "activeStatus": {
+                                                "activeStatus": "ACTIVE",
+                                                "active": true
+                                            },
+                                            "active": true
+                                        }
+                                    },
+                                    "seatClassType": "C",
+                                    "seatPricesDiscount": "",
+                                    "flightTicketPriceDto": {
+                                        "parPrice": 700,
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "settlePrice": 200,
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "parPrice": 700,
+                                    "fuelsurTax": 0,
+                                    "airportFee": 100,
+                                    "settlePrice": 200
+                                }
+                            },
+                            "flightOrderFlightPolicy": {
+                                "id": 12810,
+                                "createTime": 1474251369434,
+                                "updateTime": 1474251369434,
+                                "combinationDetailId": 14742,
+                                "supp": {
+                                    "id": 45,
+                                    "createTime": 1474253333203,
+                                    "updateTime": 1474253333203,
+                                    "name": "驴妈妈大交通",
+                                    "code": "LVMAMA_TRAFFIC",
+                                    "suppType": "FLIGHT",
+                                    "selfType": "SELF"
+                                },
+                                "suppPolicyNo": "16452033",
+                                "flightPolicyProfitRule": {
+                                    "createTime": 1474253333252,
+                                    "updateTime": 1474253333252,
+                                    "profit": {
+                                        "scale": 0,
+                                        "fixed": 0
+                                    }
+                                },
+                                "saleType": "DomesticProduct",
+                                "flightPricePolicy": {
+                                    "id": 73118073,
+                                    "createTime": 1474250654024,
+                                    "updateTime": 1474250654024,
+                                    "flightPriceBase": {
+                                        "flightNo": "MU9304",
+                                        "seatClassCode": "C",
+                                        "departureAirportCode": "CAN",
+                                        "arrivalAirportCode": "PVG",
+                                        "departureCityCode": "CAN",
+                                        "arrivalCityCode": "SHA",
+                                        "departureDate": 1476288000000,
+                                        "lvSeatClassCode": "C700",
+                                        "versionNo": 1474250652433,
+                                        "md5Sign": "BC956A1CC1B4FA3A8795B8ADBAA5F948"
+                                    },
+                                    "suppCode": "LVMAMA_TRAFFIC",
+                                    "suppPolicyNo": "16452033",
+                                    "flightTicketPriceDto": {
+                                        "fuelsurTax": 0,
+                                        "airportFee": 100,
+                                        "childrenFuelsurTax": 0,
+                                        "childrenAirportFee": 100,
+                                        "settlePrice": 200,
+                                        "profit": {
+                                            "scale": 0,
+                                            "fixed": 0
+                                        },
+                                        "activeStatus": {
+                                            "activeStatus": "ACTIVE",
+                                            "active": true
+                                        },
+                                        "active": true
+                                    },
+                                    "saleType": "DomesticProduct",
+                                    "flightNo": "MU9304",
+                                    "departureAirportCode": "CAN",
+                                    "arrivalAirportCode": "PVG",
+                                    "departureDate": 1476288000000,
+                                    "departureCityCode": "CAN",
+                                    "arrivalCityCode": "SHA",
+                                    "seatClassCode": "C",
+                                    "lvSeatClassCode": "C700",
+                                    "md5Sign": "BC956A1CC1B4FA3A8795B8ADBAA5F948",
+                                    "versionNo": 1474250652433
+                                },
+                                "policySource": "222"
+                            },
+                            "flightOrderTicketRule": {
+                                "id": 12039,
+                                "createTime": 1474251369645,
+                                "updateTime": 1474251369645,
+                                "flightOrderTicketAllowRule": {
+                                    "id": 11880,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "includeAirLines": "适用全部航线",
+                                    "includeSeatClasses": "C",
+                                    "orderTicketRuleId": 12039
+                                },
+                                "routeType": "OTHER",
+                                "seatSpecType": "NORMAL",
+                                "seatLevel": "2",
+                                "flightOrderTicketRTRule": {
+                                    "id": 12706,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "rTDesc": "取消座位时间计算手续费;按照当前舱位票面价收取退票费;起飞前2.0小时（含）以外收取当前舱位票面价的20.0%退票费,起飞前2.0小时以内及起飞后收取当前舱位票面价的30.0%退票费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40581,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12706
+                                        },
+                                        {
+                                            "id": 40582,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.3,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "RT",
+                                            "ruleId": 12706
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12039
+                                },
+                                "flightOrderTicketMTRule": {
+                                    "id": 12666,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "mTDesc": "不能改签;",
+                                    "flightOrderTicketSegmentRules": [],
+                                    "orderTicketRuleId": 12039
+                                },
+                                "flightOrderTicketCTRule": {
+                                    "id": 13108,
+                                    "createTime": 1474251369645,
+                                    "updateTime": 1474251369645,
+                                    "cTDesc": "按照当前舱位票面价收取变更费;起飞前2.0小时（含）以外收取当前舱位票面价的10.0%改期费,起飞前2.0小时以内及起飞后收取当前舱位票面价的20.0%改期费;",
+                                    "flightOrderTicketSegmentRules": [
+                                        {
+                                            "id": 40583,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": -999,
+                                            "ruleType": "CT",
+                                            "ruleId": 13108
+                                        },
+                                        {
+                                            "id": 40584,
+                                            "createTime": 1474251369645,
+                                            "updateTime": 1474251369645,
+                                            "minDepartureHour": -2,
+                                            "maxDepartureHour": 999,
+                                            "feeFormula": {
+                                                "scale": 0.2,
+                                                "fixed": 0
+                                            },
+                                            "ruleType": "CT",
+                                            "ruleId": 13108
+                                        }
+                                    ],
+                                    "orderTicketRuleId": 12039
+                                },
+                                "combinationDetailId": 14742
+                            }
+                        },
+                        "flightOrderPNRInfo": {
+                            "id": 12152,
+                            "createTime": 1474251370964,
+                            "updateTime": 1474251370964,
+                            "orderMainId": 9808,
+                            "flightOrderFlightPolicy": {
+                                "id": 12808,
+                                "createTime": 1474253333283,
+                                "updateTime": 1474253333283
+                            },
+                            "pnr": "666666",
+                            "orderBookingStatus": "BOOKING_SUCC",
+                            "flightOrderTicketInfos": [],
+                            "flightOrderPNRRefunds": []
+                        },
+                        "flightOrderPassenger": {
+                            "id": 13329,
+                            "createTime": 1474251059681,
+                            "updateTime": 1474251059681,
+                            "orderMainId": 9808,
+                            "passengerName": "陈望",
+                            "passengerType": "ADULT",
+                            "gender": "MALE",
+                            "passengerIDCardType": "ID",
+                            "passengerIDCardNo": "110101197901010038",
+                            "passengerBirthday": 283968000000,
+                            "cellphone": "15234242413",
+                            "flightOrderInsurances": [],
+                            "changedName": "陈望"
+                        },
+                        "flightOrderTicketPrice": {
+                            "flightTicketPriceDto": {
+                                "yParPrice": 1350,
+                                "parPrice": 700,
+                                "fuelsurTax": 0,
+                                "airportFee": 100,
+                                "totalParPrice": 800,
+                                "salesPrice": 800,
+                                "salesParPrice": 700,
+                                "settlePrice": 300,
+                                "discount": 0.52,
+                                "promotion": 0,
+                                "profit": {
+                                    "scale": 0,
+                                    "fixed": 0
+                                },
+                                "profitAmount": 500,
+                                "activeStatus": {
+                                    "activeStatus": "ACTIVE",
+                                    "active": true
+                                },
+                                "active": true,
+                                "yparPrice": 1350
+                            },
+                            "yParPrice": 1350,
+                            "promotion": 0,
+                            "profit": {
+                                "scale": 0,
+                                "fixed": 0
+                            },
+                            "parPrice": 700,
+                            "active": true,
+                            "profitAmount": 500,
+                            "yparPrice": 1350,
+                            "fuelsurTax": 0,
+                            "airportFee": 100,
+                            "totalParPrice": 800,
+                            "salesPrice": 800,
+                            "settlePrice": 300,
+                            "discount": 0.52,
+                            "activeStatus": {
+                                "activeStatus": "ACTIVE",
+                                "active": true
+                            }
+                        },
+                        "detailBookingStatus": "BOOKING_SUCC",
+                        "isCanIssue": false,
+                        "isCanRTVT": true,
+                        "isCanCTMT": true
+                    }
+                ]
+            }
+        }
+    ],
+    "pagination": {
+        "page": 1,
+        "rows": 10,
+        "records": 0,
+        "total": 1,
+        "search": false
+    },
+    "isSuccess": true,
+    "isFail": false
+}

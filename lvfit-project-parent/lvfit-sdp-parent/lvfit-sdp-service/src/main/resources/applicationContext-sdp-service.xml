@@ -34,5 +34,5 @@
 
 	<import resource="classpath*:applicationContext-sdp-service-sdp.xml" />
 	<import resource="classpath*:applicationContext-persistence-all-persistence.xml" />
-	<import resource="classpath*:applicationContext-cat.xml" />
+
 </beans>

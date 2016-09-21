@@ -51,12 +51,12 @@ public class HotelSearchPlanDto implements Serializable{
 	private String cancelFlag;
 	
 	/**最小房间数 用于前台页面下拉框控制展现*/
-	private int minPlanCounts;
+	private int minRoomCounts;
 
 	/**最大房间数 用于前台页面下拉框控制展现*/
-	private int maxPlanCounts;
+	private int maxRoomCounts;
 	/**推荐间数 */
-	private int planCounts;
+	private int roomCounts;
 
 	// 提前预定时间
 	private String aheadBookTime;
@@ -395,27 +395,27 @@ public class HotelSearchPlanDto implements Serializable{
 		this.maxQuantity = maxQuantity;
 	}
 
-	public int getMinPlanCounts() {
-		return minPlanCounts;
+	public int getMinRoomCounts() {
+		return minRoomCounts;
 	}
 
-	public void setMinPlanCounts(int minPlanCounts) {
-		this.minPlanCounts = minPlanCounts;
+	public void setMinRoomCounts(int minPlanCounts) {
+		this.minRoomCounts = minPlanCounts;
 	}
 
-	public int getMaxPlanCounts() {
-		return maxPlanCounts;
+	public int getMaxRoomCounts() {
+		return maxRoomCounts;
 	}
 
-	public void setMaxPlanCounts(int maxPlanCounts) {
-		this.maxPlanCounts = maxPlanCounts;
+	public void setMaxRoomCounts(int maxPlanCounts) {
+		this.maxRoomCounts = maxPlanCounts;
 	}
 
-	public int getPlanCounts() {
-		return planCounts;
+	public int getRoomCounts() {
+		return roomCounts;
 	}
 
-	public void setPlanCounts(int planCounts) {
-		this.planCounts = planCounts;
+	public void setRoomCounts(int roomCounts) {
+		this.roomCounts = roomCounts;
 	}
 }

@@ -78,10 +78,10 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		}
 		super.initModelData(model, request);
 		model.addAttribute("shoppingUUID", input.getShoppingUUID());
+		model.addAttribute("searchform", input);
 		try {
 			FitShoppingDto shoppingDto = dpClient.getShoppingResult(input.getRequest());
-			model.addAttribute("searchform", input);
-			if(null != shoppingDto){
+			if(null != shoppingDto) {
 				model = getShoppingInfos(model, shoppingDto);
 			}
 		} catch (ExceptionWrapper e) {

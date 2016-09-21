@@ -34,13 +34,9 @@ import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessType;
 import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.price.FitFlightTicketPriceDto;
-import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
-import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchPlanDto;
-import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchRoomDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedInsuranceDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingSelectedTicketDto;
@@ -209,7 +205,7 @@ public class CalculateAmountRequest implements Serializable {
 			hotelPriceRequest.setPricePlanId(planId);
 			hotelPriceRequest.setStartDate(checkInDate);
 			hotelPriceRequest.setEndDate(checkOutDate);
-			hotelPriceRequest.setRoomCount(BigDecimal.valueOf(planDto.getPlanCounts()));
+			hotelPriceRequest.setRoomCount(BigDecimal.valueOf(planDto.getRoomCounts()));
 			return hotelPriceRequest;
 		}
 		return null;

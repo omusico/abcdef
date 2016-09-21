@@ -48,6 +48,7 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.utils.FliMemcachedUtil;
 import com.lvmama.lvfit.sdp.core.service.FitSdpService;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShoppingService;
@@ -303,7 +304,8 @@ public class FitSdpCoreResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path(SdpClientPath.Path.CHANGE_FLIGHT)
     public Response changeFlight(FitChangeFlightRequest req) {
-        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(req.getShoppingUuid()); 
+        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(req.getShoppingUuid());  
+		MockUtil.writeJsonToFile("d:\\shopping\\"+System.currentTimeMillis()+".txt", shoppingDto);
         List<FlightSearchFlightInfoDto> selectedFlightInfos = shoppingDto.getSelectedFlightInfos();
         
         FitSdpShoppingRequest shoppingRequest = shoppingDto.getFitSdpShoppingRequest();
@@ -327,6 +329,10 @@ public class FitSdpCoreResource {
         	List<FlightSearchFlightInfoDto> tempFlightInfos = new ArrayList<FlightSearchFlightInfoDto>();
     		//如果是往返程，就按照以前的逻辑
         	if (!req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
+        		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
+		               	flightInfo.setBackOrTo(null); 
+		         }
+        		
         		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
 	                if (flightInfo.getFlightNo().equals(req.getFlightNo())) {
 	                    BigDecimal iniAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
@@ -357,6 +363,12 @@ public class FitSdpCoreResource {
         	//包机的逻辑        	
         	else{
         		int tempindex = 0;
+        		for (FlightSearchFlightInfoDto flightInfo : flightInfos) { 
+         			FlightSearchFlightInfoDto backFlight = flightInfo.getReturnFlightInfoDto().get(0); 
+                    flightInfo.setBackOrTo(null); 
+                    backFlight.setBackOrTo(null);   
+	            }
+        		
         		//循环全部的包机的航班
         		for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
         			//去程航班号匹配

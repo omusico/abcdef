@@ -385,7 +385,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dt><span class="red">*</span>证件类型：</dt>
                     <dd>
                         <select class="select js_zhengjian" name="cardType">
-                            <option value="ID_CARD" <#if passengers[i-1]?? && passengers[i-1].passengerIDCardType == 'ID'> selected="selected"  </#if> >身份证</option>
+                            <option value="ID" <#if passengers[i-1]?? && passengers[i-1].passengerIDCardType == 'ID'> selected="selected"  </#if> >身份证</option>
                             <option value="PASSPORT" <#if passengers[i-1]?? && passengers[i-1].passengerIDCardType == 'PASSPORT'> selected="selected"  </#if> >护照</option>
                             <!-- <option value="OFFICER">军官证</option>
                             <option value="SOLDIER">士兵证</option>

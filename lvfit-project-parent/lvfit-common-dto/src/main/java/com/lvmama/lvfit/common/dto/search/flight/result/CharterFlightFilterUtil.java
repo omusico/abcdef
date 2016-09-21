@@ -16,6 +16,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.lvmama.lvf.common.dto.enums.SuppSaleType;
 import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
@@ -35,6 +37,7 @@ import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
  *
  */
 public class CharterFlightFilterUtil {
+	static Logger logger = LoggerFactory.getLogger(CharterFlightFilterUtil.class);
 	/**
      * 判断是否是包机航班
      * @param fitOrderFlightDtos
@@ -97,10 +100,20 @@ public class CharterFlightFilterUtil {
 	 * 是否查询包机航班.
 	 * @return
 	 */
-	public static Boolean getQueryCharsetFlight() {
-//		return Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
-		return true;
+	public static boolean getQueryCharsetFlight() {
+		Boolean ans = Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
+		return ans.booleanValue();  
     }
+	
+	public static void main(String[] args){
+		Boolean b = Boolean.FALSE;
+		System.out.println(Boolean.valueOf(null));
+		if(b){
+			System.out.println(1);
+		}else{
+			System.out.println(2);
+		}
+	}
 	
 	/**
 	 * 过滤包机的航班信息.

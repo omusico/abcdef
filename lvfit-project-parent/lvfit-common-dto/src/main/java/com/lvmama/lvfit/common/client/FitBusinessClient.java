@@ -39,6 +39,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 import com.lvmama.lvfit.common.dto.shopping.ShoppingDbDto;
@@ -973,7 +974,7 @@ public class FitBusinessClient {
 		}
 	}
 
-	public BaseResultDto<FitSdpCityGroupDto> querySdpProductDepartureCityList(BaseQueryDto<FitSdpCityGroupDto> baseQuery) {
+	public BaseResultDto<FitSdpCityGroupDto> querySdpProductDepartureCityList(BaseQueryDto<FitSdpCityGroupRequest> baseQuery) {
 		BussinessClientPath command = BussinessClientPath.BACK_SDP_PRODUCT_DEPART_CITY;
 		String url = command.url(baseUrl);
 	    try {

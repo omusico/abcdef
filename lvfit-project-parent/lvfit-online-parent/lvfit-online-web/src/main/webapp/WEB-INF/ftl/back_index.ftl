@@ -83,8 +83,8 @@
 
 <input type="hidden" id="base_path" value="${request.contextPath}">
     <!-- banWrap -->
-    <form id="myForm" action="${request.contextPath}/search/${uuid}" method="get">
-   <!--  <input type= "hidden",name="shoppingUUID" value="${ShoppingUUID}}"/> -->
+<form id="myForm" action="${request.contextPath}/search" method="get">
+    <input type= "hidden" name="shoppingUUID" value="${uuid}"/>
     <div class="banWrap mt40">
         <!-- 搜索 -->
         <div class="fhMain">

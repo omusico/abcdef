@@ -294,23 +294,20 @@ public class FitBookingServiceImpl implements FitBookingService {
 		//构造机酒订单航班信息
         List<FitOrderFlightDto> fitOrderFlightDtos = fit.getFitOrderFlightDtos();
         for (FlightSearchFlightInfoDto searchFlight : selectShoppingDto.getFlightInfos()) {
-            for (FlightSearchSeatDto searchSeat : searchFlight.getSeats()) {
-                if (searchSeat.getSelectFlag()) {
-                	//构造机酒订单航班信息
-                	 FitOrderFlightDto fitOrderFlightDto = new FitOrderFlightDto();
-                     FitOrderFlight fitOrderFlight = new FitOrderFlight(fitOrderFlightDto); 
-                     fitOrderFlightDto = fitOrderFlight.buildFitOrderFlightDto(searchFlight, searchSeat);
-                    //置入酒订单航班信息价格信息
-                    CalculateAmountRequest calculateAmountRequest = new CalculateAmountRequest();
-                    List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
-                    selectSearchFlightInfoDtos.add(searchFlight);
-                    searchRequest.setBookingSource(fit.getBookingSource());
-                    AmountCalculatorRequest calculatorRequest = calculateAmountRequest.getFlightPriceRequest(selectSearchFlightInfoDtos, searchRequest);
-                    FitFlightAmountDto flightAmountDto =  shopingCalculateService.calculateFlightAmount(calculatorRequest);
-                    fitOrderFlightDto.setSalesPrice(flightAmountDto.getTotalSalesAmount());
-                    fitOrderFlightDtos.add(fitOrderFlightDto);
-                }
-            }
+            FlightSearchSeatDto searchSeat = searchFlight.getSeats().get(0);
+            //构造机酒订单航班信息
+            FitOrderFlightDto fitOrderFlightDto = new FitOrderFlightDto();
+            FitOrderFlight fitOrderFlight = new FitOrderFlight(fitOrderFlightDto);
+            fitOrderFlightDto = fitOrderFlight.buildFitOrderFlightDto(searchFlight, searchSeat);
+            //置入酒订单航班信息价格信息
+            CalculateAmountRequest calculateAmountRequest = new CalculateAmountRequest();
+            List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
+            selectSearchFlightInfoDtos.add(searchFlight);
+            searchRequest.setBookingSource(fit.getBookingSource());
+            AmountCalculatorRequest calculatorRequest = calculateAmountRequest.getFlightPriceRequest(selectSearchFlightInfoDtos, searchRequest);
+            FitFlightAmountDto flightAmountDto =  shopingCalculateService.calculateFlightAmount(calculatorRequest);
+            fitOrderFlightDto.setSalesPrice(flightAmountDto.getTotalSalesAmount());
+            fitOrderFlightDtos.add(fitOrderFlightDto);
        }
 	}
 

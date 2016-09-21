@@ -6,9 +6,8 @@ import com.lvmama.lvf.common.domain.DomainBaseRepository;
 import com.lvmama.lvf.common.domain.DomainByFkIdRepository;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpCityGroup;
-import com.lvmama.lvfit.business.sdpproduct.domain.FitSdpProductFeeRules;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 
 
 /**
@@ -25,9 +24,9 @@ public interface FitSdpCityGroupRepository extends DomainBaseRepository<FitSdpCi
 	
 	FitSdpCityGroupDto queryOneCityById(Long id);
 
-	List<FitSdpCityGroupDto> queryCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
+	List<FitSdpCityGroupDto> queryCityGroupByDto(BaseQueryDto<FitSdpCityGroupRequest> dto);
 
-	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto);
+	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupRequest> baseQueryDto);
 	
 	/** DomainBaseRepository.save()  */ 
 	

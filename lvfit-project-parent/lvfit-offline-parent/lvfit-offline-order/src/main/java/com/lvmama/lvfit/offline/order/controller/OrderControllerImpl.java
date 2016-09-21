@@ -2,7 +2,9 @@ package com.lvmama.lvfit.offline.order.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +13,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.OperType;
-import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.StringUtil;
 import com.lvmama.lvfit.common.client.FitBusinessClient;
@@ -40,9 +40,13 @@ import com.lvmama.lvfit.common.dto.enums.SuppVstPaymentStatus;
 import com.lvmama.lvfit.common.dto.order.FitOrderFlightDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderHotelDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
+import com.lvmama.lvfit.common.dto.order.FitOrderPassengerDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto;
+import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDetailDto;
+import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDto;
 import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.request.FitOrderQueryRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.form.order.FitOrderOpLogForm;
 import com.lvmama.lvfit.common.form.order.FitOrderQueryListForm;
 
@@ -55,13 +59,6 @@ public class OrderControllerImpl implements OrderController{
 	@Autowired
 	private FitVstClient fitVstClient;
 
-	@Value("queryCharsetFlight")
-	private String queryCharsetFlight;
-
-	public Boolean getQueryCharsetFlight() {
-		return Boolean.valueOf(
-			 CustomizedPropertyPlaceholderConfigurer.getContextProperty(queryCharsetFlight)+"");
-	}
 	
 	@Override
 	@RequestMapping("order/toOrderQuery")
@@ -134,12 +131,30 @@ public class OrderControllerImpl implements OrderController{
 			FitOrderMainDto baseResultDto = fitBusinessClient.queryOrderMainByVstOrderMainNo(vstOrderId);
 			FitSuppMainOrderDto fitSuppMainOrderDto= baseResultDto.getFitSuppMainOrderDto();
 			//如果打开了包机开关.
-			if(getQueryCharsetFlight()){
+			if(CharterFlightFilterUtil.getQueryCharsetFlight()){
 				//通过是否有“(真往返)子单关联信息 ”判断是不是包机补全信息.
 				if(CollectionUtils.isEmpty(fitSuppMainOrderDto.getSuppFlightOrderDtos())){
 					model.addAttribute("isCharter", "false"); 
 				}else{
 					model.addAttribute("isCharter", "true"); 
+					
+					//去掉一个detail里面重复的passenger的数据.
+					List<FitSuppFlightOrderDto>  allSuppFlightOrderDtos = fitSuppMainOrderDto.getSuppFlightOrderDtos();
+					Set<String> allPassengerNos = new HashSet<String>();
+					if(!CollectionUtils.isEmpty(allSuppFlightOrderDtos)){
+						for(FitSuppFlightOrderDto fitSuppFlightOrderDto:allSuppFlightOrderDtos){							 
+							 List<FitSuppFlightOrderDetailDto> details = fitSuppFlightOrderDto.getSuppFlightOrderDetailDtos();
+							 List<FitSuppFlightOrderDetailDto> newDetails = new ArrayList<FitSuppFlightOrderDetailDto>();
+							 for(FitSuppFlightOrderDetailDto detail:details){
+								 FitOrderPassengerDto p = detail.getFitOrderPassenger();
+								 if(!allPassengerNos.contains(p.getPassengerIDCardNo())){
+									 allPassengerNos.add(p.getPassengerIDCardNo());
+									 newDetails.add(detail);
+								 } 
+							 }
+							 fitSuppFlightOrderDto.setSuppFlightOrderDetailDtos(newDetails);
+						}
+					}
 				}
 			}else{
 				//未打开开关，就设置前台不显示包机的东西.
@@ -149,7 +164,7 @@ public class OrderControllerImpl implements OrderController{
 			model.addAttribute("base", baseResultDto);
 			//3：构建飞机快照信息
 			buildFlightInfo(model,baseResultDto);
-				
+			 
 			//4: 构建酒店快照信息
 			List<FitOrderHotelDto> hotels = baseResultDto.getFitOrderHotelDtos();
 			if(hotels != null && hotels.size()>0){

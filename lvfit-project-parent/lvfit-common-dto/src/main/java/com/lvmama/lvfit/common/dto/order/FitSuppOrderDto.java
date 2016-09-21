@@ -50,6 +50,19 @@ public class FitSuppOrderDto extends Entity {
      */
     private Long suppGoodsId;
 	
+    /**
+     * 标明是包机航班的子单.
+     */
+    private Boolean isCharterFlightSub;
+     
+	public Boolean getIsCharterFlightSub() {
+		return isCharterFlightSub;
+	}
+
+	public void setIsCharterFlightSub(Boolean isCharterFlightSub) {
+		this.isCharterFlightSub = isCharterFlightSub;
+	}
+
 	public Long getFitOrderId() {
 		return fitOrderId;
 	}

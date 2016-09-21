@@ -6,6 +6,7 @@ import com.lvmama.lvf.common.domain.DomainEntityBaseMapper;
 import com.lvmama.lvf.common.domain.DomainEntityByFkIdMapper;
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
+import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 
 public interface FitSdpCityGroupMapper 
 	extends 
@@ -28,11 +29,11 @@ public interface FitSdpCityGroupMapper
 	 * @param list
 	 * @return
 	 */
-	List<FitSdpCityGroupDto> queryCityGroupByDto(BaseQueryDto<FitSdpCityGroupDto> dto);
+	List<FitSdpCityGroupDto> queryCityGroupByDto(BaseQueryDto<FitSdpCityGroupRequest> dto);
 
 	/**	根据条件查询所有城市组城市总数
 	 * @param list
 	 * @return
 	 */
-	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupDto> baseQueryDto);
+	int countSdpProductDepartCityRecords(BaseQueryDto<FitSdpCityGroupRequest> baseQueryDto);
 }

@@ -5,7 +5,9 @@
 		</h3>	
 		<!-- <div class="title">航班信息</div> --> 
 		<b>航班信息</b>
-		<table id="flightInfoTable">
+		<table id="flightInfoTable"> 
+			<!-- 去程信息 -->
+			<#if isCharter=='false'><!-- 如果是普通航班. -->
 			<tr class="title">
 				<th>去/返程</th>
 				<th>乘客类型</th>
@@ -21,9 +23,6 @@
 				<td>预定状态</td>
 				<td>审核状态</td>
 			</tr>
-			
-			<!-- 去程信息 -->
-			<#if isCharter=='false'><!-- 如果是普通航班. -->
 			<#list base.fitSuppMainOrderDto.fitSuppOrderDtos  as suppOrder>
 			<#if suppOrder.categoryId == 21>
 			<#list suppOrder.suppFlightOrderDtos as flightOrder>
@@ -101,55 +100,56 @@
 			</#if>
 			</#list>
 			<#else><!-- 如果是包机. -->
+			<tr class="title"> 
+				<th>去/返程</th>
+				<!--th>乘客类型</th--> 
+				<th>机票子单号</th>
+				<th>航班日期</th>
+				<th>航班号</th>
+				<th style="width: 240px;">航段</th>
+				<th>起飞/到达时间 </th>
+				<th>飞行时长</th>
+				<th>舱位</th>
+				<th>支付金额</th>
+				<td>预定状态</td>
+				<td>审核状态</td>
+			</tr>
+				 <#assign  isfirst=1> 
 					<#list base.fitSuppMainOrderDto.fitSuppOrderDtos  as suppOrder>
-						<#if suppOrder.categoryId == 21>
-							<#list suppOrder.suppFlightOrderDtos as flightOrder>
+						<#if suppOrder.categoryId == 21 && isfirst==1 >
+							<#list base.fitSuppMainOrderDto.suppFlightOrderDtos as flightOrder>
 								<tr>	
-									<td><#if flightOrder.tripType == "DEPARTURE">去程<#else>返程</#if></td>
-									<td><#if flightOrder.passengerType == "ADULT">成人<#else>儿童</#if></td>
-									<td>
+									<td>往返程</td>
+									<!--td><#if flightOrder.passengerType == "ADULT">成人<#else>儿童</#if></td-->
+									<!--td>
 										<a target='_blank' href="http://super.lvmama.com/vst_order/order/orderManage/showChildOrderStatusManage.do?orderItemId=${suppOrder.vstOrderNo }">${suppOrder.vstOrderNo }</a>
 										&nbsp;
-									</td>
-									<td>
-										<!-- <a target='_blank' href="http://super.lvmama.com/offline-web/order/queryOrderDetailByVstOrderId/${suppOrder.vstOrderNo ? trim}/${flightOrder.flightOrderNo ? trim}">${flightOrder.flightOrderNo ? trim}</a> -->
+									</td-->
+									<td> 
 										<a target='_blank' href="http://super.lvmama.com/vst_order/order/orderManage/showChildOrderStatusManage.do?orderItemId=${suppOrder.vstOrderNo }">${flightOrder.flightOrderNo ? trim }</a>
 										&nbsp;
 									</td>
-									
-									<#if flightOrder.tripType != "NULL" && flightOrder.tripType != '' && flightOrder.tripType == "DEPARTURE">
-									<td>${flight0.departureDate }</td>
-									<td>${flight0.carrierName } <br/>${flight0.flightNo } ${flight0.airplane.code }</td>
-									<td>${flight0.departureCityName }${flight0.departureAirportName }${flight0.departureTermainalBuilding } ---
-											${flight0.arrivalCityName }${flight0.arrivalAirportName }${flight0.arrivalTerminalBuilding }
-									</td><!-- 上海虹桥机场T2—三亚凤凰国际机场T1 -->
-									<td >
-										${flight0.departureTime }<br/>${flight0.arrivalTime }&nbsp;
-									</td>
-									<td >
-										${flight0.flyTimeMins }&nbsp;
-									</td>
-									<td>
-									&nbsp;${flight0.seatClassTypeName }
-									<#if flightOrder.passengerType == "ADULT">${flight0.seatClassCode }<#else>${flight0.seatClassType }</#if>
-									</td>
-									<#else>
-									<td>${flight1.departureDate }</td>
-									<td>${flight1.carrierName } <br/>${flight1.flightNo } ${flight1.airplane.code }</td>
-									<td>${flight1.departureCityName }${flight1.departureAirportName }${flight1.departureTermainalBuilding } ---
+									 
+									<td>出发：${flight0.departureDate }<br>返回：${flight1.departureDate }</td>
+									<td>出发：${flight0.carrierName } ${flight0.flightNo } ${flight0.airplane.code }<br>
+										返回：${flight1.carrierName } ${flight1.flightNo } ${flight1.airplane.code }</td>
+									<td>${flight0.departureCityName }${flight0.departureAirportName }${flight0.departureTermainalBuilding } -
+											${flight0.arrivalCityName }${flight0.arrivalAirportName }${flight0.arrivalTerminalBuilding }<br>
+										${flight1.departureCityName }${flight1.departureAirportName }${flight1.departureTermainalBuilding } -
 											${flight1.arrivalCityName }${flight1.arrivalAirportName }${flight1.arrivalTerminalBuilding }
-									</td><!-- 上海虹桥机场T2—三亚凤凰国际机场T1 -->
+									</td> 
 									<td >
-										${flight1.departureTime }<br/>${flight1.arrivalTime }&nbsp;
+										${flight0.departureTime } - ${flight0.arrivalTime }<br>
+										${flight1.departureTime } - ${flight1.arrivalTime }
 									</td>
 									<td >
-										${flight1.flyTimeMins }&nbsp;
+										${flight0.flyTimeMins } <br>
+										${flight1.flyTimeMins } 
 									</td>
 									<td>&nbsp;${flight1.seatClassTypeName }
 									<#if flightOrder.passengerType == "ADULT">${flight1.seatClassCode }<#else>${flight1.seatClassType }</#if>
 									</td>
-									</#if>
-									
+									 
 									<td>
 									<#if flightOrder.orderAmount?? && flightOrder.orderAmount.totalSalesAmount ??>
 										${flightOrder.orderAmount.totalSalesAmount ? trim}
@@ -175,6 +175,8 @@
 									
 								</tr>
 							</#list>
+
+							<#assign  isfirst=2> 
 						</#if>
 					</#list>
 			</#if>
@@ -182,38 +184,61 @@
 		
 		<br/>
 		<b>客票信息</b>
-		<table>
-			<tr class="title">
-				<th>去/返程</th>
-				<th>乘客类型</th>
-				<th>姓名</th>
-				<th style="width:400px;">航段</th>
-				<th>票号</th>
-			</tr>
-			<#list base.fitSuppMainOrderDto.fitSuppOrderDtos  as suppOrder>
-			<#if suppOrder.categoryId == 21>
-			<#list suppOrder.suppFlightOrderDtos as flightOrder>
-			<#list flightOrder.suppFlightOrderDetailDtos as flightDetatail >
-			<tr>
-				<td><#if flightOrder.tripType == "DEPARTURE">去程<#else>返程</#if></td>
-				<td><#if flightOrder.passengerType == "ADULT">成人<#else>儿童</#if></td>
-				<td>${flightDetatail.fitOrderPassenger.passengerName} &nbsp;</td>
-				<td>
-				<#if flightOrder.tripType == "DEPARTURE">
-					${flight0.departureCityName }${flight0.departureAirportName }${flight0.departureTermainalBuilding } ---
-					${flight0.arrivalCityName }${flight0.arrivalAirportName }${flight0.arrivalTerminalBuilding }&nbsp;
-				<#else>
-					${flight1.departureCityName }${flight1.departureAirportName }${flight1.departureTermainalBuilding } ---
-					${flight1.arrivalCityName }${flight1.arrivalAirportName }${flight1.arrivalTerminalBuilding }&nbsp;
+		<table> 
+			<#if isCharter=='false'>
+				<tr class="title">
+					<th>去/返程</th>
+					<th>乘客类型</th>
+					<th>姓名</th>
+					<th style="width:400px;">航段</th>
+					<th>票号</th>
+				</tr>
+				<#list base.fitSuppMainOrderDto.fitSuppOrderDtos  as suppOrder>
+				<#if suppOrder.categoryId == 21>
+				<#list suppOrder.suppFlightOrderDtos as flightOrder>
+				<#list flightOrder.suppFlightOrderDetailDtos as flightDetatail >
+				<tr>
+					<td><#if flightOrder.tripType == "DEPARTURE">去程<#else>返程</#if></td>
+					<td><#if flightOrder.passengerType == "ADULT">成人<#else>儿童</#if></td>
+					<td>${flightDetatail.fitOrderPassenger.passengerName} &nbsp;</td>
+					<td>
+					<#if flightOrder.tripType == "DEPARTURE">
+						${flight0.departureCityName }${flight0.departureAirportName }${flight0.departureTermainalBuilding } ---
+						${flight0.arrivalCityName }${flight0.arrivalAirportName }${flight0.arrivalTerminalBuilding }&nbsp;
+					<#else>
+						${flight1.departureCityName }${flight1.departureAirportName }${flight1.departureTermainalBuilding } ---
+						${flight1.arrivalCityName }${flight1.arrivalAirportName }${flight1.arrivalTerminalBuilding }&nbsp;
+					</#if>
+					</td>
+					<td>${flightDetatail.fitSuppOrderTicketInfoDto.ticketNo}</td>
+				</tr>
+				</#list>
+				</#list>
 				</#if>
-				</td>
-				<td>${flightDetatail.fitSuppOrderTicketInfoDto.ticketNo}</td>
-			</tr>
-			</#list>
-			</#list>
+				</#list>
+			<#else> 
+				<tr class="title">  
+					<th>乘客类型</th>
+					<th>姓名</th>
+					<th style="width:400px;">航段</th>
+					<th>票号</th>
+				</tr>
+					<#list base.fitSuppMainOrderDto.suppFlightOrderDtos as flightOrder>
+						<#list flightOrder.suppFlightOrderDetailDtos as flightDetatail >
+						<tr>  
+							<td><#if flightDetatail.fitOrderPassenger.passengerType == "ADULT">成人<#else>儿童</#if></td>
+							<td>${flightDetatail.fitOrderPassenger.passengerName} &nbsp;</td>
+							<td> 
+								去程：${flight0.departureCityName }${flight0.departureAirportName }${flight0.departureTermainalBuilding } -
+								${flight0.arrivalCityName }${flight0.arrivalAirportName }${flight0.arrivalTerminalBuilding }<br>
+							 	返程：${flight1.departureCityName }${flight1.departureAirportName }${flight1.departureTermainalBuilding } -
+								${flight1.arrivalCityName }${flight1.arrivalAirportName }${flight1.arrivalTerminalBuilding }&nbsp; 
+							</td>
+							<td>${flightDetatail.fitSuppOrderTicketInfoDto.ticketNo}</td>
+						</tr>
+						</#list>
+					</#list>  
 			</#if>
-			</#list>
-			
 		</table>
 		
 		<!-- 酒店信息 -->

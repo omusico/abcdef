@@ -46,11 +46,10 @@
         cmCreatePageviewTag("机酒频道首页_<fh-select-flight>", "FlightHotel", null, null,"-_--_--_--_--_-路径页面");
     </script>
     <script type="text/javascript" src="http://s2.lvjs.com.cn/js/common/losc.js"></script>
-	<#if getSuperCommonHeader ??>
-		<!--去掉搜索框-->
-		${getSuperCommonHeader()}
-	</#if>
-
+    <#if getSuperCommonHeader ??>
+    <!--去掉搜索框-->
+    ${getSuperCommonHeader()}
+    </#if>
 
 	<#if isBackBooking=='true'>
 	<br>
@@ -67,6 +66,7 @@
             <input type="hidden" name="flightTripType" id="flightTripType" value="${req.flightType}">
             <input type="hidden" name="sortField" id="sortField" value="DIFF_PRICE">
             <input type="hidden" name="sortType" id="sortType" value="ASC">
+            <input type="hidden" name="flightNo" id="flightNo" value="${flightInfos[0].flightNo}">
 			<#if req.flightType == "DEPARTURE">
             	<!-- filter-head 去程头部 添加hide类可以隐藏-->
 	            <div class="filter-head yh f18 c9 ">
@@ -92,7 +92,7 @@
                     <dd class="kind_buxian active"><a class="search_arrow_1" href="javascript:;" data-code="">不限</a></dd>
                     <#list departureTimeSegment as departureTime>
                     	<dd data-type="depTimeSegment" data-code="${departureTime.fieldValue}">
-                    		<a href="javascript:;" class="screen_condition"><i class="ph_icon hotel_ck"></i>${departureTime.fieldDesc}</a>
+                    		<a href="javascript:;" class="screen_condition"><i class="ph_icon hotel_ck"></i>${departureTime.fieldDesc?replace(",", "(") + ")"}</a>
                     	</dd>
 					</#list>
                 </dl>
@@ -104,7 +104,7 @@
                     <dd class="kind_buxian active"><a class="search_arrow_1" href="javascript:;" data-code="">不限</a></dd>
                     <#list arrivalTimeSegment as arrivalTime>
                     	<dd data-type="arrivalTimeSegment" data-code="${arrivalTime.fieldValue}">
-							<a href="javascript:;" class="screen_condition"><i class="ph_icon hotel_ck"></i>${arrivalTime.fieldDesc}</a>
+							<a href="javascript:;" class="screen_condition"><i class="ph_icon hotel_ck"></i>${arrivalTime.fieldDesc?replace(",", "(") + ")"}</a>
 						</dd>
                    </#list>
                 </dl>
@@ -236,6 +236,7 @@
                 var reloadUrl = "${request.contextPath}/search?shoppingUUID=" + uuid + "&tripType=" + tripType + "&departureCityCode=" + departureCityCode + "&arrivalCityCode=" + arrivalCityCode + "&departureTime=" + flightStartDate + "&returnTime=" + flightEndDate + "&cityCode=" + cityCode + "&checkInTime=" + hotelStartDate + "&checkOutTime=" + hotelEndDate + "&adultsCount=" + adultsCount + "&childCount=" + childCount;
                 $('#reloadUrl').val(reloadUrl);
             }
+            initChooseBtn();
         });
 
         //点击返回上一页
@@ -402,6 +403,7 @@
                     $(".plane-type").live("mouseout", hidePlanInfo);
                     initFlightTab();
                     countFlight();
+                    initChooseBtn();
                 },
                 error : function () {
                     handelError();
@@ -511,6 +513,17 @@
         $(".fh-return-btn").live("click", function () {
             window.location.href = $('#reloadUrl').val();
         });
+
+        function initChooseBtn() {
+            var flightNo = $("#flightNo").val();
+            $(".flight-detail").find(".seat-info:eq(0)").each(function () {
+                if ($(this).data("flightno") == flightNo) {
+                    $(this).find(".chooseBtnDiv").html("<a href=\"javascript:void(0);\" class=\"fh-selected\">已选<i class=\"icon icon-selected\"></i></a>");
+                } else {
+                    $(this).find(".chooseBtnDiv").html("<a href=\"javascript:void(0);\" class=\"btn btn-sm btn-orange fh-select-btn\">选择</a>");
+                }
+            });
+        }
     </script>
 </body>
 
