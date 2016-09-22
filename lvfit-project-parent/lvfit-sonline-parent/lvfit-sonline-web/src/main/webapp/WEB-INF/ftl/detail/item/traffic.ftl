@@ -18,9 +18,9 @@
     <span class="traffic_tab_tips"><i class="tip-icon tip-icon-warning"></i>所有航班起抵时间均为当地时间（24小时制）</span>
     <!-- 自由组合   开始 -->
 	<#if queryCharsetFlightFlag=='true'>
-		<#if charterFlightInfos?size<1 >
+		<#if charterSize==0 >
 		    <ul class="traffic_tab"> 
-			  <li>自由组合111</li> 
+			  <li class="active">自由组合</li> 
 			</ul>	 
 			<div class="traffic_type" style="display:block;">
 			   <#include "detail/item/traffic_free_pop.ftl">
@@ -28,7 +28,7 @@
 		<#else>
 			<ul class="traffic_tab">
 				<li class="active">往返推荐</li>
-				<li>自由组合222</li>
+				<li>自由组合</li>
 			</ul>	
 			<div class="traffic_type" style="display:block;">
 			   <#include "detail/item/traffic_recommend_pop.ftl">

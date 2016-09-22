@@ -8,9 +8,9 @@
 			    <div class="right-container clearfix spp" go-flightno="${arvFlightInfo.flightNo}" back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}"
 			        <#if baoji!='DomesticProduct'> style="display:none" <#else> <#if arvFlightInfo_index != 0> style="display:none"</#if></#if>    tag='charsetflight'>
 			        <div class="type gray">
-			                    <div class="clearfix">
-			                            <p id="toback" class="shadow">往返</p>
-			                    </div> 
+								 <div class="clearfix">
+										<p id="toback" class="shadow">往返</p>
+								</div> 
 			                    <dl class="ldt_tcil_content clearfix">
 			                        <dt>
 			                            <em>出发：</em>
@@ -54,7 +54,9 @@
 			                                <div class="ldt_tcici_fromto">
 			                                    <p>${arvFlightInfo.departureAirportName}
 			                                    </p>
-			                                    <p></p>
+			                                    <p>
+			                                    ${arvFlightInfo.arrivalAirportName}
+			                                    </p>
 			                                </div>
 			                                <div class="ldt_tcici_time">
 			                                        ${arvFlightInfo.flyTime}
@@ -79,7 +81,7 @@
 			                                <div class="ldt_tcici_fromto">
 			                                    <p>${arvFlightInfo.returnFlightInfoDto[0].departureAirportName}
 			                                    </p>
-			                                    <p></p>
+			                                    <p>${arvFlightInfo.returnFlightInfoDto[0].arrivalAirportName}</p>
 			                                </div>
 			                                <div class="ldt_tcici_time">
 			                                        ${arvFlightInfo.returnFlightInfoDto[0].flyTime}

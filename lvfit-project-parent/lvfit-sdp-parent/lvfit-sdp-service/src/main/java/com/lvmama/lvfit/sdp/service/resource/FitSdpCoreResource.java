@@ -46,9 +46,8 @@ import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpSelectInsuranceDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpSelectOtherTicketDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.FitSdpShoppingDto;
 import com.lvmama.lvfit.common.dto.sdp.shopping.request.FitSdpShoppingRequest;
+import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
-import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.utils.FliMemcachedUtil;
 import com.lvmama.lvfit.sdp.core.service.FitSdpService;
 import com.lvmama.lvfit.sdp.shopping.FitSdpShoppingService;
@@ -304,17 +303,15 @@ public class FitSdpCoreResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path(SdpClientPath.Path.CHANGE_FLIGHT)
     public Response changeFlight(FitChangeFlightRequest req) {
-        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(req.getShoppingUuid());  
-		MockUtil.writeJsonToFile("d:\\shopping\\"+System.currentTimeMillis()+".txt", shoppingDto);
+        FitSdpShoppingDto shoppingDto = fitSdpShoppingService.getFitSdpShoppingDto(req.getShoppingUuid());   
         List<FlightSearchFlightInfoDto> selectedFlightInfos = shoppingDto.getSelectedFlightInfos();
-        
+       
         FitSdpShoppingRequest shoppingRequest = shoppingDto.getFitSdpShoppingRequest();
         // 基准价=成人数*成人价+儿童数*儿童价
         BigDecimal adultQuantity = BigDecimal.valueOf(shoppingRequest.getFitPassengerRequest().getAdultCount());
         BigDecimal childQuantity = BigDecimal.valueOf(shoppingRequest.getFitPassengerRequest().getChildCount());
         Long quantity = shoppingRequest.getQuantity();
-        BigDecimal basePrice = BigDecimal.ZERO;
-        
+        BigDecimal basePrice = BigDecimal.ZERO; 
         List<FlightSearchFlightInfoDto> flightInfos = null;
         if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
             flightInfos = shoppingDto.getDepFlightInfos();
@@ -325,6 +322,12 @@ public class FitSdpCoreResource {
         if (req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
             flightInfos = shoppingDto.getCharterFlightInfos();
         }
+        //选择的最低去加，去的儿童价，返回价，返回儿童价
+        BigDecimal goBase = BigDecimal.ZERO;
+        BigDecimal goChildBase = BigDecimal.ZERO;
+        BigDecimal backBase = BigDecimal.ZERO;
+        BigDecimal backChildBase = BigDecimal.ZERO;
+        
         if (CollectionUtils.isNotEmpty(flightInfos)) {
         	List<FlightSearchFlightInfoDto> tempFlightInfos = new ArrayList<FlightSearchFlightInfoDto>();
     		//如果是往返程，就按照以前的逻辑
@@ -341,22 +344,36 @@ public class FitSdpCoreResource {
 	                    basePrice = iniAdultPrice.multiply(adultQuantity).add(iniChildPrice.multiply(childQuantity));
 	                    if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
 	                    	flightInfo.setBackOrTo(FlightTripType.DEPARTURE.name());
+	                    	goBase = iniAdultPrice;
+	                    	goChildBase = iniChildPrice;
+	                    	
+	                    	FlightSearchFlightInfoDto backFlight = selectedFlightInfos.get(1);
+	                    	backBase = backFlight.getSeats().get(0).getSalesPrice();
+	                    	backChildBase = backFlight.getSeats().get(0).getChildrenPrice();
+	                    	
 	                        selectedFlightInfos.set(0, flightInfo);
 	                    }
 	                    if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
 	                    	flightInfo.setBackOrTo(FlightTripType.RETURN.name());
+	                    	backBase = iniAdultPrice;
+	                    	backChildBase = iniChildPrice;
+	                    	
+	                    	FlightSearchFlightInfoDto goFlight = selectedFlightInfos.get(0);
+	                    	goBase = goFlight.getSeats().get(0).getSalesPrice();
+	                    	goChildBase = goFlight.getSeats().get(0).getChildrenPrice();
+	                    	
 	                        selectedFlightInfos.set(1, flightInfo);
 	                    }
 	                    break;
 	                }
 	            }
         		 
-	            for (FlightSearchFlightInfoDto searchFlight : flightInfos) {
-	                for (FlightSearchSeatDto seat : searchFlight.getSeats()) {
-	                    BigDecimal curPrice = seat.getSalesPrice().multiply(adultQuantity).add(seat.getChildrenPrice().multiply(childQuantity));
-	                    seat.setDifferentPrice((curPrice.subtract(basePrice)).multiply(BigDecimal.valueOf(quantity)));
-	                }
-	            }
+//	            for (FlightSearchFlightInfoDto searchFlight : flightInfos) {
+//	                for (FlightSearchSeatDto seat : searchFlight.getSeats()) {
+//	                    BigDecimal curPrice = seat.getSalesPrice().multiply(adultQuantity).add(seat.getChildrenPrice().multiply(childQuantity));
+//	                    seat.setDifferentPrice((curPrice.subtract(basePrice)).multiply(BigDecimal.valueOf(quantity)));
+//	                }
+//	            }
 	            
 	            clearSelectFlight(shoppingDto,true); 
         	}
@@ -388,6 +405,12 @@ public class FitSdpCoreResource {
 		                    selectedFlightInfos.set(0, flightInfo); 
 		                    selectedFlightInfos.set(1, backFlight);
 		                    
+		                    goBase = goAdultPrice;
+	                    	goChildBase = goAdultPrice;
+	                    	 
+	                    	backBase = backAdultPrice;
+	                    	backChildBase = backAdultPrice;
+	                    	
 		                    //将当前的选择的包机航班放在新的列表中的第一个位置.
 		                    tempFlightInfos.add(flightInfo);
 		                    //在老的列表中去除当前选择的航班
@@ -399,18 +422,18 @@ public class FitSdpCoreResource {
 	            }
         		
         		tempFlightInfos.addAll(flightInfos);
-        		//重新计算包机的价格差
-        		for (FlightSearchFlightInfoDto flightInfo : tempFlightInfos) {
-        			 //去程价格
-        			 BigDecimal goAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
-        			 FlightSearchFlightInfoDto backFlight = flightInfo.getReturnFlightInfoDto().get(0);
-        			 //返程价格
-	                 BigDecimal backAdultPrice = backFlight.getSeats().get(0).getSalesPrice();
-	                 BigDecimal allAdultPrice = goAdultPrice.add(backAdultPrice);
-	                 //当前选择包机的价格
-	                 BigDecimal thisBasePrice = allAdultPrice.multiply(adultQuantity).add(allAdultPrice.multiply(childQuantity)); 
-	                 flightInfo.getSeats().get(0).setDifferentPrice((thisBasePrice.subtract(basePrice)).multiply(BigDecimal.valueOf(quantity))); 
-	            }
+//        		//重新计算包机的价格差
+//        		for (FlightSearchFlightInfoDto flightInfo : tempFlightInfos) {
+//        			 //去程价格
+//        			 BigDecimal goAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
+//        			 FlightSearchFlightInfoDto backFlight = flightInfo.getReturnFlightInfoDto().get(0);
+//        			 //返程价格
+//	                 BigDecimal backAdultPrice = backFlight.getSeats().get(0).getSalesPrice();
+//	                 BigDecimal allAdultPrice = goAdultPrice.add(backAdultPrice);
+//	                 //当前选择包机的价格
+//	                 BigDecimal thisBasePrice = allAdultPrice.multiply(adultQuantity).add(allAdultPrice.multiply(childQuantity)); 
+//	                 flightInfo.getSeats().get(0).setDifferentPrice((thisBasePrice.subtract(basePrice)).multiply(BigDecimal.valueOf(quantity))); 
+//	            }
         		clearSelectFlight(shoppingDto,false);
         	}
             if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
@@ -422,7 +445,14 @@ public class FitSdpCoreResource {
             if (req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
                 shoppingDto.setCharterFlightInfos(tempFlightInfos);
             }
-            shoppingDto.setSelectedFlightInfos(selectedFlightInfos);
+             
+			CharterFlightFilterUtil.refreshDiff(
+					shoppingDto.getCharterFlightInfos(),
+					shoppingDto.getDepFlightInfos(),
+					shoppingDto.getArvFlightInfos(), goBase, goChildBase,
+					backBase, backChildBase, adultQuantity.longValue(),
+					childQuantity.longValue());
+			shoppingDto.setSelectedFlightInfos(selectedFlightInfos);
         }
         fitSdpShoppingService.putShoppingCache(req.getShoppingUuid(), shoppingDto); 
         return Response.ok(flightInfos).build();

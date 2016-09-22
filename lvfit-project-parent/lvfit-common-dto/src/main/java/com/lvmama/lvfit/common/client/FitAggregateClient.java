@@ -43,6 +43,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.result.FitSdpGroupCalendarSearchR
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelSearchResult;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
@@ -79,6 +80,7 @@ public class FitAggregateClient {
     	try
     	{
     		String result = restClient.post(url, String.class, request);
+    		MockUtil.writeJsonToFile("d:\\flightrequest\\"+System.currentTimeMillis()+".txt", result);
     		if(StringUtils.isNotBlank(result))
     		{
     			ObjectMapper objectMapper = JSONMapper.getInstance();

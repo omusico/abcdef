@@ -5,12 +5,12 @@
     </div>
 </#if>
 <#list charterFlightInfos as arvFlightInfo> 
-        <div class="traffic_list <#if saleType=='DomesticProduct'><#if arvFlightInfo_index==0>active</#if></#if>">
+        <div class="traffic_list <#if saleType=='DomesticProduct'><#if arvFlightInfo_index==0>active</#if></#if>"  data-flightno="${arvFlightInfo.flightNo}"  data-backflightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">
             <!-- 去程航班 -->
             <ul class="info_ul">
                 <li class="info_li1"><i class="line_icon_qu">去</i></li>
                 <li class="info_li2">
-                    <i class="fh-icon-ac fh-icon-ac- ${arvFlightInfo.carrierCode}"></i>
+                    <i class="fh-icon-ac fh-icon-ac-${arvFlightInfo.carrierCode}"></i>
                      ${arvFlightInfo.carrierName}
                     <p class="fh_info_p"> ${arvFlightInfo.flightNo}<span class="fh_type" data-code="${arvFlightInfo.airplane.code}" data-name="${arvFlightInfo.airplane.name}"
                         data-type="${arvFlightInfo.airplane.airplaneType}" data-min="${arvFlightInfo.airplane.minSeats}"
@@ -21,7 +21,12 @@
                     <p class="fh_ap_name"><em>${arvFlightInfo.departureAirportName}</em><span>${arvFlightInfo.departureTerminalBuilding}</span></p>
                 </li>
                 <li class="info_li4">
-                    <p class="jingting">经停<i></i><i class="fr"></i></p>
+                    <p class="jingting">
+                    <#if arvFlightInfo.stopCount gt 0>
+                    经停
+                    </#if>
+                    <i></i><i class="fr"></i>
+                    </p> 
                 </li>
                 <li class="info_li5">
                     <p class="fh_time">${arvFlightInfo.arrivalTime?substring(11, 16)}
@@ -53,7 +58,12 @@
                     <p class="fh_ap_name"><em>${arvFlightInfo.returnFlightInfoDto[0].departureAirportName}</em><span>${arvFlightInfo.returnFlightInfoDto[0].departureTerminalBuilding}</span></p> 
                 </li>
                 <li class="info_li4">
-                    <p class="jingting">经停<i></i><i class="fr"></i></p>
+					 <p class="jingting">
+                    <#if arvFlightInfo.returnFlightInfoDto[0].stopCount gt 0>
+                    经停
+                    </#if>
+                    <i></i><i class="fr"></i>
+                    </p>  
                 </li>
                 <li class="info_li5">
                     <p class="fh_time">${arvFlightInfo.returnFlightInfoDto[0].arrivalTime?substring(11, 16)}
@@ -76,16 +86,15 @@
             <div class="info_li9 fh_btn">
             <#if saleType=='DomesticProduct'>
                 <span class="btn btn-small btn-orange js_fh_select" go-flightno="${arvFlightInfo.flightNo}" 
-                 <#if arvFlightInfo_index==0>style="display:none"</#if>  back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择11</span>
-                <span class="btn btn-small btn-dis"  <#if arvFlightInfo_index==0>style="display:inline-block"</#if>  >已选1</span>
+                 <#if arvFlightInfo_index==0>style="display:none"</#if>  back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择</span>
+                <span class="btn btn-small btn-dis"  <#if arvFlightInfo_index==0>style="display:inline-block"</#if>  >已选</span>
             <#else>
                 <span class="btn btn-small btn-orange js_fh_select" go-flightno="${arvFlightInfo.flightNo}" 
-                   back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择22</span>
-                <span class="btn btn-small btn-dis"   style="display:none"  >已选22</span>
+                   back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择</span>
+                <span class="btn btn-small btn-dis"   style="display:none"  >已选</span>
             </#if>
             </div>
-            <!-- 已选打钩icon -->
-        </#if>
+            <!-- 已选打钩icon --> 
             <span class="fh_btn_gou"></span>
         </div>  
     </#list> 

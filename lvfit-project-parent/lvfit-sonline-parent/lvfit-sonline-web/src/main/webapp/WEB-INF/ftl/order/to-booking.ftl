@@ -668,6 +668,8 @@
 <script>
 var basePath = "${request.contextPath}";
 var shopingUUID = "${shoppingUUID}";
+var productId="${productId}";
+var bizCategoryId = "${bizCategoryId}";
 
 $(function(){
     //获取价格

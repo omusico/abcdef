@@ -71,7 +71,7 @@ function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
 	 data.birthday = $(".js_copy_info").find(":hidden[name='birthday']").val();
 	
 	 data.visitTime = $("#departureTime").html();
-	 data.shoppingUUID = shopingUUID; 
+	 data.shoppingUUID = shopingUUID;
 	 data.totalPrice = totalSalesAmount;
 	 data.productName = $("#fit_productName span").html().trim();
 	
@@ -493,8 +493,8 @@ function getBookingNotice(){
      dataType:"json",
      url:basePath+"/getBookingNotice",
      data:{
-         productId:'${productId}',
-         bizCategoryId:'${bizCategoryId}'
+         productId:productId,
+         bizCategoryId:bizCategoryId
      },
      success:function(obj){
          $("#bookingNotice").html(obj.bookingNotice);
@@ -516,7 +516,7 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 	if(bizCategoryId!=18){
 	    pageType="group";
 	}
-	var _ulr = basePath+"/"+pageType+"-"+"${productId}";
+	var _ulr = basePath+"/"+pageType+"-"+productId;
 	 window.location.href=_ulr;
 });
 

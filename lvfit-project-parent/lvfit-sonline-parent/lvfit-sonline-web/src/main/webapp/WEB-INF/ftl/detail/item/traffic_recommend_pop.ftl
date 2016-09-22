@@ -20,12 +20,12 @@
 		<p class="suggestion">您可以：<a class="nr-close-all" href="javascript:;">清空筛选条件</a></p>
 	</div>
 	<#list charterFlightInfos as arvFlightInfo> 
-		<div class="traffic_list">
+		<div class="traffic_list" data-flightno="${arvFlightInfo.flightNo}"  data-backflightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">
 			<!-- 去程航班 -->
 			<ul class="info_ul">
 				<li class="info_li1"><i class="line_icon_qu">去</i></li>
 				<li class="info_li2">
-					<i class="fh-icon-ac fh-icon-ac- ${arvFlightInfo.carrierCode}"></i>
+					<i class="fh-icon-ac fh-icon-ac-${arvFlightInfo.carrierCode}"></i>
 					 ${arvFlightInfo.carrierName}
 					<p class="fh_info_p"> ${arvFlightInfo.flightNo}<span class="fh_type" data-code="${arvFlightInfo.airplane.code}" data-name="${arvFlightInfo.airplane.name}"
                         data-type="${arvFlightInfo.airplane.airplaneType}" data-min="${arvFlightInfo.airplane.minSeats}"

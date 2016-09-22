@@ -311,6 +311,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 		
 		respForm.setSumArvFlightInfos(arvs);
 		respForm.setSumDepFlightInfos(deps);
+		 
 		return respForm;
 	}
 	 
@@ -365,6 +366,11 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    
 	    //设置是否使用包机的开关
 	    model.addAttribute("queryCharsetFlightFlag", CharterFlightFilterUtil.getQueryCharsetFlight());
+	    if(respForm.getCharterFlightInfos()!=null){
+	    	model.addAttribute("charterSize", respForm.getCharterFlightInfos().size());
+	    }
+	    else
+	    	model.addAttribute("charterSize", 0);
 	    
 		return "detail/product_goods";
 	}
@@ -638,7 +644,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
         }
         
     }
-	@RequestMapping(value="sequenceFlight",method={RequestMethod.POST})
+	@RequestMapping(value="sequenceFlight",method={RequestMethod.POST,RequestMethod.GET})
 	public String sequenceFlight(Model model, FitSequenceFlightRequest req){
 		try {  
 			FitSdpShoppingDto SdpShoppingDto = sdpClient.getShoppingByUUID(req.getShoppingUuid());

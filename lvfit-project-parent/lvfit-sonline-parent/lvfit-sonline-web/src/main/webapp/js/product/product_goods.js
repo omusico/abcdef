@@ -129,8 +129,7 @@ function genRequestParam() {
     if($("#packCharterFlightFlag").val()=='Y')
         $("#packCharterFlightFlag").val('TRUE');
     obj.isCharterFlightFirst = $("#packCharterFlightFlag").val();
-    obj.depCityCode = $("#depCityCode").val();
-    console.log("product_goods.js------"+$("#arvCityCode").val());
+    obj.depCityCode = $("#depCityCode").val(); 
     obj.arvCityCode = $("#arvCityCode").val();
     if ($("#preorder-quantity").val() === undefined) {
         obj.quantity = 1;
@@ -581,12 +580,10 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                 return;
             }
         });
-        $("#selectDepFlightNo").val(flightNo); 
-        console.log("goods.js//////selectSaleType="+$("#selectSaleType").val());
+        $("#selectDepFlightNo").val(flightNo);  
         if($("#selectSaleType").val()=='DomesticProduct'){
             $("#selectArvFlightNo").val('');  
-            $("#selectSaleType").val('common');
-            return ;
+            $("#selectSaleType").val('common'); 
         }
         $("#selectSaleType").val('common');
     }
@@ -600,12 +597,10 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                 return;
             }
         });
-        $("#selectArvFlightNo").val(flightNo);
-        console.log("goods.js//////selectSaleType="+$("#selectSaleType").val());
+        $("#selectArvFlightNo").val(flightNo); 
         if($("#selectSaleType").val()=='DomesticProduct'){
             $("#selectDepFlightNo").val('');  
-            $("#selectSaleType").val('common');
-            return ;
+            $("#selectSaleType").val('common'); 
         }
         $("#selectSaleType").val('common');
     }
@@ -619,29 +614,44 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
             charsetBackflightNo : backFlightNo,
             flightTripType : tripType
         },
-        success: function(data) { 
+        success: function(data) {  
+            var selectSaleType_v = $('#selectSaleType').val();
             if (tripType === "DEPARTURE") {
                 $("#dep_traffic_list").html(data);
                 var $dd = $("#dep_traffic_list .traffic_list");
-                $("#dep_traffic_list .traffic_list").each(function(){
-                    if ($(this).data("flightno") === flightNo) {
-                        $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
-                        $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
-                        $("#dep_traffic_list").prepend( $(this) );
-                    }
-                });
+                if(selectSaleType_v!='DomesticProduct'){ 
+                    $("#dep_traffic_list .traffic_list").each(function(){
+                        if ($(this).data("flightno") === flightNo) {
+                            $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
+                            $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                            $("#dep_traffic_list").prepend( $(this) );
+                        }
+                    });
+                }
             }
             if (tripType === "RETURN") {
                 $("#arv_traffic_list").html(data);
-                $("#arv_traffic_list .traffic_list").each(function(){
-                    if ($(this).data("flightno") === flightNo) {
-                        $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
-                        $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
-                        $("#arv_traffic_list").prepend( $(this) );
-                    }
-                });
+                 if(selectSaleType_v!='DomesticProduct'){ 
+                    $("#arv_traffic_list .traffic_list").each(function(){
+                        if ($(this).data("flightno") === flightNo) {
+                            $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
+                            $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                            $("#arv_traffic_list").prepend( $(this) );
+                        }
+                    });
+                }
             }
             if (tripType === "CHARTER") {
+                $("#charset_flight_list").html(data);
+                if(selectSaleType_v =='DomesticProduct'){ 
+                    $("#charset_flight_list .traffic_list").each(function(){
+                        if ($(this).data("flightno") === flightNo) {
+                            $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
+                            $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                            $("#charset_flight_list").prepend( $(this) );
+                        }
+                    });
+                }
             }
             initPriceInBaseInfo();
         }
@@ -737,40 +747,41 @@ $("#backFliBtn").live("click", function(e) {
 function initSortType() {
     window.sortFlight={};
     var toSortRuleType = $("#toSortRuleType").val();
-    var backSortRuleType = $("#backSortRuleType").val();
+    var backSortRuleType = $("#backSortRuleType").val(); 
     if (toSortRuleType === "SORT_BY_DEPTIME_ASC") {
         sortFlight.depTimeSortType = "ASC";
         sortFlight.depPriceSortType= "ASC";
         sequenceFlight("departureTime", "DEPARTURE", "ASC");
         sequenceFlight("departureTime", "CHARTER", "ASC");
-        $("#dep_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active");
+        $("#dep_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active"); 
+        $("#charset_flight_list").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active");
     }
     if (toSortRuleType === "SORT_BY_PRICE_ASC") {
         sortFlight.depTimeSortType = "ASC";
         sortFlight.depPriceSortType= "ASC";
         sequenceFlight("differentPrice", "DEPARTURE", "ASC");
         sequenceFlight("differentPrice", "CHARTER", "ASC");
-        $("#dep_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active");
+        $("#dep_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active"); 
+        $("#charset_flight_list").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active");
     }
     if (backSortRuleType === "SORT_BY_DEPTIME_ASC") {
         sortFlight.arrTimesortType = "ASC";
         sortFlight.arrPricesortType= "ASC";
         sequenceFlight("departureTime", "RETURN", "ASC"); 
-        $("#arv_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active");
+        $("#arv_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active");  
     }
     if (backSortRuleType === "SORT_BY_PRICE_ASC") {
         sortFlight.arrTimesortType = "ASC";
         sortFlight.arrPricesortType= "ASC";
         sequenceFlight("differentPrice", "RETURN", "ASC");
-        $("#arv_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active");
+        $("#arv_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active"); 
     }
     $(".traffic_info_list li").removeClass("sort_down");
 }
 
 $('.sort_btn').live('click',function(e) {
     var event = e || window.event;
-    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-    console.log("product_goods.js.sort_btn---click...726");
+    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); 
     $(this).addClass("sort_active");
     $(this).siblings(".sort_btn").removeClass("sort_active");
     $(this).toggleClass("sort_down");
@@ -844,43 +855,74 @@ function sequenceFlight(sortStr,flightTripType,sortType){
             sortType : sortType
         },
         success: function(data) {
+            console.log("sequenceFlight---"+flightTripType+"---$('#selectSaleType').val()==="+$('#selectSaleType').val());
             if (flightTripType === "DEPARTURE") {
                 $("#dep_traffic_list").html(data);
                 flightNo = $("#selectDepFlightNo").val();
-                $("#dep_traffic_list .traffic_list").each(function(){
-	                if ($(this).data("flightno") === flightNo) {
-	                    $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
-	                    $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
-	                    $("#dep_traffic_list").prepend($(this));
-	                }
-                });
-                $("#dep_fli_box").find(".navListSpan").each(function(){
-                    if ($(this).find("a").hasClass("selected")) {
-                        filterFlight( $(this) );
-                    }
-                });
+                var selectSaleType_v = $('#selectSaleType').val();
+                if(selectSaleType_v!='DomesticProduct'){
+                    $("#dep_traffic_list .traffic_list").each(function(){
+    	                if ($(this).data("flightno") === flightNo) {
+    	                    $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
+    	                    $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+    	                    $("#dep_traffic_list").prepend($(this));
+    	                }
+                    });
+                    $("#dep_fli_box").find(".navListSpan").each(function(){
+                        if ($(this).find("a").hasClass("selected")) {
+                            filterFlight( $(this) );
+                        }
+                    });
+                }else{
+                     $("#dep_traffic_list .traffic_list").each(function(){ 
+                             $(this).siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                    });
+                }
             }
 
             if (flightTripType === "RETURN") {
                 $("#arv_traffic_list").html(data);
-                flightNo = $("#selectArvFlightNo").val();
-                $("#arv_traffic_list .traffic_list").each(function(){
-                    if ($(this).data("flightno") === flightNo) {
-                        $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
-                        $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
-                        $("#arv_traffic_list").prepend($(this));
-                    }
-                });
-                $("#arv_fli_box").find(".navListSpan").each(function(){
-                    if ($(this).find("a").hasClass("selected")) {
-                        filterFlight( $(this) );
-                    }
-                });
+                var selectSaleType_v = $('#selectSaleType').val();
+                if(selectSaleType_v!='DomesticProduct'){
+                    flightNo = $("#selectArvFlightNo").val();
+                    $("#arv_traffic_list .traffic_list").each(function(){
+                        if ($(this).data("flightno") === flightNo) {
+                            $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
+                            $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                            $("#arv_traffic_list").prepend($(this));
+                        }
+                    });
+                    $("#arv_fli_box").find(".navListSpan").each(function(){
+                        if ($(this).find("a").hasClass("selected")) {
+                            filterFlight( $(this) );
+                        }
+                    });
+                }else{
+                     $("#arv_traffic_list .traffic_list").each(function(){ 
+                           $(this).siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                    });
+                }
             }
 
-            if (flightTripType === "CHARTER") { 
+            if (flightTripType === "CHARTER") {   
                 $("#charset_flight_list").html(data);
-                
+                var selectSaleType_v = $('#selectSaleType').val();
+                var flightNo_to = $("#selectDepFlightNo").val();
+                var flightNo_back = $("#selectArvFlightNo").val();
+                if(selectSaleType_v=='DomesticProduct'){
+                    //迁移到最上面，当前选择的航班.
+                    $("#charset_flight_list .traffic_list").each(function(){ 
+                        if ($(this).data("flightno") === flightNo_to && $(this).data("backflightno") === flightNo_back) { 
+                            $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
+                            $(this).addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                            $("#charset_flight_list").prepend($(this));
+                        }
+                    }); 
+                }else{
+                     $("#charset_flight_list .traffic_list").each(function(){ 
+                            $(this).siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
+                    });
+                }
             }
         }
     });

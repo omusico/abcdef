@@ -291,7 +291,27 @@ public class CharterFlightFilterUtil {
        searchFlightInfoDtos.removeAll(noUsefulFlightInfos);
     } 
 	 
-	
+	/**
+	 * 将舱位下面的价格找到最低价的舱位组合
+	 * @param policyToSeatMap
+	 */
+	private static List<FlightSearchSeatDto> getCheapestSeats(Map<String, List<FlightSearchSeatDto>> policyToSeatMap){
+		Iterator<Entry<String, List<FlightSearchSeatDto>>> allIt = policyToSeatMap.entrySet().iterator();
+		List<FlightSearchSeatDto> result=  new ArrayList<FlightSearchSeatDto>();
+		BigDecimal cheapest = new BigDecimal(Integer.MAX_VALUE);
+		while(allIt.hasNext()){
+			Entry<String, List<FlightSearchSeatDto>> entry = allIt.next();
+			List<FlightSearchSeatDto> seats = entry.getValue();
+			FlightSearchSeatDto go = seats.get(0);
+			FlightSearchSeatDto back = seats.get(1);
+			BigDecimal price = go.getSalesPrice().add(back.getSalesPrice());
+			if(cheapest.compareTo(price)>0){
+				cheapest = price;
+				result = seats;
+			}
+		}
+		return result;
+	}
 	/**
 	 * 将一个去程--多个返程转为新的一个去程-一个返程的数组.
 	 * @param flightInfos
@@ -308,6 +328,7 @@ public class CharterFlightFilterUtil {
 		    	//找到全部的返程航班
 		    	List<FlightSearchFlightInfoDto> backFlights = flightInfo.getReturnFlightInfoDto();
 		    	for(FlightSearchFlightInfoDto backFlight:backFlights){
+		    		//下面克隆一个去程对象，避免重复修改一个对象！
 		    		FlightSearchFlightInfoDto newFlightDto = (FlightSearchFlightInfoDto)BeanUtils.cloneBean(flightInfo);   
 		    		Map<String, List<FlightSearchSeatDto>> policyToSeatMap = returnFlightMap.get(backFlight.getFlightNo());
 		    		Map<String, Map<String, List<FlightSearchSeatDto>>> newReturnFlightMap = new HashMap<String, Map<String, List<FlightSearchSeatDto>>>();
@@ -316,7 +337,8 @@ public class CharterFlightFilterUtil {
 		    		if(policyToSeatMap==null){
 		    			continue;
 		    		}
-		    		List<FlightSearchSeatDto> seats = policyToSeatMap.entrySet().iterator().next().getValue();
+		    		//只取最便宜的舱位
+		    		List<FlightSearchSeatDto> seats = getCheapestSeats(policyToSeatMap);
 		    		
 		    		List<FlightSearchSeatDto> goSeats = new ArrayList<FlightSearchSeatDto>();
 		    		goSeats.add(seats.get(0));
@@ -328,10 +350,14 @@ public class CharterFlightFilterUtil {
 		    		newFlightDto.setSeats(goSeats);
 		    		//设置返程的座位对象为空 
 		    		backFlight.setSeats(backSeats); 
+		    		
 		    		backFlight.setReturnFlightMap(newReturnFlightMap);
+		    		
 		    		newReturnFlight.add(backFlight); 
+		    		
 		    		newFlightDto.setReturnFlightMap(newReturnFlightMap);
 		    		newFlightDto.setReturnFlightInfoDto(newReturnFlight); 
+		    		
 		    		resultList.add(newFlightDto);
 		    	}	    	
 			 }
@@ -517,10 +543,25 @@ public class CharterFlightFilterUtil {
 	    if(childSameAsAdult){
 	    	depChildPrice = depAdultPrice;
 	    }
-	    BigDecimal goSumPrice = depAdultPrice.multiply(BigDecimal.valueOf(adultCount)).add(depChildPrice.multiply(BigDecimal.valueOf(childCount)));
-	    BigDecimal backSumPrice = arvAdultPrice.multiply(BigDecimal.valueOf(adultCount)).add(arvChildPrice.multiply(BigDecimal.valueOf(childCount))); 
-	    return goSumPrice.add(backSumPrice);
+	    return calcSum(depAdultPrice,depChildPrice,arvAdultPrice,arvChildPrice,adultCount,childCount);
     } 
+    
+    /**
+     * 根据成人价，儿童价，成人数，儿童数计算总价.
+     * @param goPrice
+     * @param goChild
+     * @param backPrice
+     * @param backChild
+     * @param adult
+     * @param child
+     * @return
+     */
+    private static BigDecimal calcSum(BigDecimal goPrice,BigDecimal goChild,BigDecimal backPrice,BigDecimal backChild,Long adult,Long child){
+    	BigDecimal goSumPrice = goPrice.multiply(BigDecimal.valueOf(adult)).add(goChild.multiply(BigDecimal.valueOf(child)));
+	    BigDecimal backSumPrice = backPrice.multiply(BigDecimal.valueOf(adult)).add(backChild.multiply(BigDecimal.valueOf(child))); 
+	    BigDecimal ans = goSumPrice.add(backSumPrice);
+	    return ans;
+    }
     
     /**
      * 从包机信息中得到全部包机航班里面的最便宜的往返程航班列表.
@@ -530,11 +571,21 @@ public class CharterFlightFilterUtil {
      */
     public static List<FlightSearchFlightInfoDto> getCheapestGoAndBackInCharterFlights(List<FlightSearchFlightInfoDto> charterFlights){
     	List<FlightSearchFlightInfoDto> result = new ArrayList<FlightSearchFlightInfoDto>();
-    	FlightSearchFlightInfoDto goFlight = charterFlights.get(0); 
-		FlightSearchFlightInfoDto backFlight = goFlight.getReturnFlightInfoDto().get(0);
-		result.add(goFlight);
-    	result.add(backFlight);
-		return result;
+    	BigDecimal sumPrice = new BigDecimal(Integer.MAX_VALUE);
+    	if(!CollectionUtils.isEmpty(charterFlights)){
+    		for(FlightSearchFlightInfoDto flight:charterFlights){
+    			BigDecimal go = flight.getSeats().get(0).getSalesPrice().add(flight.getReturnFlightInfoDto().get(0).getSeats().get(0).getSalesPrice());
+    			if(sumPrice.compareTo(go)>0){
+    				sumPrice = go;
+    				result = new ArrayList<FlightSearchFlightInfoDto>();
+    				FlightSearchFlightInfoDto goFlight = flight;
+    				FlightSearchFlightInfoDto backFlight = goFlight.getReturnFlightInfoDto().get(0);
+    				result.add(goFlight);
+    		    	result.add(backFlight); 
+    			}
+    		} 
+    	}  
+    	return result;
 	} 
     
     /**
@@ -556,17 +607,35 @@ public class CharterFlightFilterUtil {
 		FlightSearchFlightInfoDto sumDepFlights = new FlightSearchFlightInfoDto();
 		FlightSearchFlightInfoDto sumArvFlights = new FlightSearchFlightInfoDto();
 		
+		//最低去价格(单价)
+		BigDecimal cheapestGo = new BigDecimal(Integer.MAX_VALUE);
+		BigDecimal cheapestGoChild = new BigDecimal(Integer.MAX_VALUE);
+		//最低返程价(单价)
+		BigDecimal cheapestBack = new BigDecimal(Integer.MAX_VALUE);
+		BigDecimal cheapestBackChild = new BigDecimal(Integer.MAX_VALUE);
 		//非对接优先，就只计算包机航班里面最小价格。
 		if(req.getIsCharterFlightFirst()!=null&&"TRUE".equals(req.getIsCharterFlightFirst().toUpperCase())){
 			if(!CollectionUtils.isEmpty(charterFlights))  {
 				List<FlightSearchFlightInfoDto> cheapestFlights = CharterFlightFilterUtil.getCheapestGoAndBackInCharterFlights(charterFlights);
 				sumDepFlights=cheapestFlights.get(0);  
 				sumArvFlights=cheapestFlights.get(1);
+				
+				//包机的基准价格，是在往返程的总价除以2.
+				BigDecimal sumPrice = calcBaojiSum(sumDepFlights);
+				cheapestGo = sumPrice.divide(new BigDecimal(2));
+				cheapestBack = sumPrice.divide(new BigDecimal(2));
+				cheapestGoChild = cheapestGo;
+				cheapestBackChild = cheapestBack;
 			}
 			//如果没有包机航班，就只好取默认查询方式里面的第一个航班
 			else{
 				sumDepFlights=depFlights.get(0);  
 				sumArvFlights=arvFlights.get(0);
+				
+				cheapestGo = sumDepFlights.getSeats().get(0).getSalesPrice();
+				cheapestBack =  sumArvFlights.getSeats().get(0).getSalesPrice();
+				cheapestGoChild = sumDepFlights.getSeats().get(0).getChildrenPrice();
+				cheapestBackChild = sumArvFlights.getSeats().get(0).getChildrenPrice();
 			}
 		}
 		//对接优先,计算出包机价格以及默认查询航班里面的最低航班.
@@ -592,23 +661,47 @@ public class CharterFlightFilterUtil {
 				    if(sumPrice.compareTo(basePrice)>=0){
 				    	sumDepFlights=cheapestDepFlight;
 				    	sumArvFlights=cheapestArvFlight;
+				    	
+				    	cheapestGo = sumDepFlights.getSeats().get(0).getSalesPrice();
+						cheapestBack =  sumArvFlights.getSeats().get(0).getSalesPrice();
+						cheapestGoChild = sumDepFlights.getSeats().get(0).getChildrenPrice();
+						cheapestBackChild = sumArvFlights.getSeats().get(0).getChildrenPrice();
 				    }
 				    //否则返回包机
 				    else{
 				    	sumDepFlights=cheapestDepCharter;
 				    	sumArvFlights=cheapestArvCharter;
+				    	
+				    	//包机的基准价格，是在往返程的总价除以2.
+						BigDecimal sumSinglePrice =  calcBaojiSum(sumDepFlights);
+						cheapestGo = sumSinglePrice.divide(new BigDecimal(2));
+						cheapestBack = sumSinglePrice.divide(new BigDecimal(2));
+						cheapestGoChild = cheapestGo;
+						cheapestBackChild = cheapestBack;
 				    }
 				}
 				//否则直接返回包机最低
 				else{
 					sumDepFlights=cheapestDepCharter;
 			    	sumArvFlights=cheapestArvCharter;
+			    	
+			    	//包机的基准价格，是在往返程的总价除以2.
+					BigDecimal sumSinglePrice = calcBaojiSum(cheapestDepCharter);
+					cheapestGo = sumSinglePrice.divide(new BigDecimal(2));
+					cheapestBack = sumSinglePrice.divide(new BigDecimal(2));
+					cheapestGoChild = cheapestGo;
+					cheapestBackChild = cheapestBack;
 				}
 			}
 			//没有包机信息，就返回最低的往返.
 			else{
 				sumDepFlights = depFlights.get(0);
-				sumArvFlights = arvFlights.get(0); 
+				sumArvFlights = arvFlights.get(0);
+				
+				cheapestGo = sumDepFlights.getSeats().get(0).getSalesPrice();
+				cheapestBack =  sumArvFlights.getSeats().get(0).getSalesPrice();
+				cheapestGoChild = sumDepFlights.getSeats().get(0).getChildrenPrice();
+				cheapestBackChild = sumArvFlights.getSeats().get(0).getChildrenPrice();
 			}
 		}
 		
@@ -617,6 +710,75 @@ public class CharterFlightFilterUtil {
 		sumDepFlights.setBackOrTo(FlightTripType.DEPARTURE.name());
 		resultFlights.add(sumDepFlights); 
 		resultFlights.add(sumArvFlights);
+		
+		refreshDiff(goods.getCharterFlightInfos(), goods.getDepFlightInfos(),
+				goods.getArvFlightInfos(), cheapestGo, cheapestGoChild,
+				cheapestBack, cheapestBackChild, req.getAdultQuantity(),
+				req.getChildQuantity());
 		return resultFlights;
+	}
+	
+	/**
+	 * 计算包机航班的价格.
+	 * @param flight
+	 * @return
+	 */
+	private static BigDecimal calcBaojiSum(FlightSearchFlightInfoDto flight){
+		return flight.getSeats().get(0).getSalesPrice().add(flight.getReturnFlightInfoDto().get(0).getSeats().get(0).getSalesPrice());
+	}
+	
+	/**
+	 * 根据去程，返程价格刷新全部的差价，包括包机与正常对接航班。
+	 * @param goods
+	 * @param cheapestGo
+	 * @param cheapestBack
+	 * @param req 使用成人数，儿童数.
+	 */
+	public static void refreshDiff(
+			List<FlightSearchFlightInfoDto> charterFlights,
+			List<FlightSearchFlightInfoDto> depFlights,
+			List<FlightSearchFlightInfoDto> arvFlights, BigDecimal cheapestGo,
+			BigDecimal cheapestGoChild, BigDecimal cheapestBack,
+			BigDecimal cheapestBackChild, Long adultCount, Long childCount) {
+		
+		//当前选择的包机价格是去程+返程.
+		BigDecimal cheapestSum = calcSum(cheapestGo,cheapestGoChild,cheapestBack,cheapestBackChild,adultCount,childCount);
+		//最便宜的去程价格
+		BigDecimal cheapestGoSum = calcSum(cheapestGo,cheapestGoChild,new BigDecimal(0),new BigDecimal(0),adultCount,childCount);
+		//最便宜的返程价格
+		BigDecimal cheapestBackSum = calcSum(new BigDecimal(0),new BigDecimal(0),cheapestBack,cheapestBackChild,adultCount,childCount);
+//		//包机信息
+//		List<FlightSearchFlightInfoDto> charterFlights = goods.getCharterFlightInfos();
+//		//以前默认的查询出发航班信息
+//		List<FlightSearchFlightInfoDto> depFlights = goods.getDepFlightInfos();
+//		//以前默认查询的到达航班信息
+//		List<FlightSearchFlightInfoDto> arvFlights = goods.getArvFlightInfos();
+		
+		if(CollectionUtils.isNotEmpty(charterFlights)){
+			for(FlightSearchFlightInfoDto flight:charterFlights){
+				BigDecimal _goP = flight.getSeats().get(0).getSalesPrice();
+				BigDecimal _backP = flight.getReturnFlightInfoDto().get(0).getSeats().get(0).getSalesPrice();
+				BigDecimal thisSum = calcSum(_goP,_goP,_backP,_backP,adultCount,childCount);
+				flight.getSeats().get(0).setDifferentPrice(thisSum.subtract(cheapestSum));
+			}
+		}
+		
+		if(CollectionUtils.isNotEmpty(depFlights)){
+			for(FlightSearchFlightInfoDto flight:depFlights){
+				BigDecimal _goP = flight.getSeats().get(0).getSalesPrice();
+				BigDecimal _goCP = flight.getSeats().get(0).getChildrenPrice(); 
+				BigDecimal thisSum = calcSum(_goP,_goCP,new BigDecimal(0),new BigDecimal(0),adultCount,childCount);
+				flight.getSeats().get(0).setDifferentPrice(thisSum.subtract(cheapestGoSum));
+			}	
+		}
+		
+		if(CollectionUtils.isNotEmpty(arvFlights)){
+			for(FlightSearchFlightInfoDto flight:arvFlights){
+				BigDecimal _goP = flight.getSeats().get(0).getSalesPrice();
+				BigDecimal _goCP = flight.getSeats().get(0).getChildrenPrice(); 
+				BigDecimal thisSum = calcSum(new BigDecimal(0),new BigDecimal(0),_goP,_goCP,adultCount,childCount);
+				flight.getSeats().get(0).setDifferentPrice(thisSum.subtract(cheapestBackSum));
+			}	
+		}
 	}
 }
