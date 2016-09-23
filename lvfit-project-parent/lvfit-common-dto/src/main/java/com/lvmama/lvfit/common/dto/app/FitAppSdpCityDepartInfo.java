@@ -10,7 +10,12 @@ import java.util.Date;
 public class FitAppSdpCityDepartInfo implements Serializable {
 
 
-    private FitSdpCityGroupDto sdpCityGroupDto = new FitSdpCityGroupDto();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4899160102645085430L;
+
+	private FitSdpCityGroupDto sdpCityGroupDto = new FitSdpCityGroupDto();
 
     private BigDecimal startPrice;
 
@@ -60,10 +65,6 @@ public class FitAppSdpCityDepartInfo implements Serializable {
 
     public JudgeType getIsSelectedDeparture() {
         return sdpCityGroupDto.getIsSelectedDeparture();
-    }
-
-    public Date getUpdateTime() {
-        return sdpCityGroupDto.getUpdateTime();
     }
 
 

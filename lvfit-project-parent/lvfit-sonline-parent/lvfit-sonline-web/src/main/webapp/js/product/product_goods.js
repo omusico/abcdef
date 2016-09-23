@@ -635,6 +635,10 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                 showSelectedArv(last_arv);
                 showSelectedDep(flightNo);
                 initLastInputs(); 
+
+                //这种情况，同时传递两个航班到后台，进行变更计算价格.
+                submitChangeFlight(flightNo,tripType,last_arv,1);
+                return ;
             }else{
                 $('#last_selectDepFlightNo').val(flightNo); 
                 $('#last_selectSaleType').val('common'); 
@@ -662,6 +666,10 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                 showSelectedArv(flightNo);
                 showSelectedDep(last_dep);
                 initLastInputs(); 
+
+                //这种情况，同时传递两个航班到后台，进行变更计算价格.
+                submitChangeFlight(flightNo,tripType,last_dep,1);
+                return ;
             }else{
                 $('#last_selectDepFlightNo').val(flightNo); 
                 $('#last_selectSaleType').val('common'); 

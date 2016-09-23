@@ -155,10 +155,7 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
             }else{
 				// 对于包机，每个子单都生成对应的一样的请求
 				try {
-					List<FitSuppOrderDto> fitSuppOrders = fitSuppMainOrderDto.getFitSuppOrderDtos();
-					if(CollectionUtils.isNotEmpty(fitSuppOrders)){
-						logger.error("调用包机机票下单。fitSuppOrders=="+JSONMapper.getInstance().writeValueAsString(fitSuppOrders));
-					}
+					List<FitSuppOrderDto> fitSuppOrders = fitSuppMainOrderDto.getFitSuppOrderDtos(); 
                     //请求串.
 					FlightOrderBookingRequest flightOrderBookingRequest = this.buildCharterFlightOrderBookingRequest(request,fitOrderFlightDtos,fitSuppMainOrderDto.getVstMainOrderNo(),fitSuppMainOrderDto);
 					// 去程，返程都一样的处理,设置回调dto
@@ -183,9 +180,7 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
                     String json = JSONMapper.getInstance().writeValueAsString(suppResponse);
                     suppResponse = JSONMapper.getInstance().readValue(json, new TypeReference<SuppResponse<OrderMainDto>>() {});
                     OrderMainDto flightOrderMain = (OrderMainDto) suppResponse.getResult();
-                	logger.error("当前包机切位下单。。。主单号【"+fitSuppMainOrderDto.getVstMainOrderNo()+"】，当前航程类型【"+tripTypeFlag+"】当前子单号【"+fitSuppOrders.get(0).getVstOrderNo()+"】，请求机票单品下单返回flightOrderMain:"+JSONMapper.getInstance().writeValueAsString(flightOrderMain));
-                	logger.error("当前包机切位下单:fitSuppMainOrderDto="+JSONMapper.getInstance().writeValueAsString(fitSuppMainOrderDto));
-                     // 如果预定成功，保存信息
+                	 // 如果预定成功，保存信息
                     if (flightOrderMain != null) {
                     	boolean isBookingSuccess = true;
                     	for(FlightOrderDto flightOrderDto : flightOrderMain.getFlightOrders()){
@@ -209,8 +204,7 @@ public class FlightBookingAdapterImpl implements FlightBookingAdapter {
                     }
 					
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("包机下单出现异常",e);
 				}
             }
         try {

@@ -195,60 +195,8 @@ public class FitSdpServiceImpl implements FitSdpService {
 			logger.error("产品ID: " + calendarRequest.getProductId() + "获取分期价规则失败！", e);
 		}
 		return result;
-	}  
-	   
-//	@Override
-//	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_GOODS_E)
-//	public FitSdpGoodsDto searchGoodsInfo(FitSdpGoodsRequest goodsRequest) {
-//
-//		Object[] vars = new Object[] { goodsRequest.getProductId(),
-//				goodsRequest.getBizCategoryId(),
-//				DateUtils.formatDate(goodsRequest.getDepartDate()),
-//				goodsRequest.getDepCityCode(), goodsRequest.getArvCityCode() };
-//		List<FitSdpProductTrafficRulesDto> trafficRules = fitBusinessClient
-//				.getProductTrafficRulesByProductId(goodsRequest.getProductId());
-//		Map<String, FitSdpProductTrafficRulesDto> trafficRuleMap = new HashMap<String, FitSdpProductTrafficRulesDto>();
-//		if (CollectionUtils.isNotEmpty(trafficRules)) {
-//			for (FitSdpProductTrafficRulesDto trafficRulesDto : trafficRules) {
-//				trafficRuleMap.put(
-//						trafficRulesDto.getTrafficTripeType().name(),
-//						trafficRulesDto);
-//			}
-//		}else{
-//			logger.info("异常：没有找到交通规则..."+goodsRequest.getProductId());
-//		}
-//
-//		FlightSearchResult<FlightSearchFlightInfoDto> goFlightSearchResult2 = MockUtil.createFromJsonFile("d:\\new_flight.txt", new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
-//		List<FlightSearchFlightInfoDto> charterFlightInfos = this
-//				.handleCharterFlightResult(goFlightSearchResult2,
-//						trafficRuleMap.get(TrafficTripeType.GO_WAY.name()),
-//						trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),
-//						goodsRequest);
-//
-//		FlightSearchResult<FlightSearchFlightInfoDto> r = MockUtil.createFromJsonFile("d:\\new_flight.txt", new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
-//		FlightSearchResult<FlightSearchFlightInfoDto> r2 = MockUtil.createFromJsonFile("d:\\new_flight.txt", new TypeReference<FlightSearchResult<FlightSearchFlightInfoDto>>(){});
-//		List<FlightSearchFlightInfoDto> goFlightInfo = this.handleFlightSearchResult(r, trafficRuleMap.get(TrafficTripeType.GO_WAY.name()), goodsRequest);
-//
-//		List<FlightSearchFlightInfoDto> backFlightInfo = this.handleFlightSearchResult(r2, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
-//		
-//		FitSdpGoodsDto goods = null;
-//		goods = new FitSdpGoodsDto();
-//		//设置查询航班的规则map
-//		goods.setTrafficRuleMap(trafficRuleMap);
-//		// 设置包机信息.
-//		goods.setCharterFlightInfos(charterFlightInfos);
-//		
-//		goods.setDepFlightInfos(goFlightInfo);
-//		goods.setDepfacetMap(r.getFacetMap());
-//
-//		goods.setArvFlightInfos(backFlightInfo);
-//		goods.setArvfacetMap(r2.getFacetMap()); 
-//		
-//		// 将商品信息放入缓存，用于算价，更换航班，更换酒店套餐
-//		this.putInfoToCache4CalculatePrice(goodsRequest, goods);
-//		return goods;
-//	}
-	 
+	}   
+	
 	@Override
 	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_GOODS_E)
 	public FitSdpGoodsDto searchGoodsInfo(FitSdpGoodsRequest goodsRequest) {

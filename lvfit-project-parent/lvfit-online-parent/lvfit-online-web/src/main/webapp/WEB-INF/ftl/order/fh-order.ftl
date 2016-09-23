@@ -745,15 +745,18 @@ $('.ph_icon_closeAlert').click(function(){
 //登录
 function toLogin(){
 	//登录之后只做查当前用户、常用联系人操作
-    showLogin(function (){
-			initUserName();
-			initPassengers();
-			$("#toLogin").remove();
-			$("#picCodeContainer").remove(); 
-			$("#login_user").attr("status","1");
-			$('.dialog-close').click(); //如果没有关闭登陆弹窗，就写这个click
-			$("[zType='ifUnLogin']").remove();
-	});
+    showLogin(loginCallback);
+}
+
+//登录后回调
+function loginCallback(){
+		initUserName();
+		initPassengers();
+		$("#toLogin").remove();
+		$("#picCodeContainer").remove(); 
+		$("#login_user").attr("status","1");
+		$('.dialog-close').click(); //如果没有关闭登陆弹窗，就写这个click
+		$("[zType='ifUnLogin']").remove();
 }
 
 function initGoumai(obj){

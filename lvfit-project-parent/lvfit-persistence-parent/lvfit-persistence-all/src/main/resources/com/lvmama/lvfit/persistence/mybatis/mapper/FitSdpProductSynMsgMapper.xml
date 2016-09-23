@@ -3,15 +3,17 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lvmama.lvfit.persistence.mybatis.mapper.FitSdpProductSynMsgMapper">
 	<resultMap id="resultMap" type="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto" >
-	    <result column="PRODUCT_ID" property="productId"/>
-	    <result column="PRODUCT_SYNC_TIME" property="productSyncTime" jdbcType="TIMESTAMP"/>
-	    <result column="INDEX_SYNC_TIME" property="indexSyncTime" jdbcType="TIMESTAMP" />
+		<result column="ID" property="id" jdbcType="DECIMAL"/>
+	    <result column="PRODUCT_ID" property="productId" jdbcType="DECIMAL"/>
+	    <result column="PRODUCT_SYNC_TIME" property="productSyncTime" jdbcType="DECIMAL"/>
+	    <result column="INDEX_SYNC_TIME" property="indexSyncTime" jdbcType="DECIMAL"/>
 	    <result column="PRODUCT_SYNC_STATUS" property="productSyncStatus" jdbcType="VARCHAR" />
 	    <result column="INDEX_SYNC_STATUS" property="indexSyncStatus" jdbcType="VARCHAR" />
 	    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<!-- 数据项 -->
 	<sql id="columns">
+	  ID,
 	  PRODUCT_ID,
 	  PRODUCT_SYNC_TIME,
 	  INDEX_SYNC_TIME,
@@ -22,10 +24,21 @@
 	
 	<!-- 数据插入 -->
 	<insert id="insert" parameterType="com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto">
+		<selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+			<choose>
+				<when test="id != null and id != ''">
+					SELECT #{id,jdbcType=DECIMAL} FROM DUAL
+				</when>
+				<otherwise>
+					SELECT S_PRODUCT_SYN_MESSAGE.NEXTVAL FROM DUAL
+				</otherwise>
+			</choose>
+		</selectKey>
 		INSERT INTO
 		T_FITSDP_PRODUCT_SYN_MESSAGE
 		(<include refid="columns" />)
 		VALUES(
+			#{id,jdbcType=DECIMAL},
 		    #{productId,jdbcType=DECIMAL},
 			#{productSyncTime},
 			#{indexSyncTime},

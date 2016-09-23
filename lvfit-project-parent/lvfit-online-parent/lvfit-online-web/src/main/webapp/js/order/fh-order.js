@@ -22,6 +22,7 @@ function infoSubmit(shopingUUID,_adultCount,_childCount){
 };
 
 function callBackSubmit(shopingUUID,_adultCount,_childCount){
+	 loginCallback();//先登录,再刷新登录用户信息
 	 submit(shopingUUID,_adultCount,_childCount,true);
 	 if(!checkBooking(_adultCount,_childCount)){
 		 location.reload();
@@ -202,6 +203,9 @@ function checkUser(that){
 			   		$(this).find("select[name='cardType']").val(certType);
 			   		$(this).find("input[type_name='shenfenzheng']").val(certNo);
 			   		$(this).find("input[type_name='mobile']").val(mobileNumber);
+			   		if(certType=="ID"||certType=="ID_CARD"){
+			   			$(this).find("input[type_name='birthday']").parent().parent().hide();
+			   		}
 			   		$(this).find("input[type_name='birthday']").val(birthday);
 			   		$(this).find("input[name='email']").val(email);
 			   		
@@ -358,6 +362,7 @@ function blurIdAndBirthday(that,flag){
 	  if(flag =='ID'||flag=='ID_CARD'){
 		  if(isIdCardNo(value)){
       	  	  birthday = getBirthdayByIdCard(value) ;
+      	  	  $parent.find("input[type_name='birthday']").val(birthday);
       	     var age = getAgeByBrithday(birthday);
       		  var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
     		  if(_newPeopleType=="CHILDREN" && peopleType == 'ADULT'){

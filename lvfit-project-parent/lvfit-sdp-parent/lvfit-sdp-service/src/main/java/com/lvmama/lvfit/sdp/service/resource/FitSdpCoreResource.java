@@ -268,13 +268,13 @@ public class FitSdpCoreResource {
 	  
 	
 	/**
-	 * 清除缓冲中已经选中的往返程航班信息.
+	 * 清除缓冲中已经选中包机航班信息.
 	 * @param shoppingDto
 	 * @param cleanChoosedFlight 是否是包机中选中航班的信息.
 	 */
-	private void clearSelectFlight(FitSdpShoppingDto shoppingDto,boolean cleanChoosedFlight){
+	private void clearSelectedFlights(FitSdpShoppingDto shoppingDto,boolean clearCharter){
 		//清除包机航班中的选择的往返程信息.
-		if(cleanChoosedFlight){
+		if(clearCharter){
 			 List<FlightSearchFlightInfoDto> flightInfos = shoppingDto.getCharterFlightInfos();
 			 if(CollectionUtils.isNotEmpty(flightInfos)){
 				 for(FlightSearchFlightInfoDto dto:flightInfos){
@@ -312,11 +312,22 @@ public class FitSdpCoreResource {
         BigDecimal adultQuantity = BigDecimal.valueOf(shoppingRequest.getFitPassengerRequest().getAdultCount());
         BigDecimal childQuantity = BigDecimal.valueOf(shoppingRequest.getFitPassengerRequest().getChildCount()); 
         List<FlightSearchFlightInfoDto> flightInfos = null;
+        //同时传递了两个航班
+        boolean chooseTwoFlight = false;
+        List<FlightSearchFlightInfoDto> flightInfos2 = null;
         if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
             flightInfos = shoppingDto.getDepFlightInfos();
+            if(req.getCharsetBackflightNo()!=null&&!"".equals(req.getCharsetBackflightNo().trim())){
+            	flightInfos2 = shoppingDto.getArvFlightInfos();
+            	chooseTwoFlight = true;
+            }
         }
         if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
             flightInfos = shoppingDto.getArvFlightInfos();
+            if(req.getCharsetBackflightNo()!=null&&!"".equals(req.getCharsetBackflightNo().trim())){
+            	flightInfos2 = shoppingDto.getDepFlightInfos();
+            	chooseTwoFlight = true;
+            }
         }
         if (req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
             flightInfos = shoppingDto.getCharterFlightInfos();
@@ -332,94 +343,146 @@ public class FitSdpCoreResource {
     		//如果是往返程，就按照以前的逻辑
         	if (!req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
         		
-        		 if(req.getChangeFlight()==1){
-        			 //变化缓存中的选择的航班. 
-            		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
-    		               	flightInfo.setBackOrTo(null); 
-    		         }
-            		 
-            		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
-    	                if (flightInfo.getFlightNo().equals(req.getFlightNo())) {
-    	                    BigDecimal iniAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
-    	                    BigDecimal iniChildPrice = flightInfo.getSeats().get(0).getChildrenPrice();
-    	                     
-    	                    if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
-    	                    	flightInfo.setBackOrTo(FlightTripType.DEPARTURE.name());
-    	                    	goBase = iniAdultPrice;
-    	                    	goChildBase = iniChildPrice;
-    	                    	
-    	                    	FlightSearchFlightInfoDto backFlight = selectedFlightInfos.get(1);
-    	                    	backBase = backFlight.getSeats().get(0).getSalesPrice();
-    	                    	backChildBase = backFlight.getSeats().get(0).getChildrenPrice();
-    	                    	
-    	                        selectedFlightInfos.set(0, flightInfo);
-    	                    }
-    	                    if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
-    	                    	flightInfo.setBackOrTo(FlightTripType.RETURN.name());
-    	                    	backBase = iniAdultPrice;
-    	                    	backChildBase = iniChildPrice;
-    	                    	
-    	                    	FlightSearchFlightInfoDto goFlight = selectedFlightInfos.get(0);
-    	                    	goBase = goFlight.getSeats().get(0).getSalesPrice();
-    	                    	goChildBase = goFlight.getSeats().get(0).getChildrenPrice();
-    	                    	
-    	                        selectedFlightInfos.set(1, flightInfo);
-    	                    }
-    	                    break;
-    	                }
-    	            }
-            		 
-            		 clearSelectFlight(shoppingDto,true); 
+        		 if(req.getChangeFlight()==1){ 
+            		 //如果是单程，但是传递了两个航班号.
+            		 if(chooseTwoFlight){
+            			 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
+     		               	flightInfo.setBackOrTo(null); 
+            			 }
+            			 for (FlightSearchFlightInfoDto flightInfo : flightInfos2) {
+     		               	flightInfo.setBackOrTo(null); 
+            			 }
+            			 
+            			 //设置第一个航段的选择航班情况
+	            		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
+	    	                if (flightInfo.getFlightNo().equals(req.getFlightNo())) {
+	    	                    BigDecimal iniAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
+	    	                    BigDecimal iniChildPrice = flightInfo.getSeats().get(0).getChildrenPrice();
+	    	                     
+	    	                    if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
+	    	                    	flightInfo.setBackOrTo(FlightTripType.DEPARTURE.name());
+	    	                    	goBase = iniAdultPrice;
+	    	                    	goChildBase = iniChildPrice; 
+	    	                        selectedFlightInfos.set(0, flightInfo);
+	    	                    }
+	    	                    if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
+	    	                    	flightInfo.setBackOrTo(FlightTripType.RETURN.name());
+	    	                    	backBase = iniAdultPrice;
+	    	                    	backChildBase = iniChildPrice; 
+	    	                        selectedFlightInfos.set(1, flightInfo);
+	    	                    }
+	    	                    break;
+	    	                }
+	    	            }
+	            		 
+	            		 //设置第二个航段的航班的选择情况	            		 
+	            		 for (FlightSearchFlightInfoDto flightInfo : flightInfos2) {
+		    	                if (flightInfo.getFlightNo().equals(req.getCharsetBackflightNo())) {
+		    	                    BigDecimal iniAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
+		    	                    BigDecimal iniChildPrice = flightInfo.getSeats().get(0).getChildrenPrice();
+		    	                     
+		    	                    if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
+		    	                    	flightInfo.setBackOrTo(FlightTripType.RETURN.name());		    	                    	
+		    	                    	backBase = iniAdultPrice;
+		    	                    	backChildBase = iniChildPrice; 
+		    	                        selectedFlightInfos.set(1, flightInfo);
+		    	                    }
+		    	                    if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
+		    	                    	flightInfo.setBackOrTo(FlightTripType.DEPARTURE.name());
+		    	                    	goBase = iniAdultPrice;
+		    	                    	goChildBase = iniChildPrice; 
+		    	                        selectedFlightInfos.set(0, flightInfo);
+		    	                    }
+		    	                    break;
+		    	                }
+		    	            }
+            		 }
+            		 else{
+            			 //变化缓存中的选择的航班. 
+                		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
+        		               	flightInfo.setBackOrTo(null); 
+        		         }
+            			 //以前默认的单程的情况.
+	            		 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
+	    	                if (flightInfo.getFlightNo().equals(req.getFlightNo())) {
+	    	                    BigDecimal iniAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
+	    	                    BigDecimal iniChildPrice = flightInfo.getSeats().get(0).getChildrenPrice();
+	    	                     
+	    	                    if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
+	    	                    	flightInfo.setBackOrTo(FlightTripType.DEPARTURE.name());
+	    	                    	goBase = iniAdultPrice;
+	    	                    	goChildBase = iniChildPrice;
+	    	                    	
+	    	                    	FlightSearchFlightInfoDto backFlight = selectedFlightInfos.get(1);
+	    	                    	backBase = backFlight.getSeats().get(0).getSalesPrice();
+	    	                    	backChildBase = backFlight.getSeats().get(0).getChildrenPrice();
+	    	                    	
+	    	                        selectedFlightInfos.set(0, flightInfo);
+	    	                    }
+	    	                    if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
+	    	                    	flightInfo.setBackOrTo(FlightTripType.RETURN.name());
+	    	                    	backBase = iniAdultPrice;
+	    	                    	backChildBase = iniChildPrice;
+	    	                    	
+	    	                    	FlightSearchFlightInfoDto goFlight = selectedFlightInfos.get(0);
+	    	                    	goBase = goFlight.getSeats().get(0).getSalesPrice();
+	    	                    	goChildBase = goFlight.getSeats().get(0).getChildrenPrice();
+	    	                    	
+	    	                        selectedFlightInfos.set(1, flightInfo);
+	    	                    }
+	    	                    break;
+	    	                }
+	    	            }
+            		 }
+            		 //清除包机那边选择的航班信息.
+            		 clearSelectedFlights(shoppingDto,true); 
         		 }
         		 //如果不变化，就修改对应的基准价，返回一个新的排序.
         		 else{ 
-        			 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
-     	                if (flightInfo.getFlightNo().equals(req.getFlightNo())) {
-     	                    BigDecimal iniAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
-     	                    BigDecimal iniChildPrice = flightInfo.getSeats().get(0).getChildrenPrice();
-     	                     
-     	                    if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
-     	                    	flightInfo.setBackOrTo(FlightTripType.DEPARTURE.name());
-     	                    	goBase = iniAdultPrice;
-     	                    	goChildBase = iniChildPrice;
-     	                    	
-     	                    	FlightSearchFlightInfoDto backFlight = selectedFlightInfos.get(1);
-     	                    	backBase = backFlight.getSeats().get(0).getSalesPrice();
-     	                    	backChildBase = backFlight.getSeats().get(0).getChildrenPrice(); 
-     	                    }
-     	                    if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
-     	                    	flightInfo.setBackOrTo(FlightTripType.RETURN.name());
-     	                    	backBase = iniAdultPrice;
-     	                    	backChildBase = iniChildPrice;
-     	                    	
-     	                    	FlightSearchFlightInfoDto goFlight = selectedFlightInfos.get(0);
-     	                    	goBase = goFlight.getSeats().get(0).getSalesPrice();
-     	                    	goChildBase = goFlight.getSeats().get(0).getChildrenPrice();
-     	                    	 
-     	                    }
-     	                    break;
-     	                }
-     	            }
-					if (req.getFlightTripType().equals(
-							FlightTripType.DEPARTURE.name())) {
-						shoppingDto.setDepFlightInfos(flightInfos);
-					}
-					if (req.getFlightTripType().equals(
-							FlightTripType.RETURN.name())) {
-						shoppingDto.setArvFlightInfos(flightInfos);
-					}
-					if (req.getFlightTripType().equals(
-							FlightTripType.CHARTER.name())) {
-						shoppingDto.setCharterFlightInfos(tempFlightInfos);
-					}
-        	            
-        			 CharterFlightFilterUtil.refreshDiff(
-        						shoppingDto.getCharterFlightInfos(),
-        						shoppingDto.getDepFlightInfos(),
-        						shoppingDto.getArvFlightInfos(), goBase, goChildBase,
-        						backBase, backChildBase, adultQuantity.longValue(),
-        						childQuantity.longValue());
-        			 fitSdpShoppingService.putShoppingCache(req.getShoppingUuid(), shoppingDto); 
+//        			 for (FlightSearchFlightInfoDto flightInfo : flightInfos) {
+//     	                if (flightInfo.getFlightNo().equals(req.getFlightNo())) {
+//     	                    BigDecimal iniAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
+//     	                    BigDecimal iniChildPrice = flightInfo.getSeats().get(0).getChildrenPrice();
+//     	                     
+//     	                    if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
+//     	                    	flightInfo.setBackOrTo(FlightTripType.DEPARTURE.name());
+//     	                    	goBase = iniAdultPrice;
+//     	                    	goChildBase = iniChildPrice;
+//     	                    	
+//     	                    	FlightSearchFlightInfoDto backFlight = selectedFlightInfos.get(1);
+//     	                    	backBase = backFlight.getSeats().get(0).getSalesPrice();
+//     	                    	backChildBase = backFlight.getSeats().get(0).getChildrenPrice(); 
+//     	                    }
+//     	                    if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
+//     	                    	flightInfo.setBackOrTo(FlightTripType.RETURN.name());
+//     	                    	backBase = iniAdultPrice;
+//     	                    	backChildBase = iniChildPrice;
+//     	                    	
+//     	                    	FlightSearchFlightInfoDto goFlight = selectedFlightInfos.get(0);
+//     	                    	goBase = goFlight.getSeats().get(0).getSalesPrice();
+//     	                    	goChildBase = goFlight.getSeats().get(0).getChildrenPrice();
+//     	                    	 
+//     	                    }
+//     	                    break;
+//     	                }
+//     	            }
+//					if (req.getFlightTripType().equals(
+//							FlightTripType.DEPARTURE.name())) {
+//						shoppingDto.setDepFlightInfos(flightInfos); 
+//					}
+//					if (req.getFlightTripType().equals(
+//							FlightTripType.RETURN.name())) {
+//						shoppingDto.setArvFlightInfos(flightInfos); 
+//					} 
+//        	            
+//					//重新排序					
+//        			 CharterFlightFilterUtil.refreshDiff(
+//        						shoppingDto.getCharterFlightInfos(),
+//        						shoppingDto.getDepFlightInfos(),
+//        						shoppingDto.getArvFlightInfos(), goBase, goChildBase,
+//        						backBase, backChildBase, adultQuantity.longValue(),
+//        						childQuantity.longValue());
+//        			 fitSdpShoppingService.putShoppingCache(req.getShoppingUuid(), shoppingDto); 
         		     return Response.ok(flightInfos).build();
         		 } 
 	            
@@ -466,17 +529,26 @@ public class FitSdpCoreResource {
 	            }
         		
         		tempFlightInfos.addAll(flightInfos); 
-        		clearSelectFlight(shoppingDto,false);
+        		clearSelectedFlights(shoppingDto,false);
         	}
-            if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {
-                shoppingDto.setDepFlightInfos(flightInfos);
-            }
-            if (req.getFlightTripType().equals(FlightTripType.RETURN.name())) {
-                shoppingDto.setArvFlightInfos(flightInfos);
-            }
-            if (req.getFlightTripType().equals(FlightTripType.CHARTER.name())) {
-                shoppingDto.setCharterFlightInfos(tempFlightInfos);
-            }
+        	if (req.getFlightTripType().equals(
+					FlightTripType.DEPARTURE.name())) {
+				shoppingDto.setDepFlightInfos(flightInfos);
+				if(chooseTwoFlight){
+					shoppingDto.setArvFlightInfos(flightInfos2);
+	            }
+			}
+			if (req.getFlightTripType().equals(
+					FlightTripType.RETURN.name())) {
+				shoppingDto.setArvFlightInfos(flightInfos);
+				if(chooseTwoFlight){
+					shoppingDto.setDepFlightInfos(flightInfos2);
+	            }
+			}
+			if (req.getFlightTripType().equals(
+					FlightTripType.CHARTER.name())) {
+				shoppingDto.setCharterFlightInfos(tempFlightInfos);
+			}
              
 			CharterFlightFilterUtil.refreshDiff(
 					shoppingDto.getCharterFlightInfos(),
