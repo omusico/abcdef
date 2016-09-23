@@ -95,27 +95,40 @@ function loadsGoods() {
             initPriceInBaseInfo();
         },
         error: function(data) {
-           
-    	    var adultQuantity = parseInt(obj.adultQuantity);
-    	    var childQuantity = parseInt(obj.childQuantity);
-    	    var quantity = parseInt(obj.quantity);
-    	    var departDate = $("#selectDate").val();
-            var str = "<div class=\"fit_no_detail\">"
-                + "<i></i>"
-                + "<p style='position:relative; left:-50px;'>出行日期："+departDate+" 成人数："+adultQuantity*quantity+" 儿童数："+childQuantity*quantity+"</p>"
-                + "<h5>暂时没有找到满足您的商品!</h5>"
-                + "<p style='color:#09C'>请选择其他出行日期</p>"
-                + "</div>";
-            $("#preorder-adjust").html(str);
-            $("#noGoodsFlag").val(true);
-            $("#total-price-value").html("--");
-
-            $("#preorder-booking-button").addClass("btn-stop");
-            $("#preorder-booking-button").removeClass("cbtn-orange1");
+            var adultQuantity = parseInt(obj.adultQuantity);
+            var childQuantity = parseInt(obj.childQuantity);
+            var quantity = parseInt(obj.quantity);
+            var departDate = $("#selectDate").val();
+            showErrorDiv(adultQuantity,childQuantity,quantity);
         }
     });
 }
 
+function showErrorDiv(adultQuantity,childQuantity,quantity){
+    var departDate = $("#selectDate").val();
+    var str = "<div class=\"fit_no_detail\">"
+        + "<i></i>"
+        + "<p style='position:relative; left:-50px;'>出行日期："+departDate+" 成人数："+adultQuantity*quantity+" 儿童数："+childQuantity*quantity+"</p>"
+        + "<h5>暂时没有找到满足您的商品!</h5>"
+        + "<p style='color:#09C'>请选择其他出行日期</p>"
+        + "</div>";
+    $("#preorder-adjust").html(str);
+    $("#noGoodsFlag").val(true);
+    $("#total-price-value").html("--");
+
+    $("#preorder-booking-button").addClass("btn-stop");
+    $("#preorder-booking-button").removeClass("cbtn-orange1");
+}
+
+function showErrorDetail(){
+    var adultQuantity = parseInt($('#adultQuantity').val());
+    var childQuantity = parseInt($('#childQuantity').val());
+    var quantity = parseInt($('#quantity').val());
+    if(isNaN(quantity)){
+        quantity = 1;
+    }
+    showErrorDiv(adultQuantity,childQuantity,quantity);
+}
 function genRequestParam() {
     var obj = new Object();
     obj.shoppingUuid = $("#shoppingUuid").val();
@@ -270,8 +283,7 @@ $(function(){
     $('.flight-replace-button').live("click", function(e) { 
         initSortType(); //初始化更换交通排序规则
         iniChangeFlightDialog();
-        var $content = $("#traffic_change");
-        console.log("274...");
+        var $content = $("#traffic_change"); 
         pandora.dialog({
             title: "更换其他机票",
             content: $content,
@@ -330,6 +342,7 @@ $(function(){
 
      //包机里面的：选择按钮
     $('.js_fh_select').live('click',function(){
+        console.log(345);
         $(this).hide().siblings('.btn').css('display','inline-block');
         $(this).parents('.traffic_list').addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
 
@@ -680,6 +693,9 @@ function submitChangeFlight(flightNo,tripType,backFlightNo,changeFlight){
             charsetBackflightNo : backFlightNo,
             flightTripType : tripType
         },
+        error: function(data) {
+            showErrorDetail();
+        },
         success: function(data) {  
             var selectSaleType_v = $('#selectSaleType').val();
             if (tripType === "DEPARTURE") {
@@ -928,8 +944,7 @@ function sequenceFlight(sortStr,flightTripType,sortType){
             flightTripType : flightTripType,
             sortType : sortType
         },
-        success: function(data) {
-            console.log("sequenceFlight---"+flightTripType+"---$('#selectSaleType').val()==="+$('#selectSaleType').val());
+        success: function(data) { 
             if (flightTripType === "DEPARTURE") {
                 $("#dep_traffic_list").html(data);
                 flightNo = $("#selectDepFlightNo").val();

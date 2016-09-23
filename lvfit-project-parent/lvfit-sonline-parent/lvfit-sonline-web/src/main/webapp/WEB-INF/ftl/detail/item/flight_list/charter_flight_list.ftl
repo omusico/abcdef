@@ -81,7 +81,13 @@
                 </p></li>
             </ul>
             <!-- 差价 -->
-            <div class="info_li8 fh_chajia">+<span class="fh_price"><dfn>¥</dfn>${arvFlightInfo.seats[0].differentPrice}</span></div>
+            <div class="info_li8 fh_chajia"> 
+                <#if arvFlightInfo.seats[0].differentPrice gte 0>
+                    <span class="fh_price">${"+ <dfn>¥</dfn>" + arvFlightInfo.seats[0].differentPrice}</span>
+                <#else>
+                    <span class="fh_price">${"- <dfn>¥</dfn>" + -arvFlightInfo.seats[0].differentPrice}</span>
+                </#if> 
+            </div>
             <!-- 选择按钮 -->
             <div class="info_li9 fh_btn">
             <#if saleType=='DomesticProduct'>

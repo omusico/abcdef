@@ -79,6 +79,7 @@ public class FitSuppMainOrderRepositoryImpl implements FitSuppMainOrderRepositor
 		
 		//对于包机而言，子单是直接关联在主单上面的
 		List<FitOrderPassengerDto> passengers = fitOrderPassengerRepository.queryByFkId(suppMainOrderDto.getFitMainOrderId());
+		//数据库中存储的对于包机，这里vst主单直接对应机票子单，保存的主单id为负数，所以查询数据库的时候要取反数。
 		List<FitSuppFlightOrderDto>  charsetFlights = fitSuppFlightOrderRepository.queryByFkId(-suppMainOrderDto.getId()); 
 		suppMainOrderDto.setSuppFlightOrderDtos(charsetFlights);
 		suppMainOrderDto.setAllPassengerDtos(passengers);

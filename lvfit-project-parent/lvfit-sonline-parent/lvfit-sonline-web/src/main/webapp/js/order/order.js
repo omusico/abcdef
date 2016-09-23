@@ -313,108 +313,132 @@ function getDateDiffCardType(departureDateVal,birthDateVal) {
 	 return cardTypeVal;
 }
 
-//点击常用联系人，填充到游玩人中
+//点击常用联系人， 信息复制到 购买人或者游玩人
 var _sameNameCheck ;//已填充的游玩人
 function checkUser(that){
-	 var isFillIn = true;//是否需要被填充
-	 var isSelected = $(that).prop("checked");//选择的联系人是否是选中状态
-	 var contactName = $(".js_copy_info").find("input[type_name='text']").val();//购买人姓名
-	 if(contactName){
-	       $(".border_t1_dotted").each(function(){
-	           if(!$(this).find("input[type_name='text']").val()){
-	               isFillIn = false;
-	               return false;
-	           }
-	       });
-	 }
-	 if(isFillIn && contactName && isSelected){
-	     showInfo(that,'人数已满');
-	     $(that).removeAttr("checked");
-	     return;
-	 }
-	
-	 if(!_sameNameCheck){
-	     _sameNameCheck = {};
-	 }
-	
-	var receiverId = $(that).nextAll(":hidden[name='receiverId']").val();
-	var name = $(that).nextAll(":hidden[name='receiverName']").val();
-	var certNo = $(that).nextAll(":hidden[name='certNo']").val();
-	if(certNo=='null'){
-	 certNo="";
+	var isFillIn = true;//是否需要被填充
+	var isSelected = $(that).prop("checked");
+	var contactName = $(".js_copy_info").find("input[type_name='text']").val();
+	if(contactName){
+		  $(".border_t1_dotted").each(function(){
+			  if(!$(this).find("input[type_name='text']").val()){
+				  isFillIn = false;
+				  return false;
+			  }
+		  });
 	}
-	var mobileNumber = $(that).nextAll(":hidden[name='mobileNumber']").val();
-	if(isSelected && _sameNameCheck.receiverId  && _sameNameCheck.receiverId == receiverId){
-	    alert("选择的游玩人名称已经存在！不能选择！");
-	    $(that).prop(false);
-	    return;
-	}else  if(isSelected && !_sameNameCheck.receiverId == receiverId){
-	    _sameNameCheck.receiverId = receiverId;
-	}
-	if(!isSelected){
-	    _sameNameCheck.receiverId  == "";
-	   return  cleanSameUser(receiverId,certNo,name,mobileNumber);
-	
+	if(isFillIn && contactName && isSelected){
+		showInfo(that,'人数已满');
+		$(that).removeAttr("checked");
+		return;
 	}
 	
+	if(!_sameNameCheck){
+		_sameNameCheck = {};
+	}
+  
+   var receiverId = $(that).nextAll(":hidden[name='receiverId']").val();
+   var name = $(that).nextAll(":hidden[name='receiverName']").val();
+   var certNo = $(that).nextAll(":hidden[name='certNo']").val();
+   //转换手机号
+   if(certNo=='null'){
+   	certNo="";
+   }
+   var mobileNumber = $(that).nextAll(":hidden[name='mobileNumber']").val();
+   if(isSelected && _sameNameCheck.receiverId  && _sameNameCheck.receiverId == receiverId){
+	   alert("选择的游玩人名称已经存在！不能选择！");
+	   $(that).prop(false);
+	   return;
+   }else  if(isSelected && !_sameNameCheck.receiverId == receiverId){   
+	   _sameNameCheck.receiverId = receiverId;
+   }
+   if(!isSelected){
+	   _sameNameCheck.receiverId  == "";
+	  return  cleanSameUser(receiverId,certNo,name,mobileNumber);
 	 
-	var userId = $(that).nextAll(":hidden[name='receiverId']").val();
-	var certType = $(that).nextAll(":hidden[name='certType']").val();
-	var peopleType = $(that).nextAll(":hidden[name='peopleType']").val();
-	var email = $(that).nextAll(":hidden[name='email']").val();
-	//验证邮箱
-	var _email = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-	if(!_email.test(email) && email!=''){
-	     email="";
-	}
-	var birthday = $(that).nextAll(":hidden[name='birthday']").val();
-	if(certType == 'ID'){
-	    certType = 'ID_CARD';
-	    birthday = getBirthdayByIdCard(certNo);
-	}
-	
-	$(".border_t1_dotted").each(function(){
-	     if(!$(this).find("input[type_name='text']").val()){
-	             $(this).find("input[type_name='text']").val(name);
-	
-	             var $youwan1_name = $('.order_box').children('.user_info:eq(0)').children('dl:eq(0)').find('input:eq(0)').val();
-	             $(this).find("input[name='receiverId']").val(userId);
-	             var $youwan1_receiverId = $('.order_box').children('.user_info:eq(0)').children('dl:eq(0)').find('input:eq(1)').val();
-	             $(".js_copy_info").find(":hidden[name='receiverId']").val($youwan1_receiverId);
-	
-	             var departureDateVal = $("#departureTime").html();
-	             var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
-	             $(this).find("select[name='peopleType']").val(_newPeopleType);
-	
-	             $(this).find("select[name='cardType']").val(certType);
-	             $(this).find("input[type_name='shenfenzheng']").val(certNo);
-	             $(this).find("input[type_name='mobile']").val(mobileNumber);
-	             
-	             //如果勾选的是第一个游玩人,才将购买人信息进行填充
-	             if($youwan1_receiverId==userId){
-	                 var $youwan1_mobile = $('.order_box').children('.user_info:eq(0)').children('dl:eq(2)').find('input:eq(0)').val();
-	
-	                 var $youwan1_email = $('.order_box').children('.user_info:eq(0)').children('dl:eq(5)').find('input:eq(0)').val();
-	                 $(".js_copy_info").find("input[type_name='email']").val(email);
-	                 $('.js_goumai_name').val($youwan1_name);
-	                 $('.js_textBig').val($youwan1_mobile);
-	             }
-	             
-	
-	             $(this).find("input[type_name='birthday']").val(birthday);
-	             
-	
-	             //如果是证件类型是护照，则生日控件显示
-	             if(certType == 'PASSPORT'){
-	                 initPassport();
-	             }
-	             //填充
-	             checkUserName($(this).find("input[type_name='text']"));
-	             changePeopleTypeCheck($(this).find(".peopleType"));
-	             blurIdAndBirthday($(this).find("input[type_name='shenfenzheng']"),$(this).find("select[name='cardType']").val());
-	             return false;
-	         }
-	 });
+   }
+   
+   
+   var userId = $(that).nextAll(":hidden[name='receiverId']").val();
+   var certType = $(that).nextAll(":hidden[name='certType']").val();
+   var peopleType = $(that).nextAll(":hidden[name='peopleType']").val();
+   var email = $(that).nextAll(":hidden[name='email']").val();
+   //验证邮箱
+   var _email = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+   if(!_email.test(email) && email!=''){
+   		email="";
+   }
+   var birthday = $(that).nextAll(":hidden[name='birthday']").val();
+   if(certType == 'ID'){
+	   certType = 'ID_CARD';
+	   birthday = getBirthdayByIdCard(certNo);
+   }
+   var $buyer = $(".js_copy_info").find("input[type_name='text']");
+   if(!$buyer.val()){//购买人为空
+	   $buyer.val(name);
+       $(".js_copy_info").find("input[type_name='mobile']").val(mobileNumber);
+       $(".js_copy_info").find("input[type_name='email']").val(email);
+       $(".js_copy_info").find(":hidden[name='receiverId']").val(userId);
+       $(".js_copy_info").find(":hidden[name='certType']").val(certType);
+       $(".js_copy_info").find(":hidden[name='certNo']").val(certNo);
+       $(".js_copy_info").find(":hidden[name='peopleType']").val(peopleType);
+       $(".js_copy_info").find(":hidden[name='birthday']").val(birthday);
+       //合同：
+       $(".buyer_name").html(name);
+       $(".buyer_phone").html(mobileNumber);
+       checkContactName($buyer);
+       $('.js_yz').live('blur',function(){ 
+   		var This = $(".js_copy_info").find('input');
+   		setTimeout(function(){
+   			yanzhengThis(This)
+   		},150)
+	   		
+	   	});
+       yanzhengThis($(".js_copy_info").find("input[type_name='mobile']"));
+       yanzhengThis($(".js_copy_info").find("input[type_name='email']"));
+       //勾选了第一个联系人之后，现在只有购买人会填充，第一个游玩人现在不填充
+       /*$(".border_t1_dotted").each(function(i){
+    	   if(i==0 && !$(this).find("input[type_name='text']").val()){
+		   		$(this).find("input[type_name='text']").val(name);
+		   		$(this).find("input[name='receiverId']").val(userId);
+		   		$(this).find("select[name='peopleType']").val(peopleType);
+		   		$(this).find("select[name='cardType']").val(certType);
+		   		$(this).find("input[type_name='shenfenzheng']").val(certNo);
+		   		$(this).find("input[type_name='mobile']").val(mobileNumber);
+		   		$(this).find("input[type_name='birthday']").val(birthday);
+		   		return false;
+		    }else{
+		    	return false;
+		    }
+	   	});*/
+   }else{//遍历游玩人
+	   $(".border_t1_dotted").each(function(){
+		    if(!$(this).find("input[type_name='text']").val()){
+			   		$(this).find("input[type_name='text']").val(name);
+			   		$(this).find("input[name='receiverId']").val(userId);
+			   	   
+			   		var departureDateVal = $("#departureTime").html();
+				    var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
+			   		
+				    $(this).find("select[name='peopleType']").val(_newPeopleType);
+			   		$(this).find("select[name='cardType']").val(certType);
+			   		$(this).find("input[type_name='shenfenzheng']").val(certNo);
+			   		$(this).find("input[type_name='mobile']").val(mobileNumber);
+			   		$(this).find("input[type_name='birthday']").val(birthday);
+			   		$(this).find("input[name='email']").val(email);
+			   		
+			   		//如果是证件类型是护照，则生日控件显示
+					if(certType == 'PASSPORT'){
+						initPassport();
+					}
+					//填充
+					checkUserName($(this).find("input[type_name='text']"));
+					changePeopleTypeCheck($(this).find(".peopleType"));
+					blurIdAndBirthday($(this).find("input[type_name='shenfenzheng']"),$(this).find("select[name='cardType']").val());
+					return false;
+			    }
+		});
+   }
 }
 
 //将选中的联系人，置为未选

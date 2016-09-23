@@ -204,8 +204,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 			List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppMainOrderDto.getSuppFlightOrderDtos();
 			for (FitSuppFlightOrderDto fitSuppFlightOrderDto : suppFlightOrderDtos) { 
 				fitSuppFlightOrderDto.setSaleType(SuppSaleType.DomesticProduct.name()); 
-				Long newOrderId = 0-fitSuppFlightOrderDto.getSuppMainOrderId();
-				fitSuppFlightOrderDto.setSuppMainOrderId(newOrderId);
+				Long newOrderId = 0-fitSuppFlightOrderDto.getSuppOrderId();
+				fitSuppFlightOrderDto.setSuppOrderId(newOrderId);
 				fitSuppFlightOrderRepository.save(fitSuppFlightOrderDto); 
 			}
 		}

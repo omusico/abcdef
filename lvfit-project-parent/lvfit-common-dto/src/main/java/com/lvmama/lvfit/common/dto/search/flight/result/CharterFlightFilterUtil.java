@@ -103,17 +103,7 @@ public class CharterFlightFilterUtil {
 	public static boolean getQueryCharsetFlight() {
 		Boolean ans = Boolean.valueOf(CustomizedPropertyPlaceholderConfigurer.getContextProperty("queryCharsetFlight")+"");
 		return ans.booleanValue();  
-    }
-	
-	public static void main(String[] args){
-		Boolean b = Boolean.FALSE;
-		System.out.println(Boolean.valueOf(null));
-		if(b){
-			System.out.println(1);
-		}else{
-			System.out.println(2);
-		}
-	}
+    } 
 	
 	/**
 	 * 过滤包机的航班信息.
@@ -747,13 +737,7 @@ public class CharterFlightFilterUtil {
 		BigDecimal cheapestGoSum = calcSum(cheapestGo,cheapestGoChild,new BigDecimal(0),new BigDecimal(0),adultCount,childCount);
 		//最便宜的返程价格
 		BigDecimal cheapestBackSum = calcSum(new BigDecimal(0),new BigDecimal(0),cheapestBack,cheapestBackChild,adultCount,childCount);
-//		//包机信息
-//		List<FlightSearchFlightInfoDto> charterFlights = goods.getCharterFlightInfos();
-//		//以前默认的查询出发航班信息
-//		List<FlightSearchFlightInfoDto> depFlights = goods.getDepFlightInfos();
-//		//以前默认查询的到达航班信息
-//		List<FlightSearchFlightInfoDto> arvFlights = goods.getArvFlightInfos();
-		
+ 		
 		if(CollectionUtils.isNotEmpty(charterFlights)){
 			for(FlightSearchFlightInfoDto flight:charterFlights){
 				BigDecimal _goP = flight.getSeats().get(0).getSalesPrice().divide(new BigDecimal(2));

@@ -213,27 +213,21 @@ $(function(){
 	
 	//复制购买人信息
 	$('.js_btn_copy').live('click',function(){
-		var $input1 = $('.js_copy_info').eq(0).find('.js_yz');
-		var $input2 = $(this).parents('.user_info').find('.js_yz');
-		for(var i=0;i<$input1.length;i++){
-			var attr1 = $input1.eq(i).attr('placeholder');
-			var value = $input1.eq(i).val();
-			if(value!=''){
-				for(var j=0;j<$input2.length;j++){
-					var attr2 = $input2.eq(j).attr('placeholder');
-					if(attr1==attr2){
-						$input2.eq(j).val(value).trigger("change");
-					}
-				}
-				$(this).parents('.user_info').find('dd').removeClass('error_show');
-			}else{
-				if(attr1=='姓名' || attr1=='手机' || attr1=='邮箱'){
-					//alert('购买人信息不完整!')
-				}
-				
-			}
-			
-		}
+		var $input1 = $('.js_copy_info').eq(0);
+		var $input2 = $(this).parents('.user_info').eq(0);
+		//赋值----将购买人所有的信息都赋值给游玩人1
+		$input2.find("input[type_name='text']").val($input1.find("input[type_name='text']").val());
+		$input2.find("input[name='receiverId']").val($input1.find("input[name='receiverId']").val());
+		$input2.find("select[name='peopleType']").val($input1.find("input[name='peopleType']").val());
+		$input2.find("select[name='cardType']").val($input1.find("input[name='certType']").val());
+		$input2.find("input[type_name='shenfenzheng']").val($input1.find("input[name='certNo']").val());
+		$input2.find("input[type_name='mobile']").val($input1.find("input[type_name='mobile']").val());
+		$input2.find("input[type_name='birthday']").val($input1.find("input[name='birthday']").val());
+		$input2.find("input[name='email']").val($input1.find("input[type_name='email']").val());
+		//如果是证件类型是护照，则生日控件显示
+		/*if($input1.find("input[name='certType']").val() == 'PASSPORT'){
+		}*/
+		initPassport();
 		
 	});
 	
@@ -408,10 +402,10 @@ $(function(){
 //验证姓名，是否符合规范
 function checkUserName(that){
 	var userName = $(that).val();
-	if($.trim(userName)==""){
+	if(userName==undefined||$.trim(userName)==""){
 		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入姓名");
 		$(that).parent().addClass('error_show');return false;
-	}else if(!/^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+[\u4e00-\u9fa5]+|[a-zA-Z]+[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+\/[a-zA-Z]+)+$/.test(userName)||userName.length<2){
+	}else if(!/^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+[\u4e00-\u9fa5]+|[a-zA-Z]+[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+\/[a-zA-Z]+)+$/.test($.trim(userName))||$.trim(userName).length<2){
 		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请保持姓名与证件上的姓名一致");
 		$(that).parent().addClass('error_show');return false;
 	}else{
@@ -486,9 +480,15 @@ var initId_Card = function(){
 //生日显示控件--护照
 var initPassport = function(){
 	$(".js_zhengjian").each(function(){
-	   if($(this).val() === 'PASSPORT'){
+	   /*if($(this).val() === 'PASSPORT'){
 		   $(this).parent().parent().next(".js_zhengjian_hide").show();
-	   }
+	   }*/
+	   var value = $(this).val();
+		if(value === 'ID'||value === 'ID_CARD'){
+		   $(this).parent().parent().next(".js_zhengjian_hide").hide();
+	   }else{
+			$(this).parent().parent().next(".js_zhengjian_hide").show();
+		}
 	});
 }
 

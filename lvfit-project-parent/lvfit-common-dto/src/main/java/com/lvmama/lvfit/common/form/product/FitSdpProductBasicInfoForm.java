@@ -228,12 +228,6 @@ public class FitSdpProductBasicInfoForm implements Serializable ,Form{
 	public void setFeeRulesDtos(List<FitSdpProductFeeRulesDto> feeRulesDtos) {
 		fitSdpProductBasicInfoDto.setFeeRulesDtos(feeRulesDtos);
 	}
-    public String getShoppingUuid() {
-        return fitSdpProductBasicInfoDto.getShoppingUuid();
-    }
-    public void setShoppingUuid(String shoppingUuid) {
-    	fitSdpProductBasicInfoDto.setShoppingUuid(shoppingUuid);
-    }
 
 	public String getRouteStayNum() {
 		return routeStayNum;

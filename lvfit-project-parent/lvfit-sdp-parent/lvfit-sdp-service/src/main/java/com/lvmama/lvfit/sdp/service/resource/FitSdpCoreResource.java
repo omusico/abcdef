@@ -400,6 +400,19 @@ public class FitSdpCoreResource {
      	                    break;
      	                }
      	            }
+					if (req.getFlightTripType().equals(
+							FlightTripType.DEPARTURE.name())) {
+						shoppingDto.setDepFlightInfos(flightInfos);
+					}
+					if (req.getFlightTripType().equals(
+							FlightTripType.RETURN.name())) {
+						shoppingDto.setArvFlightInfos(flightInfos);
+					}
+					if (req.getFlightTripType().equals(
+							FlightTripType.CHARTER.name())) {
+						shoppingDto.setCharterFlightInfos(tempFlightInfos);
+					}
+        	            
         			 CharterFlightFilterUtil.refreshDiff(
         						shoppingDto.getCharterFlightInfos(),
         						shoppingDto.getDepFlightInfos(),
@@ -452,19 +465,7 @@ public class FitSdpCoreResource {
         			tempindex++;
 	            }
         		
-        		tempFlightInfos.addAll(flightInfos);
-//        		//重新计算包机的价格差
-//        		for (FlightSearchFlightInfoDto flightInfo : tempFlightInfos) {
-//        			 //去程价格
-//        			 BigDecimal goAdultPrice = flightInfo.getSeats().get(0).getSalesPrice();
-//        			 FlightSearchFlightInfoDto backFlight = flightInfo.getReturnFlightInfoDto().get(0);
-//        			 //返程价格
-//	                 BigDecimal backAdultPrice = backFlight.getSeats().get(0).getSalesPrice();
-//	                 BigDecimal allAdultPrice = goAdultPrice.add(backAdultPrice);
-//	                 //当前选择包机的价格
-//	                 BigDecimal thisBasePrice = allAdultPrice.multiply(adultQuantity).add(allAdultPrice.multiply(childQuantity)); 
-//	                 flightInfo.getSeats().get(0).setDifferentPrice((thisBasePrice.subtract(basePrice)).multiply(BigDecimal.valueOf(quantity))); 
-//	            }
+        		tempFlightInfos.addAll(flightInfos); 
         		clearSelectFlight(shoppingDto,false);
         	}
             if (req.getFlightTripType().equals(FlightTripType.DEPARTURE.name())) {

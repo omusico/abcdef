@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -317,9 +318,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	 
 	@Override
 	@RequestMapping(value = "loadsGoods", method = { RequestMethod.POST ,RequestMethod.GET})
-	public String searchGoodsInfo(Model model, FitSdpGoodsRequest req) { 
-//		req.setArvCityCode("CAN");//到达：成都
-//		req.setDepCityCode("SHA");//出发：天津
+	public String searchGoodsInfo(Model model, FitSdpGoodsRequest req) {  
 		req.setBookingSource(BookingSource.FIT_SDP_FRONT);
 		req.setDistributorId(3L);
 	    FitSdpGoodsDto goodsInfo = sdpClient.searchProductGoodsInfo(req); 
@@ -335,6 +334,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    model.addAttribute("additional", respForm.getAdditional());
 	    model.addAttribute("otherTicketMap", respForm.getOtherTicketMaps());
 	    model.addAttribute("insProducts", goodsInfo.getInsProducts());
+		model.addAttribute("shoppingUuid", UUID.randomUUID().toString().replace("-",""));
 	    if(respForm.getAdditional()!=null){
 	    	model.addAttribute("roomDiff", respForm.getAdditional().getRoomDiff());
 	    }

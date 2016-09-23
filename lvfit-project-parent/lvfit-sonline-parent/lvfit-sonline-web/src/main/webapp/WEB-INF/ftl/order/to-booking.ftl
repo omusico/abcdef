@@ -441,7 +441,13 @@
             </#if>
             <!--可选产品结束-->
         </div>
-
+        
+        <!-- 登录提示 开始-->
+        <div id="toLogin" class="fit-order-log-tip" style="display: none">
+            <i class="tip-icon tip-icon-info"></i><a href="javascript:void(0)" onclick="toLogin();" class="fit-log-btn">登录</a>后获得常用联系人信息，极速填写订单
+        </div>
+        <!-- 登录提示 结束-->
+        
         <!--联系人信息填写--开始-->
         <div id="contractDiv" class="order_box">
             <h3 class="order_tit" style="display: none">联系人信息</h3>
@@ -449,18 +455,55 @@
             <div class="name_list js_checkName" style="display:none">
             <!--<b class="lixirenClass" style="display: none">常用联系人：</b>-->
             </div>
-            <span id="toLogin" class="ts_text" style="display: none"><i class="tip-icon tip-icon-info"></i>  <a href="javascript:void(0)" onclick="toLogin();">登录</a> 后获得常用联系人信息，极速填写订单</span>
+            <!--<span id="toLogin" class="ts_text" style="display: none"><i class="tip-icon tip-icon-info"></i>  <a href="javascript:void(0)" onclick="toLogin();">登录</a> 后获得常用联系人信息，极速填写订单</span>
+            -->
+            <!--购买人--开始-->
+            <div class="user_info js_copy_info no_bd"> <!--js_copy_info是购买人专用的，下面得复制购买人信息按钮点击,需要读取这个名字下面输入得内容-->
+                <h5 class="youwan_tit">购买人</h5>
+                <div class="Preser_box Preser_box_long">
+                    <label class="check"><input class="checkbox" checked type="checkbox">保存所有人信息</label>
+                </div>
+                <dl class="user_dl">
+                    <dt><span class="red">*</span> 中文姓名：</dt>
+                    <dd>
+                        <input class="input js_yz js_goumai_name" onblur="checkContactName(this);" type_name="text" type="text" placeholder="姓名" value="">
+                        <input type="hidden" name="receiverId" >
+                        <input  type="hidden" name="certType">
+                        <input  type="hidden" name="certNo">
+                        <input  type="hidden" name="peopleType" >
+                        <input  type="hidden" name="birthday">
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入姓名</span>
+                    </dd>
+                </dl>
+                <dl class="user_dl">
+                    <dt><span class="red">*</span>手机号码：</dt>
+                    <dd>
+                        <input class="input js_yz js_textBig" type_name="mobile" maxlength="11" type="text" value="" placeholder="手机号码"  onblur="initContractData(this)">
+                        <span class="ts_text">此手机号为接收短信所用，作为订购与取票凭证，请准确填写。</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的手机号码</span>
+                    </dd>
+                </dl>
+                <dl class="user_dl">
+                    <dt><span class="red">*</span>邮箱地址：</dt>
+                    <dd>
+                        <input class="input js_yz js_email" type_name="email" value="" type="text" placeholder="邮箱">
+                        <span class="ts_text">此邮箱地址为接收邮件所用，作为订购与取票凭证，请准确填写。</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的邮箱地址</span>
+                    </dd>
+                </dl>
+            </div><!--购买人--结束-->
             <!--游玩人--开始-->
-
+            <!--游玩人外层div结束-->
+            <div class="fit-users">
+            <span class="ts_text"><i class="tip-icon tip-icon-info"></i>为了您能顺利出游，请务必确认所填姓名、证件类型和证件号码与所持证件保持一致；</span>
             <#assign peopleCount = (passengers.adultCount + passengers.childCount)*quantity>
             <#list 1..peopleCount as i>
-            <div class="user_info border_t1_dotted">
+            <div <#if i == 1>class="user_info fit-user-first border_t1_dotted"<#else>class="user_info border_t1_dotted"</#if>>
                 <dl class="user_dl">
                     <dt><span class="red">*</span>姓名：</dt>
                     <dd>
-                        <input class="input js_yz" type_name="text"  type="text" placeholder="姓名" onblur="checkUserName(this);"
-                         <#if i == 1>onchange="initGoumai(this);"</#if>
-                        >
+                        <input class="input js_yz" type_name="text"  type="text" placeholder="姓名" onblur="checkUserName(this);">
+                        <!-- <#if i == 1>onchange="initGoumai(this);"</#if>-->
 
                         <div class="fillInBtn" id="${i}">填写说明
                             <div class="fillingExplanation" id="fillingExplanation_${i}">
@@ -468,10 +511,11 @@
                         </div>
 
                         <input type="hidden" name="receiverId" value=""  >
-                        <!--<#if i == 1><span class="btn cbtn-default js_btn_copy">复制购买人信息</span></#if>-->
+                        <#if i == 1><span class="btn cbtn-default js_btn_copy">复制购买人信息</span></#if>
                         <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入姓名</span>
                     </dd>
                 </dl>
+                <input type="hidden" name="email" value="">
                 <dl class="user_dl">
                     <dt><span class="red">*</span>人群：</dt>
                     <dd>
@@ -511,45 +555,8 @@
                 <h5 class="youwan_tit">游玩人${i}</h5>
             </div><!--游玩人1--结束-->
             </#list>
-
-
-            <!--购买人--开始-->
-            <div class="user_info js_copy_info"> <!--js_copy_info是购买人专用的，下面得复制购买人信息按钮点击,需要读取这个名字下面输入得内容-->
-                <h5 class="youwan_tit">购买人</h5>
-                <div class="Preser_box Preser_box_long">
-                    <label class="check"><input class="checkbox" checked type="checkbox">保存所有人信息</label>
-                </div>
-                <dl class="user_dl">
-                    <dt><span class="red">*</span> 中文姓名：</dt>
-                    <dd>
-                        <input class="input js_yz js_goumai_name" onblur="checkContactName(this);" type_name="text" type="text" placeholder="姓名" value="">
-                        <input type="hidden" name="receiverId" >
-                        <input  type="hidden" name="certType">
-                        <input  type="hidden" name="certNo">
-                        <input  type="hidden" name="peopleType" >
-                        <input  type="hidden" name="birthday">
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入姓名</span>
-                    </dd>
-                </dl>
-                <dl class="user_dl">
-                    <dt><span class="red">*</span>手机号码：</dt>
-                    <dd>
-                        <input class="input js_yz js_textBig" type_name="mobile" maxlength="11" type="text" value="" placeholder="手机号码"  onblur="initContractData(this)">
-                        <span class="ts_text">此手机号为接收短信所用，作为订购与取票凭证，请准确填写。</span>
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的手机号码</span>
-                    </dd>
-                </dl>
-                <dl class="user_dl">
-                    <dt><span class="red">*</span>邮箱地址：</dt>
-                    <dd>
-                        <input class="input js_yz js_email" type_name="email" value="" type="text" placeholder="邮箱">
-                        <span class="ts_text">此邮箱地址为接收邮件所用，作为订购与取票凭证，请准确填写。</span>
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的邮箱地址</span>
-                    </dd>
-                </dl>
-            </div><!--购买人--结束-->
-
-
+            </div><!--游玩人外层div结束-->
+            
         </div><!--联系人信息填写--结束-->
 
 
