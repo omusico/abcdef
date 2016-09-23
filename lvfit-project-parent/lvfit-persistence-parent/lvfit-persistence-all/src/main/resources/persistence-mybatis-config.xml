@@ -8,8 +8,9 @@
         <setting name="lazyLoadingEnabled" value="false"/>
     </settings>
 
-    <plugins>
+    <plugins> 
         <plugin interceptor="com.lvmama.lvf.common.domain.mybatis.interceptor.FkIdsInterceptor"/> 
+ 
     </plugins>
     
     <mappers>

@@ -35,13 +35,16 @@ public class HotelQueryRequest  implements Serializable{
 	/**queryId*/
 	private String queryId;
 	
-	/**是否只从默认推荐的酒店中取数据*/
-	private Boolean hotelFromRecommendedOnly;
+
 	
 	/**成人数*/
 	private Integer adultCount;
 	/**儿童数*/
 	private  Integer childCount;
+	/** ---------老数据适配，不作为传入参数------- */
+	private int roomCounts;
+	/** ---------老数据适配，不作为传入参数------- */
+	private Boolean hotelFromRecommendedOnly;
 	
 	public String getKeywords() {
 		return keywords;
@@ -129,5 +132,13 @@ public class HotelQueryRequest  implements Serializable{
 
 	public void setChildCount(Integer childCount) {
 		this.childCount = childCount;
+	}
+
+	public int getRoomCounts() {
+		return roomCounts;
+	}
+
+	public void setRoomCounts(int roomCounts) {
+		this.roomCounts = roomCounts;
 	}
 }

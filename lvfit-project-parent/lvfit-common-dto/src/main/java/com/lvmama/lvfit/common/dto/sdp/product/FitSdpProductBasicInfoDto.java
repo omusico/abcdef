@@ -17,9 +17,6 @@ import com.lvmama.lvfit.common.dto.enums.ProductAuditType;
 public class FitSdpProductBasicInfoDto  extends Entity {
 
     private static final long serialVersionUID = -9123552864841610587L;
-
-    // 购物车ID
-    private String shoppingUuid;
     // 产品ID
     private Long productId;
     //分销ID
@@ -135,10 +132,6 @@ public class FitSdpProductBasicInfoDto  extends Entity {
 	public void setLineRouteId(Long lineRouteId) {
 		this.lineRouteId = lineRouteId;
 	}
-
-	public FitSdpProductBasicInfoDto() {
-        shoppingUuid = UUID.randomUUID().toString().replace("-","");
-    }
     
 	public Long getProductId() {
 		return productId;
@@ -327,12 +320,6 @@ public class FitSdpProductBasicInfoDto  extends Entity {
 	public void setFeeRulesDtos(List<FitSdpProductFeeRulesDto> feeRulesDtos) {
 		this.feeRulesDtos = feeRulesDtos;
 	}
-    public String getShoppingUuid() {
-        return shoppingUuid;
-    }
-    public void setShoppingUuid(String shoppingUuid) {
-        this.shoppingUuid = shoppingUuid;
-    }
 
 	public Long getRecommendLevel() {
 		return recommendLevel;

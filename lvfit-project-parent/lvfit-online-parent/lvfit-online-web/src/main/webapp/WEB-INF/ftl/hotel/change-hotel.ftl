@@ -703,7 +703,7 @@
         });
 		
 		function goBack() {
-			window.location.href = baseUrl + "/search/backToShopping?shoppingUUID=" + $("#shoppingUUID").val();
+			history.go(-1);
         }
 
         $(".xuanze").live("click", function() {
@@ -724,7 +724,7 @@
                     roomCount: Number(roomCount)
                 },
                 success: function() {
-                    goBack();
+                    window.location.href = path;
                 },
                 error:function() {
                     handelError();

@@ -6,34 +6,37 @@ import java.util.List;
 import java.util.UUID;
 
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
-import com.lvmama.lvfit.common.dto.request.FlightBackQueryRequest;
-import com.lvmama.lvfit.common.dto.request.FlightToQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.insurance.InsuranceQueryRequest;
 import com.lvmama.lvfit.common.dto.search.spot.SpotQueryRequest;
 
+/**
+ * 此对象仅仅作为购物车列表老数据的适配而保留
+ */
 public class FitSearchRequest implements Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5388774510727443668L;
-	// 去程机票请求
-	private FlightToQueryRequest flightToQueryRequest;
-	// 返程机票请求
-	private FlightBackQueryRequest flightBackQueryRequest;
+	// 机票搜索条件列表
+	private List<FlightQueryRequest> flightSearchRequests = new ArrayList<FlightQueryRequest>();
 	// 酒店搜索条件列表
-	private HotelQueryRequest hotelSearchRequests;
+	private List<HotelQueryRequest> hotelSearchRequests = new ArrayList<HotelQueryRequest>();
 	//景点搜索条件列表
-	private SpotQueryRequest spotQueryRequests;
+	private List<SpotQueryRequest> spotQueryRequests = new ArrayList<SpotQueryRequest>();
 	//保险搜索条件列表
 	private InsuranceQueryRequest insuranceQueryRequest ;
 	// 人数
 	private FitPassengerRequest fitPassengerRequest;
 	// 来源
 	private BookingSource bookingSource = BookingSource.DEFAULT;
-	
+
+
+	//标识去程返程,此字段用于标识航班是去程还是返程，当为to是，为去程，为back时，为返程
+	private String backOrto;
+
 	//shoppingId
 	private String shoppingId;
 
@@ -46,41 +49,32 @@ public class FitSearchRequest implements Serializable{
 
 	//旅行类型
 	private String tripType;
-	
+
 	//请求key
 	private String requestKey;
-	
+
 	public static String createUUID(){
 		return UUID.randomUUID().toString().replace("-","");
 	}
 
-	public FlightToQueryRequest getFlightToQueryRequest() {
-		return flightToQueryRequest;
+	public List<FlightQueryRequest> getFlightSearchRequests() {
+		return flightSearchRequests;
 	}
-
-	public void setFlightToQueryRequest(FlightToQueryRequest flightToQueryRequest) {
-		this.flightToQueryRequest = flightToQueryRequest;
+	public void setFlightSearchRequests(
+		List<FlightQueryRequest> flightSearchRequests) {
+		this.flightSearchRequests = flightSearchRequests;
 	}
-
-	public FlightBackQueryRequest getFlightBackQueryRequest() {
-		return flightBackQueryRequest;
-	}
-
-	public void setFlightBackQueryRequest(FlightBackQueryRequest flightBackQueryRequest) {
-		this.flightBackQueryRequest = flightBackQueryRequest;
-	}
-
-	public HotelQueryRequest getHotelSearchRequests() {
+	public List<HotelQueryRequest> getHotelSearchRequests() {
 		return hotelSearchRequests;
 	}
-	public void setHotelSearchRequests(HotelQueryRequest hotelSearchRequests) {
+	public void setHotelSearchRequests(List<HotelQueryRequest> hotelSearchRequests) {
 		this.hotelSearchRequests = hotelSearchRequests;
 	}
-	public SpotQueryRequest getSpotQueryRequests() {
+	public List<SpotQueryRequest> getSpotQueryRequests() {
 		return spotQueryRequests;
 	}
 
-	public void setSpotQueryRequests(SpotQueryRequest spotQueryRequests) {
+	public void setSpotQueryRequests(List<SpotQueryRequest> spotQueryRequests) {
 		this.spotQueryRequests = spotQueryRequests;
 	}
 
@@ -89,7 +83,7 @@ public class FitSearchRequest implements Serializable{
 	}
 
 	public final void setInsuranceQueryRequest(
-			InsuranceQueryRequest insuranceQueryRequest) {
+		InsuranceQueryRequest insuranceQueryRequest) {
 		this.insuranceQueryRequest = insuranceQueryRequest;
 	}
 
@@ -110,6 +104,12 @@ public class FitSearchRequest implements Serializable{
 	}
 	public void setShoppingId(String shoppingId) {
 		this.shoppingId = shoppingId;
+	}
+	public String getBackOrto() {
+		return backOrto;
+	}
+	public void setBackOrto(String backOrto) {
+		this.backOrto = backOrto;
 	}
 	public String getArrivalCityName() {
 		return arrivalCityName;
@@ -132,12 +132,12 @@ public class FitSearchRequest implements Serializable{
 		this.tripType = tripType;
 	}
 
-    public String getRequestKey() {
-        return requestKey;
-    }
+	public String getRequestKey() {
+		return requestKey;
+	}
 
-    public void setRequestKey(String requestKey) {
-        this.requestKey = requestKey;
-    }
+	public void setRequestKey(String requestKey) {
+		this.requestKey = requestKey;
+	}
 
 }

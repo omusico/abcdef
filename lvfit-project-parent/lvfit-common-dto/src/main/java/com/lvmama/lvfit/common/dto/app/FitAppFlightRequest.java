@@ -25,6 +25,10 @@ public class FitAppFlightRequest implements Serializable{
 	private BookingSource bookingSource;
 	/**航程类型*/
     private TripeType tripeType;
+	/**成人数*/
+	private int adultCount;
+	/**儿童数*/
+	private int childCount;
 
 	public String getDepartureDate() {
 		return departureDate;
@@ -72,6 +76,22 @@ public class FitAppFlightRequest implements Serializable{
 
 	public void setTripeType(TripeType tripeType) {
 		this.tripeType = tripeType;
+	}
+
+	public int getAdultCount() {
+		return adultCount;
+	}
+
+	public void setAdultCount(int adultCount) {
+		this.adultCount = adultCount;
+	}
+
+	public int getChildCount() {
+		return childCount;
+	}
+
+	public void setChildCount(int childCount) {
+		this.childCount = childCount;
 	}
 }
 

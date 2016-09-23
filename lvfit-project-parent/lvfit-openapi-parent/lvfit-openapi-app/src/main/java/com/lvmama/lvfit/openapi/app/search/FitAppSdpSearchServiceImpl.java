@@ -4,9 +4,11 @@ import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvfit.common.client.FitBusinessClient;
 import com.lvmama.lvfit.common.client.FitSdpClient;
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsDto;
+import com.lvmama.lvfit.common.dto.app.FitAppSdpCityDepartInfo;
 import com.lvmama.lvfit.common.dto.enums.BizEnum;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpGoodsDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
+import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductCalendarDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductCalendarRequest;
@@ -15,6 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class FitAppSdpSearchServiceImpl implements FitAppSdpSearchService {
@@ -54,6 +61,20 @@ public class FitAppSdpSearchServiceImpl implements FitAppSdpSearchService {
 		return appGoodsDto;
 	}
 
+	@Override
+	public List<FitAppSdpCityDepartInfo> searchSdpCityDepartInfo(Long productId) {
+		List<FitAppSdpCityDepartInfo> cityDepartInfoList = new ArrayList<FitAppSdpCityDepartInfo>();
+		List<FitSdpCityGroupDto> cityGroupDtos = fitBusinessClient.getSelectProductCityGroupByProductId(productId);
+        Map<Long,BigDecimal> startPriceMap = fitSdpClient.searchCalendarInfoByProductId(productId);
+		for(FitSdpCityGroupDto dto : cityGroupDtos){
+			FitAppSdpCityDepartInfo cityDepartInfo = new FitAppSdpCityDepartInfo();
+			cityDepartInfo.setSdpCityGroupDto(dto);
+			BigDecimal startPrice = startPriceMap.get(dto.getDepartureCityDistrictId());
+			cityDepartInfo.setStartPrice(startPrice);
+			cityDepartInfoList.add(cityDepartInfo);
+		}
+		return cityDepartInfoList;
+	}
 
 
 }

@@ -3,6 +3,7 @@ package com.lvmama.lvfit.business.shopping.domain.repository.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -68,23 +69,31 @@ public class ShoppingRepositoryImpl implements ShoppingRepository{
 					if (searchCondtion != null) {
 						FitSearchRequest searchRequest = JSONMapper.getInstance().readValue(searchCondtion,
 										new TypeReference<FitSearchRequest>() {});
-						detailDto.setDepartureCityName(searchRequest
+						if (searchRequest.getFitPassengerRequest() != null) {
+							detailDto.setDepartureCityName(searchRequest
 								.getDepartureCityName());
-						detailDto.setArrivalCityName(searchRequest
+							detailDto.setArrivalCityName(searchRequest
 								.getArrivalCityName());
-						
-						HotelQueryRequest hotelQueryRequest = searchRequest.getHotelSearchRequests();
 
-						String cityName = hotelQueryRequest.getCityName();
-						detailDto.setHotelCityName(cityName);
+							HotelQueryRequest hotelQueryRequest = searchRequest.getHotelSearchRequests().get(0);
 
-						FitPassengerRequest fitPassengerRequest = searchRequest.getFitPassengerRequest();
-						if(fitPassengerRequest!=null){
-							detailDto.setAdultCount(fitPassengerRequest.getAdultCount()+"");
-							detailDto.setChildCount(fitPassengerRequest.getChildCount()+"");
+							String cityName = hotelQueryRequest.getCityName();
+							detailDto.setHotelCityName(cityName);
+
+							FitPassengerRequest fitPassengerRequest = searchRequest.getFitPassengerRequest();
+							if(fitPassengerRequest!=null){
+								detailDto.setAdultCount(fitPassengerRequest.getAdultCount()+"");
+								detailDto.setChildCount(fitPassengerRequest.getChildCount()+"");
+							}
+						} else {
+							FitBaseSearchRequest request = JSONMapper.getInstance().readValue(searchCondtion,
+								new TypeReference<FitBaseSearchRequest>() {});
+							detailDto.setDepartureCityName(request.getDepartureCityName());
+							detailDto.setArrivalCityName(request.getArrivalCityName());
+							detailDto.setHotelCityName(request.getCityName());
+							detailDto.setAdultCount(String.valueOf(request.getAdultsCount()));
+							detailDto.setChildCount(String.valueOf(request.getChildCount()));
 						}
-						
-						
 					}
 				}
 			}

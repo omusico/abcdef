@@ -24,7 +24,7 @@ public class FitOrderFlight implements Domain<FitOrderFlightDto> {
         this.self = self;
     }
 
-    public FitOrderFlightDto buildFitOrderFlightDto(FlightSearchFlightInfoDto searchFlight,FlightSearchSeatDto searchSeat) {
+    public FitOrderFlightDto buildFitOrderFlightDto(FlightSearchFlightInfoDto searchFlight,FlightSearchSeatDto searchSeat,FlightTripType tripType) {
     	
            this.self.setFlightNo(searchFlight.getFlightNo());
            this.self.setDepartureAirportCode(searchFlight.getDepartureAirportCode());
@@ -52,7 +52,7 @@ public class FitOrderFlight implements Domain<FitOrderFlightDto> {
            this.self.setAirportFee(searchSeat.getAirportFee());
            this.self.setFuelsurTax(searchSeat.getFuelsurTax());
            this.self.setProductResource(ProductResource.FLIGHT);
-           this.self.setTripType(FlightTripType.getFlightTripTypeByName(searchFlight.getBackOrTo()));
+           this.self.setTripType(tripType);
            this.self.setStopCount(searchFlight.getStopCount());
            this.self.setCarrierName(searchFlight.getCarrierName());
            this.self.setAirplane(searchFlight.getAirplane());

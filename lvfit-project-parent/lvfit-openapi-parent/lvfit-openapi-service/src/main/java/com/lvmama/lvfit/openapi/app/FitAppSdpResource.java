@@ -1,5 +1,7 @@
 package com.lvmama.lvfit.openapi.app;
 
+import java.util.List;
+
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvf.common.dto.enums.InterfaceKey;
 import com.lvmama.lvf.common.dto.status.ResultStatus;
@@ -10,6 +12,7 @@ import com.lvmama.lvfit.common.client.path.SdpAppClientPath;
 import com.lvmama.lvfit.common.dto.app.FitAppBookingRequest;
 import com.lvmama.lvfit.common.dto.app.FitAppOrderDto;
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsDto;
+import com.lvmama.lvfit.common.dto.app.FitAppSdpCityDepartInfo;
 import com.lvmama.lvfit.common.dto.app.FitAppShoppingRequest;
 import com.lvmama.lvfit.common.dto.sdp.calculator.FitSdpShoppingAmountDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
@@ -28,8 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -178,7 +183,34 @@ public class FitAppSdpResource {
 		resultDto.setStatus(resultStatus);
 		resultDto.setMessage(errMsg);
 		return Response.ok(resultDto).build();
-		
+	 }
+     
+     @POST
+     @GET
+	 @Consumes(MediaType.APPLICATION_JSON)
+	 @Produces(MediaType.APPLICATION_JSON)
+	 @Path(SdpAppClientPath.Path.APP_PRODUCT_DEPARTCITY_GROUP_INFO)
+	 public Response getSelectedDepartCityGroupInfo(@PathParam("productId")Long productId) {
+	 		ResultStatus resultStatus = ResultStatus.SUCCESS;
+	 		String errMsg = null;
+	 		List<FitAppSdpCityDepartInfo> cityDepartInfoList = null;
+	 		try {
+	 			cityDepartInfoList = fitAppSdpSearchService.searchSdpCityDepartInfo(productId);
+	 		} catch (Exception e) {
+	 			logger.error("app.booking.error:",e);
+	 			resultStatus = ResultStatus.FAIL;
+	 			if(e instanceof ExceptionWrapper){
+	 				ExceptionWrapper ew = (ExceptionWrapper)e;
+	 				errMsg = ew.getErrMessage();
+	 			}else{
+	 				errMsg = ExceptionUtils.getFullStackTrace(e);
+	 			}
+	 		}
+	
+	 		BaseSingleResultDto<List<FitAppSdpCityDepartInfo>> resultDto = new BaseSingleResultDto<List<FitAppSdpCityDepartInfo>>(cityDepartInfoList);
+	 		resultDto.setStatus(resultStatus);
+	 		resultDto.setMessage(errMsg);
+	 		return Response.ok(resultDto).build();
 	 }
 
 }

@@ -43,8 +43,37 @@ $(function() {
         initAjax();
         // 初始化购物车中的产品信息，产品选择模块的默认值
         initProduct();
+        // 如果搜索条件为空，填充默认值
+        initSearchCondition();
     }
 });
+
+function initSearchCondition() {
+    var startDate = moment().add(2, 'days').format('YYYY-MM-DD');
+    var endDate = moment().add(5, 'days').format('YYYY-MM-DD');
+    var startDayWeek = getDayOfWeek(startDate);
+    var endDayWeek = getDayOfWeek(endDate);
+
+    if ($("#flightStartDate").val() == "") {
+        $("#flightStartDate").val(startDate);
+        $("#flightStartDayOfWeek").text(startDayWeek);
+    }
+
+    if ($("#flightEndDate").val() == "") {
+        $("#flightEndDate").val(endDate);
+        $("#flightEndDayOfWeek").text(endDayWeek);
+    }
+
+    if ($("#hotelStartDate").val() == "") {
+        $("#hotelStartDate").val(startDate);
+        $("#hotelStartDayOfWeek").text(startDayWeek);
+    }
+
+    if ($("#hotelEndDate").val() == "") {
+        $("#hotelEndDate").val(endDate);
+        $("#hotelEndDayOfWeek").text(endDayWeek);
+    }
+}
 
 function writeSearchRecord() {
     var searchCondition = $("#tripType").val()+"|"+$("#departureCityCode").val()+"|"+$("#arrivalCityCode").val()+"|"+$("#cityCode").val()+"|"+$("#flightStartDate").val()+"|"+$("#flightEndDate").val()+"|"+$("#hotelStartDate").val()+"|"+$("#hotelEndDate").val()+"|"+$("#adultsCount").val()+"|"+$("#childCount").val();

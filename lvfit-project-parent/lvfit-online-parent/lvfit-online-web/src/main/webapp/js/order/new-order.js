@@ -227,9 +227,9 @@ $(function(){
 		$input2.find("input[type_name='birthday']").val($input1.find("input[name='birthday']").val());
 		$input2.find("input[name='email']").val($input1.find("input[type_name='email']").val());
 		//如果是证件类型是护照，则生日控件显示
-		if($input1.find("input[name='certType']").val() == 'PASSPORT'){
-			initPassport();
-		}
+		/*if($input1.find("input[name='certType']").val() == 'PASSPORT'){
+		}*/
+		initPassport();
 		
 	});
 	
@@ -416,11 +416,15 @@ $(function(){
 			var flag1=true,flag2=true;
 			//检查所有人员姓名是否规范填写
 			if(This.attr("type_name")==="text"){
-				flag1 = checkUserName(This);
+				if(This.hasClass("js_goumai_name")){
+					flag1 = checkContactName(This);
+				}else{
+					flag1 = checkUserName(This);
+				}
 			}
 			//检查证件信息是否重复
 			if(This.attr("type_name")==="shenfenzheng"){
-				if(This.siblings('.select').val() == 'ID_CARD'){
+				if(This.siblings('.select').val() == 'ID_CARD' || This.siblings('.select').val() == 'ID'){
 					flag2 = blurIdAndBirthday(This,"ID");
 				}else{
 					flag2 = verifyIDCardRepeat(This);
@@ -481,8 +485,10 @@ $(function(){
 			//验证手机
 			if(This.attr('type_name')=='mobile'){
 				if(value=='' && optional!="true"){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入手机号码");
 					thisP.addClass('error_show');
 				}else if(!_mobile.test(value) && value!=''){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>您填写的手机号码有误，请重新填写");
 					thisP.addClass('error_show');
 				}else{
 					thisP.removeClass('error_show');
@@ -491,8 +497,10 @@ $(function(){
 			//验证邮箱
 			if(This.attr('type_name')=='email'){
 				if(value=='' && optional!="true"){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入邮箱地址");
 					thisP.addClass('error_show');
 				}else if(!_email.test(value) && value!=''){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>您填写的邮箱地址有误，请重新填写");
 					thisP.addClass('error_show');
 				}else{
 					thisP.removeClass('error_show');
@@ -502,7 +510,7 @@ $(function(){
 			if(This.attr('type_name')=='shenfenzheng'){
 				if(value=='' && optional!="true"){
 					thisP.addClass('error_show');
-				}else if(!isIdCardNo(value) && This.siblings('.select').val() == 'ID_CARD' && value!=''){
+				}else if(!isIdCardNo(value) && (This.siblings('.select').val() == 'ID'||This.siblings('.select').val() == 'ID_CARD') && value!=''){
 					thisP.addClass('error_show');
 				}/*else if(This.siblings('.select').val() == 'ID_CARD'){
 					thisP.removeClass('error_show');

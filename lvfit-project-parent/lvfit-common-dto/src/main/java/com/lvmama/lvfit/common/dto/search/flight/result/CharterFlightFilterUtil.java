@@ -352,8 +352,7 @@ public class CharterFlightFilterUtil {
 		    	}	    	
 			 }
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("重新组装包机信息返回对象出错",e);
 		} 
 	    return resultList;
     } 

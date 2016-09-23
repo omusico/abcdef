@@ -387,7 +387,7 @@ public class SdpProductControllerImpl  implements SdpProductController{
 	@RequestMapping(value = "sdpProduct/cityGroupQuery", method = { RequestMethod.POST, RequestMethod.GET })
 	public List<FitSdpCityGroupDto> queryCityGroup(Model model, Long productId) {
 		try {
-			List<FitSdpCityGroupDto> baseResultDto = fitBusinessClient.getSelectProductCityGroupByProductId(productId);
+			List<FitSdpCityGroupDto> baseResultDto = fitBusinessClient.getProductCityGroupByProductId(productId);
 			
 			if(baseResultDto != null)	{
 				return baseResultDto;

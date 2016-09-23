@@ -19,6 +19,9 @@ public class FitSdpCityGroupRequest implements Serializable{
 	/**出发城市名称*/
 	private String departureCityName;
 	
+	/**是否已选中*/
+	private String isSelectedDeparture;
+	
 	
     /** 订单查询 分页信息  **/
 	private Pagination pagination = new Pagination();
@@ -123,6 +126,14 @@ public class FitSdpCityGroupRequest implements Serializable{
 
 	public void setProductId(Long productId) {
 		this.productId = productId;
+	}
+
+	public String getIsSelectedDeparture() {
+		return isSelectedDeparture;
+	}
+
+	public void setIsSelectedDeparture(String isSelectedDeparture) {
+		this.isSelectedDeparture = isSelectedDeparture;
 	}
 
 }

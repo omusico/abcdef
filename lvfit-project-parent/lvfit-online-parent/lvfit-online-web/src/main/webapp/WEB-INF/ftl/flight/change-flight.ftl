@@ -245,7 +245,7 @@
         });
 
         function goBack() {
-            window.location.href = path;
+            history.go(-1);
         }
 
 		$(".fh-select-btn").live("click", function (e) {
@@ -266,7 +266,7 @@
                     flightType: flightType
                 },
                 success: function() {
-                    goBack();
+                    window.location.href = path;
                 },
                 error : function () {
                     handelError();

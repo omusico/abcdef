@@ -385,7 +385,7 @@ function getAgeByBrithday(birthday_str){
 	 var todayDay=today.getDate();
 	 var birthday= new Date(birthday_str);
 	 birthdayYear=birthday.getFullYear();
-	 birthdayMonth=birthday.getMonth();
+	 birthdayMonth=birthday.getMonth()+1;
 	 birthdayDay=birthday.getDate();
 	 if(todayYear-birthdayYear<0) {
 	       alert("出生日期不正确!");

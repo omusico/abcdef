@@ -154,7 +154,8 @@
 				var queryData = {
 					'productId':$("#productId").val(),
 					'departureCityDistrictId':$("#departureCityDistrictId").val(),
-					'departureCityName':$("#departureCityName").val()
+					'departureCityName':$("#departureCityName").val(),
+					'isSelectedDeparture':$("#isSelectedDeparture").val()
 				};
 				return queryData;
 			}
@@ -277,7 +278,13 @@
 					<div class="main">
 						<div class="part">
 							<span>出发城市ID：</span><input type="text" id="departureCityDistrictId" name="fitSdpCityGroupDto.departureCityDistrictId"/>
-							<span>出发城市名称：</span><input type="text" id="departureCityName" name="fitSdpCityGroupDto.departureCityName"/>							
+							<span>出发城市名称：</span><input type="text" id="departureCityName" name="fitSdpCityGroupDto.departureCityName"/>			
+							&nbsp;&nbsp;是否为选中出发地：<select type="text" id="isSelectedDeparture" name="fitSdpCityGroupDto.isSelectedDeparture">
+									<option value="">全部</option>
+									<option value="Y">Y</option>
+									<option value="N">N</option>
+							</select>				
+							
 						</div>
 					</div>
 				</div>

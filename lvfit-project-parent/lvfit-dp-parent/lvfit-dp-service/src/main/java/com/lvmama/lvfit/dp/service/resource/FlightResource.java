@@ -60,9 +60,7 @@ public class FlightResource {
 	@Path(DpClientPath.Path.GET_FLIGHT_INFOS)
 	public Response getAllFlightInfos(FitAppFlightRequest request) {
 		Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> allFlightInfos = fitDpService
-			.getAllFlightInfos(request.getTripeType(), request.getDepartureDate(),
-				request.getReturnDate(), request.getDepCityCode(), request.getArvCityCode(),
-				request.getBookingSource());
+			.getAllFlightInfos(request);
 		return Response.ok(allFlightInfos).build();
 	}
 

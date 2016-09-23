@@ -7,6 +7,7 @@ public enum SdpAppClientPath{
 	APP_PRODUCT_CLENDAR_SEARCH(Path.APP_PRODUCT_CLENDAR_SEARCH,"获取被打包产品的价格日历信息"),
 	APP_GOODS_INFO_SEARCH(Path.APP_GOODS_INFO_SEARCH, "获取打包商品信息"),
 	APP_CALCULAT_AMOUNT(Path.APP_CALCULAT_AMOUNT,"计算商品总金额"),
+	APP_PRODUCT_DEPARTCITY_GROUP_INFO(Path.APP_PRODUCT_DEPARTCITY_GROUP_INFO,"出发城市信息"),
 	APP_BOOKING(Path.APP_BOOKING, "预定");
 
 	public String path;
@@ -30,6 +31,8 @@ public enum SdpAppClientPath{
 		public static final String APP_CALCULAT_AMOUNT = basePath +"calculateAmount";
 		/** 预定*/
 		public static final String APP_BOOKING = basePath + "booking";
+		/**出发城市信息*/
+		public static final String APP_PRODUCT_DEPARTCITY_GROUP_INFO = basePath + "getSelectDepartCityGroupInfo/{productId}";
 
 	}
 

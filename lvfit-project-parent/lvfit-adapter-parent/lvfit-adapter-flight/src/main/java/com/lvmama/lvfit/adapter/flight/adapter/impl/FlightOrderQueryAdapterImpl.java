@@ -170,13 +170,14 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
             //包机的处理方式，补全订单.
             else{
             	List<FitSuppFlightOrderDto> suppFlightOrderDtos = new ArrayList<FitSuppFlightOrderDto>();
+            	logger.info("174包机。" + JSONMapper.getInstance().writeValueAsString(suppMainOrderDto)); 
             	
             	//一次性，查询出来主单对应的全部机票订单那边的信息.
         		FlightOrderSalesOrderRelationDto salesOrderRelation = new FlightOrderSalesOrderRelationDto();
                 salesOrderRelation.setSalesMainOrderId(Long.valueOf(suppMainOrderDto.getVstMainOrderNo())); 
-                logger.info("包机。。查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
+                logger.info("182包机。。查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
                 BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
-                          
+               
                 //得到全部的乘客信息.
                 List<FitOrderPassengerDto> passengers  = suppMainOrderDto.getAllPassengerDtos();
                 

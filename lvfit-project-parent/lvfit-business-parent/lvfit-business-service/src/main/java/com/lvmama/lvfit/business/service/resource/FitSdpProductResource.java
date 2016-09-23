@@ -184,7 +184,7 @@ public class FitSdpProductResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(BussinessClientPath.Path.GET_SDP_PRODUCT_CITY_GROUP_BY_PRODUCT_ID)
-	public Response getProductCityGroupByProductId(Long productId) {
+	public Response getProductCityGroupByProductId(@PathParam("productId")Long productId) {
 		List<FitSdpCityGroupDto> cityGroupDtos =  null;
 		cityGroupDtos =	fitSdpProductService.getProductCityGroupByProductId(productId);
 		return Response.ok(cityGroupDtos).build();

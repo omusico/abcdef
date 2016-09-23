@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
+import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
+import com.lvmama.lvfit.common.dto.enums.FlightTripType;
 import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.utils.HotelUtils;
 import org.apache.commons.beanutils.BeanUtils;
@@ -93,6 +96,7 @@ public class FitBookingServiceImpl implements FitBookingService {
     private ShoppingService shoppingService;
     
     @Override
+    @ExceptionPoint(value = FitBusinessExceptionType.BOOKING_E)
     public BaseSingleResultDto<FitOrderMainDto> booking(FitOrderBookingRequest fit) {
         BaseSingleResultDto<FitOrderMainDto> bookingResult = new BaseSingleResultDto<FitOrderMainDto>();
         FitOrderMainDto orderMainDto = null;
@@ -293,12 +297,18 @@ public class FitBookingServiceImpl implements FitBookingService {
 			FitBaseSearchRequest searchRequest) {
 		//构造机酒订单航班信息
         List<FitOrderFlightDto> fitOrderFlightDtos = fit.getFitOrderFlightDtos();
-        for (FlightSearchFlightInfoDto searchFlight : selectShoppingDto.getFlightInfos()) {
+        for (int i = 0 ; i < selectShoppingDto.getFlightInfos().size(); i++) {
+            FlightSearchFlightInfoDto searchFlight = selectShoppingDto.getFlightInfos().get(i);
             FlightSearchSeatDto searchSeat = searchFlight.getSeats().get(0);
             //构造机酒订单航班信息
             FitOrderFlightDto fitOrderFlightDto = new FitOrderFlightDto();
             FitOrderFlight fitOrderFlight = new FitOrderFlight(fitOrderFlightDto);
-            fitOrderFlightDto = fitOrderFlight.buildFitOrderFlightDto(searchFlight, searchSeat);
+            if (i == 0) {
+                fitOrderFlightDto = fitOrderFlight.buildFitOrderFlightDto(searchFlight, searchSeat, FlightTripType.DEPARTURE);
+            }
+            if (i == 1) {
+                fitOrderFlightDto = fitOrderFlight.buildFitOrderFlightDto(searchFlight, searchSeat, FlightTripType.RETURN);
+            }
             //置入酒订单航班信息价格信息
             CalculateAmountRequest calculateAmountRequest = new CalculateAmountRequest();
             List<FlightSearchFlightInfoDto> selectSearchFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
@@ -311,27 +321,27 @@ public class FitBookingServiceImpl implements FitBookingService {
        }
 	}
 
-	private void buildFitOrderHotelInfo(FitOrderBookingRequest fit, FitShoppingDto selectShoppingDto) {
-		String checkIn = selectShoppingDto.getSearchRequest().getCheckInTime();
-        String checkOut = selectShoppingDto.getSearchRequest().getCheckOutTime();
+	private void buildFitOrderHotelInfo(FitOrderBookingRequest fit, FitShoppingDto shoppingDto) {
+        String checkIn = shoppingDto.getSearchRequest().getCheckInTime();
+        String checkOut = shoppingDto.getSearchRequest().getCheckOutTime();
 
         //构造机酒订单酒店信息
         List<FitOrderHotelDto> fitOrderHotelDtos = fit.getFitOrderHotelDtos();
-        for (HotelSearchHotelDto searchHotel : selectShoppingDto.getHotels().getResults()) {
-            for (HotelSearchRoomDto searchRoom : searchHotel.getRooms()) {
-                for (HotelSearchPlanDto searchPlan : searchRoom.getPlans()) {
-                	//构造机酒订单酒店信息
-                	 FitOrderHotelDto fitOrderHotelDto = new FitOrderHotelDto();
-                    FitOrderHotel fitOrderHotel = new FitOrderHotel(fitOrderHotelDto); 
-                    fitOrderHotelDto = fitOrderHotel.buildFitOrderHotelDto(searchHotel, searchRoom, searchPlan);
-                    fitOrderHotelDto.setCheckin(DateUtils.parseDate(checkIn));
-                    fitOrderHotelDto.setCheckout(DateUtils.parseDate(checkOut));
-                    fitOrderHotelDto.setProductResource(ProductResource.VST);
-                    fitOrderHotelDto.setCheckInCity(selectShoppingDto.getSearchRequest().getCityCode());
-                    fitOrderHotelDtos.add(fitOrderHotelDto);
-                }
-            }
+        if (CollectionUtils.isEmpty(fitOrderHotelDtos)) {
+            return;
         }
+        HotelSearchHotelDto selectHotel = shoppingDto.getHotels().getResults().get(0);
+        HotelSearchRoomDto selectRoom = selectHotel.getRooms().get(0);
+        HotelSearchPlanDto selectPlan = selectRoom.getPlans().get(0);
+        //构造机酒订单酒店信息
+        FitOrderHotelDto fitOrderHotelDto = new FitOrderHotelDto();
+        FitOrderHotel fitOrderHotel = new FitOrderHotel(fitOrderHotelDto);
+        fitOrderHotelDto = fitOrderHotel.buildFitOrderHotelDto(selectHotel, selectRoom, selectPlan);
+        fitOrderHotelDto.setCheckin(DateUtils.parseDate(checkIn));
+        fitOrderHotelDto.setCheckout(DateUtils.parseDate(checkOut));
+        fitOrderHotelDto.setProductResource(ProductResource.VST);
+        fitOrderHotelDto.setCheckInCity(shoppingDto.getSearchRequest().getCityCode());
+        fitOrderHotelDtos.add(fitOrderHotelDto);
 	}
 
     

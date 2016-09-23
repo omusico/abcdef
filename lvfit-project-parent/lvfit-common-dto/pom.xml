@@ -43,6 +43,19 @@
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
+
+	  <!--<dependency>
+		  <groupId>com.lvmama.cat</groupId>
+		  <artifactId>lvf-cat-common</artifactId>
+		  <version>0.0.2-SNAPSHOT</version>
+		  <exclusions>
+			  <exclusion>
+				  <groupId>com.lvmama.cat</groupId>
+				  <artifactId>lvf-cat-pom</artifactId>
+			  </exclusion>
+		  </exclusions>
+	  </dependency>-->
+
 	</dependencies>
 	<build>
 		<plugins>

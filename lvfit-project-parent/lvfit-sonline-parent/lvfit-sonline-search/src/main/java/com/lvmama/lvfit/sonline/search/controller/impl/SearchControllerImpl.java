@@ -200,6 +200,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 
 		//1. 产品基本信息
 		model.addAttribute("basicInfo", respForm.getBasicInfo());
+		model.addAttribute("shoppingUuid", UUID.randomUUID().toString().replace("-",""));
 		if(StringUtils.isNotBlank(respForm.getBasicInfo().getProductShowName())){
 			String[] titles = basicInfo.getProductShowName().split(",");
 			model.addAttribute("mainTitle", titles[0]);
@@ -334,7 +335,6 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 	    model.addAttribute("additional", respForm.getAdditional());
 	    model.addAttribute("otherTicketMap", respForm.getOtherTicketMaps());
 	    model.addAttribute("insProducts", goodsInfo.getInsProducts());
-		model.addAttribute("shoppingUuid", UUID.randomUUID().toString().replace("-",""));
 	    if(respForm.getAdditional()!=null){
 	    	model.addAttribute("roomDiff", respForm.getAdditional().getRoomDiff());
 	    }

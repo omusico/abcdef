@@ -130,6 +130,9 @@
 				<if test="condition.departureCityName!=null and condition.departureCityName!=''">
 						AND DEPARTURE_CITY_NAME = #{condition.departureCityName,jdbcType=VARCHAR}
 				</if>
+				<if test="condition.isSelectedDeparture!=null and condition.isSelectedDeparture!=''">
+						AND IS_SELECTED_DEPARTURE = #{condition.isSelectedDeparture,jdbcType=VARCHAR}
+				</if>
 			</if>
 			ORDER BY A.ID ASC
 		<include refid="ORACLE.paginationEnd" />
@@ -143,6 +146,9 @@
 			</if>
 			<if test="condition.departureCityName!=null and condition.departureCityName!=''">
 					AND DEPARTURE_CITY_NAME = #{condition.departureCityName,jdbcType=VARCHAR}
+			</if>
+			<if test="condition.isSelectedDeparture!=null and condition.isSelectedDeparture!=''">
+					AND　IS_SELECTED_DEPARTURE = #{condition.isSelectedDeparture,jdbcType=VARCHAR}
 			</if>
 		</if>
     </select>

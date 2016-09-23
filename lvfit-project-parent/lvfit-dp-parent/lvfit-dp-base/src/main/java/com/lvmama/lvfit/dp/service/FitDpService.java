@@ -1,12 +1,12 @@
 package com.lvmama.lvfit.dp.service;
 
+import java.util.List;
+import java.util.Map;
+
+import com.lvmama.lvfit.common.dto.app.FitAppFlightRequest;
 import com.lvmama.lvfit.common.dto.app.FitAppHotelRequest;
-import com.lvmama.lvfit.common.dto.enums.BookingSource;
-import com.lvmama.lvfit.common.dto.enums.TripeType;
 import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.dto.request.FitFilterFlightRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
@@ -16,9 +16,6 @@ import com.lvmama.lvfit.common.dto.search.spot.SpotQueryRequest;
 import com.lvmama.lvfit.common.dto.search.spot.SpotSearchResult;
 import com.lvmama.lvfit.common.dto.search.spot.result.SpotSearchSpotDto;
 import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
-
-import java.util.List;
-import java.util.Map;
 
 
 public interface FitDpService {
@@ -44,8 +41,7 @@ public interface FitDpService {
 	 * @param bookingSource
      * @return
      */
-	Map<String,FlightSearchResult<FlightSearchFlightInfoDto>> getAllFlightInfos(TripeType tripeType,
-		String departureDate, String returnDate, String depCityCode, String arvCityCode, BookingSource bookingSource);
+	Map<String,FlightSearchResult<FlightSearchFlightInfoDto>> getAllFlightInfos(FitAppFlightRequest appFlightRequest);
 
 	/**
 	 * 查询酒店列表信息（新）

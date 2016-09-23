@@ -315,13 +315,13 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                 <dl class="user_dl">
                     <dt><span class="red">*</span> 中文姓名：</dt>
                     <dd>
-                        <input class="input js_yz js_goumai_name" onblur="checkUserName(this);" type_name="text" type="text" placeholder="姓名" value="${contacter.name}">
+                        <input class="input js_yz js_goumai_name" onblur="checkContactName(this);" type_name="text" type="text" placeholder="姓名" value="${contacter.name}">
                         <input type="hidden" name="receiverId" >
                         <input  type="hidden" name="certType">
 	                	<input  type="hidden" name="certNo">
 	                	<input  type="hidden" name="peopleType" >
 	                	<input  type="hidden" name="birthday">
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的姓名</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入姓名</span>
                     </dd>
                 </dl>
                 <dl class="user_dl">
@@ -329,7 +329,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dd>
                         <input class="input js_yz js_textBig" type_name="mobile" maxlength="11" type="text" value="${contacter.mobile}" placeholder="手机号码"  onblur="initContractData(this)">
                         <span class="ts_text">此手机号为接收短信所用，作为订购与取票凭证，请准确填写。</span>
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的手机号码</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入手机号码</span>
                     </dd>
                 </dl>
                 <dl class="user_dl">
@@ -337,7 +337,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dd>
                         <input class="input js_yz js_email" type_name="email" value="${contacter.email}" type="text" placeholder="邮箱">
                         <span class="ts_text">此邮箱地址为接收邮件所用，作为订购与取票凭证，请准确填写。</span>
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的邮箱地址</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入邮箱地址</span>
                     </dd>
                 </dl>
             </div><!--购买人--结束-->  
@@ -359,7 +359,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                         
                         <input type="hidden" name="receiverId" <#if passengers[i-1]??>  value =${passengers[i-1].passengerId} </#if>  >
                         <#if i == 1><span class="btn cbtn-default js_btn_copy">复制购买人信息</span></#if>
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的姓名</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入姓名</span>
                     </dd>
                 </dl>
                 <input type="hidden" name="email" value="">
@@ -378,7 +378,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dt><span class="red">*</span>手机号码：</dt>
                     <dd>
                         <input class="input js_yz js_textBig" type_name="mobile" maxlength="11" type="text"  placeholder="手机号码" <#if passengers[i-1]??>  value =${passengers[i-1].mobile} </#if> >
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的手机号码</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入手机号码</span>
                     </dd>
                 </dl>
                 <dl class="user_dl">
@@ -400,7 +400,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                     <dt><span class="red">*</span>出生日期：</dt>
                     <dd>
                         <input class="input js_birthday js_yz" type_name="birthday" type="text" readonly="readonly" <#if passengers[i-1]??>  value =${passengers[i-1].passengerBirthday} </#if> placeholder="yyyy-mm-dd"  onblur="blurIdAndBirthday(this,'birthday')">
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请选择出生日期</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入出生日期</span>
                     </dd>
                 </dl>
                 <h5 class="youwan_tit">游玩人${i}</h5>

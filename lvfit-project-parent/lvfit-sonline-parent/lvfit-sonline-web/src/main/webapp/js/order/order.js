@@ -38,6 +38,7 @@ function infoSubmit(shopingUUID,_adultCount,_childCount){
 }
 
 function callBackSubmit(shopingUUID,_adultCount,_childCount){
+	loginCallback();//先登录,再刷新登录用户信息
 	submit(shopingUUID,_adultCount,_childCount,true);
 	if(!checkBooking(_adultCount,_childCount)){
 	    location.reload();

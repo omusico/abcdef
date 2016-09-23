@@ -18,6 +18,7 @@ import com.lvmama.lvf.common.trace.TraceContext;
 import com.lvmama.lvfit.common.dto.enums.SymbolType;
 import com.lvmama.lvfit.common.dto.search.FitRecordSearchIndex;
 import com.lvmama.lvfit.solrClient.extend.FitMainSearchSolrClient;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +40,7 @@ import com.lvmama.lvf.common.utils.CustomizedPropertyPlaceholderConfigurer;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvfit.common.client.FitAggregateClient;
 import com.lvmama.lvfit.common.client.FitBusinessClient;
+import com.lvmama.lvfit.common.dto.app.FitAppFlightRequest;
 import com.lvmama.lvfit.common.dto.app.FitAppHotelRequest;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessType;
@@ -53,6 +55,7 @@ import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.dto.request.FitFilterFlightRequest;
 import com.lvmama.lvfit.common.dto.request.FlightBackQueryRequest;
 import com.lvmama.lvfit.common.dto.request.FlightToQueryRequest;
+import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
 import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
 import com.lvmama.lvfit.common.dto.search.FitSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
@@ -116,6 +119,10 @@ public class FitDpServiceImpl implements FitDpService{
 
         // 获取查询结果集
         FitSearchResult fitSearchResult = this.searchResult(request);
+        // 将搜索记录计入solr
+        long end = System.currentTimeMillis();
+        this.saveIndexToSolr(request, fitSearchResult, end - start);
+
         Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> distinctFlightMap = fitSearchResult.getDistinctFlightMap();
         FlightSearchResult<FlightSearchFlightInfoDto> toFlightInfos = distinctFlightMap.get(FlightTripType.DEPARTURE.name());
         if (toFlightInfos == null || CollectionUtils.isEmpty(toFlightInfos.getResults())) {
@@ -131,9 +138,6 @@ public class FitDpServiceImpl implements FitDpService{
         this.handleSearchResult(fitSearchResult, request.getAdultsCount(), request.getChildCount());
         // 构造购物车信息
         FitShoppingDto shoppingDto = this.genFitShoppingDto(request, fitSearchResult);
-        // 将搜索记录计入solr
-        long end = System.currentTimeMillis();
-        this.saveIndexToSolr(request, shoppingDto, end - start);
 
         return shoppingDto;
 	}
@@ -246,7 +250,8 @@ public class FitDpServiceImpl implements FitDpService{
 		//1. 构造任务执行参数以及生成执行组（机票、酒店）
 		TaskContext context = new TaskContext();
         context.put("request", request);
-        context.put("traceId",TraceContext.getTraceId());
+        //TraceContext.fromTaskContext(context);
+        context.put("tarceId", TraceContext.getTraceId());
 		TaskMainGroup<FitSearchResult> taskMainGroup = this.initTaskGroup(context);
 		
 		//2. 执行并发线程组并获取执行结果
@@ -298,27 +303,28 @@ public class FitDpServiceImpl implements FitDpService{
      * 构造index信息，将搜索记录放入solr
      * @return
      */
-    private void saveIndexToSolr(FitBaseSearchRequest fitSearchRequest, FitShoppingDto shoppingDto, long usedTime) {
+    private void saveIndexToSolr(FitBaseSearchRequest fitSearchRequest, FitSearchResult fitSearchResult, long usedTime) {
         StringBuilder errMsg = new StringBuilder();
         String SPLIT = "~~~~";
-        if (shoppingDto.getToFlightInfos() == null || CollectionUtils.isEmpty(shoppingDto.getToFlightInfos().getResults())) {
+        Map<String, FlightSearchResult<FlightSearchFlightInfoDto>> flightMap = fitSearchResult.getDistinctFlightMap();
+        if (flightMap.get(FlightTripType.DEPARTURE.name()) == null || CollectionUtils.isEmpty(flightMap.get(FlightTripType.DEPARTURE.name()).getResults())) {
             errMsg.append(NO_DEP_FLI_RESULT ).append(SPLIT);
         }
         if (fitSearchRequest.getTripType().equals(TripeType.WF.name())) {
-            if (shoppingDto.getBackFlightInfos() == null || CollectionUtils.isEmpty(shoppingDto.getBackFlightInfos().getResults())) {
-                errMsg.append(NO_RE_FLI_RESULT ).append(SPLIT);
+            if (flightMap.get(FlightTripType.RETURN.name()) == null || CollectionUtils.isEmpty(flightMap.get(FlightTripType.RETURN.name()).getResults())) {
+                errMsg.append(NO_RE_FLI_RESULT).append(SPLIT);
             }
         }
-        if (shoppingDto.getHotels() == null || CollectionUtils.isEmpty(shoppingDto.getHotels().getResults())) {
+        if (fitSearchResult.getHotelSearchResult() == null || CollectionUtils.isEmpty(fitSearchResult.getHotelSearchResult().getResults())) {
             errMsg.append(NO_HOTEL_RESULT).append(SPLIT);
         }
-        if (CollectionUtils.isEmpty(shoppingDto.getFlightInsuranceInfos())) {
+        if (CollectionUtils.isEmpty(fitSearchResult.getFlightInsuranceResult())) {
             errMsg.append(NO_FLIGHT_INSURANCE_RESULT).append(SPLIT);
         }
-        if (CollectionUtils.isEmpty(shoppingDto.getSpots())) {
+        if (CollectionUtils.isEmpty(fitSearchResult.getSpotSearchResult())) {
             errMsg.append(NO_SPOT_RESULT).append(SPLIT);
         }
-        if (CollectionUtils.isEmpty(shoppingDto.getInsurances())) {
+        if (CollectionUtils.isEmpty(fitSearchResult.getInsuranceResult())) {
             errMsg.append(NO_INSURANCE_RESULT).append(SPLIT);
         }
 
@@ -688,25 +694,26 @@ public class FitDpServiceImpl implements FitDpService{
 	private TaskGroup genTaskGroup(TaskContext taskContext) {
         FitBaseSearchRequest request = (FitBaseSearchRequest)taskContext.get("request");
         TaskGroup taskGroup = new TaskGroup();
-
-        this.addToFlightQueryTask(request, taskGroup);
+        this.addToFlightQueryTask(request, taskGroup,taskContext);
         if (request.getTripType().equals(TripeType.WF.name())) {
-            this.addBackFlightQueryTask(request, taskGroup);
+            this.addBackFlightQueryTask(request, taskGroup,taskContext);
         }
-        this.addFlightInsQueryTask(taskGroup);
-        this.addHotelQueryTask(request, taskGroup);
-        this.addSpotQueryTask(request, taskGroup);
-        this.addInsuranceQueryTask(request, taskGroup);
+        this.addFlightInsQueryTask(taskGroup,taskContext);
+        this.addHotelQueryTask(request, taskGroup,taskContext);
+        this.addSpotQueryTask(request, taskGroup,taskContext);
+        this.addInsuranceQueryTask(request, taskGroup,taskContext);
 
 		return taskGroup;
 	}
 
-    private void addToFlightQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup) {
+    private void addToFlightQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup,TaskContext context) {
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
 
-                TraceContext.setTraceId(context.get("traceId").toString());
+                //TraceContext.fromTaskContext(context);
+                TraceContext.setTraceId(context.get("tarceId").toString());
+
                 FlightToQueryRequest toflightQuery = new FlightToQueryRequest();
                 toflightQuery.setDepartureDate(DateUtils.parseDate(request.getDepartureTime()));
                 toflightQuery.setReturnDate(request.getReturnTime());
@@ -724,12 +731,14 @@ public class FitDpServiceImpl implements FitDpService{
         });
     }
 
-    private void addBackFlightQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup) {
+    private void addBackFlightQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup,TaskContext context) {
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
 
-                TraceContext.setTraceId(context.get("traceId").toString());
+                //TraceContext.fromTaskContext(context);
+                TraceContext.setTraceId(context.get("tarceId").toString());
+
                 FlightBackQueryRequest backflightQuery = new FlightBackQueryRequest();
                 backflightQuery.setDepartureDate(DateUtils.parseDate(request.getReturnTime()));
                 backflightQuery.setDepartureCityCode(request.getArrivalCityCode());
@@ -746,14 +755,15 @@ public class FitDpServiceImpl implements FitDpService{
         });
     }
 
-    private void addHotelQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup) {
+    private void addHotelQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup,TaskContext context) {
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
 
-                TraceContext.setTraceId(context.get("traceId").toString());
-                HotelQueryRequest hotelQueryReq = new HotelQueryRequest();
+                //TraceContext.fromTaskContext(context);
+                TraceContext.setTraceId(context.get("tarceId").toString());
 
+                HotelQueryRequest hotelQueryReq = new HotelQueryRequest();
                 hotelQueryReq.setCityCode(request.getCityCode());
                 hotelQueryReq.setCityName(request.getCityName());
                 hotelQueryReq.setCityDistrictId(VSTDistrictCityEnum.getDistrictId(request.getCityCode()).toString());
@@ -773,12 +783,14 @@ public class FitDpServiceImpl implements FitDpService{
         });
     }
 
-    private void addFlightInsQueryTask(TaskGroup taskGroup) {
+    private void addFlightInsQueryTask(TaskGroup taskGroup,TaskContext context) {
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
 
-                TraceContext.setTraceId(context.get("traceId").toString());
+                //TraceContext.fromTaskContext(context);
+                TraceContext.setTraceId(context.get("tarceId").toString());
+
                 List<InsuranceInfoDto> flightInsurances = null;
                 try {
                     flightInsurances = fitAggregateClient.searchFlightInsurance();
@@ -791,12 +803,14 @@ public class FitDpServiceImpl implements FitDpService{
         });
     }
 
-    private void addSpotQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup) {
+    private void addSpotQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup,TaskContext context) {
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
 
-                TraceContext.setTraceId(context.get("traceId").toString());
+                //TraceContext.fromTaskContext(context);
+                TraceContext.setTraceId(context.get("tarceId").toString());
+
                 SpotQueryRequest spotQueryRequest = new SpotQueryRequest();
                 String cityCode = request.getCityCode();
                 Long districtId = VSTDistrictCityEnum.getDestId(cityCode);
@@ -820,12 +834,14 @@ public class FitDpServiceImpl implements FitDpService{
         });
     }
 
-    private void addInsuranceQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup) {
+    private void addInsuranceQueryTask(final FitBaseSearchRequest request, TaskGroup taskGroup,TaskContext context) {
         taskGroup.addTask(new Task<Boolean>() {
             @Override
             public Boolean execute(TaskContext context) {
 
-                TraceContext.setTraceId(context.get("traceId").toString());
+                //TraceContext.fromTaskContext(context);
+                TraceContext.setTraceId(context.get("tarceId").toString());
+
                 InsuranceQueryRequest insuranceQueryRequest = new InsuranceQueryRequest();
                 insuranceQueryRequest.setCurrentProductId(636165L);
                 insuranceQueryRequest.setDistributorId(3L);
@@ -957,21 +973,13 @@ public class FitDpServiceImpl implements FitDpService{
 
     /**
      * 查询机票信息，并处理结果集
-     * @param tripeType
-     * @param departureDate
-     * @param returnDate
-     * @param depCityCode
-     * @param arvCityCode
-     * @param bookingSource
      * @return
      */
     @Override
-    public Map<String,FlightSearchResult<FlightSearchFlightInfoDto>> getAllFlightInfos(TripeType tripeType,
-        String departureDate, String returnDate, String depCityCode, String arvCityCode, BookingSource bookingSource) {
+    public Map<String,FlightSearchResult<FlightSearchFlightInfoDto>> getAllFlightInfos(FitAppFlightRequest appFlightRequest) {
         Map<String,FlightSearchResult<FlightSearchFlightInfoDto>> map = new HashMap<String, FlightSearchResult<FlightSearchFlightInfoDto>>();
 
-        Map<String, Object> requestMap = this.genFlightRequestMap(tripeType, departureDate, returnDate, depCityCode, arvCityCode,
-            bookingSource);
+        Map<String, Object> requestMap = this.genFlightRequestMap(appFlightRequest);
         TaskMainGroup<Boolean> mainGroup = new TaskMainGroup<Boolean>();
         final TaskContext context = new TaskContext();
 
@@ -991,44 +999,44 @@ public class FitDpServiceImpl implements FitDpService{
         }
         mainGroup.putContext(context).getResult(requestMap.keySet().size());
 
-        FlightSearchResult<FlightSearchFlightInfoDto> depFlightInfos = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get(
-            FlightTripType.DEPARTURE.name());
-
-        FitSearchRequest searchRequest = new FitSearchRequest();
-
-
+        FlightSearchResult<FlightSearchFlightInfoDto> depFlightInfos = (FlightSearchResult<FlightSearchFlightInfoDto>)context.get( FlightTripType.DEPARTURE.name());
         map.put(FlightTripType.DEPARTURE.name(), depFlightInfos);
-        if (tripeType.equals(TripeType.WF)) {
-            FlightSearchResult<FlightSearchFlightInfoDto> arvFlightInfos =
-                (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FlightTripType.RETURN.name());
+        if (appFlightRequest.getTripeType().equals(TripeType.WF)) {
+            FlightSearchResult<FlightSearchFlightInfoDto> arvFlightInfos = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FlightTripType.RETURN.name());
             map.put(FlightTripType.RETURN.name(), arvFlightInfos);
         }
+        for (String key : map.keySet()) {
+            FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = map.get(key);
+            if (flightSearchResult!= null && CollectionUtils.isNotEmpty(flightSearchResult.getResults())) {
+                flightSearchResult.setResults(this.handleFlights(flightSearchResult.getResults(), appFlightRequest.getAdultCount(), appFlightRequest.getChildCount()));
+            }
+        }
+
         return map;
     }
 
-    private Map<String, Object> genFlightRequestMap(TripeType tripeType, String departureDate, String returnDate,
-        String depCityCode, String arvCityCode, BookingSource bookingSource) {
+    private Map<String, Object> genFlightRequestMap(FitAppFlightRequest appFlightRequest) {
         Map<String, Object> requestMap = new HashMap<String, Object>();
 
         FlightQueryRequest toFlightQuery = new FlightQueryRequest();
-        toFlightQuery.setDepartureDate(DateUtils.parseDate(departureDate));
-        toFlightQuery.setReturnDate(returnDate);
-        toFlightQuery.setDepartureCityCode(depCityCode);
-        toFlightQuery.setArrivalCityCode(arvCityCode);
-        toFlightQuery.setDepartureAirportCode(depCityCode);
-        toFlightQuery.setArrivalAirportCode(arvCityCode);
-        toFlightQuery.setBookingSource(bookingSource);
+        toFlightQuery.setDepartureDate(DateUtils.parseDate(appFlightRequest.getDepartureDate()));
+        toFlightQuery.setReturnDate(appFlightRequest.getReturnDate());
+        toFlightQuery.setDepartureCityCode(appFlightRequest.getDepCityCode());
+        toFlightQuery.setArrivalCityCode(appFlightRequest.getArvCityCode());
+        toFlightQuery.setDepartureAirportCode(appFlightRequest.getDepCityCode());
+        toFlightQuery.setArrivalAirportCode(appFlightRequest.getArvCityCode());
+        toFlightQuery.setBookingSource(appFlightRequest.getBookingSource());
         toFlightQuery.setFacet(true);
         requestMap.put(FlightTripType.DEPARTURE.name(), toFlightQuery);
-        if (tripeType.equals(TripeType.WF)) {
+        if (appFlightRequest.getTripeType().equals(TripeType.WF)) {
             FlightQueryRequest backFlightQuery = new FlightQueryRequest();
-            backFlightQuery.setDepartureDate(DateUtils.parseDate(returnDate));
-            backFlightQuery.setReturnDate(departureDate);
-            backFlightQuery.setDepartureCityCode(arvCityCode);
-            backFlightQuery.setArrivalCityCode(depCityCode);
-            backFlightQuery.setDepartureAirportCode(arvCityCode);
-            backFlightQuery.setArrivalAirportCode(depCityCode);
-            backFlightQuery.setBookingSource(bookingSource);
+            backFlightQuery.setDepartureDate(DateUtils.parseDate(appFlightRequest.getReturnDate()));
+            backFlightQuery.setReturnDate(appFlightRequest.getDepartureDate());
+            backFlightQuery.setDepartureCityCode(appFlightRequest.getArvCityCode());
+            backFlightQuery.setArrivalCityCode(appFlightRequest.getDepCityCode());
+            backFlightQuery.setDepartureAirportCode(appFlightRequest.getArvCityCode());
+            backFlightQuery.setArrivalAirportCode(appFlightRequest.getDepCityCode());
+            backFlightQuery.setBookingSource(appFlightRequest.getBookingSource());
             backFlightQuery.setFacet(true);
             requestMap.put(FlightTripType.RETURN.name(), backFlightQuery);
         }

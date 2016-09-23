@@ -162,7 +162,7 @@ public class CalculateAmountRequest implements Serializable {
 				FlightTicketPriceDto flightTicketPriceDto = new FlightTicketPriceDto();
 				FitFlightTicketPriceDto fitFlightTicketPriceDto = new FitFlightTicketPriceDto(); 
 				if(passengerDetailDto.getPassengerType()==PassengerType.CHILDREN){
-					fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassType()).getFlightTicketPriceDto();
+					fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassCode()).getFlightTicketPriceDto();
 				}else{
 					fitFlightTicketPriceDto = selectSearchSeatDto.getFlightTicketPriceDto();
 				}

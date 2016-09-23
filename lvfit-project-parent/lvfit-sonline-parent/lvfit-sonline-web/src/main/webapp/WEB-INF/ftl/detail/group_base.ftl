@@ -6,7 +6,7 @@
     <input type="hidden" id="bizCategoryId" name="bizCategoryId" value="${basicInfo.bizCategoryId}">
     <input type="hidden" id="isMuiltDeparture" name="isMuiltDeparture" value="${basicInfo.muiltDpartureFlag?string}">
     <input type="hidden" id="startDistrictId" name="startDistrictId" value="${basicInfo.defDeparture.departureCityDistrictId}">
-    <input type="hidden" id="shoppingUuid" name="shoppingUuid" value="${basicInfo.shoppingUuid}">
+    <input type="hidden" id="shoppingUuid" name="shoppingUuid" value="${shoppingUuid}">
     <input type="hidden" id="depCityCode" name="depCityCode" value="${basicInfo.defDeparture.departureCityCode}">
     <input type="hidden" id="arvCityCode" name="arvCityCode" value="${basicInfo.defDeparture.arrivalCityCode}">
     <input type="hidden" id="routeNum" name="routeNum" value="${basicInfo.routeNum}">

@@ -253,13 +253,22 @@ public class FitSdpServiceImpl implements FitSdpService {
 	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_GOODS_E)
 	public FitSdpGoodsDto searchGoodsInfo(FitSdpGoodsRequest goodsRequest) {
 
-		Object[] vars = new Object[]{goodsRequest.getProductId(),goodsRequest.getBizCategoryId(),
-				DateUtils.formatDate(goodsRequest.getDepartDate()),goodsRequest.getDepCityCode(),goodsRequest.getArvCityCode()};
 		List<FitSdpProductTrafficRulesDto> trafficRules = fitBusinessClient.getProductTrafficRulesByProductId(goodsRequest.getProductId());
 		Map<String,FitSdpProductTrafficRulesDto> trafficRuleMap = new HashMap<String, FitSdpProductTrafficRulesDto>();
-		if(CollectionUtils.isNotEmpty(trafficRules)){
+
+		String depDateStr = "";
+		String arvDateStr = "";
+		if(CollectionUtils.isNotEmpty(trafficRules)) {
 			for (FitSdpProductTrafficRulesDto trafficRulesDto : trafficRules) {
 				trafficRuleMap.put(trafficRulesDto.getTrafficTripeType().name(), trafficRulesDto);
+
+				if (trafficRulesDto.getTrafficTripeType().equals(TrafficTripeType.GO_WAY)) {
+					Date depDate = DateUtils.getDateAfterDateDays(goodsRequest.getDepartDate(), trafficRulesDto.getRouteDayNum() - 1);
+					depDateStr = DateUtils.formatDate(depDate, DateUtils.YYYY_MM_DD);
+				} else {
+					Date arvDate = DateUtils.getDateAfterDateDays(goodsRequest.getDepartDate(), trafficRulesDto.getRouteDayNum() - 1);
+					arvDateStr = DateUtils.formatDate(arvDate, DateUtils.YYYY_MM_DD);
+				}
 			}
 		}
 		// 机票查询请求和VST商品的请求信息
@@ -311,7 +320,7 @@ public class FitSdpServiceImpl implements FitSdpService {
 		FlightSearchResult<FlightSearchFlightInfoDto> backFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_BACK_FLIGHT_QUERY.name());
 		backFlightInfo = this.handleFlightSearchResult(backFlightSearchResult, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()), goodsRequest);
 		
-		//查询完毕两个单程之后，再单独查询包机信息.
+		//查询包机信息.
 		FlightSearchResult<FlightSearchFlightInfoDto> goAndBackFlightSearchResult = (FlightSearchResult<FlightSearchFlightInfoDto>) context.get(FitBusinessType.FIT_SDP_GO_AND_BACK_FLIGHT_QUERY.name());
 		List<FlightSearchFlightInfoDto> charterFlightInfos =  this.handleCharterFlightResult(goAndBackFlightSearchResult, trafficRuleMap.get(TrafficTripeType.GO_WAY.name())
 				, trafficRuleMap.get(TrafficTripeType.BACK_WAY.name()),goodsRequest); 
@@ -324,24 +333,16 @@ public class FitSdpServiceImpl implements FitSdpService {
 
 		if(null==goods){
 			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_GOODS,goodsRequest.getProductId());
-		}
-
-		/*if(goodsRequest.getBizCategoryId()== BizEnum.BIZ_CATEGORY_TYPE.category_route_group.getCategoryId() &&null==goods.getLocalTrip()){
-			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_LOCAL_TRIP,vars);
-		}
-
-		if(goodsRequest.getBizCategoryId()==BizEnum.BIZ_CATEGORY_TYPE.category_route_freedom.getCategoryId()&&CollectionUtils.isEmpty(goods.getHotelCombo())){
-			throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_HOTEL_COMBO, vars);
-		}*/
-
+		} 
+		
 		//如果没有包机信息，又没有普通的去程或者返程，就抛错.
 		if(CollectionUtils.isEmpty(charterFlightInfos)){
 			if(CollectionUtils.isEmpty(goFlightInfo)){
-				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_DEP_FLIGHT, vars);
+				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_DEP_FLIGHT, goodsRequest.getProductId(), goodsRequest.getBizCategoryId(), depDateStr, goodsRequest.getDepCityCode(), goodsRequest.getArvCityCode());
 			}
 	
 			if(CollectionUtils.isEmpty(backFlightInfo)){
-				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_ARR_FLIGHT, vars);
+				throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_ARR_FLIGHT, goodsRequest.getProductId(), goodsRequest.getBizCategoryId(), arvDateStr, goodsRequest.getDepCityCode(), goodsRequest.getArvCityCode());
 			}
 		}
 
@@ -672,9 +673,7 @@ public class FitSdpServiceImpl implements FitSdpService {
 	private void putInfoToCache4CalculatePrice(FitSdpGoodsRequest goodsRequest,
             FitSdpGoodsDto searchGoodsInfo) {
         // --机票--
-        FitSdpShoppingDto shoppingDto = new FitSdpShoppingDto();
-        //选择的航班信息.先添加去程，再添加返程.
-        List<FlightSearchFlightInfoDto> list = new ArrayList<FlightSearchFlightInfoDto>();
+        FitSdpShoppingDto shoppingDto = new FitSdpShoppingDto(); 
         if (CollectionUtils.isNotEmpty(searchGoodsInfo.getDepFlightInfos())) {
             shoppingDto.setDepFlightInfos(searchGoodsInfo.getDepFlightInfos()); 
         }
@@ -951,25 +950,15 @@ public class FitSdpServiceImpl implements FitSdpService {
 			//剔除不是包机切位的航班信息.
 			CharterFlightFilterUtil.filterCharterFlight(flightInfo,false);		 
 			//根据交通规则过滤航班
-			CharterFlightFilterUtil.filterFlightByTrafficRules(flightInfo, goRule,backRule);
-			//如果有乘客是儿童，过滤没有儿童舱位的航班或者舱位----包机没有儿童价格。
-//			if(goodsRequest.getChildQuantity().intValue() > 0){
-//				CharterFlightFilterUtil.filterNoChildFlight(flightInfo);
-//			}
+			CharterFlightFilterUtil.filterFlightByTrafficRules(flightInfo, goRule,backRule); 
 			// 过滤库存不足的航班
 			CharterFlightFilterUtil.filterUnderStockFlight(goodsRequest, flightInfo);
 			// 组装对应的返程航班-政策id-舱位的映射关系list.
 			flightInfo = CharterFlightFilterUtil.setNewFlightDtoes(flightInfo); 
 			// 按后台设置的排序规则排序
-			CharterFlightFilterUtil.sortByTrafficRule(flightInfo, goRule,backRule);
-			// 计算差价
-			CharterFlightFilterUtil.calculateDiffPrice(flightInfo, goodsRequest.getAdultQuantity(), goodsRequest.getChildQuantity(), goodsRequest.getQuantity());
-			// 设置过滤key--没有过滤的界面设置。
-			//this.setFilterKey(flightInfo);
+			CharterFlightFilterUtil.sortByTrafficRule(flightInfo, goRule,backRule);  
 			// 设置隔夜航班
-			CharterFlightFilterUtil.setOverNightFlightFlag(flightInfo);
-			// 过滤筛选条件---没有条件过滤
-			//this.filterFacet(flightInfo, flightResult.getFacetMap());
+			CharterFlightFilterUtil.setOverNightFlightFlag(flightInfo); 
 
 			return flightInfo;
 		}
