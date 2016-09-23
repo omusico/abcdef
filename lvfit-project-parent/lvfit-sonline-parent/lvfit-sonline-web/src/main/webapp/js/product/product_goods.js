@@ -342,7 +342,6 @@ $(function(){
 
      //包机里面的：选择按钮
     $('.js_fh_select').live('click',function(){
-        console.log(345);
         $(this).hide().siblings('.btn').css('display','inline-block');
         $(this).parents('.traffic_list').addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
 
