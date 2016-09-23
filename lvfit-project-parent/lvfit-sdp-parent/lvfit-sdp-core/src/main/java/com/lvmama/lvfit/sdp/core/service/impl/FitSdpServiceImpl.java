@@ -853,7 +853,7 @@ public class FitSdpServiceImpl implements FitSdpService {
                     Collections.sort(flightInfo.getSeats(), new Comparator<FlightSearchSeatDto>() {
                         @Override
                         public int compare(FlightSearchSeatDto o1, FlightSearchSeatDto o2) {
-                            return o1.getSalesPrice().compareTo(o2.getSalesParPrice());
+                            return o1.getSalesPrice().compareTo(o2.getSalesPrice());
                         }
                     });
                 }

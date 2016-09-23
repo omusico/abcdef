@@ -44,6 +44,7 @@ import com.lvmama.lvfit.common.dto.insurance.InsuranceInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.FlightQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.FlightSearchResult;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.utils.FitLoggerHandler;
 
 @Component
@@ -91,6 +92,7 @@ public class FitFlightClient {
 		String url = command.url(lvfaggregateBaseurl);
 
 		String result = restClient.post(url, String.class, request);
+		MockUtil.writeFile("d:\\flightrequest\\"+System.currentTimeMillis()+".txt", result);
 		if(StringUtils.isNotBlank(result)) {
 			try {
 				ObjectMapper objectMapper = JSONMapper.getInstance();
@@ -149,6 +151,7 @@ public class FitFlightClient {
 		FlightClientPath command = FlightClientPath.AMOUNT_CALCULATE;
 		String url = command.url(businessBaseUrl);
 		try {
+			MockUtil.writeJsonToFile("d:\\calc\\"+System.currentTimeMillis()+".txt", request);
 			String resultString = restClient.post(url,String.class,request);
 			if (null == resultString && "".equals(resultString)) {
 				return null;

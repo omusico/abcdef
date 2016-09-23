@@ -47,7 +47,7 @@
             <ul class="info_ul">
                 <li class="info_li1"><i class="line_icon_fan">返</i></li>
                 <li class="info_li2">
-                    <i class="fh-icon-ac fh-icon-ac- ${arvFlightInfo.returnFlightInfoDto[0].carrierCode}"></i>
+                    <i class="fh-icon-ac fh-icon-ac-${arvFlightInfo.returnFlightInfoDto[0].carrierCode}"></i>
                      ${arvFlightInfo.returnFlightInfoDto[0].carrierName}
                     <p class="fh_info_p"> ${arvFlightInfo.returnFlightInfoDto[0].flightNo}<span class="fh_type" data-code="${arvFlightInfo.returnFlightInfoDto[0].airplane.code}" data-name="${arvFlightInfo.returnFlightInfoDto[0].airplane.name}"
                         data-type="${arvFlightInfo.returnFlightInfoDto[0].airplane.airplaneType}" data-min="${arvFlightInfo.returnFlightInfoDto[0].airplane.minSeats}"

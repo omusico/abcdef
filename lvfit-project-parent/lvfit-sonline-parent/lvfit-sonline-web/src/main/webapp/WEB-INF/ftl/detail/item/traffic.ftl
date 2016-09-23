@@ -3,6 +3,9 @@
 <!-- 交通模板开始 -->
 <input type="hidden" id="selectDepFlightNo" name="selectDepFlightNo" value="${sumDepFlightInfos[0].flightNo}"/>
 <input type="hidden" id="selectArvFlightNo" name="selectArvFlightNo" value="${sumArvFlightInfos[0].flightNo}"/>
+<input type="hidden" id="last_selectDepFlightNo" name="last_selectDepFlightNo" value=""/>
+<input type="hidden" id="last_selectArvFlightNo" name="last_selectArvFlightNo" value=""/>
+<input type="hidden" id="last_selectSaleType" name="last_selectSaleType" value=""/>
 <input type="hidden" id="selectSaleType" name="selectSaleType" value="${sumDepFlightInfos[0].saleType}"/>
 <input type="hidden" id="toSortRuleType" name="toSortRuleType" value="${toSortRule.sortRuleType?string}"/>
 <input type="hidden" id="backSortRuleType" name="backSortRuleType" value="${backSortRule.sortRuleType?string}"/>

@@ -742,8 +742,8 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 							logger.error(ExceptionUtils.getStackTrace(e));
 						}
 					}else if("differentPrice".equals(req.getSortStr())){//比较差价    
-						BigDecimal basePrice1 = CharterFlightFilterUtil.calcBasePrice(dto1, dto1.getReturnFlightInfoDto().get(0), true, 1L, 0L);
-						BigDecimal basePrice2 = CharterFlightFilterUtil.calcBasePrice(dto2, dto2.getReturnFlightInfoDto().get(0), true, 1L, 0L);
+						BigDecimal basePrice1 = dto1.getSeats().get(0).getSalesPrice();
+						BigDecimal basePrice2 = dto2.getSeats().get(0).getSalesPrice();
 					 	if("ASC".equals(req.getSortType().toUpperCase())){
 							return basePrice1.compareTo(basePrice2);
 						}else{

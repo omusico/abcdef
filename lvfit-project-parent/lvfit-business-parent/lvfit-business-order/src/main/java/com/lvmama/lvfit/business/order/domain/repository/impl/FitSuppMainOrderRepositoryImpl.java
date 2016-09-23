@@ -79,7 +79,7 @@ public class FitSuppMainOrderRepositoryImpl implements FitSuppMainOrderRepositor
 		
 		//对于包机而言，子单是直接关联在主单上面的
 		List<FitOrderPassengerDto> passengers = fitOrderPassengerRepository.queryByFkId(suppMainOrderDto.getFitMainOrderId());
-		List<FitSuppFlightOrderDto>  charsetFlights = fitSuppFlightOrderRepository.queryByFkId(suppMainOrderDto.getId());
+		List<FitSuppFlightOrderDto>  charsetFlights = fitSuppFlightOrderRepository.queryByFkId(-suppMainOrderDto.getId()); 
 		suppMainOrderDto.setSuppFlightOrderDtos(charsetFlights);
 		suppMainOrderDto.setAllPassengerDtos(passengers);
 		

@@ -469,7 +469,7 @@
 
                         <input type="hidden" name="receiverId" value=""  >
                         <!--<#if i == 1><span class="btn cbtn-default js_btn_copy">复制购买人信息</span></#if>-->
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的姓名</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入姓名</span>
                     </dd>
                 </dl>
                 <dl class="user_dl">
@@ -505,7 +505,7 @@
                     <dt><span class="red">*</span>出生日期：</dt>
                     <dd>
                         <input class="input js_birthday js_yz" type_name="birthday" type="text" readonly="readonly" value="" placeholder="yyyy-mm-dd"  onblur="blurIdAndBirthday(this,'birthday')">
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请选择出生日期</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入出生日期</span>
                     </dd>
                 </dl>
                 <h5 class="youwan_tit">游玩人${i}</h5>
@@ -522,13 +522,13 @@
                 <dl class="user_dl">
                     <dt><span class="red">*</span> 中文姓名：</dt>
                     <dd>
-                        <input class="input js_yz js_goumai_name" onblur="checkUserName(this);" type_name="text" type="text" placeholder="姓名" value="">
+                        <input class="input js_yz js_goumai_name" onblur="checkContactName(this);" type_name="text" type="text" placeholder="姓名" value="">
                         <input type="hidden" name="receiverId" >
                         <input  type="hidden" name="certType">
                         <input  type="hidden" name="certNo">
                         <input  type="hidden" name="peopleType" >
                         <input  type="hidden" name="birthday">
-                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入正确的姓名</span>
+                        <span class="error_text"><i class="tip-icon tip-icon-error"></i>请输入姓名</span>
                     </dd>
                 </dl>
                 <dl class="user_dl">

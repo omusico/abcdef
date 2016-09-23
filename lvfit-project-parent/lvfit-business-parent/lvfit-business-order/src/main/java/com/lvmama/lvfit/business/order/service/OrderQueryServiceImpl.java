@@ -203,7 +203,9 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 			//保存包机的航班子单信息到数据库
 			List<FitSuppFlightOrderDto> suppFlightOrderDtos = suppMainOrderDto.getSuppFlightOrderDtos();
 			for (FitSuppFlightOrderDto fitSuppFlightOrderDto : suppFlightOrderDtos) { 
-				fitSuppFlightOrderDto.setSaleType(SuppSaleType.DomesticProduct.name());
+				fitSuppFlightOrderDto.setSaleType(SuppSaleType.DomesticProduct.name()); 
+				Long newOrderId = 0-fitSuppFlightOrderDto.getSuppMainOrderId();
+				fitSuppFlightOrderDto.setSuppMainOrderId(newOrderId);
 				fitSuppFlightOrderRepository.save(fitSuppFlightOrderDto); 
 			}
 		}
@@ -221,7 +223,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
         return orderMainDto;
-	}
+	} 
 
 	@Override
 	public List<FitOrderOpLogForm> queryOrderLogList(

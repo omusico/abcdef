@@ -271,12 +271,12 @@ $(function(){
         initSortType(); //初始化更换交通排序规则
         iniChangeFlightDialog();
         var $content = $("#traffic_change");
-
+        console.log("274...");
         pandora.dialog({
             title: "更换其他机票",
             content: $content,
             width:1120,
-            height: 660 
+            height: 660  
         });
     });
 
@@ -551,8 +551,45 @@ function getkeyStr(data) {
     }
     return key;
 }
+
+/** 在详情页展示选择的去程航班
+ */
+function showSelectedDep(f){
+    $("[tag=charsetflight]").hide();
+     $(".depFlightBox").each(function() {
+        var no = $(this).data("flightno");
+        if (no === f) {
+            $(this).show();
+            $(this).siblings(".depFlightBox").hide();
+            return;
+        }
+    });
+}
+
+/** 在详情页展示选择的返程航班
+ */
+function showSelectedArv(f){
+    $("[tag=charsetflight]").hide();
+    $(".arvFlightBox").each(function() {
+        var no = $(this).data("flightno");
+        if (no === f) {
+            $(this).show();
+            $(this).siblings(".arvFlightBox").hide();
+            return;
+        }
+    });
+}
+
+/** 清空辅助input
+ */
+function initLastInputs(){
+        $('#last_selectDepFlightNo').val(''); 
+        $('#last_selectArvFlightNo').val(''); 
+        $('#last_selectSaleType').val('');
+}
+
 // 提交更换航班ajax请求
-function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
+function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) { 
     //包机
     if (tripType === "CHARTER") { 
         $(".arvFlightBox").hide();
@@ -569,56 +606,84 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
         $("#selectDepFlightNo").val(flightNo);
         $("#selectArvFlightNo").val(backFlightNo);  
         $("#selectSaleType").val('DomesticProduct');
+
+        initLastInputs(); 
     }
-    if (tripType === "DEPARTURE") { 
-        $("[tag=charsetflight]").hide();
-        $(".depFlightBox").each(function() {
-            var no = $(this).data("flightno");
-            if (no === flightNo) {
-                $(this).show();
-                $(this).siblings(".depFlightBox").hide();
-                return;
+    if (tripType === "DEPARTURE") {    
+        //如果之前是包机航班，就暂存在一个临时隐藏域里面，后面才进行实际的更改页面的显示.
+        if($("#selectSaleType").val()=='DomesticProduct'){ 
+            var last_SaleType =  $('#last_selectSaleType').val();
+            var last_arv =  $('#last_selectArvFlightNo').val();
+            //如果之前选择了返程
+            if(last_SaleType=='common'&&last_arv!=''){
+                $("#selectArvFlightNo").val(last_arv); 
+                $("#selectSaleType").val('common');  
+                $("#selectDepFlightNo").val(flightNo); 
+
+                showSelectedArv(last_arv);
+                showSelectedDep(flightNo);
+                initLastInputs(); 
+            }else{
+                $('#last_selectDepFlightNo').val(flightNo); 
+                $('#last_selectSaleType').val('common'); 
+                //只将对应的航程的航班进行排序，做一个选择的假象返回.不改变缓存中实际选择的航班，还是包机
+                submitChangeFlight(flightNo,tripType,'',0);
+                return ;
             }
-        });
-        $("#selectDepFlightNo").val(flightNo);  
-        if($("#selectSaleType").val()=='DomesticProduct'){
-            $("#selectArvFlightNo").val('');  
-            $("#selectSaleType").val('common'); 
+        }else{
+            $("#selectDepFlightNo").val(flightNo); 
+            $("#selectSaleType").val('common');  
+
+            showSelectedDep(flightNo);
         }
-        $("#selectSaleType").val('common');
     }
-    if (tripType === "RETURN") {
-        $("[tag=charsetflight]").hide();
-        $(".arvFlightBox").each(function() {
-            var no = $(this).data("flightno");
-            if (no === flightNo) {
-                $(this).show();
-                $(this).siblings(".arvFlightBox").hide();
-                return;
+    if (tripType === "RETURN") { 
+        if($("#selectSaleType").val()=='DomesticProduct'){ 
+            var last_SaleType =  $('#last_selectSaleType').val();
+            var last_dep =  $('#last_selectDepFlightNo').val();
+            //如果之前选择了去程
+            if(last_SaleType=='common'&&last_dep!=''){
+                $("#selectDepFlightNo").val(last_dep); 
+                $("#selectSaleType").val('common');  
+                $("#selectArvFlightNo").val(flightNo); 
+
+                showSelectedArv(flightNo);
+                showSelectedDep(last_dep);
+                initLastInputs(); 
+            }else{
+                $('#last_selectDepFlightNo').val(flightNo); 
+                $('#last_selectSaleType').val('common'); 
+                //只将对应的航程的航班进行排序，做一个选择的假象返回.不改变缓存中实际选择的航班，还是包机
+                submitChangeFlight(flightNo,tripType,'',0);
+                return ;
             }
-        });
-        $("#selectArvFlightNo").val(flightNo); 
-        if($("#selectSaleType").val()=='DomesticProduct'){
-            $("#selectDepFlightNo").val('');  
-            $("#selectSaleType").val('common'); 
-        }
-        $("#selectSaleType").val('common');
+        }else{
+            
+            $("#selectArvFlightNo").val(flightNo); 
+            $("#selectSaleType").val('common');
+
+            showSelectedArv(flightNo);
+        } 
     }
     
+    submitChangeFlight(flightNo,tripType,backFlightNo,1);
+}
+ 
+function submitChangeFlight(flightNo,tripType,backFlightNo,changeFlight){
     $.ajax({
         url: _data._contextPath + "/changeFlight",
         type:"post",
         data: {
             shoppingUuid : $("#shoppingUuid").val(),
             flightNo : flightNo,
+            changeFlight:changeFlight, 
             charsetBackflightNo : backFlightNo,
             flightTripType : tripType
         },
         success: function(data) {  
             var selectSaleType_v = $('#selectSaleType').val();
             if (tripType === "DEPARTURE") {
-                $("#dep_traffic_list").html(data);
-                var $dd = $("#dep_traffic_list .traffic_list");
+                $("#dep_traffic_list").html(data); 
                 if(selectSaleType_v!='DomesticProduct'){ 
                     $("#dep_traffic_list .traffic_list").each(function(){
                         if ($(this).data("flightno") === flightNo) {
@@ -628,10 +693,15 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                         }
                     });
                 }
+                //如果不是特殊情况，就计算总价
+                if($('#last_selectSaleType').val()!='common'){
+                    initPriceInBaseInfo();
+                }  
             }
+
             if (tripType === "RETURN") {
                 $("#arv_traffic_list").html(data);
-                 if(selectSaleType_v!='DomesticProduct'){ 
+                if(selectSaleType_v!='DomesticProduct'){ 
                     $("#arv_traffic_list .traffic_list").each(function(){
                         if ($(this).data("flightno") === flightNo) {
                             $(this).find(".btn-dis").css('display','inline-block').siblings('.btn-orange').hide();
@@ -640,6 +710,10 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                         }
                     });
                 }
+
+                if($('#last_selectSaleType').val()!='common'){
+                    initPriceInBaseInfo();
+                }  
             }
             if (tripType === "CHARTER") {
                 $("#charset_flight_list").html(data);
@@ -652,12 +726,13 @@ function chgFlightAjaxSubmit(flightNo, tripType,backFlightNo) {
                         }
                     });
                 }
+
+                initPriceInBaseInfo();
             }
-            initPriceInBaseInfo();
+            
         }
     });
 }
- 
 
 $(function() {
     $(".replace-hotelCombo-btn").live("click", showHotelComboDialog );
@@ -745,38 +820,37 @@ $("#backFliBtn").live("click", function(e) {
 });
 
 function initSortType() {
-    window.sortFlight={};
-    var toSortRuleType = $("#toSortRuleType").val();
-    var backSortRuleType = $("#backSortRuleType").val(); 
-    if (toSortRuleType === "SORT_BY_DEPTIME_ASC") {
-        sortFlight.depTimeSortType = "ASC";
-        sortFlight.depPriceSortType= "ASC";
-        sequenceFlight("departureTime", "DEPARTURE", "ASC");
-        sequenceFlight("departureTime", "CHARTER", "ASC");
-        $("#dep_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active"); 
-        $("#charset_flight_list").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active");
-    }
-    if (toSortRuleType === "SORT_BY_PRICE_ASC") {
-        sortFlight.depTimeSortType = "ASC";
-        sortFlight.depPriceSortType= "ASC";
-        sequenceFlight("differentPrice", "DEPARTURE", "ASC");
-        sequenceFlight("differentPrice", "CHARTER", "ASC");
-        $("#dep_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active"); 
-        $("#charset_flight_list").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active");
-    }
-    if (backSortRuleType === "SORT_BY_DEPTIME_ASC") {
-        sortFlight.arrTimesortType = "ASC";
-        sortFlight.arrPricesortType= "ASC";
-        sequenceFlight("departureTime", "RETURN", "ASC"); 
-        $("#arv_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active");  
-    }
-    if (backSortRuleType === "SORT_BY_PRICE_ASC") {
-        sortFlight.arrTimesortType = "ASC";
-        sortFlight.arrPricesortType= "ASC";
-        sequenceFlight("differentPrice", "RETURN", "ASC");
-        $("#arv_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active"); 
-    }
-    $(".traffic_info_list li").removeClass("sort_down");
+	    window.sortFlight={};
+	    var toSortRuleType = $("#toSortRuleType").val();
+	    var backSortRuleType = $("#backSortRuleType").val();
+	    $("#recommend_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active");
+	    if (toSortRuleType === "SORT_BY_DEPTIME_ASC") {
+	        sortFlight.depTimeSortType = "ASC";
+	        sortFlight.depPriceSortType= "ASC";
+	        sequenceFlight("departureTime", "DEPARTURE", "ASC");
+	        sequenceFlight("departureTime", "CHARTER", "ASC");
+	        $("#dep_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active"); 
+	    }
+	    if (toSortRuleType === "SORT_BY_PRICE_ASC") {
+	        sortFlight.depTimeSortType = "ASC";
+	        sortFlight.depPriceSortType= "ASC";
+	        sequenceFlight("differentPrice", "DEPARTURE", "ASC");
+	        sequenceFlight("differentPrice", "CHARTER", "ASC");
+	        $("#dep_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active"); 
+	    }
+	    if (backSortRuleType === "SORT_BY_DEPTIME_ASC") {
+	        sortFlight.arrTimesortType = "ASC";
+	        sortFlight.arrPricesortType= "ASC";
+	        sequenceFlight("departureTime", "RETURN", "ASC"); 
+	        $("#arv_fli_box").find(".traffic_info_list").find(".info_li3").addClass("sort_active").siblings().removeClass("sort_active");  
+	    }
+	    if (backSortRuleType === "SORT_BY_PRICE_ASC") {
+	        sortFlight.arrTimesortType = "ASC";
+	        sortFlight.arrPricesortType= "ASC";
+	        sequenceFlight("differentPrice", "RETURN", "ASC");
+	        $("#arv_fli_box").find(".traffic_info_list").find(".info_li8").addClass("sort_active").siblings().removeClass("sort_active"); 
+	    }
+	    $(".traffic_info_list li").removeClass("sort_down");
 }
 
 $('.sort_btn').live('click',function(e) {

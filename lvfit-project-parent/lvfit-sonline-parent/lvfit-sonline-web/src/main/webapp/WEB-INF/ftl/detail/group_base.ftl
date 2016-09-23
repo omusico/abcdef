@@ -12,6 +12,7 @@
     <input type="hidden" id="routeNum" name="routeNum" value="${basicInfo.routeNum}">
     <input type="hidden" id="noGoodsFlag" name="noGoodsFlag">
     <input type="hidden" id="showStartMonth" name="showStartMonth" value="${showStartMonth}">
+    <input type="hidden" name="packCharterFlightFlag" id="packCharterFlightFlag" value="${basicInfo.packCharterFlightFlag}">
     <div class="group_icon product_gty"></div>
     <!-- 首屏左侧开始 -->
     <div class="product_top_l image_zone clearfix">

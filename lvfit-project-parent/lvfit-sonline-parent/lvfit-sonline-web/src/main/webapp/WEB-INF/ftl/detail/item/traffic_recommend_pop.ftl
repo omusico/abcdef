@@ -3,12 +3,12 @@
 	<ul class="traffic_info_list">
 		<li class="info_li1"></li>
 		<li class="info_li2">航班信息</li>
-		<li class="info_li3 sort_btn">当地起飞时间<i></i></li>
+		<li class="info_li3 sort_btn ">当地起飞时间<i></i></li>
 		<li class="info_li4"></li>
 		<li class="info_li5">当地降落时间</li>
 		<li class="info_li6">飞行时长</li>
 		<li class="info_li7">舱位</li>
-		<li class="info_li8 sort_btn">差价<i></i></li>
+		<li class="info_li8 sort_btn sort_active">差价<i></i></li>
 		<li class="info_li9"></li>
 	</ul>
 </div>

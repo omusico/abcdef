@@ -9,8 +9,17 @@ public class FitChangeFlightRequest implements Serializable {
     private String shoppingUuid;
     
     private String flightNo;
-    
-    //包机的返程航班号.
+    private int changeFlight; 
+	 
+	public int getChangeFlight() {
+		return changeFlight;
+	}
+
+	public void setChangeFlight(int changeFlight) {
+		this.changeFlight = changeFlight;
+	}
+
+	//包机的返程航班号.
     private String charsetBackflightNo;
     
     private String flightTripType;

@@ -519,12 +519,12 @@ public class CharterFlightFilterUtil {
      * 根据往返程计算基准价. 
      * @param go 去程
      * @param back 返程
-     * @param childSameAsAdult 儿童是否等于成人价.
+     * @param 是否是包机航班
      * @param adultCount 成人数
      * @param childCount 儿童数
      * @return
      */
-    public static BigDecimal calcBasePrice(FlightSearchFlightInfoDto go,FlightSearchFlightInfoDto back,boolean childSameAsAdult,Long adultCount,Long childCount){
+    private static BigDecimal calcBasePrice(FlightSearchFlightInfoDto go,FlightSearchFlightInfoDto back,boolean isCharterFlight,Long adultCount,Long childCount){
     	if(CollectionUtils.isEmpty(go.getSeats())){
     		return  new BigDecimal(-1);
     	}
@@ -533,15 +533,15 @@ public class CharterFlightFilterUtil {
     	}
     	//出发程的儿童与成人价格
 		BigDecimal depAdultPrice = go.getSeats().get(0).getSalesPrice();
-	    BigDecimal depChildPrice = go.getSeats().get(0).getChildrenPrice();
-	    if(childSameAsAdult){
-	    	depChildPrice = depAdultPrice;
-	    }
-	    
+	    BigDecimal depChildPrice = go.getSeats().get(0).getChildrenPrice(); 
 	    BigDecimal arvAdultPrice = back.getSeats().get(0).getSalesPrice();
 	    BigDecimal arvChildPrice = back.getSeats().get(0).getChildrenPrice();
-	    if(childSameAsAdult){
-	    	depChildPrice = depAdultPrice;
+	    if(isCharterFlight){
+	    	//如果是包机，往返单程价格一样，并且，儿童=成人.
+	    	arvAdultPrice = arvAdultPrice.divide(new BigDecimal(2));
+	    	arvChildPrice = arvAdultPrice;
+	    	depAdultPrice = arvAdultPrice;
+	    	depChildPrice = arvAdultPrice;
 	    }
 	    return calcSum(depAdultPrice,depChildPrice,arvAdultPrice,arvChildPrice,adultCount,childCount);
     } 
@@ -574,7 +574,7 @@ public class CharterFlightFilterUtil {
     	BigDecimal sumPrice = new BigDecimal(Integer.MAX_VALUE);
     	if(!CollectionUtils.isEmpty(charterFlights)){
     		for(FlightSearchFlightInfoDto flight:charterFlights){
-    			BigDecimal go = flight.getSeats().get(0).getSalesPrice().add(flight.getReturnFlightInfoDto().get(0).getSeats().get(0).getSalesPrice());
+    			BigDecimal go = flight.getSeats().get(0).getSalesPrice();
     			if(sumPrice.compareTo(go)>0){
     				sumPrice = go;
     				result = new ArrayList<FlightSearchFlightInfoDto>();
@@ -724,7 +724,7 @@ public class CharterFlightFilterUtil {
 	 * @return
 	 */
 	private static BigDecimal calcBaojiSum(FlightSearchFlightInfoDto flight){
-		return flight.getSeats().get(0).getSalesPrice().add(flight.getReturnFlightInfoDto().get(0).getSeats().get(0).getSalesPrice());
+		return flight.getSeats().get(0).getSalesPrice();
 	}
 	
 	/**
@@ -756,8 +756,8 @@ public class CharterFlightFilterUtil {
 		
 		if(CollectionUtils.isNotEmpty(charterFlights)){
 			for(FlightSearchFlightInfoDto flight:charterFlights){
-				BigDecimal _goP = flight.getSeats().get(0).getSalesPrice();
-				BigDecimal _backP = flight.getReturnFlightInfoDto().get(0).getSeats().get(0).getSalesPrice();
+				BigDecimal _goP = flight.getSeats().get(0).getSalesPrice().divide(new BigDecimal(2));
+				BigDecimal _backP = _goP;
 				BigDecimal thisSum = calcSum(_goP,_goP,_backP,_backP,adultCount,childCount);
 				flight.getSeats().get(0).setDifferentPrice(thisSum.subtract(cheapestSum));
 			}

@@ -74,7 +74,7 @@ function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
 	 data.shoppingUUID = shopingUUID;
 	 data.totalPrice = totalSalesAmount;
 	 data.productName = $("#fit_productName span").html().trim();
-	
+	 //alert("成功提交了");return;
 	 $(".dialog-close").click();
 	 $(".fh-overlay, .fh-dialog-loading").show();
 	 // 隐藏正在加载dialog
@@ -89,7 +89,7 @@ function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
 	     window.location.href=result.successUrl;
 	   },
 	   error:function(obj)
-	   {
+	   { 
 	     $(".fh-overlay, .fh-dialog-loading").hide();
 	     $('.returnAlert').stop(true,true).fadeIn();
 	     $('.resortOver').stop(true,true).fadeIn();
@@ -128,30 +128,41 @@ function blurIdAndBirthday(that,flag){
    var peopleType = $people.val();
    var oldFlag = flag+"";
    flag = $parent.find("select[name='cardType']").val();
+   if(value == undefined || $.trim(value)==""){
+	   var tip ="<i class=\"tip-icon tip-icon-error\"></i>请输入证件号码";
+		if(oldFlag=="birthday"){
+		  tip="<i class=\"tip-icon tip-icon-error\"></i>请输入出生日期";
+		}
+		$(that).siblings(".error_text").html(tip);
+		$(that).parent().addClass('error_show');return false;
+   }
    if(flag =='ID'||flag=='ID_CARD'){
        if(isIdCardNo(value)){
            birthday = getBirthdayByIdCard(value) ;
           var age = getAgeByBrithday(birthday);
            var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
            if(_newPeopleType=="CHILDREN" && peopleType == 'ADULT'){
+        	   $(that).parent().removeClass('error_show');
                $people.parent().addClass('error_show');return false;
            }else if(_newPeopleType=="ADULT" && peopleType == 'CHILDREN'){
+        	   $(that).parent().removeClass('error_show');
                $people.parent().addClass('error_show');return false;
            }else if(_newPeopleType=="BABY"){
-               $people.parent().addClass('error_show');
+               $people.parent().removeClass('error_show');
                $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持2周岁以下的婴儿购买机票");
                $(that).parent().addClass('error_show');
                return false;
            }else if(_newPeopleType=="OLD"){
-        	   $people.parent().addClass('error_show');
+        	   $people.parent().removeClass('error_show');
                $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持超过70周岁的乘客购买机票");
                $(that).parent().addClass('error_show');
                return false;
            }else{
                $people.parent().removeClass('error_show');
+               $(that).parent().removeClass('error_show');
            }
-           $parent.find("select[name='cardType']").parent().removeClass('error_show');
        }else{
+    	  $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>证件信息错误或重复，请进行修改");
           $parent.find("select[name='cardType']").parent().addClass('error_show');return false;
        }
    }else{
@@ -164,19 +175,22 @@ function blurIdAndBirthday(that,flag){
     	   }
 	       var _newPeopleType =getDateDiffCardType(departureDateVal,birthday);
 	       if(_newPeopleType=="CHILDREN" && peopleType == 'ADULT'){
+	    	   $(that).parent().removeClass('error_show');
 	           $people.parent().addClass('error_show');return false;
 	       }else if(_newPeopleType=="ADULT" && peopleType == 'CHILDREN'){
+	    	   $(that).parent().removeClass('error_show');
 	           $people.parent().addClass('error_show');return false;
 	       }else if(_newPeopleType=="BABY"){
-	           //$people.parent().addClass('error_show');
+	           $people.parent().removeClass('error_show');
 	           $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持2周岁以下的婴儿购买机票");
 	           $(that).parent().addClass('error_show');return false;
 	       }else if(_newPeopleType=="OLD"){
-	    	   //$people.parent().addClass('error_show');
+	    	   $people.parent().removeClass('error_show');
 	           $(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>抱歉，暂不支持超过70周岁的乘客购买机票");
 	           $(that).parent().addClass('error_show');return false;
 	       }else{
 	           $people.parent().removeClass('error_show');
+	           $(that).parent().removeClass('error_show');
 	       }
        }else{
     	   if(value==""){
@@ -287,7 +301,7 @@ function getDateDiffCardType(departureDateVal,birthDateVal) {
 	     intDays++;
 	 }
 	 var cardTypeVal;
-	 if(intDays>70){
+	 if(intDays>=70){
 		 cardTypeVal="OLD";
 	 }else if(intDays>=12){
 	    cardTypeVal="ADULT";
@@ -511,8 +525,7 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 	$('.returnAlert').stop(true,true).fadeOut();
 	$('.resortOverlay').stop(true,true).fadeOut();
 	$('body').removeAttr('style');
-	var pageType ="freetour"
-	var bizCategoryId = "${bizCategoryId}";
+	var pageType ="freetour"; 
 	if(bizCategoryId!=18){
 	    pageType="group";
 	}
@@ -563,11 +576,15 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 			var flag1=true,flag2=true;
 			//检查所有人员姓名是否规范填写
 			if(This.attr("type_name")==="text"){
-				flag1 = checkUserName(This);
+				if(This.hasClass("js_goumai_name")){
+					flag1 = checkContactName(This);
+				}else{
+					flag1 = checkUserName(This);
+				}
 			}
 			//检查证件信息是否重复
 			if(This.attr("type_name")==="shenfenzheng"){
-				if(This.siblings('.select').val() == 'ID_CARD'){
+				if(This.siblings('.select').val() == 'ID_CARD' || This.siblings('.select').val() == 'ID'){
 					flag2 = blurIdAndBirthday(This,"ID");
 				}else{
 					flag2 = verifyIDCardRepeat(This);
@@ -627,8 +644,10 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 			//验证手机
 			if(This.attr('type_name')=='mobile'){
 				if(value=='' && optional!="true"){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入手机号码");
 					thisP.addClass('error_show');
 				}else if(!_mobile.test(value) && value!=''){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>您填写的手机号码有误，请重新填写");
 					thisP.addClass('error_show');
 				}else{
 					thisP.removeClass('error_show');
@@ -637,8 +656,10 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 			//验证邮箱
 			if(This.attr('type_name')=='email'){
 				if(value=='' && optional!="true"){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入邮箱地址");
 					thisP.addClass('error_show');
 				}else if(!_email.test(value) && value!=''){
+					This.siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>您填写的邮箱地址有误，请重新填写");
 					thisP.addClass('error_show');
 				}else{
 					thisP.removeClass('error_show');
@@ -649,7 +670,7 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 			if(This.attr('type_name')=='shenfenzheng'){
 				if(value=='' && optional!="true"){
 					thisP.addClass('error_show');
-				}else if(!isIdCardNo(value) && This.siblings('.select').val() == 'ID_CARD' && value!=''){
+				}else if(!isIdCardNo(value) && (This.siblings('.select').val() == 'ID'||This.siblings('.select').val() == 'ID_CARD') && value!=''){
 					thisP.addClass('error_show');
 				}/*else{
 					thisP.removeClass('error_show');

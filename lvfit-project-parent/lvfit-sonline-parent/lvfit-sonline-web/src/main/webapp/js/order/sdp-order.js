@@ -409,13 +409,24 @@ $(function(){
 function checkUserName(that){
 	var userName = $(that).val();
 	if($.trim(userName)==""){
-		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入正确的姓名");
+		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请输入姓名");
 		$(that).parent().addClass('error_show');return false;
 	}else if(!/^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+[\u4e00-\u9fa5]+|[a-zA-Z]+[\u4e00-\u9fa5]+[a-zA-Z]+|[a-zA-Z]+\/[a-zA-Z]+)+$/.test(userName)||userName.length<2){
 		$(that).siblings(".error_text").html("<i class=\"tip-icon tip-icon-error\"></i>请保持姓名与证件上的姓名一致");
 		$(that).parent().addClass('error_show');return false;
 	}else{
 		$(that).parent().removeClass('error_show');
+	}
+	return true;
+}
+
+//购买人姓名
+function checkContactName(that){
+	var contactName = $(that).val();
+	if(null==$.trim(contactName)||""==$.trim(contactName)){
+		$(that).parent().addClass('error_show');return false;
+	}else{
+		$(that).parent().removeClass('error_show');return false;
 	}
 	return true;
 }
@@ -465,7 +476,7 @@ $(document).bind("click", function($element) {
 var initId_Card = function(){
 	$(".js_zhengjian").change(function(){
 		var value = $(this).val();
-		if(value=='ID_CARD'){
+		if(value=='ID'||value=='ID_CARD'){
 			$(this).parent().parent().next(".js_zhengjian_hide").hide();
 		}else{
 			$(this).parent().parent().next(".js_zhengjian_hide").show();

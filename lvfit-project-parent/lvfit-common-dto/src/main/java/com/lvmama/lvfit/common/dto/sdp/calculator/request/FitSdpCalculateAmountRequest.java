@@ -136,7 +136,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				//如果不是包机切位，就考虑儿童舱的问题
 				if(!CharterFlightFilterUtil.isCharter(selectSearchFlightInfoDto)){
 					if(passengerDetailDto.getPassengerType()==PassengerType.CHILDREN){
-						fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassType()).getFlightTicketPriceDto();
+						fitFlightTicketPriceDto=selectSearchFlightInfoDto.getChildrenSeats().get(selectSearchSeatDto.getSeatClassCode()).getFlightTicketPriceDto();
 					}else{
 						fitFlightTicketPriceDto = selectSearchSeatDto.getFlightTicketPriceDto();
 					}
@@ -144,6 +144,7 @@ public class FitSdpCalculateAmountRequest implements Serializable{
 				//包机切位没有儿童舱的问题
 				else{
 					fitFlightTicketPriceDto = selectSearchSeatDto.getFlightTicketPriceDto();
+					flightSimpleInfoDto.setPricePolicyId(selectSearchSeatDto.getPricePolicyId());
 				}
 				try {
 					BeanUtils.copyProperties(flightTicketPriceDto, fitFlightTicketPriceDto);
