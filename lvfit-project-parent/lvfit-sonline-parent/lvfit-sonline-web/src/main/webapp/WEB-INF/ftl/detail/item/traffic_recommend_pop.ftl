@@ -90,7 +90,7 @@
 			<!-- 选择按钮 -->
 			<div class="info_li9 fh_btn">
 				<span class="btn btn-small btn-orange js_fh_select" go-flightno="${arvFlightInfo.flightNo}" back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择</span>
-				<span class="btn btn-small btn-dis">已选</span>
+				<span class="btn btn-small btn-dis js_fh_select">已选</span>
 			</div>
 			<!-- 已选打钩icon -->
 			<span class="fh_btn_gou"></span>

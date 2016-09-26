@@ -344,19 +344,22 @@ $(function(){
     $('.js_fh_select').live('click',function(){
         $(this).hide().siblings('.btn').css('display','inline-block');
         $(this).parents('.traffic_list').addClass('active').siblings().removeClass('active').find('.btn-orange').show().siblings('.btn-dis').hide();
-
-        //自由组合多仓位选择按钮
-        var $xuanlist = $(this).parent('.fh_xuan_list'),
-            cxbox = $(this).parents('.info_ul').find('.fh_cx_box');
-        $xuanlist.siblings().find('.btn-orange').show().siblings('.btn-dis').hide();
-        //选中置顶
-        for (var i = 0; i < cxbox.length; i++) {
-            cxbox.eq(i).prepend(cxbox.eq(i).find('p').eq($xuanlist.index()));
-        };
-
-        // 如果选择为去程航班
-        chgFlightAjaxSubmit($(this).attr("go-flightno"), "CHARTER",$(this).attr("back-flightno")); 
-        $(".dialog-close").trigger("click");
+        var txt =  $(this).html() ;
+        if(txt=='选择'){
+            //自由组合多仓位选择按钮
+            var $xuanlist = $(this).parent('.fh_xuan_list'),
+                cxbox = $(this).parents('.info_ul').find('.fh_cx_box');
+            $xuanlist.siblings().find('.btn-orange').show().siblings('.btn-dis').hide();
+            //选中置顶
+            for (var i = 0; i < cxbox.length; i++) {
+                cxbox.eq(i).prepend(cxbox.eq(i).find('p').eq($xuanlist.index()));
+            };
+ 
+            chgFlightAjaxSubmit($(this).attr("go-flightno"), "CHARTER",$(this).attr("back-flightno")); 
+            $(".dialog-close").trigger("click");
+        }else{//如果已经是已选，就啥都不做，直接关闭.
+            $(".dialog-close").trigger("click");
+        }
     });
 
     //去程选择按钮
@@ -383,6 +386,7 @@ $(function(){
     $('.arv_fh_select').live('click',function(e) {
         var event = e || window.event;
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
         chgFlightAjaxSubmit($(this).data("flightno"), "RETURN");
          
         $(".dialog-close").off('click').bind('click',function(e){

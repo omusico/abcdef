@@ -164,8 +164,9 @@ function initPriceInBaseInfo(){
               }
           },
           error: function () {
+			showErrorDetail();/*
               $("#preorder-booking-button").addClass("btn-stop");
-              $("#preorder-booking-button").removeClass("cbtn-orange1");
+              $("#preorder-booking-button").removeClass("cbtn-orange1");*/
           }
       });
 };

@@ -93,11 +93,11 @@
             <#if saleType=='DomesticProduct'>
                 <span class="btn btn-small btn-orange js_fh_select" go-flightno="${arvFlightInfo.flightNo}" 
                  <#if arvFlightInfo_index==0>style="display:none"</#if>  back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择</span>
-                <span class="btn btn-small btn-dis"  <#if arvFlightInfo_index==0>style="display:inline-block"</#if>  >已选</span>
+                <span class="btn btn-small btn-dis js_fh_select"  <#if arvFlightInfo_index==0>style="display:inline-block"</#if>  >已选</span>
             <#else>
                 <span class="btn btn-small btn-orange js_fh_select" go-flightno="${arvFlightInfo.flightNo}" 
                    back-flightno="${arvFlightInfo.returnFlightInfoDto[0].flightNo}">选择</span>
-                <span class="btn btn-small btn-dis"   style="display:none"  >已选</span>
+                <span class="btn btn-small btn-dis js_fh_select"   style="display:none"  >已选</span>
             </#if>
             </div>
             <!-- 已选打钩icon --> 
