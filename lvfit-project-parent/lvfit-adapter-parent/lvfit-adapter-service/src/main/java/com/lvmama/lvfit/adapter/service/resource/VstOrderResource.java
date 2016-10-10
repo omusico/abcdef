@@ -104,7 +104,7 @@ public class VstOrderResource {
 		  try {
 				callBackRequests = JSONMapper.getInstance().readValue(requestStr, new TypeReference<List<FitFliBookingCallBackRequest>>() {});
 		  } catch (Exception e1) {
-			  logger.error(ExceptionUtils.getFullStackTrace(e1));
+			  logger.error(e1.getMessage());
 		  }
 		  return Response.ok(fitFlightBookingCallBackService.flightBookingCallBack(callBackRequests)).build();
 	}

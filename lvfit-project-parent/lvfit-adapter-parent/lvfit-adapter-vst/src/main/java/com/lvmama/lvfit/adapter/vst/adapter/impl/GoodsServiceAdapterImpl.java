@@ -47,6 +47,8 @@ import com.lvmama.vst.back.prod.vo.HotelProductVO;
 import com.lvmama.vst.back.pub.vo.ComPhotoVO;
 import com.lvmama.vst.comm.vo.ResultHandleT;
 
+import U.E;
+
 /**
  * ClassName:GoodsServiceAdapterImpl <br/>
  * Function: vst商品适配器. <br/>
@@ -161,16 +163,11 @@ public class GoodsServiceAdapterImpl implements GoodsServiceAdapter {
 		requestMap.put("isSale", Boolean.TRUE);// 是否可售
 		ResultHandleT<List<SuppGoodsTimePrice>> resultT = suppGoodsTimePriceClientService.findTimePriceBySpecDate(requestMap);
 		try {
+			if(logger.isInfoEnabled()){
 			logger.info("调用vst方法(findTimePriceBySpecDate)"+JSONMapper.getInstance().writeValueAsString(resultT));
-		} catch (JsonGenerationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (JsonMappingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			}
+		} catch (Exception e1) {
+			logger.error(e1.getMessage());
 		}
 		if(resultT.getReturnContent().size()>0){
 			for(SuppGoodsTimePrice suppGoodsTimePrice:resultT.getReturnContent()){

@@ -275,7 +275,11 @@ public class FitDpServiceImpl implements FitDpService{
         for (String key : flightMap.keySet()) {
             FlightSearchResult<FlightSearchFlightInfoDto> flightSearchResult = flightMap.get(key);
             if (flightSearchResult!= null && CollectionUtils.isNotEmpty(flightSearchResult.getResults())) {
-                flightSearchResult.setResults(this.handleFlights(flightSearchResult.getResults(), adultCount, childCount));
+                List<FlightSearchFlightInfoDto> flightInfoDtos = this.handleFlights(flightSearchResult.getResults(), adultCount, childCount);
+                if (CollectionUtils.isEmpty(flightInfoDtos)) {
+                    throw new ExceptionWrapper(FitExceptionCode.GET_NO_RESULT);
+                }
+                flightSearchResult.setResults(flightInfoDtos);
             }
         }
 
@@ -537,12 +541,13 @@ public class FitDpServiceImpl implements FitDpService{
         }
         // 过滤时间价格为空的酒店
         Long days = DateUtils.getDateDiffByDay(hotelQueryReq.getReturnDate(), hotelQueryReq.getDepartureDate());
-        List<HotelSearchHotelDto> hotelList = filterHotel(days, hotelSearchResult.getResults());
         // 设置房间数和可预订的最大房间数
-        this.setHotelRoomCount(hotelList, hotelQueryReq.getAdultCount(), hotelQueryReq.getChildCount());
+        this.setHotelRoomCount(hotelSearchResult.getResults(), hotelQueryReq.getAdultCount(), hotelQueryReq.getChildCount());
+        // 过滤房间
+        List<HotelSearchHotelDto> remainHotels = filterHotel(days, hotelSearchResult.getResults());
         // 根据时间价格设置房间规格的价格
-        this.setHotelPlanPrice(hotelList);
-        hotelSearchResult.setResults(hotelList);
+        this.setHotelPlanPrice(remainHotels);
+        hotelSearchResult.setResults(remainHotels);
         return hotelSearchResult;
     }
 
@@ -553,11 +558,16 @@ public class FitDpServiceImpl implements FitDpService{
                     BigDecimal settlePrice = BigDecimal.ZERO;
                     BigDecimal salesPrice = BigDecimal.ZERO;
                     for (FitHotelPlanPriceDto priceDto:plan.getDayPrice()) {//计算出每个plan的价格之和，只包括天数，不包括房间数
-                        settlePrice = settlePrice.add(priceDto.getSettlePrice());
-                        salesPrice = salesPrice.add(priceDto.getSalesPrice());
-                    }
+                    	BigDecimal _settlePrice = priceDto.getSettlePrice();
+                    	//结算价格
+                        settlePrice = settlePrice.add(_settlePrice);
+                        //实际销售价
+                        //salesPrice = salesPrice.add(priceDto.getSalesPrice());
+                        //实际销售价=结算价格+毛利率价格-优惠价格
+                        salesPrice = salesPrice.add(_settlePrice.multiply(FitHotelPlanPriceDto.SALE_RATE));
+                    } 
                     plan.setSettlementPrice(settlePrice);
-                    plan.setPrice(salesPrice);
+                    plan.setPrice(salesPrice.setScale(0, BigDecimal.ROUND_UP)); 
                 }
             }
         }
@@ -610,6 +620,10 @@ public class FitDpServiceImpl implements FitDpService{
                 for (HotelSearchPlanDto plan : room.getPlans()) {
                     int maxQuantity = plan.getMaxQuantity();
                     List<FitHotelPlanPriceDto> dayPrice = plan.getDayPrice();
+                    if (CollectionUtils.isEmpty(dayPrice)) {
+                        continue;
+                    }
+
                     int minInventory = Integer.MAX_VALUE;
                     for (FitHotelPlanPriceDto planPrice : dayPrice) {
                         if (planPrice.getStockFlag().equals("Y") && planPrice.getInventoryCount() < minInventory) {
@@ -622,10 +636,18 @@ public class FitDpServiceImpl implements FitDpService{
                     int minCount = roomCount < plan.getMinQuantity() ? plan.getMinQuantity() : roomCount;
                     plan.setMinRoomCounts(minCount);
                     plan.setRoomCounts(minCount);
+
+                    if (minCount > minInventory) {
+                        plan.setDayPrice(null);
+                    }
+                    // TODO APP房间数适配，待其上线后删除
+                    double newRoomCount = (adultCount + childCount / 2) / 2.0;
+                    double newMinCount = newRoomCount < plan.getMinQuantity() ? plan.getMinQuantity() : newRoomCount;
+                    plan.setMinQuantity((int)Math.ceil(newMinCount));
+                    plan.setMaxQuantity(maxCount);
+
+                    room.setRoomCounts((int)Math.ceil(newMinCount));
                 }
-                // APP房间数适配，待其上线后删除
-                double newRoomCount = (adultCount + childCount / 2) / 2.0;
-                room.setRoomCounts((int)Math.ceil(newRoomCount));
             }
         }
     }
@@ -880,19 +902,21 @@ public class FitDpServiceImpl implements FitDpService{
         if (childCount > 0) {
             filterNoChildFlight(list);
         }
+
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }
 		// 默认价格为最低价排序，如存在多组往返航班价格相同，按起飞时间排序
 		this.sortFlight(list);
         // 判断是否为隔夜航班
         this.setOvernightFlag(list);
         // 设置初始化的航班差价
-        if (CollectionUtils.isNotEmpty(list)) {
-            FlightSearchSeatDto baseSeat = list.get(0).getSeats().get(0);
-            BigDecimal basePrice = baseSeat.getSalesPrice().multiply(BigDecimal.valueOf(adultCount)).add(baseSeat.getChildrenPrice().multiply(BigDecimal.valueOf(childCount)));
-            for (FlightSearchFlightInfoDto flightInfo : list) {
-                for (FlightSearchSeatDto seatDto : flightInfo.getSeats()) {
-                    BigDecimal curPrice = seatDto.getSalesPrice().multiply(BigDecimal.valueOf(adultCount)).add(seatDto.getChildrenPrice().multiply(BigDecimal.valueOf(childCount)));
-                    seatDto.setDifferentPrice(curPrice.subtract(basePrice));
-                }
+        FlightSearchSeatDto baseSeat = list.get(0).getSeats().get(0);
+        BigDecimal basePrice = baseSeat.getSalesPrice().multiply(BigDecimal.valueOf(adultCount)).add(baseSeat.getChildrenPrice().multiply(BigDecimal.valueOf(childCount)));
+        for (FlightSearchFlightInfoDto flightInfo : list) {
+            for (FlightSearchSeatDto seatDto : flightInfo.getSeats()) {
+                BigDecimal curPrice = seatDto.getSalesPrice().multiply(BigDecimal.valueOf(adultCount)).add(seatDto.getChildrenPrice().multiply(BigDecimal.valueOf(childCount)));
+                seatDto.setDifferentPrice(curPrice.subtract(basePrice));
             }
         }
 
@@ -904,6 +928,9 @@ public class FitDpServiceImpl implements FitDpService{
      * @param flightInfoDtos
      */
     private void filterNoChildFlight(List<FlightSearchFlightInfoDto> flightInfoDtos) {
+        if (CollectionUtils.isEmpty(flightInfoDtos)) {
+            return;
+        }
         for (FlightSearchFlightInfoDto searchFlightInfoDto : flightInfoDtos) {
             Map<String, FlightSearchSeatDto> childrenSeats = searchFlightInfoDto.getChildrenSeats();
             if (null != searchFlightInfoDto.getSeats() && MapUtils.isNotEmpty(childrenSeats)) {
@@ -914,6 +941,12 @@ public class FitDpServiceImpl implements FitDpService{
                         iterator.remove();
                     }
                 }
+            }
+        }
+        Iterator<FlightSearchFlightInfoDto> iterator = flightInfoDtos.iterator();
+        while (iterator.hasNext()) {
+            if (CollectionUtils.isEmpty(iterator.next().getSeats())) {
+                iterator.remove();
             }
         }
     }

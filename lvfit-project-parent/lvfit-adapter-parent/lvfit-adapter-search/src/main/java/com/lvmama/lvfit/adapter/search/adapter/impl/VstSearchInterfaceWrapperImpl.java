@@ -26,7 +26,7 @@ import com.lvmama.vst.pet.adapter.InstalmentGatewayConfigServiceAdapter;
 @Service
 public class VstSearchInterfaceWrapperImpl implements VstSearchInterfaceWrapper {
     
-    public static final Logger LOGGER = Logger.getLogger(VstSearchInterfaceWrapperImpl.class);
+    public static final Logger logger = Logger.getLogger(VstSearchInterfaceWrapperImpl.class);
     
 	@Autowired
 	private VstProductService vstProductGroupService;
@@ -46,7 +46,7 @@ public class VstSearchInterfaceWrapperImpl implements VstSearchInterfaceWrapper 
 	    Long beginTime = System.currentTimeMillis();
 	    ResultHandleT<ProdProduct> resultHandleT = prodProductClientService.findLineProductByProductId(productId, param);
 	    Long endTime = System.currentTimeMillis();
-	    LOGGER.info("从VST查询产品接口时间：" + (endTime - beginTime));
+	    logger.info("从VST查询产品接口时间：" + (endTime - beginTime));
 	    return resultHandleT;
 	}
 
@@ -62,7 +62,7 @@ public class VstSearchInterfaceWrapperImpl implements VstSearchInterfaceWrapper 
 	    Long beginTime = System.currentTimeMillis();
 	    com.lvmama.vst.api.vo.ResultHandleT<RouteProductVo> resultHandleT = vstRouteService.findOnSaleGoodsByParam(productId, specDate, adultQuantity, childQuantity, distributorId,districtId,quantity);
 	    Long endTime = System.currentTimeMillis();
-	    LOGGER.info("从VST查询产品产品接口时间：" + (endTime - beginTime)+"--"+resultHandleT);
+	    logger.info("从VST查询产品产品接口时间：" + (endTime - beginTime)+"--"+resultHandleT);
         return resultHandleT;
 	}
 

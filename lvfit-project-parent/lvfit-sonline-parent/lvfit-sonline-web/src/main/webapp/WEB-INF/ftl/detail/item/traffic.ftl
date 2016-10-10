@@ -42,7 +42,7 @@
 		</#if> 
 	<#else>
 	   <ul class="traffic_tab"> 
-		  <li>自由组合</li> 
+		  <li class="active">自由组合</li> 
 		</ul>	 
 		<div class="traffic_type" style="display:block;">
 		   <#include "detail/item/traffic_free_pop.ftl">

@@ -51,7 +51,7 @@ public class FitSuppOrderForFlightCallBackRepositoryImpl implements FitSuppOrder
 			try {
 				zipStr = ZipUnZipUtils.getInstance().zipString2Base64(r.getCallRequestStr());
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
+				logger.error(e.getMessage(),e);
 			}
 			if(StringUtils.isNotBlank(zipStr)){
 			  	r.setCallRequestStr(zipStr);

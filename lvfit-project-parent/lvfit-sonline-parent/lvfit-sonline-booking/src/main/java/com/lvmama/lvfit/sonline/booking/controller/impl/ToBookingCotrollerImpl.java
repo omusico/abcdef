@@ -1,6 +1,7 @@
 package com.lvmama.lvfit.sonline.booking.controller.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +168,16 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 	    	MemUserRequest userRequest = new MemUserRequest();
 	    	userRequest.setLvSessionId(lvSessionId);
 			List<FitUserContacterDto> contactList = vstClient.getUserReceiverByLvSessionId(userRequest);
-			
+			if(CollectionUtils.isNotEmpty(contactList)){
+				for(FitUserContacterDto contacter:contactList){
+					if(contacter.getBirthday()==null || StringUtils.isBlank(contacter.getBirthdayStr())){
+						if(("ID".equals(contacter.getCertType())||"ID_CARD".equals(contacter.getCertType())) 
+								&& StringUtils.isNotBlank(contacter.getCertNo())){
+							contacter.setBirthday(this.getBirthdayByIdCard(contacter.getCertNo()));
+						}
+					}
+				}
+			}
 			/*try {
 				String str = FileUtils.getStringFromResourceAsStream("/calender.json");
 				contactList = JSONMapper.getInstance().readValue(str,new TypeReference<List<FitUserContacterDto>>() {
@@ -182,6 +192,20 @@ public class ToBookingCotrollerImpl implements ToBookingController<Form, BaseRes
 			return new ArrayList<FitUserContacterDto>();
 		}
 		
+	}
+	
+	private Date getBirthdayByIdCard(String certNo){
+		Date birthday = null;
+		if(StringUtils.isNotBlank(certNo)){
+			if(certNo.length()==15){
+				birthday = DateUtils.parseDate("19"+certNo.substring(6, 10)+"-"+certNo.substring(10,12)+"-"+certNo.substring(12,14));
+			} else if(certNo.length() == 18){
+				birthday = DateUtils.parseDate(certNo.substring(6,10)+"-"+certNo.substring(10,12)+"-"+certNo.substring(12,14));
+			}else{
+				return null;
+			}
+		}
+		return birthday;
 	}
 	
 	/**

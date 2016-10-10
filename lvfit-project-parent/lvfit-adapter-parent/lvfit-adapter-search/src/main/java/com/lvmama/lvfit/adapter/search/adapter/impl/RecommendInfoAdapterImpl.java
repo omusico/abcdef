@@ -21,7 +21,7 @@ import com.lvmama.vst.pet.adapter.RecommendInfoServiceAdapter;
 @Service
 public class RecommendInfoAdapterImpl implements RecommendInfoAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecommendInfoAdapterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecommendInfoAdapterImpl.class);
     
     @Autowired
     private RecommendInfoServiceAdapter recommendInfoServiceAdapter;
@@ -33,13 +33,15 @@ public class RecommendInfoAdapterImpl implements RecommendInfoAdapter {
         String channelPage = "fit";
         Map<String, List<RecommendInfo>> infoMap = recommendInfoServiceAdapter.getRecommendInfoMap(containerCode, commonBlockId, fromPlaceId, channelPage);
         if (MapUtils.isEmpty(infoMap)) {
-            LOGGER.error("推荐信息infoMap为空!");
+            logger.error("推荐信息infoMap为空!");
             return null;
         }
         try {
-            LOGGER.info("推荐信息infoMap" + JSONMapper.getInstance().writeValueAsString(infoMap));
+        	if(logger.isInfoEnabled()){
+        		logger.info("推荐信息infoMap" + JSONMapper.getInstance().writeValueAsString(infoMap));
+        	}
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(e.getMessage());
         }
         Map<String, List<FitRecommendInfo>>  returnMap = new HashMap<String, List<FitRecommendInfo>>();
         for (String key : infoMap.keySet()) {

@@ -440,7 +440,6 @@ public class PackageGoodsAdapterImpl implements PackageGoodsAdapter {
 	            hotelCombo.setQuantity(new Double(Math.ceil(allIn.doubleValue()/allBase.doubleValue())).longValue());
 	            hotelCombo.setPrice(hotelCombo.getPrice().multiply(new BigDecimal(hotelCombo.getQuantity())));
             }
-            hotelCombo.setPrice(hotelCombo.getPrice().multiply(new BigDecimal(hotelCombo.getQuantity())));
             hotelGoods.add(hotelCombo);
         }
         

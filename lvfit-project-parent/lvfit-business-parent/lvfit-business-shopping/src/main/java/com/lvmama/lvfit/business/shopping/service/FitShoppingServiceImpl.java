@@ -96,7 +96,6 @@ public class FitShoppingServiceImpl implements FitShoppingService{
 		   logger.info(dto.getShoppingUuid()+"购物车信息落地成功");
 		    
 		}catch(Exception e){
-		  e.printStackTrace();
 		  logger.error("预定shopping信息 保存数据异常"+e.getMessage());
 		  resultDto.setStatus(ResultStatus.FAIL);
 		  resultDto.setErrCode("errer");
@@ -383,7 +382,6 @@ public class FitShoppingServiceImpl implements FitShoppingService{
                 return shoppingDto.get(0);
             }
         }catch(Exception e){
-            e.printStackTrace();
             logger.error("从数据库加载shoppingDbDto数据异常"+e.getMessage());
         }   
         return null;

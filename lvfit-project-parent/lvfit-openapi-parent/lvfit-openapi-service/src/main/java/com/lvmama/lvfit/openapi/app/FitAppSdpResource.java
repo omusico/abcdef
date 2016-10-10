@@ -13,6 +13,7 @@ import com.lvmama.lvfit.common.dto.app.FitAppBookingRequest;
 import com.lvmama.lvfit.common.dto.app.FitAppOrderDto;
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsDto;
 import com.lvmama.lvfit.common.dto.app.FitAppSdpCityDepartInfo;
+import com.lvmama.lvfit.common.dto.app.FitAppSdpCityStartDistrict;
 import com.lvmama.lvfit.common.dto.app.FitAppShoppingRequest;
 import com.lvmama.lvfit.common.dto.sdp.calculator.FitSdpShoppingAmountDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
@@ -193,7 +194,7 @@ public class FitAppSdpResource {
 	 public Response getSelectedDepartCityGroupInfo(@PathParam("productId")Long productId) {
 	 		ResultStatus resultStatus = ResultStatus.SUCCESS;
 	 		String errMsg = null;
-	 		List<FitAppSdpCityDepartInfo> cityDepartInfoList = null;
+	 		List<FitAppSdpCityStartDistrict> cityDepartInfoList = null;
 	 		try {
 	 			cityDepartInfoList = fitAppSdpSearchService.searchSdpCityDepartInfo(productId);
 	 		} catch (Exception e) {
@@ -207,7 +208,7 @@ public class FitAppSdpResource {
 	 			}
 	 		}
 	
-	 		BaseSingleResultDto<List<FitAppSdpCityDepartInfo>> resultDto = new BaseSingleResultDto<List<FitAppSdpCityDepartInfo>>(cityDepartInfoList);
+	 		BaseSingleResultDto<List<FitAppSdpCityStartDistrict>> resultDto = new BaseSingleResultDto<List<FitAppSdpCityStartDistrict>>(cityDepartInfoList);
 	 		resultDto.setStatus(resultStatus);
 	 		resultDto.setMessage(errMsg);
 	 		return Response.ok(resultDto).build();

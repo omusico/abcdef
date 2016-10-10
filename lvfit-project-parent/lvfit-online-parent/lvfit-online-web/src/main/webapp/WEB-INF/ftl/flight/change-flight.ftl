@@ -212,7 +212,7 @@
 	<#else>
 		<#include "online_foot.ftl">
 	</#if>
-    <script src="http://pic.lvmama.com/min/index.php?f=/js/new_v/jquery-1.7.2.min.js,/js/v6/header_new.js,/js/v5/modules/pandora-poptip.js,/js/common/losc.js"></script>
+    <script src="http://pic.lvmama.com/min/index.php?f=/js/new_v/jquery-1.7.2.min.js,/js/v6/header_new.js,/js/v5/modules/pandora-poptip.js"></script>
     <script src="http://pic.lvmama.com/min/index.php?f=/js/fit/v3/select-flight.js,/js/v6/flighthotel/fh-flight-tip.js"></script>
 	<script src="${request.contextPath}/js/common/common.js"></script>
     <script>
@@ -241,6 +241,11 @@
 
         //点击返回上一页
         $(".btn-text").click(function(){
+            goBack();
+        });
+
+        //点击已选返回上一页
+        $(".fh-selected").live("click", function () {
             goBack();
         });
 

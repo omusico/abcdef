@@ -41,7 +41,9 @@ public class HotelResource {
 	@Path(SearchClientPath.Path.HOTEL_LIST_SEARCH)
 	public Response searchHotel(HotelQueryRequest hotelQueryRequest) {
 		try {
-			logger.info("spinach测试adapter hotelQueryRequest:"+JSONMapper.getInstance().writeValueAsString(hotelQueryRequest));
+			if(logger.isInfoEnabled()){
+				logger.info("spinach测试adapter hotelQueryRequest:"+JSONMapper.getInstance().writeValueAsString(hotelQueryRequest));
+			}
 			String paramStr = "U"+hotelQueryRequest.getCityDistrictId()+"C"+hotelQueryRequest.getDepartureDate().replace("-", "")+"O"+hotelQueryRequest.getReturnDate().replace("-", "");
 			logger.info("spinach测试paramStr="+paramStr);
 			//更换酒店时，选择的筛选、排序、分页等条件

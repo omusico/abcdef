@@ -37,7 +37,7 @@ public class ComIpsResource {
     	try{
     		comIps = LvfComIpsAreaData.selectComIpsAreaByIp(Long.valueOf(ip), comIpsServiceAdapter); 
     	}catch(Exception ex){
-    		logger.error(ExceptionUtils.getFullStackTrace(ex));
+    		logger.error(ex.getMessage(),ex);
     		throw new ExceptionWrapper("Ip获取头异常:"+ex.getMessage());
     	}
     	if(comIps == null){

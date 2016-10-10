@@ -53,11 +53,6 @@ public interface SdpProductController {
 		 */
 		String searchDepartCity(Model model, Long productId);
 
-		/**查询机票回调信息列表.
-		 * @param model
-		 * @return
-		 */
-		String suppFlightCallBack(Model model);
 
 		/**根据产品ID查询推送信息列表.
 		 * @param model

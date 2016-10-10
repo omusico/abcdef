@@ -156,12 +156,12 @@
                     <dd class="roomTable-td roomTable-td4">
                         <div class="select-div">
                             <span>
-                            ${plan.planCounts}
+                            ${plan.roomCounts}
                             </span>
                             <i class="arrow"></i>
                         </div>
                         <ol class="select-div-list">
-                            <#list plan.minPlanCounts..plan.maxPlanCounts as roomNum>
+                            <#list plan.minRoomCounts..plan.maxRoomCounts as roomNum>
                                 <li data-num="${roomNum}">${roomNum}</li>
                             </#list>
                         </ol>

@@ -173,8 +173,7 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 			packagedProdCatId = 0L;
 		}
  
-		SearchResponseForm respForm = new SearchResponseForm(basicInfo);
-		basicInfo.getDefDeparture().getArrivalCityCode();
+		SearchResponseForm respForm = new SearchResponseForm(basicInfo); 
 		if (CollectionUtils.isNotEmpty(basicInfo.getCityGroups())) {
 			if (basicInfo.getCityGroups().size() > 1) {
 

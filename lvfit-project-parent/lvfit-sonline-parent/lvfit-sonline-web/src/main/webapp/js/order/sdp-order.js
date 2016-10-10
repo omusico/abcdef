@@ -229,6 +229,10 @@ $(function(){
 		}*/
 		initPassport();
 		
+		//校验当前复制的人员信息
+		var $youwanren1 = $('.js_btn_copy').parent().parent().parent();
+		var $yanzheng = $youwanren1.find('.js_yz');
+		yanzhengPassengersInfo($yanzheng);
 	});
 	
 	//邮箱自动补全

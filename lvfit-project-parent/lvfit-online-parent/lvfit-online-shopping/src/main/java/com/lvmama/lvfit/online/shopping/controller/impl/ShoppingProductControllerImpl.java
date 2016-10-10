@@ -13,6 +13,7 @@ import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,15 +53,6 @@ public class ShoppingProductControllerImpl extends BaseExceptionHandler implemen
     @ResponseBody
     @RequestMapping(value="/updSelectedInsurance")
     public void updSelectedInsurance(FitShoppingInsuranceRequest req) {
-        Map<String, String> map = new HashMap<String, String>();
-    	JavaType javaType = JSONMapper.getInstance().getTypeFactory().constructParametricType(ArrayList.class, FitShoppingSelectedInsuranceDto.class);
-    	List<FitShoppingSelectedInsuranceDto> insuranceList = new ArrayList<FitShoppingSelectedInsuranceDto>();
-		try {
-			insuranceList = (List<FitShoppingSelectedInsuranceDto>)JSONMapper.getInstance().readValue(req.getInsuranceList(), javaType);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		} 
-		req.setInsuranceDtoList(insuranceList);
 		fitDpClient.updSelectedInsuranceInfo(req);
     }
 

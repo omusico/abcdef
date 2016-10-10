@@ -28,6 +28,7 @@ import com.lvmama.lvfit.common.dto.shopping.FitShoppingDto;
 import com.lvmama.lvfit.common.utils.HotelUtils;
 import com.lvmama.lvfit.online.base.BaseController;
 import com.lvmama.lvfit.online.base.utils.DateUtil;
+import com.lvmama.lvfit.online.base.utils.StringUtil;
 import com.lvmama.lvfit.online.search.controller.SearchController;
 import com.lvmama.lvfit.online.search.form.SearchConditionForm;
 import com.lvmama.lvfit.online.utils.ServletUtil;
@@ -49,6 +50,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @SuppressWarnings("rawtypes")
 @Controller
@@ -77,6 +79,9 @@ public class SearchControllerImpl extends BaseController implements SearchContro
 			input.setBookingSource(BookingSource.FIT_BACK);
 		}
 		super.initModelData(model, request);
+		if (StringUtils.isEmpty(input.getShoppingUUID())) {
+			input.setShoppingUUID(UUID.randomUUID().toString().replace("-",""));
+		}
 		model.addAttribute("shoppingUUID", input.getShoppingUUID());
 		model.addAttribute("searchform", input);
 		try {

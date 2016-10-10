@@ -49,9 +49,9 @@ public class UserProxyServiceAdapterImpl implements UserProxyServiceAdapter {
 		Map<String, Object> map = null;
 		if (lvSessionId != null) {
 			try {
-				  logger.error("MemcachedUtil.getInstance().get(lvSessionId, true)：【"+JSONMapper.getInstance().writeValueAsString(MemcachedUtil.getInstance().get(lvSessionId, true))+"】");
+				logger.info("MemcachedUtil.getInstance().get(lvSessionId, true)：【"+JSONMapper.getInstance().writeValueAsString(MemcachedUtil.getInstance().get(lvSessionId, true))+"】");
 			} catch (Exception e) {
-			     logger.error(ExceptionUtils.getFullStackTrace(e));
+			     logger.error(e.getMessage());
 			}
 			map = (Map<String, Object>) MemcachedUtil.getInstance().get(lvSessionId, true);
 		}

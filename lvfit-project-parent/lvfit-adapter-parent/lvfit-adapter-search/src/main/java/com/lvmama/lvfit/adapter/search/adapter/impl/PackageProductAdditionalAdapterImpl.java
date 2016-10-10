@@ -50,7 +50,7 @@ import com.lvmama.vst.search.api.vo.SearchResultVo;
 @Service
 public class PackageProductAdditionalAdapterImpl implements PackageProductAdditionalAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PackageProductAdditionalAdapterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(PackageProductAdditionalAdapterImpl.class);
 
     @Autowired
     private ProdProductAdditionClientService prodProductAdditionClientService;
@@ -141,13 +141,15 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             prodProductAddtional = prodProductAdditionClientService.selectByConditon(params);
             if (prodProductAddtional != null) {
                 try {
-                    LOGGER.info("从VST获取ProdProductAddtional：" + JSONMapper.getInstance().writeValueAsString(prodProductAddtional));
+                	if(logger.isInfoEnabled()){
+                		logger.info("从VST获取ProdProductAddtional：" + JSONMapper.getInstance().writeValueAsString(prodProductAddtional));
+                	}
                 } catch (Exception e) {
-                    LOGGER.error("instalmentList 转换JSON失败：" + e);
+                    logger.error("instalmentList 转换JSON失败：" + e);
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("从VST获取ProdProductAddtional失败：" + e);
+            logger.error("从VST获取ProdProductAddtional失败：" + e);
         }
         return prodProductAddtional;
     }
@@ -158,13 +160,15 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
         try {
             VstCommentStat commentStat = commentStatServiceAdapter.getVstCommentStatByProductId(productId);
             try {
-                LOGGER.info("从VST获取打包产品点评信息：" + JSONMapper.getInstance().writeValueAsString(commentStat));
+            	if(logger.isInfoEnabled()){
+            		logger.info("从VST获取打包产品点评信息：" + JSONMapper.getInstance().writeValueAsString(commentStat));
+            	}
             } catch (Exception e) {
-                LOGGER.error("commentStat转换JSON失败：" + e);
+                logger.error("commentStat转换JSON失败：" + e);
             }
             return (commentStat.getAvgScore() + 5) * 10;
         } catch (Exception e) {
-            LOGGER.error("获取打包产品点评信息失败：" + e);
+            logger.error("获取打包产品点评信息失败：" + e);
         }
         return null;
     }
@@ -174,7 +178,7 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             String productManagePic = permUserServiceAdapter.getProductManagePic(managerId);
             return productManagePic;
         } catch (Exception e) {
-            LOGGER.error("查询产品经理头像URL失败：" + e);
+            logger.error("查询产品经理头像URL失败：" + e);
         }
         return null;
     }
@@ -187,9 +191,11 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             StringBuffer promotionStr = new StringBuffer("");
             List<PromPromotion> promPromotionList = promotionService.getPromotions(productId, Constants.PROM_PRODUCT, Long.valueOf(3));
             try {
-                LOGGER.info("从VST获取头部促销信息：" + JSONMapper.getInstance().writeValueAsString(promPromotionList));
+            	if(logger.isInfoEnabled()){
+            		logger.info("从VST获取头部促销信息：" + JSONMapper.getInstance().writeValueAsString(promPromotionList));
+            	}
             } catch (Exception e) {
-                LOGGER.error("promPromotionList转换JSON失败：" + e);
+                logger.error("promPromotionList转换JSON失败：" + e);
             }
             if (CollectionUtils.isNotEmpty(promPromotionList)){
                 for (PromPromotion promPromotion : promPromotionList){
@@ -202,7 +208,7 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             }
             return promotionStr.toString();
         } catch (Exception e) {
-            LOGGER.error("设置头部的促销的信息失败：" + e);
+            logger.error("设置头部的促销的信息失败：" + e);
         }
         return null;
     }
@@ -212,9 +218,11 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             String url = "http://www.lvmama.com/trip/ajax/getAmtByType?code=" + categoryCode;
             Map<String, HashMap<String, String>> map = restClient.get(url, Map.class);
             try {
-                LOGGER.info("从VST获取游记返现信息fitTripBonus：" + JSONMapper.getInstance().writeValueAsString(map));
+            	if(logger.isInfoEnabled()){
+            		logger.info("从VST获取游记返现信息fitTripBonus：" + JSONMapper.getInstance().writeValueAsString(map));
+            	}
             } catch (Exception e) {
-                LOGGER.error("fitTripBonus转换JSON失败：" + e);
+                logger.error("fitTripBonus转换JSON失败：" + e);
             }
             FitSdpProdTagDto tag = new FitSdpProdTagDto();
             HashMap<String, String> hashMap = map.get("data");
@@ -250,7 +258,7 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             }
             return tag;
         } catch (Exception e) {
-            LOGGER.error("获取游记返现信息失败：" + e);
+            logger.error("获取游记返现信息失败：" + e);
         }
         return null;
     }
@@ -262,9 +270,11 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
                 return null;
             }
             try {
-                LOGGER.info("从VST获取返现信息ProdProductAddtional：" + JSONMapper.getInstance().writeValueAsString(prodProductAddtional));
+            	if(logger.isInfoEnabled()){
+            		logger.info("从VST获取返现信息ProdProductAddtional：" + JSONMapper.getInstance().writeValueAsString(prodProductAddtional));
+            	}
             } catch (Exception e) {
-                LOGGER.error("ProdProductAddtional转换JSON失败：" + e);
+                logger.error("ProdProductAddtional转换JSON失败：" + e.getMessage());
             }
             List<FitSdpProdTagDto> returnTags = new ArrayList<FitSdpProdTagDto>();
             if (prodProductAddtional.getPcRebate() != null && prodProductAddtional.getPcRebate() > 0) {
@@ -286,7 +296,7 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
 //            }
             return returnTags;
         } catch (Exception e) {
-            LOGGER.error("获取返现信息失败：" + e);
+            logger.error("获取返现信息失败：" + e);
         }
         return null;
     }
@@ -307,9 +317,11 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             }
             Map<String, BuyPresentActivityInfo> returnContent = resultHandleT.getReturnContent();
             try {
-                LOGGER.info("从VST获取买赠信息Map<String, BuyPresentActivityInfo>：" + JSONMapper.getInstance().writeValueAsString(returnContent));
+            	if(logger.isInfoEnabled()){
+            		logger.info("从VST获取买赠信息Map<String, BuyPresentActivityInfo>：" + JSONMapper.getInstance().writeValueAsString(returnContent));
+            	}
             } catch (Exception e) {
-                LOGGER.error("买赠信息Map<String, BuyPresentActivityInfo>转换JSON失败：" + e);
+                logger.error("买赠信息Map<String, BuyPresentActivityInfo>转换JSON失败：" + e);
             }
             BuyPresentActivityInfo donation = returnContent.get(productId);//从接口返回的map中，根据当前产品ID取出对应的买赠信息
             if (null != donation){
@@ -340,7 +352,7 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             returnTag.setTagContent(donateTagInfo.toString());
             return returnTag;
         } catch (Exception e) {
-            LOGGER.error("获取买赠标签信息失败：" + e);
+            logger.error("获取买赠标签信息失败：" + e);
         }
         return null;
     }
@@ -359,9 +371,11 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
                 return null;
             }
             try {
-                LOGGER.info("从VST获取产品头部信息List<FitProdTagDto>：" + JSONMapper.getInstance().writeValueAsString(resultHandleT.getReturnContent()));
+            	if(logger.isInfoEnabled()){
+            		logger.info("从VST获取产品头部信息List<FitProdTagDto>：" + JSONMapper.getInstance().writeValueAsString(resultHandleT.getReturnContent()));
+            	}
             } catch (Exception e) {
-                LOGGER.info("List<ProdTagVO>转换JSON报错：" + e);
+                logger.error("List<ProdTagVO>转换JSON报错：" + e);
             }
             List<ProdTagVO> prodTagVOs = resultHandleT.getReturnContent();
             List<FitSdpProdTagDto> returnTags = new ArrayList<FitSdpProdTagDto>();
@@ -375,7 +389,7 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             }
             return returnTags;
         } catch (Exception e) {
-            LOGGER.error("获取头部标签信息失败：" + e);
+            logger.error("获取头部标签信息失败：" + e);
         }
         return null;
     }
@@ -385,7 +399,7 @@ public class PackageProductAdditionalAdapterImpl implements PackageProductAdditi
             PermUser permUser = permUserServiceAdapter.getPermUserByUserId(managerId);
             return permUser;
         } catch (Exception e) {
-            LOGGER.error("查询产品经理头像URL失败：" + e);
+            logger.error("查询产品经理头像URL失败：" + e);
         }
         return null;
     }

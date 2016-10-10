@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -255,6 +256,16 @@ public class ToBookingControllerImpl extends BaseController implements ToBooking
 	    	MemUserRequest userRequest = new MemUserRequest();
 	    	userRequest.setLvSessionId(lvSessionId);
 			List<FitUserContacterDto> contactList = vstClient.getUserReceiverByLvSessionId(userRequest);
+			if(CollectionUtils.isNotEmpty(contactList)){
+				for(FitUserContacterDto contacter:contactList){
+					if(contacter.getBirthday()==null || StringUtils.isBlank(contacter.getBirthdayStr())){
+						if(("ID".equals(contacter.getCertType())||"ID_CARD".equals(contacter.getCertType())) 
+								&& StringUtils.isNotBlank(contacter.getCertNo())){
+							contacter.setBirthday(this.getBirthdayByIdCard(contacter.getCertNo()));
+						}
+					}
+				}
+			}
 			/*try {
 				String str = FileUtils.getStringFromResourceAsStream("/calender.json");
 				contactList = JSONMapper.getInstance().readValue(str,new TypeReference<List<FitUserContacterDto>>() {
@@ -268,6 +279,20 @@ public class ToBookingControllerImpl extends BaseController implements ToBooking
 			logger.error("获取常用联系人异常：");
 			return new ArrayList<FitUserContacterDto>();
 		}
+	}
+	
+	private Date getBirthdayByIdCard(String certNo){
+		Date birthday = null;
+		if(StringUtils.isNotBlank(certNo)){
+			if(certNo.length()==15){
+				birthday = DateUtils.parseDate("19"+certNo.substring(6, 10)+"-"+certNo.substring(10,12)+"-"+certNo.substring(12,14));
+			} else if(certNo.length() == 18){
+				birthday = DateUtils.parseDate(certNo.substring(6,10)+"-"+certNo.substring(10,12)+"-"+certNo.substring(12,14));
+			}else{
+				return null;
+			}
+		}
+		return birthday;
 	}
 
 	/**

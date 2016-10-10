@@ -80,7 +80,7 @@
 				<div class="search_kind search_kind_hotel"><!--酒店商圈开始-->
 					<dl class="clearfix js_fuxuan" id="hotelLocationCondition">
 	                	<dt>酒店位置</dt>
-	                    <dd class="kind_buxian active"><a code='ALL' codetype="L" class="search_arrow_1" href="javascript:;">不限</a></dd>
+	                    <dd class="kind_buxian active"><a class="search_arrow_1" href="javascript:;">不限</a></dd>
 	                    <#if landmark??>
 	                    	<dd class="kind_hotel_location"><span>地标<b class="searchArrow"></b></span></dd>
 	                    </#if>
@@ -163,7 +163,7 @@
 							<#if spots??>
 							<div class="search_subCon_list">
 								<#list spots as spot>
-									<dd data-code='${spot.id}' codetype="L"><a href="javascript:;">${spot.value}</a></dd>
+									<dd data-code='${spot.id}' data-type="L"><a href="javascript:;">${spot.value}</a></dd>
 								</#list>
 							</div>
 							</#if>
@@ -334,7 +334,7 @@
 	<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 	<script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
 
-	<script src="http://pic.lvmama.com/min/index.php?f=/js/new_v/jquery-1.7.2.min.js,/js/v6/header_new.js,/js/v6/flighthotel/fh-select-alert.js,/js/fit/v3/select-hotel.js,/js/common/losc.js"></script>
+	<script src="http://pic.lvmama.com/min/index.php?f=/js/new_v/jquery-1.7.2.min.js,/js/v6/header_new.js,/js/v6/flighthotel/fh-select-alert.js,/js/fit/v3/select-hotel.js"></script>
 	<script src="${request.contextPath}/js/common/common.js"></script>
     <script src="${request.contextPath}/js/fh-hotel-detail.js"></script>
     <script>
@@ -740,6 +740,31 @@
 
         $(".fh-return-btn").live("click", function () {
             window.location.href = $('#reloadUrl').val();
+        });
+
+		$(".selectedBtn").live("click", function () {
+			goBack();
+        });
+
+        $(".select-div-list li").live("click", function () {
+            var $selectSpan = $(this).parents(".select-div-list").siblings(".select-div").find("span");
+            var num = $(this).data("num");
+            var curNum = Number( $selectSpan.text() );
+
+            if (num !== curNum) {
+                $selectSpan.text(num);
+                $(this).parents(".roomTable-td4").siblings(".roomTable-td6").html("<a href=\"javascript:void(0);\" class=\"btn btn-small btn-orange xuanze\">选择</a>");
+            }
+        });
+
+		$(".select-dive").live("click", function () {
+            var $this = $(this);
+            var thisL = $this.offset().left, thisT = $this.offset().top, thisH = $this.outerHeight(true);
+            var fixHeight = 16;
+            $this.siblings(".select-div-list").show().css({
+                'left': thisL,
+                'top': thisT + thisH - fixHeight
+            });
         });
 	</script>
 </body>

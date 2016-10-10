@@ -38,7 +38,7 @@ import com.lvmama.lvfit.common.dto.hotel.FitConRecomHotelRequestForm;
 @Component
 @Path("")
 public class FitConRecomHotelResource {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FitConRecomHotelResource.class);
+	private static final Logger logger = LoggerFactory.getLogger(FitConRecomHotelResource.class);
 	@Autowired
 	private FitConRecomHotelService fitConRecomHotelService;
 
@@ -82,7 +82,7 @@ public class FitConRecomHotelResource {
 			fitConRecomHotelService.importAllRecomHotel(fitConRecomHotelRequestForm);
 			return Response.ok(true).build();
 		} catch (Exception e) {
-			LOGGER.error("批量导入任务配置失败", e);
+			logger.error("批量导入任务配置失败", e);
 		}
 		return null;
 	}
@@ -97,7 +97,7 @@ public class FitConRecomHotelResource {
 			Boolean flag = fitConRecomHotelService.saveRecomHotel(dto);
 			return Response.ok(flag).build();
 		} catch (Exception e) {
-			LOGGER.error("新增默认酒店数据失败", e);
+			logger.error("新增默认酒店数据失败", e);
 		}
 		return null;
 	}
@@ -112,7 +112,7 @@ public class FitConRecomHotelResource {
 			Boolean flag = fitConRecomHotelService.updateRecomHotel(dto);
 			return Response.ok(flag).build();
 		} catch (Exception e) {
-			LOGGER.error("更改默认酒店数据失败", e);
+			logger.error("更改默认酒店数据失败", e);
 		}
 		return null;
 	}
@@ -127,7 +127,7 @@ public class FitConRecomHotelResource {
 			FitConRecomHotelDto dto = fitConRecomHotelService.getRecomHotel(id);
 			return Response.ok(dto).build();
 		} catch (Exception e) {
-			LOGGER.error("更改默认酒店数据失败", e);
+			logger.error("更改默认酒店数据失败", e);
 		}
 		return null;
 	}
@@ -142,7 +142,7 @@ public class FitConRecomHotelResource {
 			Boolean flag = fitConRecomHotelService.deleteRecomHotel(id);
 			return Response.ok(flag).build();
 		} catch (Exception e) {
-			LOGGER.error("删除默认酒店数据失败", e);
+			logger.error("删除默认酒店数据失败", e);
 		}
 		return null;
 	}

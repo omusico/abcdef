@@ -27,7 +27,7 @@
 			function initGrid() 
 			{
 			
-				var colNames = ['品类','产品ID', '产品名称','产品经理','产品是否有效','是否可售','审核状态','当前同步状态','是否为多出发地','被打包产品Id', '行程天数','操作1','操作2'];
+				var colNames = ['品类','产品ID', '产品名称','产品经理','产品是否有效','是否可售','审核状态',/*'当前同步状态',*/'是否为多出发地','被打包产品Id', '行程天数','操作1','操作2'];
 
 				var cols = [ 
 					{
@@ -78,13 +78,13 @@
 						width:70,
 						sortable:false
 					},
-					{
+					/*{
 						name : 'curSyncFlag',   //当前同步状态
 						index : 'curSyncFlag',
 						align : 'center',
 						width:70,
 						sortable:false
-					},
+					},*/
 					//----------------
 					{
 						name : 'muiltDpartureFlag',  //是否为多出发地

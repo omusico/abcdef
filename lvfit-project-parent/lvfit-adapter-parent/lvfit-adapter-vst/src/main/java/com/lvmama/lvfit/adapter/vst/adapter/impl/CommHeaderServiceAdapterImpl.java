@@ -20,7 +20,7 @@ import com.lvmama.vst.pet.adapter.ICommHeaderServiceAdapter;
 @Service
 public class CommHeaderServiceAdapterImpl  implements CommHeaderServiceAdapter{
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommHeaderServiceAdapterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommHeaderServiceAdapterImpl.class);
     
 	@Autowired
 	private  ICommHeaderServiceAdapter commHeaderService;
@@ -45,9 +45,11 @@ public class CommHeaderServiceAdapterImpl  implements CommHeaderServiceAdapter{
 	            if(null == commHeader){
 	                Map<String,List<RecommendInfo>> recommendInfoMap = commHeaderService.getNewHeadContent( provinceId!=null?(String)provinceId:null, cityId!=null?(String)cityId:null, stationName!=null?(String)stationName:null);
 	                try {
-                        LOGGER.info("从接口中取头部信息" + JSONMapper.getInstance().writeValueAsString(recommendInfoMap));
+	                	if(logger.isInfoEnabled()){
+	                		logger.info("从接口中取头部信息" + JSONMapper.getInstance().writeValueAsString(recommendInfoMap));
+	                	}
                     } catch (Exception e) {
-                        e.printStackTrace();
+                    	logger.error(e.getMessage());
                     }
 	                Boolean isFirstAccept = (stationName==null);
 	                commHeader = commHeaderService.getHeadContent((String) type, (String) stationName, Boolean.valueOf(isNew.toString()), recommendInfoMap, isFirstAccept);

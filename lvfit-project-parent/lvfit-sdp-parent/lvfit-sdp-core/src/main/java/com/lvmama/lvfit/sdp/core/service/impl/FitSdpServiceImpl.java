@@ -139,7 +139,7 @@ public class FitSdpServiceImpl implements FitSdpService {
 		return basicInfo;
 	}
 
-	@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_PRODUCT_E)
+	//@ExceptionPoint(FitBusinessExceptionType.FIT_SDP_SEARCH_PRODUCT_E)
     private void initCityGroupInfo(FitSdpProductBasicInfoDto basicInfo) {
 
         Map<Long, BigDecimal> startPriceMap = this.searchCalendarInfoByProductId(basicInfo.getProductId());
@@ -147,9 +147,11 @@ public class FitSdpServiceImpl implements FitSdpService {
         	throw new ExceptionWrapper(FitExceptionCode.GET_NO_SDP_START_PRICE,basicInfo.getProductId());
         }
         try {
-			logger.error("startPriceMap【"+JSONMapper.getInstance().writeValueAsString(startPriceMap)+"】");
+			if(logger.isInfoEnabled()){
+				logger.info("startPriceMap【"+JSONMapper.getInstance().writeValueAsString(startPriceMap)+"】");
+			}
 		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+			logger.error(e.getMessage());
 		}
         List<FitSdpCityGroupDto> cityGroupsDtos =   basicInfo.getCityGroups();
         List<FitSdpCityGroupDto> usefulcCityGroupDtos = new ArrayList<FitSdpCityGroupDto>();
@@ -587,7 +589,9 @@ public class FitSdpServiceImpl implements FitSdpService {
 							selectedRoomtypes.add(_r); 
 							BigDecimal price = _r.getPrice();
 							if(price==null){
-								logger.info("房间价格为空，有异常："+_r.getDetailId()+","+_r.getRoomId()+",h:"+_h.getHotelId()+",g:"+_h.getGroupId());
+								if(logger.isInfoEnabled()){
+									logger.info("房间价格为空，有异常："+_r.getDetailId()+","+_r.getRoomId()+",h:"+_h.getHotelId()+",g:"+_h.getGroupId());
+								}
 								continue;
 							}
 							//当前组最低房价就是当前选择的房间的价格*房间间数.

@@ -82,9 +82,11 @@ public class SpotSearchAdapterImpl implements SpotSearchAdapter {
 		//ResultHandleT<SearchResultVo> resultHandle = lvmamaFlightService.searchAroundTicket(spotQueryRequest.getHotelId(), spotQueryRequest.getSize(), spotQueryRequest.getDistance(), spotQueryRequest.getSortNum());
 		//根据木的地查询
 		try {
-			logger.error("spotSearchResult:["+JSONMapper.getInstance().writeValueAsString(spotQueryRequest)+"]");
+			if(logger.isInfoEnabled()){
+				logger.info("spotSearchResult:["+JSONMapper.getInstance().writeValueAsString(spotQueryRequest)+"]");
+			}
 		} catch (Exception e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
+			logger.error(e.getMessage());
 		}
 		String gid= UUID.randomUUID().toString();
 		Object returnObj = null;
@@ -181,15 +183,19 @@ public class SpotSearchAdapterImpl implements SpotSearchAdapter {
 			ticketPriceRequest.setStartDate(spotQueryRequest.getStartDate());
 			ticketPriceRequest.setEndDate(spotQueryRequest.getEndDate());
 			try {
-				logger.debug("调用时间价格表参数:["+JSONMapper.getInstance().writeValueAsString(ticketPriceRequest)+"]");
+				if(logger.isInfoEnabled()){
+					logger.info("调用时间价格表参数:["+JSONMapper.getInstance().writeValueAsString(ticketPriceRequest)+"]");
+				}
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getStackTrace(e));
+				logger.error(e.getMessage());
 			}
 			List<FitTicketAddTimePriceDto> ticketAddTimePriceDtos =  ticketServiceAdapter.findGoodsAddTimePrice(ticketPriceRequest);
 			try {
-				logger.debug("时间价格表:["+JSONMapper.getInstance().writeValueAsString(ticketAddTimePriceDtos)+"]");
+				if(logger.isInfoEnabled()){
+					logger.info("时间价格表:["+JSONMapper.getInstance().writeValueAsString(ticketAddTimePriceDtos)+"]");
+				}
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getStackTrace(e));
+				logger.error(e.getMessage());
 			}
 			Map<Long,List<FitTicketAddTimePriceDto>>  ticketTimePriceMap = new HashMap<Long, List<FitTicketAddTimePriceDto>>();
 			if(CollectionUtils.isNotEmpty(ticketAddTimePriceDtos)){
@@ -212,9 +218,11 @@ public class SpotSearchAdapterImpl implements SpotSearchAdapter {
 				}
 				//2.3.1 根据时间价格过滤出不符合条件的商品
 				try {
-					logger.debug("【"+searchSpotDto.getProductId()+"】未过滤spotSearchTicketDtos:["+JSONMapper.getInstance().writeValueAsString(spotSearchTicketDtos)+"]");
+					if(logger.isInfoEnabled()){
+						logger.info("【"+searchSpotDto.getProductId()+"】未过滤spotSearchTicketDtos:["+JSONMapper.getInstance().writeValueAsString(spotSearchTicketDtos)+"]");
+					}
 				} catch (Exception e) {
-					logger.error(ExceptionUtils.getStackTrace(e));
+					logger.error(e.getMessage());
 				} 
 				for (SpotSearchTicketDto searchTicketDto : spotSearchTicketDtos) {
 					
@@ -241,15 +249,19 @@ public class SpotSearchAdapterImpl implements SpotSearchAdapter {
 					}
 				}
 				try {
-					logger.debug("【"+searchSpotDto.getProductId()+"】未过滤delSpotSearchTicketDtos:["+JSONMapper.getInstance().writeValueAsString(delSpotSearchTicketDtos)+"]");
+					if(logger.isInfoEnabled()){
+						logger.info("【"+searchSpotDto.getProductId()+"】未过滤delSpotSearchTicketDtos:["+JSONMapper.getInstance().writeValueAsString(delSpotSearchTicketDtos)+"]");
+					}
 				} catch (Exception e) {
-					logger.debug(ExceptionUtils.getStackTrace(e));
+					logger.error(e.getMessage());
 				} 
 				spotSearchTicketDtos.removeAll(delSpotSearchTicketDtos);
 				try {
-					logger.debug("【"+searchSpotDto.getProductId()+"】已过滤spotSearchTicketDtos:["+JSONMapper.getInstance().writeValueAsString(spotSearchTicketDtos)+"]");
+					if(logger.isInfoEnabled()){
+						logger.info("【"+searchSpotDto.getProductId()+"】已过滤spotSearchTicketDtos:["+JSONMapper.getInstance().writeValueAsString(spotSearchTicketDtos)+"]");
+					}
 				} catch (Exception e) {
-					logger.debug(ExceptionUtils.getStackTrace(e));
+					logger.error(e.getMessage());
 				} 
 				
 				if(CollectionUtils.isNotEmpty(spotSearchTicketDtos)){
@@ -258,9 +270,11 @@ public class SpotSearchAdapterImpl implements SpotSearchAdapter {
 				}
 			}
 			try {
-				logger.error("最终searchSpotDtos:["+JSONMapper.getInstance().writeValueAsString(searchSpotDtos)+"]");
+				if(logger.isInfoEnabled()){
+					logger.info("最终searchSpotDtos:["+JSONMapper.getInstance().writeValueAsString(searchSpotDtos)+"]");
+				}
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getStackTrace(e));
+				logger.error(e.getMessage());
 			}
 			spotSearchResult.setResults(searchSpotDtos);
 		}

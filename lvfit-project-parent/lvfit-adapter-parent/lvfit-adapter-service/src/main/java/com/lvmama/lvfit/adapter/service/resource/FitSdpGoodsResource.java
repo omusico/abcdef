@@ -25,7 +25,7 @@ import java.io.IOException;
 @Path("")
 public class FitSdpGoodsResource {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(FitSdpGoodsResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(FitSdpGoodsResource.class);
 	
     @Autowired
     private PackageGoodsAdapter packageGoodsAdapter; 
@@ -40,12 +40,14 @@ public class FitSdpGoodsResource {
     @Path(SearchClientPath.Path.PACKAGE_GOODS_INFO_SEARCH)
     public Response search(FitSdpGoodsRequest req) {
     	
-    	LOGGER.info("productId:【"+req.getProductId()+"】从vst获取商品信息数据！");
+    	logger.info("productId:【"+req.getProductId()+"】从vst获取商品信息数据！");
     	FitSdpGoodsDto vstPackageGoodsInfo = packageGoodsAdapter.getVstPackageGoodsInfo(req);
         try {
-            LOGGER.info("从VST得到商品信息:" + JSONMapper.getInstance().writeValueAsString(vstPackageGoodsInfo));
-        } catch (IOException e) {
-            LOGGER.error("转换JSON失败", e);
+        	if(logger.isInfoEnabled()){
+        		logger.info("从VST得到商品信息:" + JSONMapper.getInstance().writeValueAsString(vstPackageGoodsInfo));
+        	}
+        } catch (Exception e) {
+            logger.error("转换JSON失败", e);
         }
         BaseSingleResultDto<FitSdpGoodsDto> resultDto = new BaseSingleResultDto<FitSdpGoodsDto>();
         resultDto.setResult(vstPackageGoodsInfo);

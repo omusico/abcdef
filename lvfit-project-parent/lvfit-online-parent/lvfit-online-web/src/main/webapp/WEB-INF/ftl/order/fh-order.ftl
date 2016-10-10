@@ -217,7 +217,7 @@ _data._visitTime = "${flightInfos?first.departureDate }";
                                     <div class="hotel-center"><#if (roomDate)??>(${roomDate }晚)<#else></#if> </div>
                                 </div>
                                 <div class="hotel-amount">
-                                    <div class="hotel-center">${hotel.rooms[0].roomCounts}<!-- 预定房间数 --></div>
+                                    <div class="hotel-center">${hotel.rooms[0].plans[0].roomCounts}<!-- 预定房间数 --></div>
                                 </div>
                             </div>
                         </div>
@@ -684,36 +684,36 @@ _data._visitTime = "${flightInfos?first.departureDate }";
 <script src="${request.contextPath}/js/common/login.js"></script>
 <script src="${request.contextPath}/js/order/fh-order.js"></script>
 <script src="${request.contextPath}/js/order/new-order.js"></script>
-<script type="text/javascript" src="http://pic.lvmama.com/js/common/losc.js"></script>
 <script type="text/javascript">
 //$(".fh-overlay, .fh-dialog-loading").show();
 var basePath = "${request.contextPath}";
 var shopingUUID = "${shopingUUID}";
 var returnAlertFunction = function(){
-	var uuid = "${shoppingUuid}";
+	var uuid = "${shopingUUID}";
     var errorMsgOutTime = "${errorMsgOutTime}";
+    var searchCondition = window.localStorage.getItem('searchCondition');
+  	if(searchCondition != null && searchCondition != ''){
+		var tripType = searchCondition.split('|')[0];
+		var departureCityCode = searchCondition.split('|')[1];
+		var arrivalCityCode = searchCondition.split('|')[2];
+		var cityCode = searchCondition.split('|')[3];
+		var flightStartDate = searchCondition.split('|')[4];
+		var flightEndDate = searchCondition.split('|')[5];
+		var hotelStartDate = searchCondition.split('|')[6];
+		var hotelEndDate = searchCondition.split('|')[7];
+		var adultsCount = searchCondition.split('|')[8];
+		var childCount = searchCondition.split('|')[9];
+	}
+  	var reloadUrl = "/search?shoppingUUID="+uuid+"&tripType="+tripType+"&departureCityCode="+departureCityCode+"&arrivalCityCode="+arrivalCityCode+"&departureTime="+flightStartDate+"&returnTime="+flightEndDate+"&cityCode="+cityCode+"&checkInTime="+hotelStartDate+"&checkOutTime="+hotelEndDate+"&adultsCount="+adultsCount+"&childCount="+childCount;
+  	$('#reloadUrl').val(reloadUrl);
     if(errorMsgOutTime!=''){
-    	var searchCondition = window.localStorage.getItem('searchCondition');
-	  	if(searchCondition != null && searchCondition != ''){
-    		var tripType = searchCondition.split('|')[0];
-    		var departureCityCode = searchCondition.split('|')[1];
-    		var arrivalCityCode = searchCondition.split('|')[2];
-    		var cityCode = searchCondition.split('|')[3];
-    		var flightStartDate = searchCondition.split('|')[4];
-    		var flightEndDate = searchCondition.split('|')[5];
-    		var hotelStartDate = searchCondition.split('|')[6];
-    		var hotelEndDate = searchCondition.split('|')[7];
-    		var adultsCount = searchCondition.split('|')[8];
-    		var childCount = searchCondition.split('|')[9];
-    	}
     	$(".returnAlert").show();
 		$('.resortOverlay').stop(true,true).show();
 		$("#errorMsg").html(errorMsgOutTime);
-    	var reloadUrl = "${request.contextPath}/search/"+uuid+"?tripType="+tripType+"&departureCityCode="+departureCityCode+"&arrivalCityCode="+arrivalCityCode+"&departureTime="+flightStartDate+"&returnTime="+flightEndDate+"&cityCode="+cityCode+"&checkInTime="+hotelStartDate+"&checkOutTime="+hotelEndDate+"&adultsCount="+adultsCount+"&childCount="+childCount;
-    	$('#reloadUrl').val(reloadUrl);
     }
 }
 $(function(){
+	cleanBrowserData();
 	//缓存超时弹框
 	returnAlertFunction();
     //价格实例化
@@ -727,6 +727,7 @@ $(function(){
     //证件控件初始化
     initId_Card();
     initPassport();
+    
 });
 
 $('.ph_icon_closeAlert').click(function(){
@@ -843,6 +844,16 @@ function initPassengers(){
     });
     
 }
+
+//清除浏览器回退数据
+function cleanBrowserData(){
+	var $yanzheng = $('.js_yz');
+	for(var i=0;i<$yanzheng.length;i++){
+		var This = $yanzheng.eq(i);
+		This.val("");
+	}
+}
+
 </script>
 
 

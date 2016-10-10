@@ -6,11 +6,11 @@
 <configuration>
     <settings>
         <setting name="lazyLoadingEnabled" value="false"/>
-    </settings>
-
+    </settings> 
+ 
     <plugins> 
         <plugin interceptor="com.lvmama.lvf.common.domain.mybatis.interceptor.FkIdsInterceptor"/> 
- 
+   
     </plugins>
     
     <mappers>

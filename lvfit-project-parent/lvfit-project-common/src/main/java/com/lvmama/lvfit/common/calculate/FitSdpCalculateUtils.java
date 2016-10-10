@@ -177,10 +177,19 @@ public class FitSdpCalculateUtils {
         List<String> calendarCacheKeys = new ArrayList<String>();
         String goCityKey = departureCityCode + "_" + arrivalCityCode;
         String backCityKey = arrivalCityCode + "_" + departureCityCode;
-        for (int i = startMonth; i <= endMonth; i++) {
-            calendarCacheKeys.add(goCityKey + "_" + i);
-            calendarCacheKeys.add(backCityKey + "_" + i);
+        if(endMonth>startMonth){
+	        for (int i = startMonth; i <= endMonth; i++) {
+	            calendarCacheKeys.add(goCityKey + "_" + i);
+	            calendarCacheKeys.add(backCityKey + "_" + i);
+	        }
+        }else{
+        	endMonth = endMonth+12;
+        	for (int i = startMonth; i <= endMonth; i++) {
+	            calendarCacheKeys.add(goCityKey + "_" + i%12);
+	            calendarCacheKeys.add(backCityKey + "_" + i%12);
+	        }
         }
+
 
         // 根据交通规则所设置的往返程时间匹配两边对应的低价日历数据，计算自主打包产品每日最低价
         Map<String, BigDecimal> flightCalendarMap = new HashMap<String, BigDecimal>();

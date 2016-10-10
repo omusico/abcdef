@@ -330,41 +330,31 @@ public class FitAppDpBookingServiceImpl implements FitAppDpBookingService {
 		List<FlightSearchFlightInfoDto> selectFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
 		
 		for(Map.Entry<String,FitAppTrafficInfoDto> entry : selectTrafficInfoMap.entrySet()){
-			boolean flightExsitFlag = false;
 			if(entry.getValue()!=null){
 				FlightSearchFlightInfoDto flightDto = entry.getValue().getSearchFlightInfoDto();
 				if(flightDto!=null){
+					List<FlightSearchSeatDto> seats = new ArrayList<FlightSearchSeatDto>();
 					for (FlightSearchSeatDto seat : flightDto.getSeats()) {
 						if (entry.getValue().getSeatCode().equals(seat.getSeatClassCode())) {
-							seat.setSelectFlag(true);
+							seats.add(seat);
 							break;
 						}
 					}
-					if(TrafficTripeType.GO_WAY==TrafficTripeType.valueOf(entry.getKey())){
-						flightDto.setBackOrTo(FlightTripType.DEPARTURE.name());
-						if(selectFlightInfoDtos.size()>0){
-							selectFlightInfoDtos.set(0, flightDto);
-						}else{
-							selectFlightInfoDtos.add(0,flightDto);
-						}
-						flightExsitFlag = true;
-					}else if(TrafficTripeType.BACK_WAY==TrafficTripeType.valueOf(entry.getKey())){
-						flightDto.setBackOrTo(FlightTripType.RETURN.name());
-						if(selectFlightInfoDtos.size()==0){
-							selectFlightInfoDtos.add(0,new FlightSearchFlightInfoDto());
-						}
-						selectFlightInfoDtos.add(1, flightDto);
-						flightExsitFlag = true;
+					flightDto.setSeats(seats);
+					if(seats.size()==0){
+						throw new ExceptionWrapper(FitExceptionCode.APP_FLIGHT_NO_MATCH,entry.getValue().getFlightNo());
+					}
+					if(TrafficTripeType.GO_WAY==TrafficTripeType.valueOf(entry.getKey())) {
+						List<FlightSearchFlightInfoDto> toFlightInfoList = shoppingDto.getToFlightInfos().getResults();
+						toFlightInfoList.clear();
+						toFlightInfoList.add(flightDto);
+					} else if(TrafficTripeType.BACK_WAY == TrafficTripeType.valueOf(entry.getKey())) {
+						List<FlightSearchFlightInfoDto> backFlightInfoList = shoppingDto.getBackFlightInfos().getResults();
+						backFlightInfoList.clear();
+						backFlightInfoList.add(flightDto);
 					}
 				}
 			}
-			if(!flightExsitFlag){
-				throw new ExceptionWrapper(FitExceptionCode.APP_FLIGHT_NO_MATCH,entry.getValue().getFlightNo());
-			}
-		}
-		shoppingDto.setSelectToFlight(selectFlightInfoDtos.get(0));
-		if (selectFlightInfoDtos.size() == 2) {
-			shoppingDto.setSelectBackFlight(selectFlightInfoDtos.get(1));
 		}
 		
 		FitDpUpdateShoppingRequest shoppingRequest = new FitDpUpdateShoppingRequest();

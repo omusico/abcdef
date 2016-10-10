@@ -89,14 +89,11 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
     			FitAppGoodsInfo appGoodsInfo = entry.getValue().get(0);
 
     			HotelSearchResult<HotelSearchHotelDto> hotelSearchResult = shoppingDto.getHotels();
-    			List<HotelSearchHotelDto> hotels = new ArrayList<HotelSearchHotelDto>();
-    			if (hotelSearchResult == null || CollectionUtils.isEmpty(hotelSearchResult.getResults())) {
-					throw new ExceptionWrapper(FitExceptionCode.APP_GOODS_NO_MATCH, appGoodsInfo.getGoodsId());
-    			}
+
 				HotelSearchHotelDto selectHotel = new HotelSearchHotelDto();
 				HotelSearchRoomDto selectRoom = new HotelSearchRoomDto();
 				HotelSearchPlanDto selectPlan = new HotelSearchPlanDto();
-				for (HotelSearchHotelDto hotel : hotels) {
+				for (HotelSearchHotelDto hotel : hotelSearchResult.getResults()) {
 					for (HotelSearchRoomDto roomDto : hotel.getRooms()) {
 						for (HotelSearchPlanDto plan : roomDto.getPlans()) {
 							if (plan.getSuppGoodsId().equals(appGoodsInfo.getGoodsId())) {
@@ -120,7 +117,9 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 				roomDtoList.add(selectRoom);
 
 				selectHotel.setRooms(roomDtoList);
-    			shoppingDto.setSelectHotel(selectHotel);
+				List<HotelSearchHotelDto> hotelDtoList = new ArrayList<HotelSearchHotelDto>();
+				hotelDtoList.add(selectHotel);
+				hotelSearchResult.setResults(hotelDtoList);
 			}
     		//门票
     		else if(FitAppGoodsType.valueOf(entry.getKey())==FitAppGoodsType.TICKET){
@@ -253,17 +252,13 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 		
 		Map<String, FitAppTrafficInfoDto> selectTrafficInfoMap = request.getSelectTrafficInfo();
 		
-		List<FlightSearchFlightInfoDto> selectFlightInfoDtos = new ArrayList<FlightSearchFlightInfoDto>();
-		
 		for(Map.Entry<String,FitAppTrafficInfoDto> entry : selectTrafficInfoMap.entrySet()){
-			boolean flightExsitFlag = false;
-			if(entry.getValue()!=null){
+			if(entry.getValue()!=null) {
 				FlightSearchFlightInfoDto flightDto = entry.getValue().getSearchFlightInfoDto();
-				if(flightDto!=null){
+				if(flightDto!=null) {
 					List<FlightSearchSeatDto> seats = new ArrayList<FlightSearchSeatDto>();
 					for (FlightSearchSeatDto seat : flightDto.getSeats()) {
 						if (entry.getValue().getSeatCode().equals(seat.getSeatClassCode())) {
-							seat.setSelectFlag(true);
 							seats.add(seat);
 							break;
 						}
@@ -272,31 +267,17 @@ public class FitAppDpCalculateServiceImpl implements FitAppDpCalculateService {
 					if(seats.size()==0){
 						throw new ExceptionWrapper(FitExceptionCode.APP_FLIGHT_NO_MATCH,entry.getValue().getFlightNo());
 					}
-					if(TrafficTripeType.GO_WAY==TrafficTripeType.valueOf(entry.getKey())){
-						flightDto.setBackOrTo(FlightTripType.DEPARTURE.name());
-						if(selectFlightInfoDtos.size()>0){
-							selectFlightInfoDtos.set(0, flightDto);
-						}else{
-							selectFlightInfoDtos.add(0,flightDto);
-						}
-						flightExsitFlag = true;
-					}else if(TrafficTripeType.BACK_WAY==TrafficTripeType.valueOf(entry.getKey())){
-						flightDto.setBackOrTo(FlightTripType.RETURN.name());
-						if(selectFlightInfoDtos.size()==0){
-							selectFlightInfoDtos.add(0,new FlightSearchFlightInfoDto());
-						}
-						selectFlightInfoDtos.add(1, flightDto);
-						flightExsitFlag = true;
+					if(TrafficTripeType.GO_WAY==TrafficTripeType.valueOf(entry.getKey())) {
+						List<FlightSearchFlightInfoDto> toFlightInfoList = shoppingDto.getToFlightInfos().getResults();
+						toFlightInfoList.clear();
+						toFlightInfoList.add(flightDto);
+					} else if(TrafficTripeType.BACK_WAY == TrafficTripeType.valueOf(entry.getKey())) {
+						List<FlightSearchFlightInfoDto> backFlightInfoList = shoppingDto.getBackFlightInfos().getResults();
+						backFlightInfoList.clear();
+						backFlightInfoList.add(flightDto);
 					}
 				}
 			}
-			if(!flightExsitFlag){
-				throw new ExceptionWrapper(FitExceptionCode.APP_FLIGHT_NO_MATCH,entry.getValue().getFlightNo());
-			}
-		}
-		shoppingDto.setSelectToFlight(selectFlightInfoDtos.get(0));
-		if (selectFlightInfoDtos.size() == 2) {
-			shoppingDto.setSelectBackFlight(selectFlightInfoDtos.get(1));
 		}
 		
 		calculateAmountRequest.setFitShoppingDto(shoppingDto); 

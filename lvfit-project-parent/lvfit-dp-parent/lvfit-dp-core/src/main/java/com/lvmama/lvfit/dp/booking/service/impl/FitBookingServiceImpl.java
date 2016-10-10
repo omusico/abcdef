@@ -1,37 +1,21 @@
 package com.lvmama.lvfit.dp.booking.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
-import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
-import com.lvmama.lvfit.common.dto.enums.FlightTripType;
-import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
-import com.lvmama.lvfit.common.utils.HotelUtils;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import com.lvmama.lvf.common.dto.BaseSingleResultDto;
 import com.lvmama.lvf.common.exception.ExceptionCode;
 import com.lvmama.lvf.common.exception.ExceptionWrapper;
 import com.lvmama.lvf.common.utils.DateUtils;
 import com.lvmama.lvf.common.utils.JSONMapper;
 import com.lvmama.lvf.common.utils.StringUtil;
+import com.lvmama.lvfit.common.aspect.exception.ExceptionPoint;
 import com.lvmama.lvfit.common.client.FitBusinessClient;
 import com.lvmama.lvfit.common.dto.calculator.AmountCalculatorRequest;
 import com.lvmama.lvfit.common.dto.calculator.BookingDetailDto;
 import com.lvmama.lvfit.common.dto.calculator.FlightSimpleInfoDto;
 import com.lvmama.lvfit.common.dto.enums.BookingSource;
+import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.enums.FitOrderResultStatus;
 import com.lvmama.lvfit.common.dto.enums.FitOrderStatusType;
+import com.lvmama.lvfit.common.dto.enums.FlightTripType;
 import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.enums.ProductResource;
 import com.lvmama.lvfit.common.dto.enums.TripeType;
@@ -45,11 +29,9 @@ import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderMsgDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderPassengerDto;
 import com.lvmama.lvfit.common.dto.order.FitOrderSpotTicketDto;
-import com.lvmama.lvfit.common.dto.price.FitHotelPlanPriceDto;
 import com.lvmama.lvfit.common.dto.request.CalculateAmountRequest;
+import com.lvmama.lvfit.common.dto.request.FitBaseSearchRequest;
 import com.lvmama.lvfit.common.dto.request.FitOrderBookingRequest;
-import com.lvmama.lvfit.common.dto.search.FitPassengerRequest;
-import com.lvmama.lvfit.common.dto.search.FitSearchRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchFlightInfoDto;
 import com.lvmama.lvfit.common.dto.search.flight.result.FlightSearchSeatDto;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
@@ -74,6 +56,19 @@ import com.lvmama.lvfit.dp.service.FitDpService;
 import com.lvmama.lvfit.dp.shopping.service.ShopingCalculateService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingViewService;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FitBookingServiceImpl implements FitBookingService {
@@ -101,15 +96,18 @@ public class FitBookingServiceImpl implements FitBookingService {
         BaseSingleResultDto<FitOrderMainDto> bookingResult = new BaseSingleResultDto<FitOrderMainDto>();
         FitOrderMainDto orderMainDto = null;
         try {
-            logger.error("[Dp-core]预定请求参数FitOrderBookingRequest："+ JSONMapper.getInstance().writeValueAsString(fit));
+            if(logger.isInfoEnabled()){
+                logger.info("[Dp-core]预定请求参数FitOrderBookingRequest："+ JSONMapper.getInstance().writeValueAsString(fit));
+            }
 
             //获取缓存中shopping信息，补全请求对象
             this.completeBookingRequest(fit);
              
             //计算价格
             this.checkOrderTotalSalesAmount(fit);
-
-            logger.error("[Dp-core]预定请求参数FitOrderBookingRequest："+ JSONMapper.getInstance().writeValueAsString(fit));
+            if(logger.isInfoEnabled()) {
+                logger.info("[Dp-core]预定请求参数FitOrderBookingRequest：" + JSONMapper.getInstance().writeValueAsString(fit));
+            }
             //预定
             orderMainDto = fitBusinessClient.booking(fit);
 
@@ -137,15 +135,16 @@ public class FitBookingServiceImpl implements FitBookingService {
             String uuid = fit.getShoppingUuid();
             List<FitOrderMsgDto> orderMsgDtos = FitOrderTraceContext.getOrderMsg();
             try {
-				logger.error("错误信息map， map=" + JSONMapper.getInstance().writeValueAsString(orderMsgDtos));
+                if(logger.isInfoEnabled()){
+                    logger.info("错误信息map， map=" + JSONMapper.getInstance().writeValueAsString(orderMsgDtos));
+                }
 			} catch (Exception ep) {
 				ep.printStackTrace();
 			} 
             try {
                 this.updOrderStatusInfo(orderMsgDtos, uuid);
             } catch (Exception e) {
-                logger.error("更新订单信息到ShoppingMapper中失败， uuid=" + uuid);
-                e.printStackTrace();
+                logger.error("更新订单信息到ShoppingMapper中失败， uuid=" + uuid,e);
             }
         }
     }
@@ -327,7 +326,8 @@ public class FitBookingServiceImpl implements FitBookingService {
 
         //构造机酒订单酒店信息
         List<FitOrderHotelDto> fitOrderHotelDtos = fit.getFitOrderHotelDtos();
-        if (CollectionUtils.isEmpty(fitOrderHotelDtos)) {
+
+        if (shoppingDto.getHotels() == null || CollectionUtils.isEmpty(shoppingDto.getHotels().getResults())) {
             return;
         }
         HotelSearchHotelDto selectHotel = shoppingDto.getHotels().getResults().get(0);
@@ -460,7 +460,7 @@ public class FitBookingServiceImpl implements FitBookingService {
         	try {
         		curFitOrderFlightDto = JSONMapper.getInstance().readValue(JSONMapper.getInstance().writeValueAsString(f), FitOrderFlightDto.class);
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getStackTrace(e));
+				logger.error(e.getMessage());
 			} 
             if (fit.getAdultQuantity() > 0) {
             	AmountCalculatorRequest  adultRequest = this.getCalculatorRequest(curFitOrderFlightDto,PassengerType.ADULT,

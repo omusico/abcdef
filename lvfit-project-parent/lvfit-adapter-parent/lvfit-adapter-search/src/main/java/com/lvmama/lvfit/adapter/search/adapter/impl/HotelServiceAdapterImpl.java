@@ -408,6 +408,7 @@ public class HotelServiceAdapterImpl implements HotelServiceAdapter{
 				}
 			}
 		}
+
 		return Boolean.TRUE;
 	}
 

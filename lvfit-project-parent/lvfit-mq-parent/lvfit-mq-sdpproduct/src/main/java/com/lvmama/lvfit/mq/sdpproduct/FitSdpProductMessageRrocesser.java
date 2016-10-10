@@ -44,6 +44,7 @@ public class FitSdpProductMessageRrocesser implements MessageProcesser{
         Long startId = this.getStartProductId();
 		Long endId = this.getEndProductId();
 		if(productId.intValue()< startId.intValue() || productId.intValue() > endId.intValue()){
+			logger.error("产品【"+productId+"】消息处理产品基本信息结束，不符合产品处理范围");
 			return;
 		}
 

@@ -513,7 +513,6 @@
     <script src="http://pic.lvmama.com/js/mylvmama/jquery-ui-1.8.21.custom.min.js"></script>
     <script src="http://pic.lvmama.com/js/mylvmama/jquery.tools.min.js"></script>
     <script src="http://pic.lvmama.com/js/mylvmama/lvmama-custom.js"></script>
-    <script src="http://pic.lvmama.com/js/common/losc.js"></script>
 
     <script src="http://pic.lvmama.com/js/v5/modules/pandora-poptip.js"></script>
     <script src="http://pic.lvmama.com/js/v6/flighthotel/fh-flight-tip.js"></script>

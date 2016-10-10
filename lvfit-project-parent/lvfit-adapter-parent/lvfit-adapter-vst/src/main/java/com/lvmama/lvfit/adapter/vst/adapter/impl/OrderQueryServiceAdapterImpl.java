@@ -75,9 +75,11 @@ public class OrderQueryServiceAdapterImpl implements OrderQueryServiceAdapter{
     public FitOrderDetail getOrderMainByVstOrderMainNo(Long vstOrderMainNo) {
         OrdOrder ordOrder = this.queryVstOrderByVstOrderMainNo(vstOrderMainNo);
         try {
-            logger.error("VST订单请求结果：ordOrder~~~~~~:" + JSONMapper.getInstance().writeValueAsString(ordOrder));
+        	if(logger.isInfoEnabled()){
+        		logger.info("VST订单请求结果：ordOrder~~~~~~:" + JSONMapper.getInstance().writeValueAsString(ordOrder));
+        	}
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(e.getMessage());
         }
         return this.genFitOrderDetail(ordOrder);
     }

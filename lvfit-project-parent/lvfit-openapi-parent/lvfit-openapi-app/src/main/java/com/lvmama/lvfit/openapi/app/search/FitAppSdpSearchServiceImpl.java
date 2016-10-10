@@ -5,6 +5,7 @@ import com.lvmama.lvfit.common.client.FitBusinessClient;
 import com.lvmama.lvfit.common.client.FitSdpClient;
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsDto;
 import com.lvmama.lvfit.common.dto.app.FitAppSdpCityDepartInfo;
+import com.lvmama.lvfit.common.dto.app.FitAppSdpCityStartDistrict;
 import com.lvmama.lvfit.common.dto.enums.BizEnum;
 import com.lvmama.lvfit.common.dto.sdp.goods.FitSdpGoodsDto;
 import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
@@ -62,13 +63,18 @@ public class FitAppSdpSearchServiceImpl implements FitAppSdpSearchService {
 	}
 
 	@Override
-	public List<FitAppSdpCityDepartInfo> searchSdpCityDepartInfo(Long productId) {
-		List<FitAppSdpCityDepartInfo> cityDepartInfoList = new ArrayList<FitAppSdpCityDepartInfo>();
+	public List<FitAppSdpCityStartDistrict> searchSdpCityDepartInfo(Long productId) {
+		List<FitAppSdpCityStartDistrict> cityDepartInfoList = new ArrayList<FitAppSdpCityStartDistrict>();
 		List<FitSdpCityGroupDto> cityGroupDtos = fitBusinessClient.getSelectProductCityGroupByProductId(productId);
         Map<Long,BigDecimal> startPriceMap = fitSdpClient.searchCalendarInfoByProductId(productId);
 		for(FitSdpCityGroupDto dto : cityGroupDtos){
-			FitAppSdpCityDepartInfo cityDepartInfo = new FitAppSdpCityDepartInfo();
-			cityDepartInfo.setSdpCityGroupDto(dto);
+			FitAppSdpCityStartDistrict cityDepartInfo = new FitAppSdpCityStartDistrict();
+			cityDepartInfo.setProductId(dto.getProductId());
+			cityDepartInfo.setStartCityCode(dto.getDepartureCityCode());
+			cityDepartInfo.setStartCityDistrictId(dto.getDepartureCityDistrictId());
+			cityDepartInfo.setStartCityName(dto.getDepartureCityName());
+			cityDepartInfo.setStartCityShortPinYin(dto.getDepartureCityShortPinYin());
+			cityDepartInfo.setIsSelectedDeparture(dto.getIsSelectedDeparture());
 			BigDecimal startPrice = startPriceMap.get(dto.getDepartureCityDistrictId());
 			cityDepartInfo.setStartPrice(startPrice);
 			cityDepartInfoList.add(cityDepartInfo);

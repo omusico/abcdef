@@ -66,10 +66,14 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
     public FitOrderMainDto flightBooking(FitOrderMainDto orderMainDto) {
         try {
             //机票单品下单
-        	logger.error("机票单品下单前orderMainDto："+JSONMapper.getInstance().writeValueAsString(orderMainDto));
+        	if(logger.isInfoEnabled()){
+        		logger.info("机票单品下单前orderMainDto："+JSONMapper.getInstance().writeValueAsString(orderMainDto));
+        	}
             FitSuppMainOrderDto suppMainOrderDto = fitVstClient.booking(this.buildFlightOrderBookingRequest(orderMainDto));
-            logger.error("机票单品下单后orderMainDto："+JSONMapper.getInstance().writeValueAsString(orderMainDto));
-            logger.error("机票单品下单结果："+JSONMapper.getInstance().writeValueAsString(suppMainOrderDto));
+            if(logger.isInfoEnabled()){
+	            logger.info("机票单品下单后orderMainDto："+JSONMapper.getInstance().writeValueAsString(orderMainDto));
+	            logger.info("机票单品下单结果："+JSONMapper.getInstance().writeValueAsString(suppMainOrderDto));
+            }
             orderMainDto.setFitSuppMainOrderDto(suppMainOrderDto);
         } catch (Exception e) {
             logger.error("机票单品下单异常，后需人工补单：", e);
@@ -93,27 +97,6 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
         if(CharterFlightFilterUtil.isCharterFlight(fit.getFitOrderFlightDtos())){
         	 flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT); 
         }
-        
-        //动态打包的只有机票的订单就提前下单
-        if(fit.getBookingSource().getBookingBusinessType().name().equals(BookingBusinessType.FIT.name())){
-        	if(CollectionUtils.isEmpty(fit.getFitOrderHotelDtos())
-            		&&CollectionUtils.isEmpty(fit.getFitOrderInsuranceDtos())
-            		&&CollectionUtils.isEmpty(fit.getFitOrderSpotTicketDtos())){
-         	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
-            }
-        }
-        
-        //机+X机票预订方式目前部分时段，统一设为后置下单（即vst资源审核通过之后下机票单 
-        /*if(this.getIsFitFlightBookingAfterVstAudit().booleanValue()){
-        	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_AFTER_VST_AUDIT);
-        }else{
-        	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
-        }
-        if(fit.getBookingSource()==BookingSource.FIT_FRONT&&CollectionUtils.isEmpty(fit.getFitOrderHotelDtos())
-        		&&CollectionUtils.isEmpty(fit.getFitOrderInsuranceDtos())
-        		&&CollectionUtils.isEmpty(fit.getFitOrderSpotTicketDtos())){
-     	   flightRequest.setFitFlightBookingType(FitFlightBookingType.BOOKING_BEFORE_VST_AUDIT);
-        }*/
         return flightRequest;
     }
 
@@ -143,9 +126,11 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
 		
 		 String gid = UUID.randomUUID().toString(); 
 		  try {
-			logger.error("订单留库开始异步请求开始【"+gid+"】：【"+JSONMapper.getInstance().writeValueAsString(callBackRequests)+"】");
+			if(logger.isInfoEnabled()){
+				logger.info("订单留库开始异步请求开始【"+gid+"】：【"+JSONMapper.getInstance().writeValueAsString(callBackRequests)+"】");
+			}
 		  } catch (Exception e) {
-		     logger.error(ExceptionUtils.getFullStackTrace(e));
+		     logger.error(e.getMessage());
 		  }
 		  if(CollectionUtils.isNotEmpty(callBackRequests)){
 			  for (FitFliBookingCallBackRequest callBackRequest : callBackRequests) {
@@ -173,11 +158,16 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
 	       			   }
 					   String callRequestStr = ZipUnZipUtils.getInstance().unzipBase642String(callBackDto.getCallRequestStr());
 					   flightOrderBookingRequest = JSONMapper.getInstance().readValue(callRequestStr,new TypeReference<FlightOrderBookingRequest>() {});
-					   
-					   logger.error("订单留库开始航班请求参数【"+vstOrderMainNo+","+vstOrderNo+"】"+JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
+					   try {
+							if(logger.isInfoEnabled()){
+								logger.info("订单留库开始航班请求参数【"+vstOrderMainNo+","+vstOrderNo+"】"+JSONMapper.getInstance().writeValueAsString(flightOrderBookingRequest));
+							}
+					   }catch (Exception e) {
+						     logger.error(e.getMessage());
+						  }
 					   fitFlightClient.bookingRebuild(flightOrderBookingRequest);
 					} catch (Exception e) {
-						logger.error(ExceptionUtils.getFullStackTrace(e));
+						logger.error(e.getMessage(),e);
 						FitOpLogTraceContext.setFitOpLog(flightOrderBookingRequest,e, vstOrderMainNo+"/"+vstOrderNo, FitBusinessExceptionType.FLIGHT_CALLBACK_BOOKING);
 						callbackType = CallbackType.FAIL;
 					}finally{
@@ -190,7 +180,7 @@ public class FitFlightBookingServiceImpl implements FitFlightBookingService {
        		    
 		      }
 	    }
-	    logger.error("订单留库开始异步请求结束【"+gid+"】");
+	    logger.info("订单留库开始异步请求结束【"+gid+"】");
 		
 	}
 	

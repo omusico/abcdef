@@ -27,7 +27,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductAdditionalIn
 @Path("")
 public class FitSdpProductResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FitSdpProductResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(FitSdpProductResource.class);
 
     @Autowired
     private PackageProductAdapter packageProductAdapter;
@@ -47,7 +47,7 @@ public class FitSdpProductResource {
     @Path(SearchClientPath.Path.PACKAGE_PRODUCT_BASIC_INFO_SEARCH)
     public Response searchBasicInfo(@PathParam("productId") Long productId) {
     	
-    	LOGGER.error("productId:【"+productId+"】从vst获取产品信息数据！");
+    	logger.info("productId:【"+productId+"】从vst获取产品信息数据！");
     	// 查找产品基本信息
         FitSdpProductBasicInfoDto basicInfo = packageProductAdapter.getPackageProductBasicInfo(productId);
         // 查找产品额外信息
@@ -70,7 +70,7 @@ public class FitSdpProductResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path(SearchClientPath.Path.PACKAGE_PRODUCT_INFO_ONLY_SEARCH)
     public Response searchBasicInfoOnly(@PathParam("productId") Long productId) { 
-    	LOGGER.error("productId:【"+productId+"】从vst获取产品信息数据！");
+    	logger.info("productId:【"+productId+"】从vst获取产品信息数据！");
     	// 查找最简单的产品基本信息
         FitSdpProductBasicInfoDto basicInfo = packageProductAdapter.getPackageProductSimpleInfo(productId); 
         return Response.ok(basicInfo).build();

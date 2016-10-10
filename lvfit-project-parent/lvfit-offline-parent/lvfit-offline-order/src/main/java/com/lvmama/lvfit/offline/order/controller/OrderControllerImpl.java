@@ -9,6 +9,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lvmama.lvf.common.dto.Pagination;
+import com.lvmama.lvfit.common.dto.order.*;
+import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackForm;
+import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lvmama.lvf.common.dto.BaseQueryDto;
@@ -37,14 +43,6 @@ import com.lvmama.lvfit.common.dto.enums.PassengerType;
 import com.lvmama.lvfit.common.dto.enums.SuppVstAuditStatus;
 import com.lvmama.lvfit.common.dto.enums.SuppVstOrderStatus;
 import com.lvmama.lvfit.common.dto.enums.SuppVstPaymentStatus;
-import com.lvmama.lvfit.common.dto.order.FitOrderFlightDto;
-import com.lvmama.lvfit.common.dto.order.FitOrderHotelDto;
-import com.lvmama.lvfit.common.dto.order.FitOrderMainDto;
-import com.lvmama.lvfit.common.dto.order.FitOrderPassengerDto;
-import com.lvmama.lvfit.common.dto.order.FitOrderQueryListDto;
-import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDetailDto;
-import com.lvmama.lvfit.common.dto.order.FitSuppFlightOrderDto;
-import com.lvmama.lvfit.common.dto.order.FitSuppMainOrderDto;
 import com.lvmama.lvfit.common.dto.request.FitOrderQueryRequest;
 import com.lvmama.lvfit.common.dto.search.flight.result.CharterFlightFilterUtil;
 import com.lvmama.lvfit.common.form.order.FitOrderOpLogForm;
@@ -344,5 +342,58 @@ public class OrderControllerImpl implements OrderController{
     	}
 		return null;
     }
+
+	@Override
+	@RequestMapping(value = "order/suppCallBack", method = { RequestMethod.POST, RequestMethod.GET })
+	public String suppFlightCallBack(Model model) {
+		buildOrderModel(model);
+		return "supp_flight_call_back";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "order/suppCallBackQuery", method = { RequestMethod.POST, RequestMethod.GET })
+	public BaseResultDto<FitSuppOrderForFlightCallBackForm> suppOrderFlightCallBack(Model model, Pagination pg, FitSuppOrderForFlightCallBackRequest request) {
+		try {
+			BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery = new BaseQueryDto<FitSuppOrderForFlightCallBackRequest>();
+			baseQuery.setPagination(pg);
+			baseQuery.setCondition(request);
+			BaseResultDto<FitSuppOrderForFlightCallBackDto> baseResult = fitBusinessClient.getSuppOrderForFlightCallBack(baseQuery);
+			List<FitSuppOrderForFlightCallBackDto> results = baseResult.getResults();
+			List<FitSuppOrderForFlightCallBackForm> formList = new ArrayList<FitSuppOrderForFlightCallBackForm>();
+			for(int i=0;i<results.size();i++){
+				FitSuppOrderForFlightCallBackDto callBackDto = results.get(i);
+				FitSuppOrderForFlightCallBackForm callBackForm = new FitSuppOrderForFlightCallBackForm();
+				callBackForm.setCallBackDto(callBackDto);
+				formList.add(callBackForm);
+			}
+			BaseResultDto<FitSuppOrderForFlightCallBackForm> baseResultForm = new BaseResultDto<FitSuppOrderForFlightCallBackForm>();
+			baseResultForm.setResults(formList);
+			baseResultForm.setPagination(baseResult.getPagination());
+			return baseResultForm;
+		} catch (Exception e) {
+			logger.error("自主打包产品城市组查询失败！");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "order/handleSuppFlightCallBack", method = { RequestMethod.POST, RequestMethod.GET })
+	public Object handleSuppFlightCallBack(Model model, Long vstOrderMainNo,Long vstOrderNo) {
+		BaseQueryDto<FitFliBookingCallBackRequest> baseQuery = new BaseQueryDto<FitFliBookingCallBackRequest>();
+		FitFliBookingCallBackRequest request = new FitFliBookingCallBackRequest();
+		request.setVstOrderMainNo(vstOrderMainNo);
+		request.setVstOrderNo(vstOrderNo);
+		baseQuery.setCondition(request);
+		String fliBookingCallBack = fitBusinessClient.getFitFliBookingCallBackByVstMainNo(baseQuery);
+		try {
+			String returnStr = fitBusinessClient.flightCallBackBooking(fliBookingCallBack);
+			return returnStr;
+		} catch (Exception e) {
+			logger.error("自主打包产品加价规则保存失败！");
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
 

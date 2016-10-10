@@ -6,7 +6,12 @@ import java.util.Date;
 
 
 public class FitHotelPlanPriceDto extends FitBasePriceDto {
-	
+	//毛利率
+	public final static  BigDecimal GROSS_PROFIT_RATE = new BigDecimal(0.08);
+	//实际销售价格=1+毛利率-优惠率
+	public final static  BigDecimal SALE_RATE = new BigDecimal(1.06);
+	//优惠利率
+	public final static  BigDecimal DISCOUNT_RATE = new BigDecimal(0.02);
 	//private long HotelId;//商品ID
 	/**
 	 * 名义销售价

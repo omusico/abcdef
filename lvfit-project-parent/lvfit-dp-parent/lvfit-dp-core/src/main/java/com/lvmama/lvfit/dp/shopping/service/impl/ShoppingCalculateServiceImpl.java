@@ -42,10 +42,11 @@ import com.lvmama.lvfit.common.dto.enums.BookingSource;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessExceptionType;
 import com.lvmama.lvfit.common.dto.enums.FitBusinessType;
 import com.lvmama.lvfit.common.dto.hotel.FitHotelTimePrice;
+import com.lvmama.lvfit.common.dto.price.FitHotelPlanPriceDto;
 import com.lvmama.lvfit.common.dto.request.CalculateAmountRequest;
 import com.lvmama.lvfit.common.dto.request.FitHotelPriceRequest;
 import com.lvmama.lvfit.common.dto.request.FitInsurancePriceRequest;
-import com.lvmama.lvfit.common.dto.request.FitSpotTicketPriceRequest;
+import com.lvmama.lvfit.common.dto.request.FitSpotTicketPriceRequest; 
 import com.lvmama.lvfit.common.dto.shopping.FitFlightAmountDto;
 import com.lvmama.lvfit.common.dto.shopping.FitFlightPriceDto;
 import com.lvmama.lvfit.common.dto.shopping.FitHotelAmountDto;
@@ -204,7 +205,7 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 						FitFlightAmountDto  flightAmountDto = null;
 						AmountCalculatorRequest flightPriceRequest = (AmountCalculatorRequest)request;
 						try {
-							flightAmountDto = calculateFlightAmount(flightPriceRequest);
+							flightAmountDto = calculateFlightAmount(flightPriceRequest); 						
 						} catch (Exception e) {
 							RequestWithException requestWithException = new RequestWithException(e, request);
 						    context.put(FitBusinessType.valueOf(taskName).getBusinessExceptionType().name(), requestWithException);
@@ -215,7 +216,7 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 						FitHotelAmountDto  hotelAmountDto = null;
 						FitHotelPriceRequest hotelPriceRequest = (FitHotelPriceRequest)request;
 						try {
-							hotelAmountDto = calculateHotelAmount(hotelPriceRequest);
+							hotelAmountDto = calculateHotelAmount(hotelPriceRequest); 
 						} catch (Exception e) {
 							RequestWithException requestWithException = new RequestWithException(e, request);
 						    context.put(FitBusinessType.valueOf(taskName).getBusinessExceptionType().name(), requestWithException);
@@ -226,7 +227,7 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 						FitSpotTicketAmountDto  spotTicketAmountDto = null;
 						FitSpotTicketPriceRequest spotTicketPriceRequest = (FitSpotTicketPriceRequest)request;
 						try {
-							spotTicketAmountDto = calculateSpotTicketAmount(spotTicketPriceRequest);
+							spotTicketAmountDto = calculateSpotTicketAmount(spotTicketPriceRequest); 
 						} catch (Exception e) {
 							RequestWithException requestWithException = new RequestWithException(e, request);
 						    context.put(FitBusinessType.valueOf(taskName).getBusinessExceptionType().name(), requestWithException);
@@ -237,7 +238,7 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 						FitInsuranceAmountDto insuranceAmountDto = null;
 						FitInsurancePriceRequest insurancePriceRequest = (FitInsurancePriceRequest)request;
 						try {
-							insuranceAmountDto = calculateInsuranceAmount(insurancePriceRequest);
+							insuranceAmountDto = calculateInsuranceAmount(insurancePriceRequest); 
 						} catch (Exception e) {
 							RequestWithException requestWithException = new RequestWithException(e, request);
 						    context.put(FitBusinessType.valueOf(taskName).getBusinessExceptionType().name(), requestWithException);
@@ -344,17 +345,24 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 	 */
 	private FitHotelAmountDto calculateHotelAmount(FitHotelPriceRequest hotelPriceRequest){
 		
-		FitHotelTimePrice hotelTimePrice = fitVstClient.findTimePriceBySpecDate(hotelPriceRequest);
+		FitHotelTimePrice hotelTimePrice = fitVstClient.findTimePriceBySpecDate(hotelPriceRequest); 
+		//酒店价格
 		BigDecimal hotelPrice = BigDecimal.ZERO;
+		//酒店优惠价
 		BigDecimal hotelPromotion = BigDecimal.ZERO;
 		BigDecimal roomCount = hotelPriceRequest.getRoomCount();
 		if (hotelTimePrice.getSalesPrice() != null) {
-			hotelPrice = hotelPrice.add(hotelTimePrice.getSettlePrice().multiply(roomCount));
-			hotelPromotion = hotelPromotion.add(hotelTimePrice.getPromotion().multiply(roomCount));
+			//酒店结算价
+			BigDecimal settlePrice = hotelTimePrice.getSettlePrice().multiply(roomCount);
+			//销售价
+			hotelPrice = hotelPrice.add(settlePrice.multiply(FitHotelPlanPriceDto.SALE_RATE));
+			//折扣价
+			hotelPromotion = hotelPromotion.add(settlePrice.multiply(FitHotelPlanPriceDto.DISCOUNT_RATE));
 			FitHotelAmountDto hotelAmount = new FitHotelAmountDto();
+			//酒店总价
 			hotelAmount.setTotalAmount(hotelPrice.add(hotelPromotion).setScale(0, BigDecimal.ROUND_UP));
 			hotelAmount.setTotalSalesAmount(hotelPrice.setScale(0, BigDecimal.ROUND_UP));
-			hotelAmount.setPromotionAmount(hotelPromotion.setScale(0, BigDecimal.ROUND_UP));
+			hotelAmount.setPromotionAmount(hotelPromotion.setScale(0, BigDecimal.ROUND_UP)); 
 			return hotelAmount;
 		} else {
 			logger.error("没有查询到酒店的相关价格信息");
@@ -403,7 +411,7 @@ public class ShoppingCalculateServiceImpl implements ShopingCalculateService {
 			flightPrice.setPromotionPrice(calculatorDto.getOrderDiscountTotalAmount());
 			return flightPrice;
 		} catch (Exception e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
+			logger.error(e.getMessage(),e);
 			if(e instanceof ExceptionWrapper){
 				ExceptionWrapper ew = (ExceptionWrapper)e;
 				if(ew.getExceptionCode() == ExceptionCode.REMOTE_INVOKE){

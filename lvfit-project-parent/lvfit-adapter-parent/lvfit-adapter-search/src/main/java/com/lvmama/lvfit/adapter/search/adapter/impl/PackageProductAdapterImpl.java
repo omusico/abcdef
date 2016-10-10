@@ -51,7 +51,7 @@ import com.lvmama.vst.comm.vo.ResultHandleT;
 @Service
 public class PackageProductAdapterImpl implements PackageProductAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PackageProductAdapterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(PackageProductAdapterImpl.class);
     
     @Autowired
     private VstSearchInterfaceWrapper prodProductClientService;
@@ -75,13 +75,15 @@ public class PackageProductAdapterImpl implements PackageProductAdapter {
         // 线路概况
         com.lvmama.vst.api.vo.ResultHandleT<ArrayList<ProdLineRouteVo>> handleT = vstRouteService.findCacheLineRouteListByProductId(productId);
         if (CollectionUtils.isEmpty(handleT.getReturnContent())) {
-            LOGGER.info("未查询到线路概况信息!");
+            logger.info("未查询到线路概况信息!");
             return null;
         }
         try {
-            LOGGER.info("从VST得到的线路概况信息：" + JSONMapper.getInstance().writeValueAsString(handleT.getReturnContent()));
+        	if(logger.isInfoEnabled()){
+        		logger.info("从VST得到的线路概况信息：" + JSONMapper.getInstance().writeValueAsString(handleT.getReturnContent()));
+        	}
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());;
         }
         ArrayList<ProdLineRouteVo> routes = handleT.getReturnContent();
         //行程概要
@@ -258,7 +260,7 @@ public class PackageProductAdapterImpl implements PackageProductAdapter {
                 basicInfoDto.setProductShowName(productShowName);
             }
         } catch (Exception e) {
-           LOGGER.error(e.getMessage(),e);
+           logger.error(e.getMessage(),e);
         }
 
         if(CollectionUtils.isNotEmpty(product.getProdLineRouteList())){
@@ -356,7 +358,7 @@ public class PackageProductAdapterImpl implements PackageProductAdapter {
                 additonal.setContainItems(str);
             }
         } catch (Exception e) {
-            LOGGER.error("包含项目获取失败：" + e);
+            logger.error("包含项目获取失败：" + e);
         }
       
         Map<String, Object> propValue = product.getPropValue();
@@ -428,7 +430,7 @@ public class PackageProductAdapterImpl implements PackageProductAdapter {
             List<List<String>> routeList = getProdLineRouteList(key);
             basicInfoDto.setRouteList(routeList);
         } catch (Exception e) {
-            LOGGER.error("获取线路概况失败：" + ExceptionUtil.getExceptionDetails(e));
+            logger.error("获取线路概况失败：" + ExceptionUtil.getExceptionDetails(e));
         }
         
         return basicInfoDto;
@@ -456,7 +458,7 @@ public class PackageProductAdapterImpl implements PackageProductAdapter {
     public JudgeType getProdProductProp(Long productId) {
         ResultHandleT<ProdProductProp> resultHandleT = prodProductPropClientService.findProdProductPropById(productId);
         if (resultHandleT.hasNull()) {
-            LOGGER.error("未获得产品属性!");
+            logger.error("未获得产品属性!");
             return JudgeType.N;
         }
         ProdProductProp prop =resultHandleT.getReturnContent();

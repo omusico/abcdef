@@ -469,7 +469,7 @@
                                                 <div class="xpbl-title"><em <#if insuranceMap[key]?size == 1>class="no_gaoguang"</#if>>${insuranceMap[key][0].productName}<#if insuranceMap[key]?size gt 1><i class="arrow"></i></#if></em></div>
                                                 <#list insuranceMap[key] as suppGood >
                                                 <div class="xpbl-item clearfix" data-id="I${suppGood.suppGoodsId }" <#if suppGood_index gt 0>style="display:none;"</#if> >
-                                                    <div class="xh-name"><em title="${suppGood.goodsName } -- ${branch.branchName }">${suppGood.goodsName } -- ${branch.branchName} </em></div>
+                                                    <div class="xh-name"><em title="${suppGood.goodsName } -- ${suppGood.branchName }">${suppGood.goodsName } -- ${suppGood.branchName} </em></div>
                                                     <div class="xh-price"><dfn>￥</dfn><span>${suppGood.price}</span></div>
                                                     <div class="xh-time" >--</div>
                                                     <div class="xh-count">
@@ -650,7 +650,7 @@
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
 
-	<script src="http://pic.lvmama.com/min/index.php?f=/js/new_v/jquery-1.7.2.min.js,/js/v6/header_new.js,/js/ui/lvmamaUI/lvmamaUI.js,/js/v5/modules/pandora-poptip.js,/js/v5/modules/pandora-dialog.js,/js/common/poplogin.js,/js/lv/calendar.js,/js/common/losc.js"></script>
+	<script src="http://pic.lvmama.com/min/index.php?f=/js/new_v/jquery-1.7.2.min.js,/js/v6/header_new.js,/js/ui/lvmamaUI/lvmamaUI.js,/js/v5/modules/pandora-poptip.js,/js/v5/modules/pandora-dialog.js,/js/common/poplogin.js,/js/lv/calendar.js"></script>
     <script src="http://pic.lvmama.com/min/index.php?f=/js/v6/flighthotel/fh-flight-tip.js,/js/v6/flighthotel/fh-select-alert.js,/js/fit/v3/select.js,/js/fit/v3/search.js"></script>
 
 	  <#if isBackBooking=='true'>

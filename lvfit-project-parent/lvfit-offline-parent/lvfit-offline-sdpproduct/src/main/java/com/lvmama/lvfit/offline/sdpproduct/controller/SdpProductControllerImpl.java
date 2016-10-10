@@ -1,24 +1,5 @@
 package com.lvmama.lvfit.offline.sdpproduct.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jackson.type.JavaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.lvmama.lvf.common.dto.BaseQueryDto;
 import com.lvmama.lvf.common.dto.BaseResultDto;
 import com.lvmama.lvf.common.dto.Pagination;
@@ -32,29 +13,31 @@ import com.lvmama.lvfit.common.dto.enums.BizEnum;
 import com.lvmama.lvfit.common.dto.enums.BizEnum.BIZ_CATEGORY_TYPE;
 import com.lvmama.lvfit.common.dto.enums.JudgeType;
 import com.lvmama.lvfit.common.dto.enums.VSTDistrictCityEnum;
-import com.lvmama.lvfit.common.dto.order.FitSuppOrderForFlightCallBackDto;
-import com.lvmama.lvfit.common.dto.request.FitFliBookingCallBackRequest;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpCityGroupDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductFeeRulesDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSearchIndexTraffic;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductSyncMsgDto;
-import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductTrafficRulesDto;
+import com.lvmama.lvfit.common.dto.sdp.product.*;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpCityGroupRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductBasicInfoRequestForm;
 import com.lvmama.lvfit.common.dto.vst.VstPushRecord;
-import com.lvmama.lvfit.common.form.product.FitSdpCityGroupForm;
-import com.lvmama.lvfit.common.form.product.FitSdpProductBasicInfoForm;
-import com.lvmama.lvfit.common.form.product.FitSdpProductSearchIndexForm;
-import com.lvmama.lvfit.common.form.product.FitSdpProductSearchIndexTrafficForm;
-import com.lvmama.lvfit.common.form.product.FitSdpProductSyncMsgForm;
-import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackForm;
-import com.lvmama.lvfit.common.form.product.FitSuppOrderForFlightCallBackRequest;
-import com.lvmama.lvfit.common.form.product.VstPushRecordForm;
+import com.lvmama.lvfit.common.form.product.*;
 import com.lvmama.lvfit.common.utils.FitCsvConfig;
 import com.lvmama.lvfit.offline.sdpproduct.SdpProductController;
+import org.apache.commons.collections.CollectionUtils;
+import org.codehaus.jackson.type.JavaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class SdpProductControllerImpl  implements SdpProductController{
@@ -122,13 +105,6 @@ public class SdpProductControllerImpl  implements SdpProductController{
 		model.addAttribute("productId", productId);
 		model.addAttribute("cityGroup", VSTDistrictCityEnum.values());
 		return "product/product_departure_city_list";
-	}
-	
-	@Override
-	@RequestMapping(value = "sdpProduct/suppCallBack", method = { RequestMethod.POST, RequestMethod.GET })
-	public String suppFlightCallBack(Model model) {
-		buildOrderModel(model);
-		return "supp_flight_call_back";
 	}
 	
 	private void buildOrderModel(Model model) {
@@ -498,34 +474,6 @@ public class SdpProductControllerImpl  implements SdpProductController{
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "sdpProduct/suppCallBackQuery", method = { RequestMethod.POST, RequestMethod.GET })
-	public BaseResultDto<FitSuppOrderForFlightCallBackForm> suppOrderFlightCallBack(Model model,Pagination pg,FitSuppOrderForFlightCallBackRequest request) {
-		try { 
-			BaseQueryDto<FitSuppOrderForFlightCallBackRequest> baseQuery = new BaseQueryDto<FitSuppOrderForFlightCallBackRequest>();
-			baseQuery.setPagination(pg);
-			baseQuery.setCondition(request);
-			BaseResultDto<FitSuppOrderForFlightCallBackDto> baseResult = fitBusinessClient.getSuppOrderForFlightCallBack(baseQuery);
-			List<FitSuppOrderForFlightCallBackDto> results = baseResult.getResults();
-			List<FitSuppOrderForFlightCallBackForm> formList = new ArrayList<FitSuppOrderForFlightCallBackForm>();
-			for(int i=0;i<results.size();i++){
-				FitSuppOrderForFlightCallBackDto callBackDto = results.get(i);
-				FitSuppOrderForFlightCallBackForm callBackForm = new FitSuppOrderForFlightCallBackForm();
-				callBackForm.setCallBackDto(callBackDto);
-				formList.add(callBackForm);
-			}
-			BaseResultDto<FitSuppOrderForFlightCallBackForm> baseResultForm = new BaseResultDto<FitSuppOrderForFlightCallBackForm>();
-			baseResultForm.setResults(formList);
-			baseResultForm.setPagination(baseResult.getPagination());
-			return baseResultForm;
-		} catch (Exception e) {
-			logger.error("自主打包产品城市组查询失败！");
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	
-	@ResponseBody
 	@RequestMapping(value = "sdpProduct/queryOneTrafficIndex", method = { RequestMethod.POST, RequestMethod.GET })
 	public FitSdpProductSearchIndexTraffic queryOneTrafficIndex(Model model, Long id) {
 		try {
@@ -556,24 +504,5 @@ public class SdpProductControllerImpl  implements SdpProductController{
 		}
 		return null;
 	}
-	
-	@ResponseBody
-	@RequestMapping(value = "sdpProduct/handleSuppFlightCallBack", method = { RequestMethod.POST, RequestMethod.GET })
-	public Object handleSuppFlightCallBack(Model model, Long vstOrderMainNo,Long vstOrderNo) {
-		BaseQueryDto<FitFliBookingCallBackRequest> baseQuery = new BaseQueryDto<FitFliBookingCallBackRequest>();
-		FitFliBookingCallBackRequest request = new FitFliBookingCallBackRequest();
-		request.setVstOrderMainNo(vstOrderMainNo);
-		request.setVstOrderNo(vstOrderNo);
-		baseQuery.setCondition(request);
-		String fliBookingCallBack = fitBusinessClient.getFitFliBookingCallBackByVstMainNo(baseQuery);
-		try {
-			String returnStr = fitBusinessClient.flightCallBackBooking(fliBookingCallBack);
-			return returnStr;
-		} catch (Exception e) {
-			logger.error("自主打包产品加价规则保存失败！");
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
+
 }

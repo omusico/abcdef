@@ -38,22 +38,26 @@ public class FitOrderResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path(BussinessClientPath.Path.AUTO_SYNC_SUPPMAINORDER_STATUS)
 	public void autoSyncSuppMainOrderStatus()  {
-		logger.error("-------------------------------autoSyncSuppMainOrderStatus--start-------------------------------------------");
+		logger.info("-------------------------------autoSyncSuppMainOrderStatus--start-------------------------------------------");
     	List<FitSuppMainOrderStatusDto>  suppMainOrderStatusDtos = orderSyncService.queryNeedToSyncSuppMainOrderStatus();
     	if(CollectionUtils.isNotEmpty(suppMainOrderStatusDtos)){
     		try {
-    			logger.error("-------------------------------autoSyncSuppMainOrderStatus--start-------------------------------------------:【"+JSONMapper.getInstance().writeValueAsString(suppMainOrderStatusDtos)+"】");
+    			if(logger.isInfoEnabled()){
+    				logger.info("-------------------------------autoSyncSuppMainOrderStatus--start-------------------------------------------:【"+JSONMapper.getInstance().writeValueAsString(suppMainOrderStatusDtos)+"】");
+    			}
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
+				logger.error(e.getMessage(),e);
 			}
     		for (FitSuppMainOrderStatusDto suppMainOrderStatusDto : suppMainOrderStatusDtos) {
     			try {
 					orderSyncService.syncSuppMainOrderStatus(suppMainOrderStatusDto.getVstMainOrderNo());
 				} catch (Exception e) {
-					logger.error(ExceptionUtils.getFullStackTrace(e));
+					logger.error(e.getMessage(),e);
 				}
 			}
-    		logger.error("-------------------------------autoSyncSuppMainOrderStatus--end-------------------------------------------");
+    		logger.info("-------------------------------autoSyncSuppMainOrderStatus--end-------------------------------------------");
     	}
 	}
 }
+
+	

@@ -268,9 +268,11 @@ public class FitSdpProductBasicInfoSyncServiceImpl implements FitSdpProductBasic
 
 
 				try {
-					logger.info("自主打包产品【" + productId + "】入库信息为：【" + JSONMapper.getInstance().writeValueAsString(productBasicInfoDto) + "】");
+					if(logger.isInfoEnabled()){
+						logger.info("自主打包产品【" + productId + "】入库信息为：【" + JSONMapper.getInstance().writeValueAsString(productBasicInfoDto) + "】");
+					}
 				} catch (Exception e) {
-					logger.error(e);
+					logger.error(e.getMessage(),e);
 				}
 				return ResultStatus.SUCCESS;
 			}else {

@@ -34,9 +34,9 @@ public class FitSdpCaculateResource {
 		
 		try
 		{
-			logger.error("同步产品Id【"+productId+"】的索引开始！");
+			logger.info("同步产品Id【"+productId+"】的索引开始！");
 			fitSdpCaculateService.syncSdpProductSearchIndex(productId,true);
-			logger.error("同步产品Id【"+productId+"】的索引结束！");
+			logger.info("同步产品Id【"+productId+"】的索引结束！");
 			return Response.ok(ResultStatus.SUCCESS).build();
 		}
 		catch(Exception e)
@@ -55,7 +55,7 @@ public class FitSdpCaculateResource {
 	@Path(BatchClientPath.Path.SYNC_ALL_USEFUL_SDP_PRODUCT_SEARCH_INDEX)
 	public Response syncAllUsefulSdpProductSearchIndex(@PathParam("modValue")Integer modValue){
 
-		logger.error("同步产品Id其modeValue值为"+modValue+"的索引结束！");
+		logger.info("同步产品Id其modeValue值为"+modValue+"的索引结束！");
 		try {
 			fitSdpCaculateService.syncSdpProductIndexsByModValue(modValue);
 			return Response.ok(ResultStatus.SUCCESS).build();

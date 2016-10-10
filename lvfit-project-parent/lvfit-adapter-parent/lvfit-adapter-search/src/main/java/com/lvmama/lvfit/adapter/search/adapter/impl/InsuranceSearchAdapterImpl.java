@@ -85,9 +85,10 @@ public class InsuranceSearchAdapterImpl implements InsuranceSearchAdapter {
 		if(CollectionUtils.isNotEmpty(resultHandle.getReturnContent())) {
 			List<InsuranceDto> insuranceList = this.getInsuranceList(resultHandle.getReturnContent().get(0).getInsSuppGoodsList(), insuranceQueryRequest.getPersonNum());
 			try {
-				logger.info("调用保险返回结果:insuranceList="+JSONMapper.getInstance().writeValueAsString(insuranceList));
+				if(logger.isInfoEnabled())
+					logger.info("调用保险返回结果:insuranceList="+JSONMapper.getInstance().writeValueAsString(insuranceList));
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			return insuranceList;
 		}

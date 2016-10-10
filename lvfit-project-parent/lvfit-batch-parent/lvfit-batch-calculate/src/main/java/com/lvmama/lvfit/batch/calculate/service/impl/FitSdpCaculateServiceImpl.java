@@ -106,9 +106,11 @@ public class FitSdpCaculateServiceImpl implements FitSdpCaculateService{
 
 		String gid = UUID.randomUUID().toString();
 		try {
-			logger.error("GID【"+gid+"】批次，同步的产品索引为：【"+JSONMapper.getInstance().writeValueAsString(syncProductIds)+"】");
+			if(logger.isInfoEnabled()){
+				logger.info("GID【"+gid+"】批次，同步的产品索引为：【"+JSONMapper.getInstance().writeValueAsString(syncProductIds)+"】");
+			}
 		} catch (Exception e) {
-			logger.error(e,e);
+			logger.error(e.getMessage(),e);
 		}
 		final List<Long> failSyncProductIds = new ArrayList<Long>();
 		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(4);
@@ -136,9 +138,11 @@ public class FitSdpCaculateServiceImpl implements FitSdpCaculateService{
 			}
 		}
 		try {
-			logger.error("GID【"+gid+"】批次，同步的产品索引失败的为：【"+JSONMapper.getInstance().writeValueAsString(failSyncProductIds)+"】");
+			if(logger.isInfoEnabled()){
+				logger.info("GID【"+gid+"】批次，同步的产品索引失败的为：【"+JSONMapper.getInstance().writeValueAsString(failSyncProductIds)+"】");
+			}
 		} catch (Exception e) {
-			logger.error(e,e);
+			logger.error(e.getMessage(),e);
 		}
 	}
 
@@ -237,9 +241,9 @@ public class FitSdpCaculateServiceImpl implements FitSdpCaculateService{
 				sdpComPushDto.setOperateType(operateType);   //可以传入 ADD DEL  UP
 				try {
 					ResultStatus resultStatus = fitVstServiceClient.pushComPush(sdpComPushDto);
-					logger.error("自主打包产品【"+productId+"】推送com_push:"+resultStatus.getCnName());
+					logger.info("自主打包产品【"+productId+"】推送com_push:"+resultStatus.getCnName());
 				} catch (Exception e) {
-					logger.error(e);
+					logger.error(e.getMessage(),e);
 				}
 			}
 		}

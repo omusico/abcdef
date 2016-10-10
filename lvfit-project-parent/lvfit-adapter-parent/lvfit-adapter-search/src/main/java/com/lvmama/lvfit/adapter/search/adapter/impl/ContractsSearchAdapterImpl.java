@@ -48,10 +48,15 @@ public class ContractsSearchAdapterImpl implements ContractsSearchAdapter{
 		orderInfoBaseVo = buildOrderInfo(bookingRequest,orderInfoBaseVo);
 		
 		try {
-			logger.error("[adapter-search-contracts]调用主站合同请求参数"+JSONMapper.getInstance().writeValueAsString(orderInfoBaseVo));
+			if(logger.isInfoEnabled()){
+				logger.info("[adapter-search-contracts]调用主站合同请求参数"+JSONMapper.getInstance().writeValueAsString(orderInfoBaseVo));
+			}
 			resultHandle = vstCommOrderQueryService.getContracts(orderInfoBaseVo);
-			logger.error("[adapter-search-contracts]调用主站合同获取code"+JSONMapper.getInstance().writeValueAsString(resultHandle));
+			if(logger.isInfoEnabled()){
+				logger.info("[adapter-search-contracts]调用主站合同获取code"+JSONMapper.getInstance().writeValueAsString(resultHandle));
+			}
 		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
 			throw new RuntimeException(e);
 		}
 		
@@ -241,11 +246,16 @@ public class ContractsSearchAdapterImpl implements ContractsSearchAdapter{
 	public BaseSingleResultDto<String> getContractTemplateHtml(String templateCode) {
 		BaseSingleResultDto<String> result = new BaseSingleResultDto<String>();
 		try{
-			logger.error("[adapter-search-contracts]调用主站合同版本code"+JSONMapper.getInstance().writeValueAsString(templateCode));
+			if(logger.isInfoEnabled()){
+				logger.info("[adapter-search-contracts]调用主站合同版本code"+JSONMapper.getInstance().writeValueAsString(templateCode));
+			}
 			ResultHandleT<String> contractTemplateHtml = vstCommOrderQueryService.getContractTemplateHtml(templateCode);
-			logger.error("[adapter-search-contracts]contractTemplateHtml"+JSONMapper.getInstance().writeValueAsString(contractTemplateHtml));
+			if(logger.isInfoEnabled()){
+				logger.info("[adapter-search-contracts]contractTemplateHtml"+JSONMapper.getInstance().writeValueAsString(contractTemplateHtml));
+			}
 			result.setResult(contractTemplateHtml.getReturnContent());
 		}catch (Exception e) {
+			logger.error(e.getMessage(),e);
 			throw new RuntimeException(e);
 		}
 		

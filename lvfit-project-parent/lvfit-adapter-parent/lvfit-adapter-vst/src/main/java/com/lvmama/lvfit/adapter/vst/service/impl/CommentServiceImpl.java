@@ -69,8 +69,6 @@ public class CommentServiceImpl implements CommentService{
 			fitCommentDto.setCommentStat(fitCommentStat);
 			fitCommentDto.setComments(baseResultDto);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			logger.info("酒店点评信息调用异常", e.getMessage());
 		}
 		return fitCommentDto;

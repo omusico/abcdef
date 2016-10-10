@@ -54,9 +54,13 @@ public class FitVstBookingServiceImpl implements FitVstBookingService{
     	VstBookingRequest vst = null;
         try {
             vst =  this.buildVstBookingRequest(orderMainDto);
-            logger.error("fit_vst酒店下单之前orderMainDto:"+JSONMapper.getInstance().writeValueAsString(orderMainDto));
+            if(logger.isInfoEnabled()){
+            	logger.info("fit_vst酒店下单之前orderMainDto:"+JSONMapper.getInstance().writeValueAsString(orderMainDto));
+            }
             FitSuppMainOrderDto suppMainOrderDto = fitVstClient.createOrder(vst);
-            logger.error("fit_vst酒店下单结果suppMainOrderDto:"+JSONMapper.getInstance().writeValueAsString(suppMainOrderDto));
+            if(logger.isInfoEnabled()){
+            	logger.info("fit_vst酒店下单结果suppMainOrderDto:"+JSONMapper.getInstance().writeValueAsString(suppMainOrderDto));
+            }
             suppMainOrderDto.setFitMainOrderId(orderMainDto.getId());
             suppMainOrderDto.setFitMainOrderNo(orderMainDto.getFitOrderNo().getOrderNo());
             orderMainDto.setFitSuppMainOrderDto(suppMainOrderDto);

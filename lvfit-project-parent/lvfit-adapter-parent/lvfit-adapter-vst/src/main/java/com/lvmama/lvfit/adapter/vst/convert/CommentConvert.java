@@ -97,7 +97,6 @@ public class CommentConvert {
 			}		
 		} catch (Exception e) {
 			logger.error("调取vst评论结果集数据转换异常:"+e.getMessage());
-			e.printStackTrace();
 		}
 		BaseResultDto<VstComment> commentResult = new BaseResultDto<VstComment>(pagination,list);
 		return commentResult;

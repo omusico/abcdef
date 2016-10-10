@@ -121,7 +121,13 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
 	            		FlightOrderSalesOrderRelationDto salesOrderRelation = new FlightOrderSalesOrderRelationDto();
 	                    salesOrderRelation.setSalesMainOrderId(Long.valueOf(suppMainOrderDto.getVstMainOrderNo()));
 	                    salesOrderRelation.setSalesOrderId(Long.valueOf(suppOrder.getVstOrderNo()));
-	                    logger.info("查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
+	                    try{
+		                    if(logger.isInfoEnabled()){
+		                    	logger.info("查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
+		                    }
+	                    }catch (Exception e1) {
+	        				logger.error(e1.getMessage());
+	        			}
 	                    //根据主单号，子单号，查询对应的“航班订单详情视图对象信息”.
 	                    BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
 	                       
@@ -174,7 +180,13 @@ public class FlightOrderQueryAdapterImpl implements FlightOrderQueryAdapter{
             	//一次性，查询出来主单对应的全部机票订单那边的信息.
         		FlightOrderSalesOrderRelationDto salesOrderRelation = new FlightOrderSalesOrderRelationDto();
                 salesOrderRelation.setSalesMainOrderId(Long.valueOf(suppMainOrderDto.getVstMainOrderNo())); 
-                logger.info("包机。。查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
+                try{
+                    if(logger.isInfoEnabled()){
+                    	logger.info("包机。。查询机票关联关系：salesOrderRelation=" + JSONMapper.getInstance().writeValueAsString(salesOrderRelation));
+                    }
+                }catch (Exception e1) {
+    				logger.error(e1.getMessage());
+    			}
                 BaseResultDto<FlightOrderDetailViewDto> lvfResultDto = businessClient.queryDetailViewListBySalesOrderRelation(salesOrderRelation);
                           
                 //得到全部的乘客信息.

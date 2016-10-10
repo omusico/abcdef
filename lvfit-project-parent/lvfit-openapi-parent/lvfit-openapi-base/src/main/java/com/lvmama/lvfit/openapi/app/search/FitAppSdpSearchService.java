@@ -2,6 +2,7 @@ package com.lvmama.lvfit.openapi.app.search;
 
 import com.lvmama.lvfit.common.dto.app.FitAppGoodsDto;
 import com.lvmama.lvfit.common.dto.app.FitAppSdpCityDepartInfo;
+import com.lvmama.lvfit.common.dto.app.FitAppSdpCityStartDistrict;
 import com.lvmama.lvfit.common.dto.sdp.goods.request.FitSdpGoodsRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductCalendarDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductCalendarRequest;
@@ -29,7 +30,7 @@ public interface FitAppSdpSearchService {
 	 * @param productId
 	 * @return
      */
-	List<FitAppSdpCityDepartInfo> searchSdpCityDepartInfo(Long productId);
+	List<FitAppSdpCityStartDistrict> searchSdpCityDepartInfo(Long productId);
 
 
 

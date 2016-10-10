@@ -117,12 +117,14 @@ public class FitSdpShopingCalculateServiceImpl implements FitSdpShopingCalculate
 				List<FitSdpSelectInsuranceDto> selectInsurances = fitSdpShoppingDto.getSelectInsurances();
 				calculateAmountDetailRequest.setSelectInsurances(selectInsurances);
 			}
-			logger.info("calculateAmountDetailRequest="+JSONMapper.getInstance().writeValueAsString(calculateAmountDetailRequest));
+			if(logger.isInfoEnabled()){
+				logger.info("calculateAmountDetailRequest="+JSONMapper.getInstance().writeValueAsString(calculateAmountDetailRequest));
+			}
 
 			return this.calculateAmountByDetail(calculateAmountDetailRequest);
 			
 		}catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+			logger.error(e.getMessage(),e);
 			if(e instanceof ExceptionWrapper){
 				ExceptionWrapper exceptionWrapper = (ExceptionWrapper)e;
 				throw exceptionWrapper;
@@ -269,7 +271,7 @@ public class FitSdpShopingCalculateServiceImpl implements FitSdpShopingCalculate
 			return result;
 
 		}catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+			logger.error(e.getMessage(),e);
 			if(e instanceof ExceptionWrapper){
 				ExceptionWrapper exceptionWrapper = (ExceptionWrapper)e;
 				throw exceptionWrapper;

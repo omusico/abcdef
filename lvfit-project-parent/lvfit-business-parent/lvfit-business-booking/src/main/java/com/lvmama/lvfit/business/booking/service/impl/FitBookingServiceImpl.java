@@ -130,7 +130,9 @@ public class FitBookingServiceImpl implements FitBookingService {
 	public FitOrderMainDto booking(FitOrderBookingRequest bookingRequest) {
 		
 		try {
-			logger.info("[Business-booking]预定接口请求报文：" + JSONMapper.getInstance().writeValueAsString(bookingRequest));
+			if(logger.isInfoEnabled()){
+				logger.info("[Business-booking]预定接口请求报文：" + JSONMapper.getInstance().writeValueAsString(bookingRequest));
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -141,7 +143,7 @@ public class FitBookingServiceImpl implements FitBookingService {
 			//订单存储
 			this.storeOrder(orderMainDto);
 		} catch (Exception e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
+			logger.error(e.getMessage(),e);
 			throw new RuntimeException(e);
 		}
 		return orderMainDto;
@@ -343,9 +345,11 @@ public class FitBookingServiceImpl implements FitBookingService {
 			//订单
 			orderDto.setOrderMainId(orderMainDto.getId());
 			try {
-				logger.info("单个订单入库orderDto="+JSONMapper.getInstance().writeValueAsString(orderDto));
+				if(logger.isInfoEnabled()){
+					logger.info("单个订单入库orderDto="+JSONMapper.getInstance().writeValueAsString(orderDto));
+				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			fitOrderRepository.save(orderDto);
 

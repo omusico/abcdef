@@ -35,7 +35,6 @@
 			}
 
 			$(function (){
-				initDate();
 				initGrid();
 				//初始化交通模态框
 				inItConsoleDlg();

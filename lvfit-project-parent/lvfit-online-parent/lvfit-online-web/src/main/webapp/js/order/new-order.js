@@ -231,6 +231,11 @@ $(function(){
 		}*/
 		initPassport();
 		
+		//校验当前复制的人员信息
+		var $youwanren1 = $('.js_btn_copy').parent().parent().parent();
+		var $yanzheng = $youwanren1.find('.js_yz');
+		yanzhengPassengersInfo($yanzheng);
+		
 	});
 	
 	//邮箱自动补全
@@ -410,30 +415,9 @@ $(function(){
 			}
 		}
 		
+		//提交前校验所有人员输入框信息
 		var $yanzheng = $('.js_yz');
-		for(var i=0;i<$yanzheng.length;i++){
-			var This = $yanzheng.eq(i);
-			var flag1=true,flag2=true;
-			//检查所有人员姓名是否规范填写
-			if(This.attr("type_name")==="text"){
-				if(This.hasClass("js_goumai_name")){
-					flag1 = checkContactName(This);
-				}else{
-					flag1 = checkUserName(This);
-				}
-			}
-			//检查证件信息是否重复
-			if(This.attr("type_name")==="shenfenzheng"){
-				if(This.siblings('.select').val() == 'ID_CARD' || This.siblings('.select').val() == 'ID'){
-					flag2 = blurIdAndBirthday(This,"ID");
-				}else{
-					flag2 = verifyIDCardRepeat(This);
-				}
-			}
-			if(flag1 && flag2){
-				yanzhengThis(This);
-			}
-		}
+		yanzhengPassengersInfo($yanzheng);
 		
 		var _english2 = /^[a-zA-Z\s]+$/;
 		for(var i=0;i<$('.error_show').length;i++){
@@ -466,6 +450,32 @@ $(function(){
 		return true;
 	}
 	
+	//提交前校验所有人员输入框信息(Param：class='js_yz'的人员信息input框列表)
+	function yanzhengPassengersInfo($yanzheng){
+		for(var i=0;i<$yanzheng.length;i++){
+			var This = $yanzheng.eq(i);
+			var flag1=true,flag2=true;
+			//检查所有人员姓名是否规范填写
+			if(This.attr("type_name")==="text"){
+				if(This.hasClass("js_goumai_name")){
+					flag1 = checkContactName(This);
+				}else{
+					flag1 = checkUserName(This);
+				}
+			}
+			//检查证件信息是否重复
+			if(This.attr("type_name")==="shenfenzheng"){
+				if(This.siblings('.select').val() == 'ID_CARD' || This.siblings('.select').val() == 'ID'){
+					flag2 = blurIdAndBirthday(This,"ID");
+				}else{
+					flag2 = verifyIDCardRepeat(This);
+				}
+			}
+			if(flag1 && flag2){
+				yanzhengThis(This);
+			}
+		}
+	}
 	//验证当前输入框
 	function yanzhengThis(This){
 	    var _mobile = /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17\d{1})|(18([0-4]|[5-9])))\d{8}$/;// /^(13[0-9]|15[0-9]|18[0-9]|170|17[6-8]|147|145)\d{8}$/; 

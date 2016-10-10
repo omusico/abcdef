@@ -117,7 +117,9 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
     	
         ResultHandleT<OrdOrder> resultHandleT;
 		try {
-			logger.info("[vstBookingRequest]"+ JSONMapper.getInstance().writeValueAsString(vstBookingRequest));
+			if(logger.isInfoEnabled()){
+				logger.info("[vstBookingRequest]"+ JSONMapper.getInstance().writeValueAsString(vstBookingRequest));
+			}
 			BuyInfo buyInfo = this.generateBuyInfo(vstBookingRequest);
 			
 			resultHandleT = vstInterfaceAdapterWrapper.createOrder(buyInfo, buyInfo.getUserId());
@@ -132,7 +134,7 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
 			return this.generateSuppOrder(resultHandleT,fitOrderMap,fitOrderPassengerMap,isCharter);
 			
 		} catch (Exception e) {
-			logger.error("调用orderService.createOrder出现异常："+ExceptionUtils.getStackTrace(e));
+			logger.error("调用orderService.createOrder出现异常：",e);
 			if(e instanceof ExceptionWrapper){
 				ExceptionWrapper ew = (ExceptionWrapper)e;
 				throw ew;
@@ -148,9 +150,11 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
         FitSuppMainOrderDto suppMainOrderDto = new FitSuppMainOrderDto();
         OrdOrder ordOrder = resultHandleT.getReturnContent();
     	try {
-			logger.info("[adapter-vst-booking]预定接口fitOrderMap：" + JSONMapper.getInstance().writeValueAsString(fitOrderMap));
+    		if(logger.isInfoEnabled()){
+    			logger.info("[adapter-vst-booking]预定接口fitOrderMap：" + JSONMapper.getInstance().writeValueAsString(fitOrderMap));
+    		}
 		} catch (Exception e1) {
-			logger.error(ExceptionUtils.getStackTrace(e1));
+			logger.error(e1.getMessage());
 		}
         suppMainOrderDto.setBindingStatus(BindingStatus.BINDING);
         suppMainOrderDto.setVisitTime(ordOrder.getVisitTime());
@@ -170,13 +174,15 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
         	if (0 == BizEnum.BIZ_CATEGORY_TYPE.category_traffic_aero_other.getCategoryId().compareTo(item.getCategoryId())){
         		
         		//当订单未机票类型的子单时，需构造供应商订单航班信息
-        		logger.error("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】");
+        		logger.info("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】");
         		fitOrderDto = fitOrderMap.get(String.valueOf(item.getVisitTime().getTime()));
         		List<FitSuppFlightOrderDto> suppFlightOrderDtos = new ArrayList<FitSuppFlightOrderDto>();
         		try {
-					logger.error("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】,供应商对应的乘客Map【"+JSONMapper.getInstance().writeValueAsString(fitOrderPassengerMap)+"】");
+        			if(logger.isInfoEnabled()){
+        				logger.info("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】,供应商对应的乘客Map【"+JSONMapper.getInstance().writeValueAsString(fitOrderPassengerMap)+"】");
+        			}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage());
 				} 
         		//如果不是包机切位的订单请求，就创建供应商对应的机票子订单.
         		if(!isCharter){
@@ -194,9 +200,11 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
 	                	suppFlightOrderDtos.add(suppFlightOrderDto);
 					}
 	        		try {
-						logger.error("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】,供应商对应的suppFlightOrderDtos【"+JSONMapper.getInstance().writeValueAsString(suppFlightOrderDtos)+"】");
+	        			if(logger.isInfoEnabled()){
+	        				logger.info("创建供应商订单航班信息，供应商对应的机票子订单号【"+item.getOrderItemId()+"】,供应商对应的suppFlightOrderDtos【"+JSONMapper.getInstance().writeValueAsString(suppFlightOrderDtos)+"】");
+	        			}
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error(e.getMessage());
 					} 
 	        		suppOrderDto.setSuppFlightOrderDtos(suppFlightOrderDtos);
 	        	 	suppOrderDto.setTripType(fitOrderDto.getTripType());
@@ -218,9 +226,11 @@ public class OrderServiceAdapterImpl implements OrderServiceAdapter {
            suppMainOrderDto.getFitSuppOrderDtos().add(suppOrderDto);
         }
      	try {
-			logger.info("[adapter-vst-booking]预定接口suppMainOrderDto：" + JSONMapper.getInstance().writeValueAsString(suppMainOrderDto));
+     		if(logger.isInfoEnabled()){
+     			logger.info("[adapter-vst-booking]预定接口suppMainOrderDto：" + JSONMapper.getInstance().writeValueAsString(suppMainOrderDto));
+     		}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} 
         return suppMainOrderDto;
     }

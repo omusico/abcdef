@@ -116,7 +116,7 @@
 					}];
 					
 				$("#sdpDataList").jqGrid({
-					url : '${request.contextPath}/sdpProduct/suppCallBackQuery',
+					url : '${request.contextPath}/order/suppCallBackQuery',
 					datatype : "json",
 					mtype : "POST",
 					height:'auto',//高度，表格高度。可为数值、百分比或'auto'
@@ -174,7 +174,7 @@
     		
     		function handleFlightBack(vstOrderMainNo){
     			$.ajax({	
-					url: "${request.contextPath}/sdpProduct/handleSuppFlightCallBack",
+					url: "${request.contextPath}/order/handleSuppFlightCallBack",
 					type: "post",
 					data: {
 						'vstOrderMainNo':vstOrderMainNo
@@ -192,7 +192,7 @@
     		
     		function handleFlightBackDetail(vstOrderMainNo,vstOrderNo){
     			$.ajax({	
-					url: "${request.contextPath}/sdpProduct/handleSuppFlightCallBack",
+					url: "${request.contextPath}/order/handleSuppFlightCallBack",
 					type: "post",
 					data: {
 						'vstOrderMainNo':vstOrderMainNo,
@@ -213,7 +213,7 @@
 			function query() {
 				$("#sdpDataList").jqGrid('setGridParam', 
 				{
-		 			url:"${request.contextPath}/sdpProduct/suppCallBackQuery",
+		 			url:"${request.contextPath}/order/suppCallBackQuery",
 		 			datatype : "json",
 		 			mtype : "POST",
 			 		postData : getQueryParams()

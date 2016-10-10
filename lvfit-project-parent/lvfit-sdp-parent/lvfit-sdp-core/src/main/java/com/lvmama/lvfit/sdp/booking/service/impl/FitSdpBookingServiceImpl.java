@@ -86,7 +86,9 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
 			this.completeBookingRequest(bookingRequest);
 			//计算订单销售价
 	        this.setOrderSalesAmount(bookingRequest);
-	        logger.info("下单请求报文22：bookingRequest="+JSONMapper.getInstance().writeValueAsString(bookingRequest));
+			if(logger.isInfoEnabled()){
+				logger.info("下单请求报文22：bookingRequest="+JSONMapper.getInstance().writeValueAsString(bookingRequest));
+			}
 	        FitOrderMainDto orderMainDto  = fitBusinessClient.booking(bookingRequest);
 	        resultDto.setResult(orderMainDto);
 		} catch (Exception e) {
@@ -354,7 +356,9 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         calculateAmountRequest.setShoppingUUID(bookingRequest.getShoppingUuid());
         calculateAmountRequest.setBookingSource(bookingRequest.getBookingSource());
     	try {
-			logger.error(JSONMapper.getInstance().writeValueAsString(calculateAmountRequest));
+			if(logger.isInfoEnabled()){
+				logger.info(JSONMapper.getInstance().writeValueAsString(calculateAmountRequest));
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -378,16 +382,17 @@ public class FitSdpBookingServiceImpl implements FitSdpBookingService {
         	try {
         		curFitOrderFlightDto = JSONMapper.getInstance().readValue(JSONMapper.getInstance().writeValueAsString(f), FitOrderFlightDto.class);
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getStackTrace(e));
+				logger.error(e.getMessage());
 			} 
             if (bookingRequest.getAdultQuantity() > 0) {
             	AmountCalculatorRequest  adultRequest = null;
             	adultRequest = this.getCalculatorRequest(curFitOrderFlightDto,PassengerType.ADULT,bookingRequest.getBookingSource());
             	try {
-					logger.error(JSONMapper.getInstance().writeValueAsString(adultRequest));
+					if(logger.isInfoEnabled()){
+						logger.info(JSONMapper.getInstance().writeValueAsString(adultRequest));
+					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
             	FitFlightAmountDto flightPrice = fitSdpShopingCalculateService.calculateFlightAmount(adultRequest);
 	            f.setAdultPrice(flightPrice.getTotalSalesAmount());

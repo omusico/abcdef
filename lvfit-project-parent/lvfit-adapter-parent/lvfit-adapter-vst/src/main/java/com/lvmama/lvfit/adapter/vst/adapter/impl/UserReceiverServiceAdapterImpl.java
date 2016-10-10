@@ -191,10 +191,12 @@ public class UserReceiverServiceAdapterImpl implements UserReceiverServiceAdapte
 						receiver.setReceiverId(passengerInfo.getReceiverId());
 						usrReceivers.add(receiver);
 						try {
-						    logger.error("VST更新常用乘客信息：" + JSONMapper.getInstance().writeValueAsString(receiver));
-						    logger.error("VST更新常用乘客信息ID：" + passengerRequst.getUserId());
+							if(logger.isInfoEnabled()){
+							    logger.info("VST更新常用乘客信息：" + JSONMapper.getInstance().writeValueAsString(receiver));
+							    logger.info("VST更新常用乘客信息ID：" + passengerRequst.getUserId());
+							}
 						} catch (Exception e) {
-						    e.printStackTrace();
+						    logger.error(e.getMessage());
 						}
 						userReceiverService.createContact(usrReceivers, passengerRequst.getUserId());
 					} else {
@@ -202,10 +204,12 @@ public class UserReceiverServiceAdapterImpl implements UserReceiverServiceAdapte
 						receiver.setUseOffen("true");
 						usrReceivers.add(receiver);
 						try {
-						    logger.error("VST添加常用乘客信息：" + JSONMapper.getInstance().writeValueAsString(receiver));
-						    logger.error("VST添加常用乘客信息ID：" + passengerRequst.getUserId());
+							if(logger.isInfoEnabled()){
+							    logger.info("VST添加常用乘客信息：" + JSONMapper.getInstance().writeValueAsString(receiver));
+							    logger.info("VST添加常用乘客信息ID：" + passengerRequst.getUserId());
+							}
 						} catch (Exception e) {
-                            e.printStackTrace();
+							logger.error(e.getMessage());
                         }
 						userReceiverService.createContact(usrReceivers, passengerRequst.getUserId());
 					}

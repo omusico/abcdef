@@ -118,13 +118,17 @@ public class FitAppDpSearchServiceImpl implements FitAppDpSearchService {
 
     private FitBaseSearchRequest genRequestParam(FitAppSearchRequest request) {
         FitBaseSearchRequest searchRequest = new FitBaseSearchRequest();
-        try {
-            BeanUtils.copyProperties(searchRequest, request);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        searchRequest.setTripType(request.getTripType());
+        searchRequest.setShoppingUUID(request.getShoppingUuid());
+        searchRequest.setDepartureCityCode(request.getDepartureCityCode());
+        searchRequest.setDepartureTime(request.getDepartureTime());
+        searchRequest.setArrivalCityCode(request.getArrivalCityCode());
+        searchRequest.setReturnTime(request.getReturnTime());
+        searchRequest.setCityCode(request.getCityCode());
+        searchRequest.setCheckInTime(request.getCheckInTime());
+        searchRequest.setCheckOutTime(request.getCheckOutTime());
+        searchRequest.setAdultsCount(request.getAdultsCount());
+        searchRequest.setChildCount(request.getChildCount());
 
         return searchRequest;
     }

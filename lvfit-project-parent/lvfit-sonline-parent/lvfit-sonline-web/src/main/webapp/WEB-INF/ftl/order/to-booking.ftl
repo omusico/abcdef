@@ -541,7 +541,6 @@
                             <option value="PASSPORT" >护照</option>
                         </select>
                         <input class="input js_yz" type_name="shenfenzheng" type="text"  value="" placeholder="证件号码"  onblur="blurIdAndBirthday(this,'ID')">
-                        <span class="ts_text"><i class="tip-icon tip-icon-info"></i>为了您能顺利出游，请务必确认所填姓名、证件类型和证件号码与所持证件保持一致；</span>
                         <span class="error_text"><i class="tip-icon tip-icon-error"></i>证件信息错误或重复，请进行修改</span>
                     </dd>
                 </dl>
@@ -563,7 +562,12 @@
         <!--付款按钮-->
         <div class="fk_box_fixed mt_20">
             <div class="fk_box">
-                <a class="btn_fk" href="javascript:infoSubmit('${shoppingUUID}',${adultCount},${childCount});">同意以下协议，去付款</a>
+            <#if hotelInfo ?? && hotelInfo.quantity??> 
+                     <a class="btn_fk" href="javascript:infoSubmit('${shoppingUUID}',${adultCount},${childCount},${hotelInfo.quantity});">同意以下协议，去付款</a>
+            <#else>
+                    <a class="btn_fk" href="javascript:infoSubmit('${shoppingUUID}',${adultCount},${childCount},1);">同意以下协议，去付款</a>
+            </#if>
+              
                 <div class="fk_l">
                     <a href="javascript:{window.history.back();}"><i class="order_icon icon_jtl"></i>返回上一步</a>
                     <div class="fk_jg">
@@ -679,6 +683,8 @@ var productId="${productId}";
 var bizCategoryId = "${bizCategoryId}";
 
 $(function(){
+	//清除浏览器回退的填写人员信息
+	cleanBrowserData();
     //获取价格
     initPrice(shopingUUID);
     //初始化登录
@@ -799,6 +805,16 @@ function initPassengers(){
         }
     });
 }
+
+//清除浏览器回退数据
+function cleanBrowserData(){
+	var $yanzheng = $('.js_yz');
+	for(var i=0;i<$yanzheng.length;i++){
+		var This = $yanzheng.eq(i);
+		This.val("");
+	}
+}
+
 </script>
 </body>
 </html>

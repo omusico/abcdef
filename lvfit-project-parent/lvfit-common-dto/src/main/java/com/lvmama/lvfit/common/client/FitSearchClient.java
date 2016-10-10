@@ -33,6 +33,7 @@ import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductBasicInfoDto;
 import com.lvmama.lvfit.common.dto.sdp.product.FitSdpProductCalendarDto;
 import com.lvmama.lvfit.common.dto.sdp.product.request.FitSdpProductGroupQueryRequest;
 import com.lvmama.lvfit.common.dto.sdp.product.result.FitSdpGroupCalendarSearchResult;
+import com.lvmama.lvfit.common.dto.search.flight.result.MockUtil;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelQueryRequest;
 import com.lvmama.lvfit.common.dto.search.hotel.HotelSearchResult;
 import com.lvmama.lvfit.common.dto.search.hotel.result.HotelSearchHotelDto;
@@ -180,7 +181,9 @@ public class FitSearchClient {
 		try {
 			ObjectMapper objectMapper = JSONMapper.getInstance();
 			String jsonRequest = objectMapper.writeValueAsString(fitProductGroupQueryRequest);
+			System.out.println("查询价格日历："+MockUtil.toJsonStr(fitProductGroupQueryRequest));
 			String jsonResult = restClient.post(url, String.class, jsonRequest);
+			System.out.println("查询价格日历结果："+jsonResult);
 			if (StringUtils.isBlank(jsonResult)) {
 			    return new FitSdpGroupCalendarSearchResult<FitSdpProductCalendarDto>();
 			}

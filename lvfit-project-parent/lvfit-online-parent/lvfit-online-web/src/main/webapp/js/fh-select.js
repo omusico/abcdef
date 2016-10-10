@@ -46,6 +46,9 @@ $(function() {
         // 如果搜索条件为空，填充默认值
         initSearchCondition();
     }
+    //设置成人儿童数
+    resetChildList();
+    resetAdultList();
 });
 
 function initSearchCondition() {
@@ -93,107 +96,48 @@ $(function(){
             }
         });
     }
-    $('.searchHot').click(function() {
-        $('.JS_select_dest').val($(this).html());
-        $('.select-hotel').val($(this).html());
-    })
-    //设置成人儿童数 start
-    var adultNum = $("#adault").text()
-    var child =$("#child");
-    var adult = $("#adaultOl");
-    var childNum = $("#childNum").text()
-    resetPeopleList(child, adultNum);
-    resetAdultList(adult, childNum)
-    //设置成人儿童数 end
-    function resetPeopleList($element, num) {
-        var $list = $element.find("li");
-        var maxNum = 9 - num;
-        for (var i = 0; i < $list.length; i++) {
-            var $thisItem = $list.eq(i);
-            if (parseInt($thisItem.data("num")) > maxNum) {
-                $thisItem.hide();
-            } else {
-                $thisItem.show();
-            }
-        }
-        var departureCity =  $("#departureCityName").val();
-        if(departureCity == '' || null == departureCity){//出发城市等于空
-            $.ajax({
-                type: "GET",
-                url: baseUrl+"/index/ip",
-                success: function(data){
-                    $("#departureCityName").val(data.add);
-                    for(var i=0;i<allCities.length;i++){
-                        if(data.add==allCities[i].split("|")[0]){
-                            $(".select_depa").val(data.add);
-                        }else{$(".select_depa").val("上海")}
-                    }
-                }
-            });
-        }
-        // 成人1 => 儿童0-2 限制
-        if (parseInt(num) == 1) {
-            for (var i = 3; i < $list.length; i++) {
-                $list.eq(i).hide();
-            }
-            // 如果儿童>=3, 修改为0
-            var $childInput = $(".JS_child_num");
-            if(parseInt($childInput.val())>=3){
-                $childInput.val(0);
-                $childInput.siblings(".select-people").find("span").html(0);
-            }
-        }
-    }
-    function resetAdultList($element, num) {
-        var $list = $element.find("li");
-        var maxNum = 9 - num;
-        for (var i = 0; i < $list.length; i++) {
-            var $thisItem = $list.eq(i);
-            if (parseInt($thisItem.data("num")) > maxNum) {
-                $thisItem.hide();
-            } else {
-                $thisItem.show();
-            }
-        }
-    }
+});
 
-    $(".fh-order-btn").click(function(e){
-        if(isStopSubmit()) {
-            return;
-        }
-        var isBackBooking = $("#isBackBooking").val();
-        if(isBackBooking=='true'){
-            openCoustomerDialog();
-            return;
-        }
-        $.ajax({
-            type: "post",
-            async: true,
-            dataType: "json",
-            url: baseUrl+"/order/recordBookingLogNoLogin?shopingUUID="+_shoppingUUID,
-            success: function(data){
-                if(data.isSuccess=='SUCCESS'){
-                    var url = baseUrl+"/order/toBooking?shopingUUID="+_shoppingUUID;
-                    window.location.href=url;
-                }else{
-                    $(".returnAlert").show();
-                    $('.resortOverlay').stop(true,true).show();
-                    $("#errorMsg").html(data.errMessage);
-                }
+$('.searchHot').click(function() {
+    $('.JS_select_dest').val($(this).html());
+    $('.select-hotel').val($(this).html());
+});
+
+$(".fh-order-btn").click(function(e){
+    if(isStopSubmit()) {
+        return;
+    }
+    var isBackBooking = $("#isBackBooking").val();
+    if(isBackBooking=='true'){
+        openCoustomerDialog();
+        return;
+    }
+    $.ajax({
+        type: "post",
+        async: true,
+        dataType: "json",
+        url: baseUrl+"/order/recordBookingLogNoLogin?shopingUUID="+_shoppingUUID,
+        success: function(data){
+            if(data.isSuccess=='SUCCESS'){
+                var url = baseUrl+"/order/toBooking?shopingUUID="+_shoppingUUID;
+                window.location.href=url;
+            }else{
+                $(".returnAlert").show();
+                $('.resortOverlay').stop(true,true).show();
+                $("#errorMsg").html(data.errMessage);
             }
-        });
+        }
     });
 });
 
-
-$(".select-class").live("click", function(e) {
+function openSeatClassDd(e) {
     var event = e || window.event;
     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
-    var left = $(this).offset().left;
-    var top = $(this).offset().top + $(this).offsetHeight;
-    $(this).siblings(".select-class-list").css("left", left).css("top", top).show();
-});
+    var $this = $(this);
+    var thisL = $this.offset().left, thisT = $this.offset().top, thisH = $this.outerHeight(true);
+    $this.siblings(".select-class-list").show().css({'left': thisL, 'top': thisT + thisH + 2});
+}
 
 //更换舱位
 $(".select-class-list li").live("click", function(e) {
@@ -204,6 +148,13 @@ $(".select-class-list li").live("click", function(e) {
     var flightNo = $(this).data("flightno");
     var seatCode = $(this).data("code");
     var flightType = $(this).data("type");
+
+    var originCode = $(this).parents(".select-class-list").siblings(".select-class").find("em").attr("code");
+    if (seatCode == originCode) {
+        $(this).parents(".select-class-list").hide();
+        return;
+    }
+
     $.ajax({
         type: "post",
         url: baseUrl + "/shopping/changeSeat",
@@ -220,6 +171,7 @@ $(".select-class-list li").live("click", function(e) {
             if (flightType === "RETURN") {
                 $("#back_flightInfo").html(data);
             }
+            $(".select-class").bind("click", openSeatClassDd);
             initAjax();
         }
     });
@@ -256,6 +208,13 @@ function initAjax(){
         });
     }
 };
+
+$(".selectedBtn").live("click", function () {
+    var $i = $(".showAllRoom").find("i");
+    if ($i.hasClass("arrow_up")) {
+        $(".JS_showAllRoom").trigger("click");
+    }
+});
 
 $(".xuanze").die().live("click",function() {
     var $dd = $(this).parents("dd");
@@ -580,34 +539,24 @@ var saveInsuranceToCache = function(obj) {
     var array = new Array();
     $("#insuranceList").find(".xpbl-item").each(function(i){
         var count = $(this).find(".select-count span").html();
-        if(count > 0){
+        if(count > 0) {
             var insurance = {};
-            var count = $(this).find(".xh-count span").html();
-            insurance.productId = $(this).find("input[name='productId']").val();
-            insurance.productType = $(this).find("input[name='productType']").val();
-            insurance.productName = $(this).find("input[name='productName']").val();
-            insurance.branchId = $(this).find("input[name='branchId']").val();
-            insurance.branchName = $(this).find("input[name='branchName']").val();
-            insurance.suppGoodsId = $(this).find("input[name='suppGoodsId']").val();
-            insurance.suppGoodsName = $(this).find("input[name='suppGoodsName']").val();
+            insurance.suppGoodsId = $(this).data("id").substring(1);
             insurance.insuranceCount = count;
-            insurance.insurancePrice = $(this).find(".xh-price span").html();
-            insurance.insuranceDetail = $(this).find("input[name='insuranceDetail']").val();
             insurance.visitDate = $("#flightStartDate").val();
             array.push(insurance);
         }
     });
 
-    var data = {};
     var url =  baseUrl+"/shopping/updSelectedInsurance";
-    data.shoppingUuid = _shoppingUUID;
-    data.insuranceList = JSON.stringify(array);
     $.ajax({
         type: "post",
-        async: true,
         dataType: "json",
         url: url,
-        data: data,
+        data: {
+            shoppingUuid : _shoppingUUID,
+            insuranceStr : JSON.stringify(array)
+        },
         error: function(obj) {
             $(".fh-overlay, .fh-dialog-loading").hide();
             $(".returnAlert").show();
@@ -1156,3 +1105,32 @@ $(".select-div-list li").live("click", function () {
         $(this).parents(".roomTable-td4").siblings(".roomTable-td6").html("<a href=\"javascript:void(0);\" class=\"btn btn-small btn-orange xuanze\">选择</a>");
     }
 });
+//1、儿童数+成人数<=9；2、儿童数 <= 2倍成人数
+function resetChildList() {
+    var $list = $("#child").find("li");
+    var adultCount = Number( $("#adultsCount").val() );
+    var maxNum1 = 9 - adultCount;
+    var maxNum2 = 2 * adultCount;
+    var maxNum = maxNum1 < maxNum2 ? maxNum1 : maxNum2;
+    for (var i = 0; i < $list.length; i++) {
+        var $thisItem = $list.eq(i);
+        if (parseInt($thisItem.data("num")) > maxNum) {
+            $thisItem.hide();
+        } else {
+            $thisItem.show();
+        }
+    }
+}
+function resetAdultList() {
+    var $list = $("#adaultOl").find("li");
+    var childCount = Number( $("#childCount").val() );
+    var maxNum = 9 - childCount;
+    for (var i = 0; i < $list.length; i++) {
+        var $thisItem = $list.eq(i);
+        if (parseInt($thisItem.data("num")) > maxNum) {
+            $thisItem.hide();
+        } else {
+            $thisItem.show();
+        }
+    }
+}

@@ -7,30 +7,30 @@ function infoSubmitBack(shopingUUID,_adultCount,_childCount){
 	submit(shopingUUID,_adultCount,_childCount,false);
 };
 
-function infoSubmit(shopingUUID,_adultCount,_childCount){
+function infoSubmit(shopingUUID,_adultCount,_childCount,quantity){
 	/**
 	 * 登录验证
 	 */
-	var check = checkBooking(_adultCount,_childCount);
+	var check = checkBooking(_adultCount,_childCount,quantity);
 	if(check){
 		fit.login.booking.check(function(){
-			submit(shopingUUID,_adultCount,_childCount,true);
+			submit(shopingUUID,_adultCount,_childCount,true,quantity);
 		},function(){
-			callBackSubmit(shopingUUID,_adultCount,_childCount);
+			callBackSubmit(shopingUUID,_adultCount,_childCount,quantity);
 		});
 	}
 };
 
-function callBackSubmit(shopingUUID,_adultCount,_childCount){
+function callBackSubmit(shopingUUID,_adultCount,_childCount,quantity){
 	 loginCallback();//先登录,再刷新登录用户信息
 	 submit(shopingUUID,_adultCount,_childCount,true);
-	 if(!checkBooking(_adultCount,_childCount)){
+	 if(!checkBooking(_adultCount,_childCount,quantity)){
 		 location.reload();
 	 }
 }
 
-function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
-	if(!checkBooking(_adultCount,_childCount)||!yanzhengOk()){
+function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord,quantity){
+	if(!checkBooking(_adultCount,_childCount,quantity)||!yanzhengOk()){
 		return;
 	}
 	//alert("成功提交了");return;
@@ -289,7 +289,8 @@ function initPrice(context,_shopingUUID){
      $('.returnAlert').stop(true,true).fadeOut();
      $('.resortOver').stop(true,true).fadeOut();
      $('body').removeAttr('style');
-     window.location.href=_data._contextPath+"/search/backToShopping?shoppingUUID="+shopingUUID+"&type=orderfilled";
+     //window.location.href=_data._contextPath+"/search/backToShopping?shoppingUUID="+shopingUUID+"&type=orderfilled";
+     window.location.href= $("#reloadUrl").val();
  });
  
  
@@ -312,8 +313,8 @@ function initPrice(context,_shopingUUID){
  		  }else if(_newPeopleType=="ADULT" && value == 'CHILDREN'){
  			  $(that).parent().addClass('error_show');
  			  return false;
- 		  }else if(_newPeopleType=="BABY"){
- 			  $(that).parent().addClass('error_show');
+ 		  }else if(_newPeopleType=="BABY"||_newPeopleType=="OLD"){
+ 			  $(that).parent().removeClass('error_show');
  			  return false;
  		  }else{
  			  $(that).parent().removeClass('error_show');
@@ -329,8 +330,8 @@ function initPrice(context,_shopingUUID){
  		  }else if(_newPeopleType=="ADULT" && value == 'CHILDREN'){
  			  $(that).parent().addClass('error_show');
  			  return false;
- 		  }else if(_newPeopleType=="BABY"){
- 			  $(that).parent().addClass('error_show');
+ 		  }else if(_newPeopleType=="BABY"||_newPeopleType=="OLD"){
+ 			  $(that).parent().removeClass('error_show');
  			  return false;
  		  }else{
  			  $(that).parent().removeClass('error_show');
@@ -710,10 +711,14 @@ function getPassengers(){
 }
 
 //验证下单之前的数据
-function checkBooking(adults,childs){
+function checkBooking(adults,childs,quantity){
 	//这里只做，成人儿童数的验证
 	var adultNum = 0;
 	var childNum = 0;
+	 var goodsQuantity = 1;
+	 if(quantity!==undefined && (!isNaN(quantity))){
+		 goodsQuantity = quantity;
+	 }
 	$(".border_t1_dotted").find(".peopleType").each(function(i){
 		if($(this).val()=='ADULT'){
 			adultNum ++;
@@ -721,7 +726,7 @@ function checkBooking(adults,childs){
 			childNum ++;
 		}
 	});
-	if(!(adultNum === adults && childNum === childs)){
+	if(!(adultNum === (adults*goodsQuantity) && childNum === (childs*goodsQuantity))){
 		alert("下单成人和儿童数不匹配");
 		return false;
 	}

@@ -65,12 +65,14 @@ public class FitBookingFinServiceImpl implements FitBookingFinService{
     public FitOrderMainDto saveOrderRelation(FitOrderMainDto orderMainDto) {
         FitSuppMainOrderDto suppMainOrderDto = orderMainDto.getFitSuppMainOrderDto();
         try {
-			logger.error("suppMainOrderDto【"+suppMainOrderDto.getVstMainOrderNo()+"】供应商信息【"+JSONMapper.getInstance().writeValueAsString(suppMainOrderDto)+"】");
+        	if(logger.isInfoEnabled()){
+        		logger.info("suppMainOrderDto【"+suppMainOrderDto.getVstMainOrderNo()+"】供应商信息【"+JSONMapper.getInstance().writeValueAsString(suppMainOrderDto)+"】");
+        	}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
         fitSuppMainOrderRepository.save(suppMainOrderDto);
-    	logger.error("suppMainOrderDto【"+suppMainOrderDto.getVstMainOrderNo()+"】供应商信息保存成功！");
+    	logger.info("suppMainOrderDto【"+suppMainOrderDto.getVstMainOrderNo()+"】供应商信息保存成功！");
         return orderMainDto;
     }
 }

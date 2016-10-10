@@ -69,19 +69,21 @@ public class FitBookingResource {
 	@Path(BussinessClientPath.Path.FLIGHT_CALLBACK_BOOKING)
 	public Response fitForFlightCallBack(String requestStr) {
 		
-		logger.error("订单留库开始请求开始【"+requestStr+"】");
+		logger.info("订单留库开始请求开始【"+requestStr+"】");
 		 List<FitFliBookingCallBackRequest> callBackRequests = null;
 		 try {
 				callBackRequests = JSONMapper.getInstance().readValue(requestStr, new TypeReference<List<FitFliBookingCallBackRequest>>() {});
 		 } catch (Exception e1) {
-			  logger.error(ExceptionUtils.getFullStackTrace(e1));
+			  logger.error(e1.getMessage(),e1);
 		 }
 		fitFlightBookingService.fitFlightBookingAsync(callBackRequests);
 		BaseResponseDto<FitFliCallBackResponseVSTDto> responseDto = fitFlightBookingService.flightCallBackBooking(callBackRequests);
 		try {
-			logger.error("订单留库开始请求开始【"+JSONMapper.getInstance().writeValueAsString(responseDto)+"】");
+			if(logger.isInfoEnabled()){
+				logger.info("订单留库开始请求开始【"+JSONMapper.getInstance().writeValueAsString(responseDto)+"】");
+			}
 		} catch (Exception e) {
-			 logger.error(ExceptionUtils.getFullStackTrace(e));
+			 logger.error(e.getMessage(),e);
 		}
 		return Response.ok(responseDto).build();
 	}

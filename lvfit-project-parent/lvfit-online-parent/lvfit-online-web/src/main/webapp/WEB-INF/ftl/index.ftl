@@ -22,7 +22,6 @@
 <script>
     cmCreatePageviewTag("机酒频道首页_<fh-search>", "FlightHotel", null, null,"-_--_--_--_--_-路径页面");
 </script>
-<script type="text/javascript" src="http://s2.lvjs.com.cn/js/common/losc.js"></script>
 
 <!-- 公共头部开始    -->
 <div id="headerInfo" style="visibility:hidden">

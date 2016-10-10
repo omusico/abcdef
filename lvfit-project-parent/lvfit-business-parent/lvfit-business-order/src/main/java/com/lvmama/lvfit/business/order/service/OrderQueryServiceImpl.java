@@ -182,7 +182,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     			}
 			} 
 		} catch (Exception e1) {
-			logger.error(ExceptionUtils.getFullStackTrace(e1));
+			logger.error(e1.getMessage(),e1);
 		}
 		//不是包机，以前的逻辑处理方式.
 		if(!isCharter){
@@ -214,13 +214,15 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 			FitSuppMainOrderStatusDto  suppMainOrderStatusDto = orderSyncService.syncSuppMainOrderStatus(suppMainOrderDto.getFitSuppMainOrderStatus().getVstMainOrderNo());
 			 suppMainOrderDto.setFitSuppMainOrderStatus(suppMainOrderStatusDto);
 		} catch (Exception e2) {
-			logger.error(ExceptionUtils.getFullStackTrace(e2));
+			logger.error(e2.getMessage(),e2);
 		}
 		 
 		try {
-			logger.info("订单详情orderMainDto="+JSONMapper.getInstance().writeValueAsString(orderMainDto));
+			if(logger.isInfoEnabled()){
+				logger.info("订单详情orderMainDto="+JSONMapper.getInstance().writeValueAsString(orderMainDto));
+			}
 		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+			logger.error(e.getMessage(),e);
 		}
         return orderMainDto;
 	} 
@@ -423,9 +425,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             for (FitOrderHotelDto fitOrderHotelDto : hotels) {
                 List<FitOrderHotelDto> fitOrderHotelDtos = fitOrderHotelRepository.getByPlanIdAndCheckIn(fitOrderHotelDto.getPlanId(), fitOrderHotelDto.getCheckin());
                 try {
-                    logger.error("从数据库中查询酒店快照信息" + JSONMapper.getInstance().writeValueAsString(fitOrderHotelDtos));
+                	if(logger.isInfoEnabled()){
+                		logger.info("从数据库中查询酒店快照信息" + JSONMapper.getInstance().writeValueAsString(fitOrderHotelDtos));
+                	}
                 } catch (Exception e) {
-                    e.printStackTrace();
+                	logger.error(e.getMessage());
                 }
 
                 if (CollectionUtils.isNotEmpty(fitOrderHotelDtos)) {
@@ -439,9 +443,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (CollectionUtils.isEmpty(result.getFlights())) {
             List<FitOrderFlightDto> fitOrderFlightDtos = fitOrderFlightRepository.getOldFitOrderMainData(vstOrderMainNo.toString());
             try {
-                logger.error("从数据库中查询酒店快照信息" + JSONMapper.getInstance().writeValueAsString(fitOrderFlightDtos));
+            	if(logger.isInfoEnabled()){
+            		logger.info("从数据库中查询酒店快照信息" + JSONMapper.getInstance().writeValueAsString(fitOrderFlightDtos));
+            	}
             } catch (Exception e) {
-                e.printStackTrace();
+            	logger.error(e.getMessage());
             }
             // 返回机票信息去重
             List<FitOrderFlightDto> resultFlights = new ArrayList<FitOrderFlightDto>();
@@ -467,9 +473,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             passenger.setId(null);
         }
         try {
-            logger.error("需要迁移的FitOrderMainDto：" + JSONMapper.getInstance().writeValueAsString(fitOrderMainDto));
+        	if(logger.isInfoEnabled()){
+        		logger.error("需要迁移的FitOrderMainDto：" + JSONMapper.getInstance().writeValueAsString(fitOrderMainDto));
+        	}
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(e.getMessage());
         }
 
         if (fitOrderMainDto != null) {

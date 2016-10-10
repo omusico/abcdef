@@ -45,8 +45,8 @@ D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lv
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\adapter\OutputType.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\dto\Oper.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\dto\package-info.java
-D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\event\EventAspect.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\solr\json\base\criteria\SolrOrderField.java
+D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\event\EventAspect.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\dto\Dto.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\utils\MemcachedUtil.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\trace\profile\ProfilePoint.java
@@ -93,8 +93,8 @@ D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lv
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\domain\DomainEntityByFkIdMapper.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\adapter\Prefix.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\log\package-info.java
-D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\solr\json\base\select\SolrBaseObject.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\domain\DomainByFkIdListRepository.java
+D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\solr\json\base\select\SolrBaseObject.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\domain\Domain.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\dto\enums\SuppCodeType.java
 D:\shuiqing_new\workspace\lvf-common-parent\lvf-common-base\src\main\java\com\lvmama\lvf\common\dto\status\ResultStatus.java

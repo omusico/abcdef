@@ -75,4 +75,11 @@ public interface OrderController {
 	 */
 	String toOrderLog(Model model, Long mainOrderId);
 
+
+	/**查询机票回调信息列表.
+	 * @param model
+	 * @return
+	 */
+	String suppFlightCallBack(Model model);
+
 }

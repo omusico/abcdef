@@ -18,9 +18,9 @@
     ">
     
     <mvc:annotation-driven />
-    <mvc:interceptors>
+    <mvc:interceptors> 
     	<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" /> 
-    	<bean class="com.lvmama.lvf.common.trace.TraceContextInterceptor4SpringMVC" />  
+    	<bean class="com.lvmama.lvf.common.trace.TraceContextInterceptor4SpringMVC" />   
     </mvc:interceptors>
     <mvc:resources mapping="/js/**" location="/js/"/>  
     <mvc:resources mapping="/css/**" location="/css/"/>  

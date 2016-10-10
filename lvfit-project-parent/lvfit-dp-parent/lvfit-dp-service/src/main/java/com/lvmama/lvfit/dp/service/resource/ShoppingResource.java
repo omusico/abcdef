@@ -41,6 +41,7 @@ import com.lvmama.lvfit.dp.shopping.service.ShoppingFlightService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingHotelService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingService;
 import com.lvmama.lvfit.dp.shopping.service.ShoppingViewService;
+import org.apache.commons.beanutils.converters.BigDecimalConverter;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,6 +52,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -255,6 +257,12 @@ public class ShoppingResource {
     	for (FitShoppingSelectedInsuranceDto selectedInsuranceDto : req.getInsuranceDtoList()) {
 			for (InsuranceDto insuranceDto : fitShoppingDto.getInsurances()) {
 				if (selectedInsuranceDto.getSuppGoodsId().equals(insuranceDto.getSuppGoodsId().toString())) {
+					selectedInsuranceDto.setProductId(insuranceDto.getProductId().toString());
+					selectedInsuranceDto.setProductName(insuranceDto.getProductName());
+					selectedInsuranceDto.setBranchId(insuranceDto.getBranchId().toString());
+					selectedInsuranceDto.setBranchName(insuranceDto.getBranchName());
+					selectedInsuranceDto.setSuppGoodsName(insuranceDto.getGoodsName());
+					selectedInsuranceDto.setInsurancePrice(insuranceDto.getPrice());
 					selectedInsuranceDto.setInsuranceDetail(insuranceDto.getBranchDesc());
 				}
 			}

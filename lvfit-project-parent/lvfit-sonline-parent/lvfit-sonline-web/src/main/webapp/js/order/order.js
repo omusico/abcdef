@@ -25,29 +25,29 @@ function initPrice(_shopingUUID){
 };
 
 //点击提交订单按钮，进行验证
-function infoSubmit(shopingUUID,_adultCount,_childCount){
-	var check = checkBooking(_adultCount,_childCount);
+function infoSubmit(shopingUUID,_adultCount,_childCount,quantity){
+	var check = checkBooking(_adultCount,_childCount,quantity);
 	if(check){
 	    //登录验证
 	    fit.login.booking.check(function(){
-	    	submit(shopingUUID,_adultCount,_childCount,true);
+	    	submit(shopingUUID,_adultCount,_childCount,true,quantity);
 	    },function(){
-	    	callBackSubmit(shopingUUID,_adultCount,_childCount);
+	    	callBackSubmit(shopingUUID,_adultCount,_childCount,quantity);
 	    });
 	}
 }
 
-function callBackSubmit(shopingUUID,_adultCount,_childCount){
+function callBackSubmit(shopingUUID,_adultCount,_childCount,quantity){
 	loginCallback();//先登录,再刷新登录用户信息
-	submit(shopingUUID,_adultCount,_childCount,true);
-	if(!checkBooking(_adultCount,_childCount)){
+	submit(shopingUUID,_adultCount,_childCount,true,quantity);
+	if(!checkBooking(_adultCount,_childCount,quantity)){
 	    location.reload();
 	}
 }
 
 //提交订单
-function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
-	if(!checkBooking(_adultCount,_childCount)||!yanzhengOk()){
+function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord,quantity){
+	if(!checkBooking(_adultCount,_childCount,quantity)||!yanzhengOk()){
 		return;
 	}
 	//alert("成功提交了");return;
@@ -101,10 +101,14 @@ function submit(shopingUUID,_adultCount,_childCount,isWriteInfoRecord){
 }
 
 //验证下单之前的数据
-function checkBooking(adults,childs){
+function checkBooking(adults,childs,quantity){
  //这里只做，成人儿童数的验证
  var adultNum = 0;
  var childNum = 0;
+ var goodsQuantity = 1;
+ if(quantity!==undefined && $.trim(quantity)!=="" && (!isNaN(quantity))){
+	 goodsQuantity = quantity;
+ }
  $(".border_t1_dotted").find(".peopleType").each(function(i){
      if($(this).val()=='ADULT'){
          adultNum ++;
@@ -112,7 +116,7 @@ function checkBooking(adults,childs){
          childNum ++;
      }
  });
- if(!(adultNum === adults && childNum === childs)){
+ if(!(adultNum === (adults*goodsQuantity) && childNum === (childs*goodsQuantity))){
      alert("下单成人和儿童数不匹配");
      return false;
  }
@@ -261,8 +265,8 @@ function changePeopleTypeCheck(that){
        }else if(_newPeopleType=="ADULT" && value == 'CHILDREN'){
            $(that).parent().addClass('error_show');
            return false;
-       }else if(_newPeopleType=="BABY"){
-           $(that).parent().addClass('error_show');
+       }else if(_newPeopleType=="BABY"||_newPeopleType=="OLD"){
+           $(that).parent().removeClass('error_show');
            return false;
        }else{
            $(that).parent().removeClass('error_show');
@@ -278,8 +282,8 @@ function changePeopleTypeCheck(that){
        }else if(_newPeopleType=="ADULT" && value == 'CHILDREN'){
            $(that).parent().addClass('error_show');
            return false;
-       }else if(_newPeopleType=="BABY"){
-           $(that).parent().addClass('error_show');
+       }else if(_newPeopleType=="BABY"||_newPeopleType=="OLD"){
+           $(that).parent().removeClass('error_show');
            return false;
        }else{
            $(that).parent().removeClass('error_show');
@@ -600,29 +604,7 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 		}
 		
 		var $yanzheng = $('.js_yz');
-		for(var i=0;i<$yanzheng.length;i++){
-			var This = $yanzheng.eq(i);
-			var flag1=true,flag2=true;
-			//检查所有人员姓名是否规范填写
-			if(This.attr("type_name")==="text"){
-				if(This.hasClass("js_goumai_name")){
-					flag1 = checkContactName(This);
-				}else{
-					flag1 = checkUserName(This);
-				}
-			}
-			//检查证件信息是否重复
-			if(This.attr("type_name")==="shenfenzheng"){
-				if(This.siblings('.select').val() == 'ID_CARD' || This.siblings('.select').val() == 'ID'){
-					flag2 = blurIdAndBirthday(This,"ID");
-				}else{
-					flag2 = verifyIDCardRepeat(This);
-				}
-			}
-			if(flag1 && flag2){
-				yanzhengThis(This);
-			}
-		}
+		yanzhengPassengersInfo($yanzheng);
 		
 		var _english2 = /^[a-zA-Z\s]+$/;
 		for(var i=0;i<$('.error_show').length;i++){
@@ -655,6 +637,32 @@ $('.fh-return-btn ,.ph_icon_closeAlert').click(function(){
 		return true;
 	}
 	
+	//提交前校验所有人员输入框信息(Param：class='js_yz'的人员信息input框列表)
+	function yanzhengPassengersInfo($yanzheng){
+		for(var i=0;i<$yanzheng.length;i++){
+			var This = $yanzheng.eq(i);
+			var flag1=true,flag2=true;
+			//检查所有人员姓名是否规范填写
+			if(This.attr("type_name")==="text"){
+				if(This.hasClass("js_goumai_name")){
+					flag1 = checkContactName(This);
+				}else{
+					flag1 = checkUserName(This);
+				}
+			}
+			//检查证件信息是否重复
+			if(This.attr("type_name")==="shenfenzheng"){
+				if(This.siblings('.select').val() == 'ID_CARD' || This.siblings('.select').val() == 'ID'){
+					flag2 = blurIdAndBirthday(This,"ID");
+				}else{
+					flag2 = verifyIDCardRepeat(This);
+				}
+			}
+			if(flag1 && flag2){
+				yanzhengThis(This);
+			}
+		}
+	}
 	//验证当前输入框
 	function yanzhengThis(This){
 	    var _mobile = /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17\d{1})|(18([0-4]|[5-9])))\d{8}$/;// /^(13[0-9]|15[0-9]|18[0-9]|170|17[6-8]|147|145)\d{8}$/; 

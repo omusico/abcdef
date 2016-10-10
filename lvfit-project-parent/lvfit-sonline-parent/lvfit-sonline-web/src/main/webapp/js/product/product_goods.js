@@ -1207,8 +1207,8 @@ $(".js_tips").poptip();
         // 酒店的详情展示
         $(".toggle-detail").live("click", function(e) {
             var event = e || window.event;
-            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-            $(this).parents(".hotel-item-name").siblings(".adjust-product-item-detail").toggle();
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true); 
+            $(this).parents(".item-name").siblings(".adjust-product-item-detail").toggle();
         });
         // 收起酒店的详情
         $(".collapse-detail span").live("click",function(e) {

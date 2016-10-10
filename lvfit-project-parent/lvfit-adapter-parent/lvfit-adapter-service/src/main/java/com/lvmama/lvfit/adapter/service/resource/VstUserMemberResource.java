@@ -58,7 +58,7 @@ public class VstUserMemberResource {
     @Autowired
     private LvmamaClientService lvmamaClientService;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(VstUserMemberResource.class);
+	private static final Logger logger = LoggerFactory.getLogger(VstUserMemberResource.class);
 	/**
 	 * 保存常用联系人信息
 	 * 
@@ -132,12 +132,12 @@ public class VstUserMemberResource {
             	String userId = memUser.getUserNo();
             	request.setUserId(userId);
             } else {
-                LOGGER.error("获取用户失败~~~~~~~");
+                logger.error("获取用户失败~~~~~~~");
             }
             contacters = userReceiverServiceAdapter.getUserReceiverByUserId(request);
             return Response.ok(contacters).build();
         } catch (Exception e) {
-            LOGGER.error("获取用户发送异常" + e);
+            logger.error("获取用户发送异常" + e);
         }
         return Response.ok().build();
 	}
